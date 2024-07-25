@@ -254,3 +254,9 @@ paket-files/
 src/BiiSoft.Web.Mvc/secrets.json
 src/BiiSoft.Web.Host/secrets.json
 src/BiiSoft.Migrator/secrets.json
+
+src/BiiSoft.Web.Host/App_Data/Logs/
+src/BiiSoft.Web.Mvc/App_Data/Logs/
+src/BiiSoft.Migrator/Logs/Logs.txt
+build/outputs/
+docker/mvc/Mvc-Logs/
