@@ -1,0 +1,647 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<localizationDictionary culture="en">
+	<texts>
+		<text name="HomePage" value="Home page" />
+		<text name="About" value="About" />
+		<text name="WelcomeMessage" value="Welcome to {0}!" />
+		<text name="Welcome" value="Welcome" />
+		<text name="FormIsNotValidMessage" value="Form is not valid. Please check and fix errors." />
+		<text name="TenantNameCanNotBeEmpty" value="Tenant name can not be empty" />
+		<text name="InvalidUserNameOrPassword" value="Invalid user name or password" />
+		<text name="ThereIsNoTenantDefinedWithName{0}" value="There is no tenant defined with name {0}" />
+		<text name="TenantIsNotActive" value="Tenant {0} is not active." />
+		<text name="UserIsNotActiveAndCanNotLogin" value="User {0} is not active and can not log in." />
+		<text name="UserEmailIsNotConfirmedAndCanNotLogin">Your email address is not confirmed. You can not login.</text>
+		<text name="UserLockedOutMessage">The user account has been locked out. Please try again later.</text>
+		<text name="PleaseEnterLoginInformation" value="Please enter login information" />
+		<text name="TenancyName" value="Tenancy name" />
+		<text name="UserNameOrEmail" value="User name or email" />
+		<text name="Password" value="Password" />
+		<text name="ResetPassword" value="Reset Password" />
+		<text name="UpdatePassword" value="Update Password" />
+		<text name="ForgotPassword" value="Forgot Password" />
+		<text name="RememberMe" value="Remember me" />
+		<text name="LogIn" value="Log in" />
+		<text name="LoginFailed" value="Login failed!" />
+		<text name="NameSurname" value="Name surname" />
+		<text name="UserName" value="User name" />
+		<text name="Name" value="Name" />
+		<text name="Surname" value="Surname" />
+		<text name="EmailAddress" value="Email address" />
+		<text name="Tenants" value="Tenants" />
+		<text name="Tenant" value="Tenant" />
+		<text name="SavedSuccessfully" value="Saved successfully" />
+		<text name="CreateNewTenant" value="Create new tenant" />
+		<text name="AdminEmailAddress" value="Admin email address" />
+		<text name="AdminPassword" value="Admin password" />
+		<text name="Save" value="Save" />
+		<text name="Cancel" value="Cancel" />
+		<text name="TenantName_Regex_Description" value="Tenant name must be at least 2 chars, starts with a letter and continue with letter, number, dash or underscore." />
+		<text name="DefaultPasswordIs" value="Default password is {0}" />
+		<text name="CanBeEmptyToLoginAsHost" value="Can be empty to login as host." />
+		<text name="Register" value="Register" />
+		<text name="OrLoginWith" value="Or login with" />
+		<text name="WaitingForActivationMessage" value="Your account is waiting to be activated by system admin." />
+		<text name="TenantSelection" value="Tenant Selection" />
+		<text name="TenantSelection_Detail" value="Please select one of the following tenants." />
+		<text name="Logout" value="Log out" />
+		<text name="RegisterFormUserNameInvalidMessage">Please don't enter an email address for username.</text>
+		<text name="DatabaseConnectionString" value="Database connection string" />
+		<text name="Users" value="Users" />
+		<text name="User" value="User" />
+		<text name="IsActive" value="Is active" />
+		<text name="FullName" value="Full name" />
+		<text name="CreateNewUser" value="Create new user" />
+		<text name="Yes" value="Yes" />
+		<text name="No" value="No" />
+		<text name="Optional" value="Optional" />
+		<text name="LeaveEmptyToSwitchToHost">Leave empty to switch to the host</text>
+		<text name="CurrentTenant">Current tenant</text>
+		<text name="NotSelected">Not selected</text>
+		<text name="Change">Change</text>
+		<text name="ChangeTenant">Change tenant</text>
+		<text name="MultiLevelMenu">Multi Level Menu</text>
+		<text name="Back">Back</text>
+		<text name="SuccessfullyRegistered">Successfully registered</text>
+		<text name="WaitingForEmailActivation">Your email address should be activated</text>
+		<text name="Roles">Roles</text>
+		<text name="DisplayName">Display Name</text>
+		<text name="Edit">Edit</text>
+		<text name="Delete">Delete</text>
+		<text name="CreateNewRole">Create new role</text>
+		<text name="RoleName">Role Name</text>
+		<text name="Actions">Actions</text>
+		<text name="CouldNotCompleteLoginOperation">Could not complete login operation. Please try again later.</text>
+		<text name="CouldNotValidateExternalUser">Could not validate external user</text>
+		<text name="EditRole">Edit role</text>
+		<text name="EditTenant">Edit tenant</text>
+		<text name="EditUser">Edit user</text>
+		<text name="TenantIdIsNotActive{0}">TenantId {0} is not active</text>
+		<text name="UnknownTenantId{0}">Unknown tenantId {0}</text>
+		<text name="ThisFieldIsRequired">This field is required</text>
+		<text name="PleaseWait">Please wait...</text>
+		<text name="Administration">Administration</text>
+		<text name="ClearAll">Clear all</text>
+		<text name="ClearOthers">Clear others</text>
+		<text name="LabelOptions">Label options</text>
+		<text name="Permissions">Permissions</text>
+		<text name="RoleDescription">Role description</text>
+		<text name="Refresh">Refresh</text>
+		<text name="Create">Create</text>
+		<text name="UserDetails">User Details</text>
+		<text name="UserRoles">User Roles</text>
+		<text name="ConfirmPassword">Confirm password</text>
+		<text name="Version">Version</text>
+		<text name="On">On</text>
+		<text name="Off">Off</text>
+		<text name="AreYouSureWantToDelete">Are you sure want to delete {0}?</text>
+		<text name="SuccessfullyDeleted">Successfully deleted</text>
+		<text name="StartTyping">Start Typing</text>
+		<text name="Skins">Skins</text>
+		<text name="Settings">Settings</text>
+		<text name="Filter">Filter</text>
+		<text name="CurrentPassword">Current Password</text>
+		<text name="NewPassword">New Password</text>
+		<text name="ConfirmNewPassword">Confirm New Password</text>
+		<text name="PasswordsDoNotMatch">Passwords do not match</text>
+		<text name="PasswordsMustBeAtLeast8CharactersContainLowercaseUppercaseNumber">Passwords must be at least 8 characters, contain a lowercase, uppercase, and number</text>
+		<text name="UserDeleteWarningMessage">User {0} will be deleted.</text>
+		<text name="RoleDeleteWarningMessage">Role {0} will be deleted and unassigned from all assigned users.</text>
+		<text name="TenantDeleteWarningMessage">Tenant {0} will be deleted.</text>
+		<text name="SearchWithThreeDot">Search...</text>
+		<text name="PleaseEnterAtLeastNCharacter">Please enter at least {0} characters</text>
+		<text name="PleaseEnterNoMoreThanNCharacter">Please enter no more than {0} characters</text>
+		<text name="InvalidEmailAddress">Invalid email address</text>
+		<text name="InvalidPattern">Invalid Pattern</text>
+		<text name="PairsDoNotMatch">Do not match</text>
+		<text name="All">All</text>
+		<text name="TotalRecordsCount">Total: {0}</text>
+		<text name="Search">Search</text>
+		<text name="Clear">Clear</text>
+		<text name="ResetPasswordStepOneInfo">1. Enter your administrator password</text>
+		<text name="ResetPasswordStepTwoInfo">2. Copy this random password so you can send it to the user</text>
+		<text name="UsersActivation">Users activation</text>
+		<text name="PasswordIsRequired">Password is required!</text>
+
+		<text name="Editions">Editions</text>
+		<text name="Edition">Edition</text>
+		<text name="View">View</text>
+		<text name="ExportExcel">Export Excel</text>
+		<text name="ImportExcel">Import Excel</text>
+		<text name="Import">Import</text>
+		<text name="EditAccount">Edit Account</text>
+		<text name="SeeAccount">See Account</text>
+		<text name="EditPrice">Edit Price</text>
+		<text name="SeePrice">See Price</text>
+		<text name="EditQty">Edit Qty</text>
+		<text name="Over24Modify">Over 24 hours modify</text>
+		<text name="ColumnsIsRequired">Columns is required for {0}</text>
+		<text name="SignIn">Sign In</text>
+		<text name="SignUp">Sign Up</text>
+		<text name="SignOut">Sign Out</text>
+		<text name="SendPasswordResetLink">Password reset link will be sent to your email</text>
+		<text name="PasswordResetMailSentMessage">Password Reset Link is sent to your email successfully!</text>
+		<text name="MailSent">Mail Sent</text>
+		<text name="MyAccount">My Account</text>
+		<text name="BackToMyAccount">Back to my account</text>
+		<text name="ChangePassword">Change Password</text>
+		<text name="LinkAccount">Link Account</text>
+		<text name="Profile">Profile</text>
+		<text name="ManageLinkAccount">Manage Link Account</text>
+		<text name="UserGroups">User Groups</text>
+		<text name="UserGroup">User Group</text>
+		<text name="Notification">Notification</text>
+		<text name="AuditLogs">Audit Logs</text>
+		<text name="Dashboard">Dashboard</text>
+		<text name="Home">Home</text>
+		<text name="Administrations">Administrations</text>
+		<text name="Description">Description</text>
+		<text name="GridLine">Grid Line</text>
+		<text name="Date">Date</text>
+		<text name="FromDate">From Date</text>
+		<text name="ToDate">To Date</text>
+		<text name="ServiceName">Service Name</text>
+		<text name="MethodName">Method Name</text>
+		<text name="Browser">Browser</text>
+		<text name="Duration">Duration</text>
+		<text name="MaxDuration">Max Duration</text>
+		<text name="MinDuration">Min Duration</text>
+		<text name="HasError">Has Error</text>
+		<text name="ExecutionTime">ExecutionTime</text>
+		<text name="Status">Status</text>
+		<text name="ClientIpAddress">Client IP Address</text>
+		<text name="BrowserInfo">Browser Info</text>
+		<text name="Exception">Exception</text>
+		<text name="LoginAsTenant">Login as this tenant</text>
+		<text name="RecordNotFound">Record not found</text>
+		<text name="Result">Result</text>
+		<text name="LoginAttempt">Login Attempt</text>
+		<text name="LoginTime">Login Time</text>
+		<text name="Close">Close</text>
+		<text name="DeleteWarningMessage">{0} "{1}" will be deleted</text>
+		<text name="Language">Language</text>
+		<text name="Languages">Languages</text>
+		<text name="CannotBeDeleted">{0} canno be deleted</text>
+		<text name="DefaultLanguage">Default Language</text>
+		<text name="LanguageTexts">Language Texts</text>
+		<text name="BaseValue">Base Value</text>
+		<text name="BaseLanguage">Base Language</text>
+		<text name="TargetValue">Target Value</text>
+		<text name="TargetLanguage">Target Language</text>
+		<text name="Source">Source</text>
+		<text name="SMTPMail">SMTP Mail</text>
+		<text name="Icon">Icon</text>
+		<text name="Enable">Enable</text>
+		<text name="Disable">Disable</text>
+		<text name="ChangeTexts">Change Texts</text>
+		<text name="SetAsDefault">Set as default</text>
+		<text name="MaximumUserCount">Maximum user count</text>
+		<text name="MaximumBranchCount">Maximum branch count</text>
+		<text name="MaximumWarehouseCount">Maximum warehouse count</text>
+		<text name="MaximumCount">Maximum {0} count</text>
+		<text name="MaximumCount_Description">0 = unlimited</text>
+		<text name="MaximumCount_Error_Message">Reached to maximum allowed {0} count!</text>
+		<text name="MaximumCount_Error_Detail">Your subscription is allowed to have a maximum of {0} {1}.</text>
+		<text name="CharacterLength">{0} Characters Length</text>
+		<text name="SpecialCharacter">Special Character</text>
+		<text name="Lowercase">Lowercase</text>
+		<text name="Uppercase">Uppercase</text>
+		<text name="Number">Number</text>
+		<text name="PasswordsMustBeAtLeastContain">Passwords must be at least contain</text>
+		<text name="ChangeFeatures">Change Features</text>
+		<text name="ResetDefault">Reset Default</text>
+		<text name="Accounting">Accounting</text>
+		<text name="Vendors">Vendors</text>
+		<text name="Vendor">Vendor</text>
+		<text name="Customers">Customers</text>
+		<text name="Customer">Customer</text>
+		<text name="Chat">Chat</text>
+		<text name="TenantToTenant">Tenant to Tenant</text>
+		<text name="TenantToHost">Tenant to Host</text>
+		<text name="Reports">Reports</text>
+		<text name="Report">Report</text>
+		<text name="Company">Company</text>
+		<text name="MultiCurrencies">Multi Currencies</text>
+		<text name="Currency">Currency</text>
+		<text name="Currencies">Currencies</text>
+		<text name="Employees">Employees</text>
+		<text name="Employee">Employee</text>
+		<text name="Positions">Positions</text>
+		<text name="Position">Position</text>
+		<text name="Inventory">Inventory</text>
+		<text name="Inventories">Inventories</text>
+		<text name="File">File</text>
+		<text name="Files">Files</text>
+		<text name="Loans">Loans</text>
+		<text name="Loan">Loan</text>
+		<text name="Payments">Payments</text>
+		<text name="Payment">Payment</text>
+		<text name="Penalties">Penalties</text>
+		<text name="Penalty">Penalty</text>
+		<text name="POS">POS</text>
+		<text name="Rooms">Rooms</text>
+		<text name="Room">Room</text>
+		<text name="Tables">Tables</text>
+		<text name="Table">Table</text>
+		<text name="SaleOrders">Sale Orders</text>
+		<text name="SaleOrder">Sale Order</text>
+		<text name="Quotations">Quotations</text>
+		<text name="Quotation">Quotation</text>
+		<text name="SaleReturns">Sale Returns</text>
+		<text name="SaleReturn">Sale Return</text>
+		<text name="SaleCommissions">Sale Commissions</text>
+		<text name="SaleCommission">Sale Commission</text>
+		<text name="SaleRepresentatives">Sale Representatives</text>
+		<text name="SaleRepresentative">Sale Representative</text>
+		<text name="Setup">Setup</text>
+		<text name="Taxes">Taxes</text>
+		<text name="Tax">Tax</text>
+		<text name="Warehouses">Warehouses</text>
+		<text name="Warehouse">Warehouse</text>
+		<text name="Locations">Locations</text>
+		<text name="Location">Location</text>
+		<text name="Pages">Pages</text>
+		<text name="OrganizationUnits">Organization Units</text>
+		<text name="OrganizationUnit">Organization Unit</text>
+		<text name="HangfireDashboard">Hangfire Dashboard</text>
+		<text name="Permission">Permission</text>
+		<text name="RoleInfo">Role Info</text>
+		<text name="Total">Total</text>
+		<text name="Classes">Classes</text>
+		<text name="Class">Class</text>
+		<text name="Counters">Counters</text>
+		<text name="Counter">Counter</text>
+		<text name="Banks">Banks</text>
+		<text name="Bank">Bank</text>
+		<text name="ChartOfAccounts">Chart of Accounts</text>
+		<text name="Accounts">Accounts</text>
+		<text name="Account">Account</text>
+		<text name="Journals">Journals</text>
+		<text name="Journal">Journal</text>
+		<text name="Ledgers">Ledgers</text>
+		<text name="Ledger">Ledger</text>
+		<text name="ProfitLoss">Profit Loss</text>
+		<text name="BalanceSheet">Balance Sheet</text>
+		<text name="Branches">Branches</text>
+		<text name="Branch">Branch</text>
+		<text name="Contracts">Contracts</text>
+		<text name="Contract">Contract</text>
+		<text name="Invoices">Invoices</text>
+		<text name="Invoice">Invoice</text>
+		<text name="ReceivePayments">Receive Payments</text>
+		<text name="ReceivePayment">Receive Payment</text>
+		<text name="SaleTypes">Sale Types</text>
+		<text name="SaleType">Sale Type</text>
+		<text name="Groups">Groups</text>
+		<text name="Group">Group</text>
+		<text name="Exchanges">Exchanges</text>
+		<text name="Exchange">Exchange</text>
+		<text name="ExchangeRates">Exchange Rates</text>
+		<text name="ExchangeRate">Exchange Rate</text>
+		<text name="Rate">Rate</text>
+		<text name="MembersCards">Member's Cards</text>
+		<text name="MembersCard">Member's Card</text>
+		<text name="FormTemplates">Form Templates</text>
+		<text name="FormTemplate">Form Template</text>
+		<text name="Items">Items</text>
+		<text name="Item">Item</text>
+		<text name="PaymentMethods">Payment Methods</text>
+		<text name="PaymentMethod">Payment Method</text>
+		<text name="Regions">Regions</text>
+		<text name="Region">Region</text>
+		<text name="BillPayments">Bill Payments</text>
+		<text name="BillPayment">Bill Payment</text>
+		<text name="Bills">Bills</text>
+		<text name="Bill">Bill</text>
+		<text name="PurchaseOrders">Purchase Orders</text>
+		<text name="PurchaseOrder">Purchase Order</text>
+		<text name="PurchaseTypes">Purchase Types</text>
+		<text name="PurchaseType">Purchase Type</text>
+		<text name="AutoInventories">Auto Inventories</text>
+		<text name="AutoInventory">Auto Inventory</text>
+		<text name="ColorPatterns">Color Patterns</text>
+		<text name="ColorPattern">Color Pattern</text>
+		<text name="Brands">Brands</text>
+		<text name="Brand">Brand</text>
+		<text name="FieldAs">Feild A</text>
+		<text name="FieldA">Feild A</text>
+		<text name="FieldBs">Feild B</text>
+		<text name="FieldB">Feild B</text>
+		<text name="FieldCs">Feild C</text>
+		<text name="FieldC">Feild C</text>
+		<text name="Units">Units</text>
+		<text name="Unit">Unit</text>
+		<text name="PriceLevels">Price Levels</text>
+		<text name="PriceLevel">Price Level</text>
+		<text name="Promotions">Promotions</text>
+		<text name="Promotion">Promotion</text>
+		<text name="UseDefaultCredentials">Use Default Credentials</text>
+		<text name="Apps">Apps</text>
+		
+		<text name="InterestRates">Interest Rates</text>
+		<text name="InterestRat">Interest Rate</text>
+		<text name="Collaterals">Collaterals</text>
+		<text name="Collateral">Collateral</text>
+		<text name="Transfers">Transfers</text>
+		<text name="Transfer">Transfer</text>
+		<text name="Issues">Issues</text>
+		<text name="Issue">Issue</text>
+		<text name="Receipts">Receipts</text>
+		<text name="Receipt">Receipt</text>
+		<text name="Alerts">Alerts</text>
+		<text name="Alert">Alert</text>
+		<text name="Productions">Productions</text>
+		<text name="Production">Production</text>
+		<text name="ProductionProcesses">Production Processes</text>
+		<text name="ProductionProcess">Production Process</text>
+		<text name="ProductionOrders">Production Orders</text>
+		<text name="ProductionOrder">Production Order</text>
+		<text name="ProductionLines">Production Lines</text>
+		<text name="ProductionLine">Production Line</text>
+		<text name="RoomGroups">Room Groups</text>
+		<text name="RoomGroup">Room Group</text>
+		<text name="TableGroups">Table Groups</text>
+		<text name="TableGroup">Table Group</text>
+		<text name="SaleInvoiceDetail">Sale Invoice Detail</text>
+		<text name="SaleInvoices">Sale Invoices</text>
+		<text name="SaleInvoice">Sale Invoice</text>
+		<text name="Aging">Aging</text>
+		<text name="CostDetail">Cost Detail</text>
+		<text name="CostSummary">Cost Summary</text>
+		<text name="CustomerBorrows">Customer Borrows</text>
+		<text name="CustomerBorrow">Customer Borrow</text>
+		<text name="StockBalance">Stock Balance</text>
+		<text name="Balance">Balance</text>
+		<text name="Transactions">Transactions</text>
+		<text name="Transaction">Transaction</text>
+		<text name="TransactionDetail">Transaction Detail</text>
+		<text name="PurchaseBills">Purchase Bills</text>
+		<text name="PurchaseBillDetail">Purchase Bill Detail</text>
+		<text name="Slots">Slots</text>
+		<text name="Slot">Slot</text>
+		<text name="Collections">Collections</text>
+		<text name="Collection">Collection</text>
+		<text name="RetainEarning">Retain Earning</text>
+		<text name="CashFlows">Cash Flows</text>
+		<text name="CashFlow">Cash Flow</text>
+		<text name="CashFlowDetail">Cash Flow Detail</text>
+		<text name="LoginAsUser">Login as this user</text>
+		<text name="ManageOrganizationTree">Manage Organization Tree</text>
+		<text name="ManageMembers">Manage Memebers</text>
+		<text name="ChangePermissions">Change Permissions</text>		
+		<text name="Countries">Countries</text>
+		<text name="Country">Country</text>
+		<text name="CityProvinces">City Provinces</text>
+		<text name="KhanDistricts">Khan Districts</text>
+		<text name="SangkatCommunes">Sangkat Communes</text>
+		<text name="Villages">Villages</text>
+
+		<text name="CompanySetting">Compan Setting</text>
+		<text name="LoanList">Loan List</text>
+		<text name="Print">Print</text>
+		<text name="Void">Void</text>
+		<text name="Voided">Voided</text>
+		<text name="From">From {0}</text>
+		<text name="CreateDeposit">Create Deposit</text>
+		<text name="CreateWithdraw">Create Withdraw</text>
+		<text name="CreateTransfer">Create Transfer</text>
+		<text name="Grades">Grades</text>
+		<text name="Grade">Grade</text>
+		<text name="ItemGroups">Item Groups</text>
+		<text name="ItemGroup">Item Group</text>
+		<text name="ItemList">Item List</text>
+		<text name="Scores">Scores</text>
+		<text name="Score">Score</text>
+		<text name="Sizes">Sizes</text>
+		<text name="Size">Size</text>
+		<text name="WeightUnits">Weight Units</text>
+		<text name="Weight">Weight</text>
+		<text name="NetWeight">Net Weight</text>
+		<text name="GrossWeight">Gross Weight</text>
+		<text name="EmployeeList">Employee List</text>
+		<text name="ChangeMembers">Change Members</text>
+		<text name="InventoryReports">Inventory Reports</text>
+		<text name="ModifyAllTemplates">Modify All Templates</text>
+		<text name="See">See</text>
+		<text name="Balances">Balances</text>
+		<text name="CreateTemplate">Create Template</text>
+		<text name="ModifyTemplate">Modify Template</text>
+		<text name="TrialBalance">Trial Balance</text>
+		<text name="CustomerAging">Customer Aging</text>
+		<text name="VendorAging">Vendor Aging</text>
+		<text name="Adjustments">Adjustments</text>
+		<text name="CustomerBorrowReturns">Customer Borrow Returns</text>
+		<text name="Others">Others</text>
+		<text name="Purchases">Purchases</text>
+		<text name="PurchaseReturns">Purchase Returns</text>
+		<text name="CustomerGroups">Customer Groups</text>
+		<text name="CustomerGroup">Customer Group</text>
+		<text name="CustomerList">Customer List</text>
+		<text name="ContractAlerts">Contract Alerts</text>
+		<text name="ConvertToInvoice">Convert to Invoice</text>
+		<text name="FromContract">From Contract</text>
+		<text name="FromQuotation">From Quotation</text>
+		<text name="FromOrder">From Order</text>
+		<text name="FromSaleOrder">From Sale Order</text>
+		<text name="FromSaleReturn">From Sale Return</text>
+		<text name="FromPurchaseOrder">From Purchase Order</text>
+		<text name="FromPurchaseReturn">From Purchase Return</text>
+		<text name="FromInventoryPurchase">From Inventory Purchase</text>
+		<text name="CreateAccountBill">Create Account Bill</text>
+		<text name="CreateAccountInovice">Create Account Invoice</text>
+		<text name="CreateDebitNote">Create Debit Note</text>
+		<text name="CreateAdvancePayment">Create Advance Payment</text>
+		<text name="Renew">Renew</text>
+		<text name="Reorder">Reorder</text>
+		<text name="ConvertToBill">Convert To Bill</text>
+		<text name="VendorList">Vendor List</text>
+		<text name="VendorGroups">Vendor Groups</text>
+		<text name="VendorGroup">Vendor Group</text>
+		<text name="PaymentHistory">Payment History</text>
+		<text name="Sales">Sales</text>
+		<text name="FromInventorySale">From Inventory Sale</text>
+		<text name="FromInventorySaleReturn">From Inventory Sale Return</text>
+		<text name="CreateSaleReturn">Create Sale Return</text>
+		<text name="CreateSaleInvoice">Create Sale Invoice</text>
+		<text name="CreateCustomerDiposit">Create Customer Deposit</text>
+		<text name="CreateCreditNote">Create Credit Note</text>
+		<text name="ConvertToContract">Convert to Contract</text>
+
+		<text name="CreditSale">Credit Sale</text>
+		<text name="Split">Split</text>
+		<text name="Merge">Merge</text>
+		<text name="Refund">Refund</text>
+		<text name="PayBill">Pay Bill</text>
+		<text name="FromInventoryPurchaseReturn">From Inventory Purchase Return</text>
+		<text name="CreatePurchaseReturn">Create Purchase Return</text>
+		<text name="CreatePurchaseBill">Create Purchase Bill</text>
+		<text name="CreateSlaeInvoice">Create Slae Invoice</text>
+		<text name="CreateCustomerDeposit">Create Customer Deposit</text>
+		<text name="ProductionList">Production List</text>
+		<text name="LocationList">Location List</text>
+		<text name="Common">Common</text>
+		<text name="CreateFolder">Create Folder</text>
+		<text name="EditFolder">Edit Folder</text>
+		<text name="RenameFolder">Rename Folder</text>
+		<text name="DeleteFolder">Delete Folder</text>
+		<text name="ChangeFolder">Change Folder</text>
+		<text name="Folders">Folders</text>
+		<text name="Folder">Folder</text>
+		<text name="FileList">File List</text>
+		<text name="IssueTransfers">Issue Transfers</text>
+		<text name="IssueTransfer">Issue Transfer</text>
+		<text name="ReceiptTransfers">Receipt Tranfers</text>
+		<text name="ReceiptTransfer">Receipt Tranfer</text>
+		<text name="InventoryTransactions">Inventory Transactions</text>
+		<text name="IssueAdjustments">Issue Adjustments</text>
+		<text name="IssueAdjustment">Issue Adjustment</text>
+		<text name="ReceiptAdjustments">Receipt Adjustments</text>
+		<text name="ReceiptAdjustment">Receipt Adjustment</text>
+		<text name="ReceiptOthers">Receipt Others</text>
+		<text name="ReceiptOther">Receipt Other</text>
+		<text name="IssueOthers">Issue Others</text>
+		<text name="IssueOther">Issue Other</text>
+		<text name="IsRequired">{0} is required</text>
+		<text name="Select">Select</text>
+		<text name="Select_">Select {0}</text>
+		<text name="DisableWarningMessage">Are you sure to disable {0}</text>
+		<text name="EnableWarningMessage">Are you sure to enable {0}</text>
+		<text name="ActivateWarningMessage">Are you sure to activate {0}</text>
+		<text name="DeactivateWarningMessage">Are you sure to deactivate {0}</text>
+		<text name="DefaultWarningMessage">Are you sure to set {0} as default</text>
+		<text name="Default">Default</text>
+		<text name="Symbol">Symbol</text>
+		<text name="Activate">Activate</text>
+		<text name="Deactivate">Deactivate</text>
+		<text name="CannotBeGreaterThan">{0} cannot be greater than {1}</text>
+		<text name="CannotBeLessThan">{0} cannot be less than {1}</text>
+		<text name="CannotBeMoreThan">{0} cannot be more than {1}</text>
+		<text name="CannotBeSmallerThan">{0} cannot be smaller than {1}</text>
+		<text name="CannotBeEqualTo">{0} cannot be equal to {1}</text>
+		<text name="MustBeGreaterThan">{0} must be greater than {1}</text>
+		<text name="MustBeLessThan">{0} must be less than {1}</text>
+		<text name="MustBeMoreThan">{0} must be more than {1}</text>
+		<text name="MustBeSmallerThan">{0} must be smaller than {1}</text>
+		<text name="MustBeEqualTo">{0} must be equal to {1}</text>
+		<text name="CanNotBeEmpty">{0} cannot be empty</text>
+		<text name="Characters">Characters</text>
+		<text name="Characters_">{0} characters</text>
+		<text name="UseEmail">Use Email</text>	
+		<text name="Find">Find</text>	
+		<text name="FindUsers">Find Users</text>	
+		<text name="FindEditions">Find Editions</text>	
+		<text name="FindLocations">Find Locations</text>	
+		
+		<text name="Duplicate">Duplicate {0}</text>	
+		<text name="LocationCode">Location Code</text>	
+		<text name="CannotBeEmpty">{0} cannot be empty</text>	
+		<text name="IsNotValid">{0} is not valid</text>	
+		<text name="Invalid">Invalid {0}</text>	
+		<text name="OutOfRange">{0} is out of range</text>	
+		<text name="IsNotEditable">This {0} is not editable</text>	
+		<text name="IsNotDeletable">This {0} is not editable</text>	
+		<text name="View_">View {0}</text>	
+		<text name="Create_">Create {0}</text>	
+		<text name="Update_">Update {0}</text>	
+		<text name="Edit_">Edit {0}</text>	
+		<text name="Add_">Add {0}</text>		
+		<text name="PleaseEnterDeleteToConfirm">Please enter "Delete" to confirm</text>		
+		<text name="ConfirmDelete">Confirm Delete</text>		
+		<text name="SaveNew">Save New</text>		
+		<text name="No.">No</text>
+		<text name="Code">Code</text>
+		<text name="Code_">Code {0}</text>
+		<text name="CreationTime">Creation Time</text>
+		<text name="LastModificationTime">Modification Time</text>
+		<text name="CreatedBy">Created By</text>
+		<text name="LastModifiedBy">Modified By</text>
+		<text name="Editable">Editable</text>
+		<text name="Deletable">Deletable</text>
+		<text name="Latitude">Latitude</text>
+		<text name="Longitude">Longitude</text>
+		<text name="Id">ID</text>
+		<text name="UserInfo">User Info</text>
+		<text name="Created">Created</text>
+		<text name="Modified">Modified</text>
+		<text name="Name_">{0} Name</text>
+		<text name="CannotEdit">Cannot Edit</text>
+		<text name="CannotDelete">Cannot Delete</text>
+		<text name="DownloadTemplate">Download Template</text>
+		<text name="SelectTemplate">Select Template</text>
+		<text name="True">True</text>
+		<text name="False">False</text>
+		<text name="NoImportTemplateTemplateMessage">If you don't have template, please click button "Download Template" bellow.</text>
+		<text name="PleaseSelect_">Please select {0}</text>
+		<text name="PleaseEnter_">Please enter {0}</text>
+		<text name="Exclude">Exclude</text>
+		<text name="FindCurrencies">Find Currencies</text>
+		<text name="UISettings">UI Settings</text>
+		
+		<text name="FindCountries">Find Countries</text>
+		<text name="CityProvince">City/Province</text>
+		<text name="FindCityProvinces">Find Cities/Provinces</text>
+		<text name="KhanDistrict">Khan/District</text>
+		<text name="FindKhanDistricts">Find Khans/Districts</text>
+		<text name="SangkatCommune">Sangkat/Commune</text>
+		<text name="FindSangkatCommunes">Find Sangkats/Communes</text>
+		<text name="Village">Village</text>
+		<text name="FindVillages">Find Villages</text>
+		<text name="PhonePrefix">Phone Prefix</text>
+		<text name="GeoCode">Geo Code</text>
+		<text name="Error">Error</text>
+		<text name="ISO">ISO</text>
+		<text name="ISO2">ISO2</text>
+		<text name="ISO3">ISO3</text>
+		<text name="TenantManagement">Tenant Management</text>
+		<text name="UserManagement">User Management</text>
+		<text name="Security">Security</text>
+		<text name="General">General</text>
+		<text name="Billing">Billing</text>
+		<text name="Timezone">Timezone</text>
+		<text name="AllowSelfRegistration">អនុញ្ញាតចុះឈ្មោះខ្លួនឯង</text>
+		<text name="IfYouDisableThisTenantsWillOnlyBeAddedByAdminUsingTenantManagementPage">If you disable this tenants will only be added by admin using tenant management page</text>
+		<text name="IsNewRegisteredTenantActiveByDefault">Is new registered tenant active by default</text>
+		<text name="IfYouDisableThisNewTenantsWillNotBeActiveAndCanNotLoginUntilAdminManuallyActivateTheAccount">If you disable this new tenants will not be active and can not login until admin manually activate the account</text>
+		<text name="UseCaptchaOnRegistration">Use captcha on registration</text>
+		<text name="IsEmailConfirmationRequiredForLogin">Is email confirmation required for Login</text>
+		<text name="SMSVerificationEnabled">SMS verification enabled</text>
+		<text name="PasswodComplexitySettings">Passwod complexity settings</text>
+		<text name="UseDefaultPasswordComplexitySettings">Use default password complexity settings</text>
+		<text name="RequireDigit">Require Digit</text>
+		<text name="RequireLowercase">Require Lowercase</text>
+		<text name="RequireUppercase">Require Uppercase</text>
+		<text name="RequireNonAlphanumeric">Require Non Alphanumeric (!@#$*...)</text>
+		<text name="TwoFactorLogin">Two Factor Login</text>
+		<text name="EnableTwoFactorLogin">Enable Two Factor Login</text>
+		<text name="EnabledForApplication">Enabled For Application</text>
+		<text name="EmailProviderEnabled">Email Provider Enabled</text>
+		<text name="SmsProviderEnabled">Sms Provider Enabled</text>
+		<text name="GoogleAuthenticatorEnabled">Google Authenticator Enabled</text>
+		<text name="RememberBrowserEnabled">Remember Browser Enabled</text>
+		<text name="IfYouAllowsThisUsersCanSelectToRememberBrowserToSkipSecondTimeTwoFactorLoginForTheSameBrowser">If you allows this users can select to remember browser to skip second time Two Factor Login for the same browser</text>
+		<text name="UserLockOut">User Lock Out</text>
+		<text name="EnableUserLockOut">Enable User Lock Out</text>
+		<text name="MaxFailedAccessAttemptsBeforeLockout">Max failed access attempts before Lockout </text>
+		<text name="DefaultAccountLockoutSeconds">Default account Lockout seconds</text>
+		<text name="DefaultFromDisplayName">Default From Display Name</text>
+		<text name="DefaultFromAddress">Default From Address</text>
+		<text name="Host">Host</text>
+		<text name="Port">Port</text>
+		<text name="SSLEnable">SSL Enable</text>
+		<text name="LegalName">Legal Name</text>
+		<text name="Address">Address</text>
+		<text name="ContactAddress">Contact Address</text>
+		<text name="AlreadyHasMembers">{0} already has members</text>
+		<text name="BusinessId">Business Id</text>
+		<text name="PhoneNumber">Phone Number</text>
+		<text name="Email">Email</text>
+		<text name="Website">Website</text>
+		<text name="TaxRegistrationNumber">Tax Registration Number</text>
+		<text name="TaxNumber">Tax Number</text>
+		<text name="PostalCode">Postal Code</text>
+		<text name="Street">Street</text>
+		<text name="HouseNo">House No</text>
+		<text name="IncorrectCaptchaAnswer">Incorrect Captcha Answer</text>
+		
+	</texts>
+</localizationDictionary>
