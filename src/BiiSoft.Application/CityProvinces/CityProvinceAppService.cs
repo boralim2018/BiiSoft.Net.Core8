@@ -365,7 +365,7 @@ namespace BiiSoft.CityProvinces
                     new ColumnOutput{ ColumnTitle = L("Name_",L("CityProvince")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("ISO"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Country"), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("CountryISO"), Width = 150, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Latitude"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("Longitude"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },

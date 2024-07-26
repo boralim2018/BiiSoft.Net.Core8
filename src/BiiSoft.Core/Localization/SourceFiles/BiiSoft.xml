@@ -642,6 +642,8 @@
 		<text name="Street">Street</text>
 		<text name="HouseNo">House No</text>
 		<text name="IncorrectCaptchaAnswer">Incorrect Captcha Answer</text>
+		<text name="CountryISO">Country ISO</text>
+		<text name="ProvinceISO">Province ISO</text>
 		
 	</texts>
 </localizationDictionary>

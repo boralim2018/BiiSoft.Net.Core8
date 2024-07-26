@@ -642,6 +642,8 @@
 		<text name="Street">លេខផ្លូវ</text>
 		<text name="HouseNo">លេខផ្ទះ</text>
 		<text name="IncorrectCaptchaAnswer">Captcha មិនត្រឹមត្រូវ</text>
+		<text name="CountryISO">ប្រទេស ISO</text>
+		<text name="ProvinceISO">ខេត្ត ISO</text>
 		
 	</texts>
 </localizationDictionary>

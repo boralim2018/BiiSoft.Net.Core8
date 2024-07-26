@@ -12,8 +12,11 @@ namespace BiiSoft.Editions
     {
         public const string DefaultEditionName = DiamondEditionName;
         public const string StandardEditionName = "Standard";
+        public const string StandardEditionDisplayName = "ស្តង់ដា";
         public const string GoldEditionName = "Gold";
+        public const string GoldEditionDisplayName = "មាស";
         public const string DiamondEditionName = "Diamond";
+        public const string DiamondEditionDisplayName = "ពេជ្រ";
 
         public EditionManager(
             IRepository<Edition> editionRepository,

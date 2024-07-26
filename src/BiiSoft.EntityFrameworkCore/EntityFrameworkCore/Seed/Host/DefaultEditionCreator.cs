@@ -24,7 +24,7 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
         private void CreateEditions()
         {
             #region Standard Edition
-            var defaultEdition = CreateEditionIfNotExists(EditionManager.StandardEditionName);
+            var defaultEdition = CreateEditionIfNotExists(EditionManager.StandardEditionName, EditionManager.StandardEditionDisplayName);
             /* Add desired features to the standard edition, if wanted... */
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.MaxBranchCount, 1);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.MaxWarehouseCount, 1);
@@ -127,7 +127,7 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             #endregion
 
             #region Gold Edition
-            var goldEdition = CreateEditionIfNotExists(EditionManager.GoldEditionName);
+            var goldEdition = CreateEditionIfNotExists(EditionManager.GoldEditionName, EditionManager.GoldEditionDisplayName);
 
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.MaxWarehouseCount, 2);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.MaxWarehouseCount, 4);
@@ -245,7 +245,7 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             #endregion
 
             #region Diamond Edition
-            var diamondEdition = CreateEditionIfNotExists(EditionManager.DiamondEditionName);
+            var diamondEdition = CreateEditionIfNotExists(EditionManager.DiamondEditionName, EditionManager.DiamondEditionDisplayName);
 
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.MaxBranchCount, 0);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.MaxWarehouseCount, 0);
