@@ -11,13 +11,13 @@ using BiiSoft.Branches;
 using BiiSoft.BFiles;
 using BiiSoft.Locations;
 using BiiSoft.Currencies;
+using Abp.Application.Editions;
 
 namespace BiiSoft.EntityFrameworkCore
 {
     public class BiiSoftDbContext : AbpZeroDbContext<Tenant, Role, User, BiiSoftDbContext>
     {
         /* Define a DbSet for each entity of the application */
-        public DbSet<SubscribableEdition> SubscribableEditions { get; set; }
 
         public DbSet<BFile> BFiles { get; set; }
 
@@ -55,11 +55,6 @@ namespace BiiSoft.EntityFrameworkCore
                         .Property(p => p.Value)
                         .HasMaxLength(100); // any integer that is smaller than 10485760
 
-            modelBuilder.Entity<SubscribableEdition>(e =>
-            {
-                e.HasIndex(i => i.Name).IsUnique(true);
-                e.HasIndex(i => i.DisplayName);
-            });
 
             modelBuilder.Entity<BFile>(e =>
             {

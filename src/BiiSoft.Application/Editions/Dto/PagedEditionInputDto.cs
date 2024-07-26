@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BiiSoft.Editions.Dto
 {
-    public class PagedEditionInputDto : PagedActiveSortFilterInputDto
+    public class PagedEditionInputDto : PagedSortFilterInputDto
     {
 
     }

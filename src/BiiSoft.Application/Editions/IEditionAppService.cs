@@ -19,6 +19,6 @@ namespace BiiSoft.Editions
 
         Task<ListResultDto<FlatFeatureDto>> GetFeatures();
 
-        Task<List<SubscribableEditionComboboxItemDto>> GetEditionComboboxItems(int? selectedEditionId = null, bool addAllItem = false, bool onlyFree = false);
+        Task<List<ComboboxItemDto>> GetEditionComboboxItems(int? selectedEditionId = null, bool addAllItem = false);
     }
 }

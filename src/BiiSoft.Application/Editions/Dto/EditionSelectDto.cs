@@ -11,18 +11,6 @@ namespace BiiSoft.Editions.Dto
 
         public virtual string DisplayName { get; set; }
 
-        public int? ExpiringEditionId { get; set; }
-
-        public decimal? MonthlyPrice { get; set; }
-
-        public decimal? AnnualPrice { get; set; }
-
-        public int? TrialDayCount { get; set; }
-
-        public int? WaitingDayAfterExpire { get; set; }
-
-        public bool IsFree { get; set; }
-
         public Dictionary<SubscriptionPaymentGatewayType, Dictionary<string, string>> AdditionalData { get; set; }
 
         public EditionSelectDto()

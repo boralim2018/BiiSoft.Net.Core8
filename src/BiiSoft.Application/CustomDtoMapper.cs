@@ -45,16 +45,9 @@ namespace BiiSoft
             configuration.CreateMap<UserRole, UserListRoleDto>();
 
             //Edition
-            configuration.CreateMap<EditionEditDto, SubscribableEdition>().ReverseMap();
-            configuration.CreateMap<EditionSelectDto, SubscribableEdition>().ReverseMap();
-            configuration.CreateMap<SubscribableEdition, EditionInfoDto>();
-
-            configuration.CreateMap<Edition, EditionInfoDto>().Include<SubscribableEdition, EditionInfoDto>();
-
+            configuration.CreateMap<EditionEditDto, Edition>().ReverseMap();
             configuration.CreateMap<Edition, EditionListDto>();
             configuration.CreateMap<Edition, EditionEditDto>();
-            configuration.CreateMap<Edition, SubscribableEdition>();
-            configuration.CreateMap<Edition, EditionSelectDto>();
 
 
             ////Payment

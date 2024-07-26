@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Abp.Application.Features;
 using BiiSoft.Editions;
 using BiiSoft.Features;
+using Abp.Application.Editions;
 
 namespace BiiSoft.EntityFrameworkCore.Seed.Host
 {
@@ -137,7 +138,6 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
 
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Administration, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Administration_Roles, true);
-            //CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Administration_Users_Groups, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Administration_Users, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Administration_AuditLogs, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Administration_OrganizationUnits, true);
@@ -256,7 +256,6 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
 
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Administration, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Administration_Roles, true);
-            //CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Administration_Users_Groups, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Administration_Users, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Administration_AuditLogs, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Administration_OrganizationUnits, true);
@@ -427,12 +426,12 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             _context.SaveChanges();
         }
 
-        private SubscribableEdition CreateEditionIfNotExists(string name, string displayName = "")
+        private Edition CreateEditionIfNotExists(string name, string displayName = "")
         {
-            var edition = _context.SubscribableEditions.IgnoreQueryFilters().FirstOrDefault(e => e.Name == name);
+            var edition = _context.Editions.IgnoreQueryFilters().FirstOrDefault(e => e.Name == name);
             if (edition == null)
             {
-                edition = new SubscribableEdition { Name = name, DisplayName = displayName == "" ? name : displayName, IsActive = true };
+                edition = new Edition { Name = name, DisplayName = displayName == "" ? name : displayName };
                 _context.Editions.Add(edition);
                 _context.SaveChanges();
             }

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     /// <inheritdoc />
-    public partial class BiiSoftZero : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,13 +86,6 @@ namespace BiiSoft.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
-                    ExpiringEditionId = table.Column<int>(type: "integer", nullable: true),
-                    MonthlyPrice = table.Column<decimal>(type: "numeric", nullable: true),
-                    AnnualPrice = table.Column<decimal>(type: "numeric", nullable: true),
-                    TrialDayCount = table.Column<int>(type: "integer", nullable: true),
-                    WaitingDayAfterExpire = table.Column<int>(type: "integer", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -461,31 +454,6 @@ namespace BiiSoft.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AbpWebhookSubscriptions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BiiFiles",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    StorageFolder = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
-                    FilePath = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    FileType = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    FileExtension = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
-                    FileStorage = table.Column<int>(type: "integer", nullable: false),
-                    UploadSource = table.Column<int>(type: "integer", nullable: false),
-                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
-                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
-                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BiiFiles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -959,17 +927,6 @@ namespace BiiSoft.Migrations
                 column: "DynamicPropertyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AbpEditions_DisplayName",
-                table: "AbpEditions",
-                column: "DisplayName");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AbpEditions_Name",
-                table: "AbpEditions",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AbpEntityChanges_EntityChangeSetId",
                 table: "AbpEntityChanges",
                 column: "EntityChangeSetId");
@@ -1270,22 +1227,6 @@ namespace BiiSoft.Migrations
                 name: "IX_AbpWebhookSendAttempts_WebhookEventId",
                 table: "AbpWebhookSendAttempts",
                 column: "WebhookEventId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiFiles_DisplayName_TenantId",
-                table: "BiiFiles",
-                columns: new[] { "DisplayName", "TenantId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiFiles_FilePath_TenantId",
-                table: "BiiFiles",
-                columns: new[] { "FilePath", "TenantId" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiFiles_Name_TenantId",
-                table: "BiiFiles",
-                columns: new[] { "Name", "TenantId" });
         }
 
         /// <inheritdoc />
@@ -1371,9 +1312,6 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpWebhookSubscriptions");
-
-            migrationBuilder.DropTable(
-                name: "BiiFiles");
 
             migrationBuilder.DropTable(
                 name: "AbpDynamicEntityProperties");

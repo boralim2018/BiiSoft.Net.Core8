@@ -42,11 +42,6 @@ namespace BiiSoft.Migrations
                     b.Property<DateTime?>("DeletionTime")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("character varying(21)");
-
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -69,10 +64,6 @@ namespace BiiSoft.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AbpEditions");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Edition");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Abp.Application.Features.FeatureSetting", b =>
@@ -2499,38 +2490,6 @@ namespace BiiSoft.Migrations
                     b.HasIndex("TenancyName");
 
                     b.ToTable("AbpTenants");
-                });
-
-            modelBuilder.Entity("BiiSoft.Editions.SubscribableEdition", b =>
-                {
-                    b.HasBaseType("Abp.Application.Editions.Edition");
-
-                    b.Property<decimal?>("AnnualPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<int?>("ExpiringEditionId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<decimal?>("MonthlyPrice")
-                        .HasColumnType("numeric");
-
-                    b.Property<int?>("TrialDayCount")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("WaitingDayAfterExpire")
-                        .HasColumnType("integer");
-
-                    b.HasIndex("DisplayName");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("AbpEditions");
-
-                    b.HasDiscriminator().HasValue("SubscribableEdition");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>

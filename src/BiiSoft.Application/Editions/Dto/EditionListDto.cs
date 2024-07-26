@@ -8,6 +8,5 @@ namespace BiiSoft.Editions.Dto
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }
-        public bool IsActive { get; set; }
     }
 }
