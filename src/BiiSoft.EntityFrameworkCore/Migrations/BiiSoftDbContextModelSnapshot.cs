@@ -1716,6 +1716,9 @@ namespace BiiSoft.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("BillingAddressId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("BusinessId")
                         .IsRequired()
                         .HasMaxLength(32)
@@ -1769,6 +1772,12 @@ namespace BiiSoft.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
+                    b.Property<bool>("SameAsBillingAddress")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("ShippingAddressId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("TaxRegistrationNumber")
                         .HasColumnType("text");
 
@@ -1781,7 +1790,11 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BillingAddressId");
+
                     b.HasIndex("No");
+
+                    b.HasIndex("ShippingAddressId");
 
                     b.HasIndex("TenantId", "DisplayName");
 
@@ -1791,16 +1804,10 @@ namespace BiiSoft.Migrations
                     b.ToTable("BiiBranches");
                 });
 
-            modelBuilder.Entity("BiiSoft.Branches.BranchContactAddress", b =>
+            modelBuilder.Entity("BiiSoft.ContactInfo.ContactAddress", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("AddressType")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("BranchId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("CityProvinceId")
@@ -1817,9 +1824,6 @@ namespace BiiSoft.Migrations
 
                     b.Property<string>("HouseNo")
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("boolean");
 
                     b.Property<Guid?>("KhanDistrictId")
                         .HasColumnType("uuid");
@@ -1850,8 +1854,6 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchId");
-
                     b.HasIndex("CityProvinceId");
 
                     b.HasIndex("CountryId");
@@ -1864,9 +1866,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("VillageId");
 
-                    b.HasIndex("AddressType", "IsDefault");
-
-                    b.ToTable("BiiBranchContactAddresses");
+                    b.ToTable("ContactAddresses");
                 });
 
             modelBuilder.Entity("BiiSoft.Currencies.Currency", b =>
@@ -2729,14 +2729,27 @@ namespace BiiSoft.Migrations
                     b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("BiiSoft.Branches.BranchContactAddress", b =>
+            modelBuilder.Entity("BiiSoft.Branches.Branch", b =>
                 {
-                    b.HasOne("BiiSoft.Branches.Branch", "Branch")
+                    b.HasOne("BiiSoft.ContactInfo.ContactAddress", "BillingAddress")
                         .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("BillingAddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BiiSoft.ContactInfo.ContactAddress", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BillingAddress");
+
+                    b.Navigation("ShippingAddress");
+                });
+
+            modelBuilder.Entity("BiiSoft.ContactInfo.ContactAddress", b =>
+                {
                     b.HasOne("BiiSoft.Locations.CityProvince", "CityProvince")
                         .WithMany()
                         .HasForeignKey("CityProvinceId")
@@ -2766,8 +2779,6 @@ namespace BiiSoft.Migrations
                         .WithMany()
                         .HasForeignKey("VillageId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Branch");
 
                     b.Navigation("CityProvince");
 

@@ -11,8 +11,7 @@ using Abp.Timing;
 
 namespace BiiSoft.ContactInfo
 {
-    public abstract class ContactAddressBaseManager<TEntity, TPrimaryKey> : BiiSoftValidateServiceBase<TEntity, TPrimaryKey>, IContactAddressBaseManager<TEntity, TPrimaryKey> 
-        where TEntity : ContactAddressBase<TPrimaryKey>
+    public class ContactAddressManager : BiiSoftValidateServiceBase<ContactAddress, Guid>, IContactAddressManager
     {
 
         protected readonly IBiiSoftRepository<Country, Guid> _countryRepository;
@@ -21,14 +20,15 @@ namespace BiiSoft.ContactInfo
         protected readonly IBiiSoftRepository<SangkatCommune, Guid> _sangkatCommuneRepository;
         protected readonly IBiiSoftRepository<Village, Guid> _villageRepository;
         protected readonly IBiiSoftRepository<Location, Guid> _locationRepository;
-        public ContactAddressBaseManager(
+
+        public ContactAddressManager(
             IBiiSoftRepository<Country, Guid> countryRepository,
             IBiiSoftRepository<CityProvince, Guid> cityProvinceRepository,
             IBiiSoftRepository<KhanDistrict, Guid> khanDistrictRepository,
             IBiiSoftRepository<SangkatCommune, Guid> sangkatCommuneRepository,
             IBiiSoftRepository<Village, Guid> villageRepository,
             IBiiSoftRepository<Location, Guid> locationRepository,
-            IBiiSoftRepository<TEntity, TPrimaryKey> repository) : base(repository)
+            IBiiSoftRepository<ContactAddress, Guid> repository) : base(repository)
         {
             _countryRepository = countryRepository;
             _cityProvinceRepository = cityProvinceRepository;
@@ -38,13 +38,22 @@ namespace BiiSoft.ContactInfo
             _locationRepository = locationRepository;
         }
 
-        protected virtual void ValidateInput(TEntity input)
+        protected override string InstanceName => L("ContactAddress");
+
+        protected override ContactAddress CreateInstance(int? tenantId, long userId, ContactAddress input)
         {
-            ValidateSelect(input.CountryId, L("Country"));
+            return ContactAddress.Create(tenantId.Value, userId, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId, input.VillageId, input.LocationId, input.PostalCode, input.Street, input.HouseNo);
         }
 
-        protected override async Task ValidateInputAsync(TEntity input)
+        protected override void UpdateInstance(long userId, ContactAddress input, ContactAddress entity)
         {
+            entity.Update(userId, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId, input.VillageId, input.LocationId, input.PostalCode, input.Street, input.HouseNo);
+        }
+
+        protected override async Task ValidateInputAsync(ContactAddress input)
+        {
+            ValidateSelect(input.CountryId, L("Country"));
+
             var findCountry = await _countryRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CountryId);
             if (!findCountry) InvalidException(L("Country"));
 
@@ -79,13 +88,13 @@ namespace BiiSoft.ContactInfo
             }
         }
 
-        protected virtual void BulkValidate(List<TEntity> input)
+        protected virtual void BulkValidate(List<ContactAddress> input)
         {
             var find = input.Any(s => s.CountryId.IsNullOrEmpty());
             if (find) SelectException(L("Country"));
         }
 
-        public async virtual Task BulkValidateAsync(List<TEntity> input)
+        public async virtual Task BulkValidateAsync(List<ContactAddress> input)
         {
             BulkValidate(input);
 
@@ -130,7 +139,7 @@ namespace BiiSoft.ContactInfo
 
         }
 
-        public async Task<IdentityResult> BulkInsertAsync(int? tenantId, long userId, List<TEntity> input)
+        public async Task<IdentityResult> BulkInsertAsync(int? tenantId, long userId, List<ContactAddress> input)
         {
             await BulkValidateAsync(input);
 
@@ -144,15 +153,17 @@ namespace BiiSoft.ContactInfo
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> BulkUpdateAsync(long userId, List<TEntity> input)
+        public async Task<IdentityResult> BulkUpdateAsync(long userId, List<ContactAddress> input)
         {
             await BulkValidateAsync(input);
 
             var entities = await _repository.GetAll().AsNoTracking().Where(s => input.Any(r => r.Id.Equals(s.Id))).ToDictionaryAsync(k => k.Id, v => v);
 
+            if (entities.Count != input.Count) NotFoundException(InstanceName);
+
             foreach (var i in input)
             {
-                if (!entities.ContainsKey(i.Id)) NotFoundException();
+                if (!entities.ContainsKey(i.Id)) NotFoundException(InstanceName);
                 UpdateInstance(userId, i, entities[i.Id]);
             }
 
@@ -160,16 +171,18 @@ namespace BiiSoft.ContactInfo
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> BulkDeleteAsync(List<TPrimaryKey> input)
+        public async Task<IdentityResult> BulkDeleteAsync(List<Guid> input)
         {
             var entities = await _repository.GetAll().AsNoTracking().Where(s => input.Contains(s.Id)).ToListAsync();
+
+            if(entities.Count != input.Count) NotFoundException(InstanceName);
                        
             if(entities.Any()) await _repository.BulkDeleteAsync(entities);
 
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> ChangeLocationAsync(long userId, Guid? locationId, TPrimaryKey id)
+        public async Task<IdentityResult> ChangeLocationAsync(long userId, Guid? locationId, Guid id)
         {
             ValidateSelect(locationId, L("Location"));
 
@@ -177,7 +190,7 @@ namespace BiiSoft.ContactInfo
             if (!find) InvalidException(L("Location"));
 
             var entity = await GetAsync(id, false);
-            ValidateFind(entity);
+            if (entity == null) NotFoundException(InstanceName);
 
             entity.SetLocation(locationId);
             entity.LastModifierUserId = userId;

@@ -1251,15 +1251,7 @@
         #region Pages Administrations
         public const string Pages_Administrations = "Pages.Administrations";
 
-        //public const string Pages_Administrations_Groups = "Pages.Administrations.Groups";
-        //public const string Pages_Administrations_Groups_Create = "Pages.Administrations.Groups.Create";
-        //public const string Pages_Administrations_Groups_View = "Pages.Administrations.Groups.View";
-        //public const string Pages_Administrations_Groups_Edit = "Pages.Administrations.Groups.Edit";
-        //public const string Pages_Administrations_Groups_Delete = "Pages.Administrations.Groups.Delete";
-        //public const string Pages_Administrations_Groups_Enable = "Pages.Administrations.Groups.Enable";
-        //public const string Pages_Administrations_Groups_Disable = "Pages.Administrations.Groups.Disable";
-        //public const string Pages_Administrations_Groups_ChangeMember = "Pages.Administrations.Groups.ChangeMember";
-
+        
         public const string Pages_Administrations_Users = "Pages.Administrations.Users";
         public const string Pages_Administrations_Users_Create = "Pages.Administrations.Users.Create";
         public const string Pages_Administrations_Users_View = "Pages.Administrations.Users.View";

@@ -21,6 +21,8 @@ using BiiSoft.FileStorages;
 using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
+using BiiSoft.ContactInfo;
+using BiiSoft.ContactInfo.Dto;
 
 namespace BiiSoft.Branches
 {
@@ -29,7 +31,8 @@ namespace BiiSoft.Branches
     {
         private readonly IBranchManager _branchManager;
         private readonly IBiiSoftRepository<Branch, Guid> _branchRepository;
-        private readonly IBiiSoftRepository<BranchContactAddress, Guid> _branchContactAddressRepository;
+        private readonly IContactAddressManager _contactAddressManager;
+        private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IAppFolders _appFolders;
@@ -41,12 +44,14 @@ namespace BiiSoft.Branches
             IAppFolders appFolders,
             IBranchManager branchManager,
             IBiiSoftRepository<Branch, Guid> branchRepository,
-            IBiiSoftRepository<BranchContactAddress, Guid> branchContactAddressRepository,
+            IContactAddressManager contactAddressManager,
+            IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
             IBiiSoftRepository<User, long> userRepository)
         {
             _branchManager=branchManager;
             _branchRepository=branchRepository;
-            _branchContactAddressRepository=branchContactAddressRepository;
+            _contactAddressManager=contactAddressManager;
+            _contactAddressRepository=contactAddressRepository;
             _userRepository=userRepository;
             _fileStorageManager=fileStorageManager;
             _appFolders=appFolders;
@@ -55,36 +60,40 @@ namespace BiiSoft.Branches
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Create)]
         public async Task<Guid> Create(CreateUpdateBranchInputDto input)
-        {
-            var entity = ObjectMapper.Map<Branch>(input);
-            var contactAddresses = ObjectMapper.Map<List<BranchContactAddress>>(input.ContactAddresses);
-            
-            await _branchManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity, contactAddresses);
+        {           
+
+            var tenantId = AbpSession.TenantId;
+            var userId = AbpSession.UserId.Value;
+
+            var entity = ObjectMapper.Map<Branch>(input);           
+
+            CheckErrors(await _branchManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity));
+
             return entity.Id;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
-            await _branchManager.DeleteAsync(input.Id);
+            CheckErrors(await _branchManager.DeleteAsync(input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            await _branchManager.DisableAsync(AbpSession.UserId.Value, input.Id);
+            CheckErrors(await _branchManager.DisableAsync(AbpSession.UserId.Value, input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            await _branchManager.EnableAsync(AbpSession.UserId.Value, input.Id);
+            CheckErrors(await _branchManager.EnableAsync(AbpSession.UserId.Value, input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_SetAsDefault)]
         public async Task SetAsDefault(EntityDto<Guid> input)
         {
-            await _branchManager.SetAsDefaultAsync(AbpSession.UserId.Value, input.Id);
+            CheckErrors(await _branchManager.SetAsDefaultAsync(AbpSession.UserId.Value, input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Branches)]
@@ -128,6 +137,8 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_View, PermissionNames.Pages_Company_Branches_Edit)]
         public async Task<BranchDetailDto> GetDetail(EntityDto<Guid> input)
         {
+            var isDefaultLanguage = await IsDefaultLagnuageAsync();
+
             var query = from l in _branchRepository.GetAll()
                                 .AsNoTracking()
                                 .Where(s => s.Id == input.Id)
@@ -155,7 +166,48 @@ namespace BiiSoft.Branches
                             CreatorUserName = u.UserName,
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserId = l.LastModifierUserId,
-                            LastModifierUserName = m == null ? "" : m.UserName
+                            LastModifierUserName = m == null ? "" : m.UserName,
+
+                            BillingAddress = new ContactAddressDto
+                            {
+                                Id = l.BillingAddressId,
+                                CountryId = l.BillingAddress.CountryId,
+                                CityProvinceId = l.BillingAddress.CityProvinceId,
+                                KhanDistrictId = l.BillingAddress.KhanDistrictId,
+                                SangkatCommuneId = l.BillingAddress.SangkatCommuneId,
+                                VillageId = l.BillingAddress.VillageId,
+                                LocationId = l.BillingAddress.LocationId,
+                                CountryName = !l.BillingAddress.CountryId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.Country.Name : l.BillingAddress.Country.DisplayName,
+                                CityProvinceName = !l.BillingAddress.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.CityProvince.Name : l.BillingAddress.CityProvince.DisplayName,
+                                KhanDistrictName = !l.BillingAddress.KhanDistrictId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.KhanDistrict.Name : l.BillingAddress.KhanDistrict.DisplayName,
+                                SangkatCommuneName = !l.BillingAddress.SangkatCommuneId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.SangkatCommune.Name : l.BillingAddress.SangkatCommune.DisplayName,
+                                VillageName = !l.BillingAddress.VillageId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.Village.Name : l.BillingAddress.Village.DisplayName,
+                                LocationName = !l.BillingAddress.LocationId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.Location.Name : l.BillingAddress.Location.DisplayName,
+                                PostalCode = l.BillingAddress.PostalCode,
+                                Street = l.BillingAddress.Street,
+                                HouseNo = l.BillingAddress.HouseNo
+                            },
+                            SameAsBillingAddress = l.SameAsBillingAddress,
+                            ShippingAddress = new ContactAddressDto
+                            {
+                                Id = l.ShippingAddressId,
+                                CountryId = l.ShippingAddress.CountryId,
+                                CityProvinceId = l.ShippingAddress.CityProvinceId,
+                                KhanDistrictId = l.ShippingAddress.KhanDistrictId,
+                                SangkatCommuneId = l.ShippingAddress.SangkatCommuneId,
+                                VillageId = l.ShippingAddress.VillageId,
+                                LocationId = l.ShippingAddress.LocationId,
+                                CountryName = !l.ShippingAddress.CountryId.HasValue ? "" : isDefaultLanguage ? l.ShippingAddress.Country.Name : l.ShippingAddress.Country.DisplayName,
+                                CityProvinceName = !l.ShippingAddress.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.ShippingAddress.CityProvince.Name : l.ShippingAddress.CityProvince.DisplayName,
+                                KhanDistrictName = !l.ShippingAddress.KhanDistrictId.HasValue ? "" : isDefaultLanguage ? l.ShippingAddress.KhanDistrict.Name : l.ShippingAddress.KhanDistrict.DisplayName,
+                                SangkatCommuneName = !l.ShippingAddress.SangkatCommuneId.HasValue ? "" : isDefaultLanguage ? l.ShippingAddress.SangkatCommune.Name : l.ShippingAddress.SangkatCommune.DisplayName,
+                                VillageName = !l.ShippingAddress.VillageId.HasValue ? "" : isDefaultLanguage ? l.ShippingAddress.Village.Name : l.ShippingAddress.Village.DisplayName,
+                                LocationName = !l.ShippingAddress.LocationId.HasValue ? "" : isDefaultLanguage ? l.ShippingAddress.Location.Name : l.ShippingAddress.Location.DisplayName,
+                                PostalCode = l.ShippingAddress.PostalCode,
+                                Street = l.ShippingAddress.Street,
+                                HouseNo = l.ShippingAddress.HouseNo
+                            }
+
                         };
 
             var result = await query.FirstOrDefaultAsync();
@@ -179,32 +231,6 @@ namespace BiiSoft.Branches
             if (record.Next != null) result.NextId = record.Next.Id;
             if (record.Last != null) result.LastId = record.Last.Id;
 
-            var isDefaultLanguage = await IsDefaultLagnuageAsync();
-
-            var addresses = await _branchContactAddressRepository.GetAll().AsNoTracking().Where(s => s.BranchId == input.Id).Select(s => 
-            new BranchContactAddressDto
-            {
-                Id = s.Id,                
-                CountryId = s.CountryId,
-                CityProvinceId = s.CityProvinceId,
-                KhanDistrictId = s.KhanDistrictId,
-                SangkatCommuneId = s.SangkatCommuneId,
-                VillageId = s.VillageId,
-                LocationId = s.LocationId,
-                CountryName = !s.CountryId.HasValue ? "" : isDefaultLanguage ? s.Country.Name : s.Country.DisplayName,
-                CityProvinceName = !s.CityProvinceId.HasValue ? "" : isDefaultLanguage ? s.CityProvince.Name : s.CityProvince.DisplayName,
-                KhanDistrictName = !s.KhanDistrictId.HasValue ? "" : isDefaultLanguage ? s.KhanDistrict.Name : s.KhanDistrict.DisplayName,
-                SangkatCommuneName = !s.SangkatCommuneId.HasValue ? "" : isDefaultLanguage ? s.SangkatCommune.Name : s.SangkatCommune.DisplayName,
-                VillageName = !s.VillageId.HasValue ? "" : isDefaultLanguage ? s.Village.Name : s.Village.DisplayName,
-                LocationName = !s.LocationId.HasValue ? "" : isDefaultLanguage ? s.Location.Name : s.Location.DisplayName,
-                PostalCode = s.PostalCode,
-                Street = s.Street,
-                HouseNo = s.HouseNo,
-                IsDefault = s.IsDefault
-            })
-           .ToListAsync();
-
-            result.ContactAddresses = addresses;
 
             return result;
         }
@@ -232,8 +258,6 @@ namespace BiiSoft.Branches
                                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
                                     s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                                     s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        join a in _branchContactAddressRepository.GetAll().AsNoTracking().Where(s => s.IsDefault)
-                        on l.Id equals a.BranchId
                         join u in _userRepository.GetAll().AsNoTracking()
                         on l.CreatorUserId equals u.Id
                         join m in _userRepository.GetAll().AsNoTracking()
@@ -259,14 +283,14 @@ namespace BiiSoft.Branches
                             LastModifierUserId = u.LastModifierUserId,
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserName = m == null ? "" : m.UserName,
-                            CountryName = !a.CountryId.HasValue ? "" : isDefaultLanguage ? a.Country.Name : a.Country.DisplayName,
-                            CityProvinceName = !a.CityProvinceId.HasValue ? "" : isDefaultLanguage ? a.CityProvince.Name : a.CityProvince.DisplayName,
-                            KhanDistrictName = !a.KhanDistrictId.HasValue ? "" : isDefaultLanguage ? a.KhanDistrict.Name : a.KhanDistrict.DisplayName,
-                            SangkatCommuneName = !a.SangkatCommuneId.HasValue ? "" : isDefaultLanguage ? a.SangkatCommune.Name : a.SangkatCommune.DisplayName,
-                            VillageName = !a.VillageId.HasValue ? "" : isDefaultLanguage ? a.Village.Name : a.Village.DisplayName,
-                            PostalCode = a.PostalCode,
-                            Street = a.Street,
-                            HouseNo = a.HouseNo
+                            CountryName = !l.BillingAddress.CountryId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.Country.Name : l.BillingAddress.Country.DisplayName,
+                            CityProvinceName = !l.BillingAddress.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.CityProvince.Name : l.BillingAddress.CityProvince.DisplayName,
+                            KhanDistrictName = !l.BillingAddress.KhanDistrictId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.KhanDistrict.Name : l.BillingAddress.KhanDistrict.DisplayName,
+                            SangkatCommuneName = !l.BillingAddress.SangkatCommuneId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.SangkatCommune.Name : l.BillingAddress.SangkatCommune.DisplayName,
+                            VillageName = !l.BillingAddress.VillageId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.Village.Name : l.BillingAddress.Village.DisplayName,
+                            PostalCode = l.BillingAddress.PostalCode,
+                            Street = l.BillingAddress.Street,
+                            HouseNo = l.BillingAddress.HouseNo
                         };
 
             var totalCount = await query.CountAsync();
@@ -403,11 +427,21 @@ namespace BiiSoft.Branches
                     new ColumnOutput{ ColumnTitle = L("KhanDistrict"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("SangkatCommune"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("Village"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Location"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("PostalCode"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("Street"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("HouseNo"), Width = 150 },
-                    
+
+                    new ColumnOutput{ ColumnTitle = L("SameAsBillingAddress"), Width = 150 },
+
+                    new ColumnOutput{ ColumnTitle = L("Country") + 2, Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("CityProvince") + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("KhanDistrict") + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("SangkatCommune") + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Village") + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("PostalCode") + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Street") + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("HouseNo") + 2, Width = 150 },
+
                     new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
@@ -429,16 +463,18 @@ namespace BiiSoft.Branches
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            await _branchManager.ImportAsync(AbpSession.TenantId, AbpSession.UserId.Value, input.Token);
+            CheckErrors(await _branchManager.ImportAsync(AbpSession.TenantId, AbpSession.UserId.Value, input.Token));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Edit)]
         public async Task Update(CreateUpdateBranchInputDto input)
         {
-            var entity = ObjectMapper.Map<Branch>(input);
-            var contactAddresses = ObjectMapper.Map<List<BranchContactAddress>>(input.ContactAddresses);
+            var userId = AbpSession.UserId.Value;
 
-            await _branchManager.UpdateAsync(AbpSession.UserId.Value, entity, contactAddresses);
+            var entity = ObjectMapper.Map<Branch>(input);
+
+            CheckErrors(await _branchManager.UpdateAsync(AbpSession.UserId.Value, entity));          
         }
+
     }
 }

@@ -43,7 +43,6 @@ namespace BiiSoft.Features
                 ValueTextNormalizer = value => value == "0" ? L("Unlimited") : new FixedLocalizableString(value),
                 IsVisibleOnPricingTable = true
             };
-            //userFeature.CreateChildFeature(AppFeatures.Administration_Users_Groups, defaultValue: "false", displayName: L("Groups"), inputType: new CheckboxInputType());
             administrationFeature.CreateChildFeature(AppFeatures.Administration_AuditLogs, defaultValue: "false", displayName: L("AuditLogs"), inputType: new CheckboxInputType());
             administrationFeature.CreateChildFeature(AppFeatures.Administration_OrganizationUnits, defaultValue: "false", displayName: L("OrganizationUnits"), inputType: new CheckboxInputType());
 

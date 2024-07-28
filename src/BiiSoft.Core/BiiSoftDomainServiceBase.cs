@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Abp.Timing;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace BiiSoft
 {
@@ -30,22 +29,18 @@ namespace BiiSoft
         #region Validate
 
         protected UserFriendlyException ErrorException(string message) => throw new UserFriendlyException(L("Error"), message);
-        protected UserFriendlyException SelectException(string message) => ErrorException(L("PleaseSelect_", message));
-        protected UserFriendlyException InvalidException(string message) => ErrorException(L("Invalid", message));
-        protected UserFriendlyException IsNotValidException(string message) => ErrorException(L("IsNotValid", message));
-        protected UserFriendlyException RequiredException(string message) => ErrorException(L("IsRequired", message));
-        protected UserFriendlyException InputException(string message) => ErrorException(L("PleaseEnter_", message));
-        protected UserFriendlyException EmptyException(string message) => ErrorException(L("CannotBeEmpty", message));
-        protected UserFriendlyException NotEditableException(string message = "") => ErrorException(L("IsNotEditable", InstanceName) + message);
-        protected UserFriendlyException NotDeletableException(string message = "") => ErrorException(L("IsNotDeletable", InstanceName) + message);
-        protected UserFriendlyException NotFoundException(string message = "") => ErrorException(L("RecordNotFound") + message);
-        protected UserFriendlyException DuplicateException(string message) => ErrorException(L("Duplicate", message));
-        protected UserFriendlyException DuplicateNameException(string message = "") => DuplicateException(L("Name_", InstanceName) + message);
+        protected UserFriendlyException SelectException(string instance, string message = "") => ErrorException(L("PleaseSelect_", instance) + message);
+        protected UserFriendlyException InvalidException(string instance, string message = "") => ErrorException(L("Invalid", instance) + message);
+        protected UserFriendlyException IsNotValidException(string instance, string message = "") => ErrorException(L("IsNotValid", instance) + message);
+        protected UserFriendlyException InputException(string instance, string message = "") => ErrorException(L("PleaseEnter_", instance) + message);
+        protected UserFriendlyException NotEditableException(string instance, string message = "") => ErrorException(L("IsNotEditable", instance) + message);
+        protected UserFriendlyException NotDeletableException(string instance, string message = "") => ErrorException(L("IsNotDeletable", instance) + message);
+        protected UserFriendlyException NotFoundException(string instance, string message = "") => ErrorException(L("NotFound", instance) + message);
+        protected UserFriendlyException DuplicateException(string instance, string message = "") => ErrorException(L("Duplicate", instance) + message);
         protected UserFriendlyException MoreThanException(string subject, string value, string message = "") => ErrorException(L("CannotBeMoreThan", subject, value) + message);
-        protected UserFriendlyException MoreThanCharsException(string value, long characters, string message = "") => ErrorException(L("CannotBeMoreThan", value, L("Characters_", characters)) + message);
-        protected UserFriendlyException MoreThanCharsCodeException(long characters, string message = "") => ErrorException(L("CannotBeMoreThan", L("Code_", InstanceName), L("Characters_", characters)) + message);
-        protected UserFriendlyException EqualException(string value, string compare, string message = "") => ErrorException(L("MustBeEqualTo", value, compare) + message);
-        protected UserFriendlyException EqualCharsException(string value, long characters, string message = "") => ErrorException(L("MustBeEqualTo", value, L("Characters_", characters)) + message);
+        protected UserFriendlyException MoreThanCharactersException(string subject, long characters, string message = "") => ErrorException(L("CannotBeMoreThan", subject, L("Characters_", characters)) + message);
+        protected UserFriendlyException EqualException(string subject, string compare, string message = "") => ErrorException(L("MustBeEqualTo", subject, compare) + message);
+        protected UserFriendlyException EqualCharactersException(string subject, long characters, string message = "") => ErrorException(L("MustBeEqualTo", subject, L("Characters_", characters)) + message);
 
         /// <summary>
         /// throw Duplicate Instance Code
@@ -53,8 +48,8 @@ namespace BiiSoft
         /// <param name="code"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected UserFriendlyException DuplicateCodeException(string code, string message = "") => DuplicateException($"{L("Code_", InstanceName)} : {code}" + message);
-        protected UserFriendlyException DuplicateNameException(string name, string message = "") => DuplicateException($"{L("Name_", InstanceName)} : {name}" + message);
+        protected UserFriendlyException DuplicateCodeException(string code, string message = "") => DuplicateException($"{L("Code_", InstanceName)} : {code}", message);
+        protected UserFriendlyException DuplicateNameException(string name, string message = "") => DuplicateException($"{L("Name_", InstanceName)} : {name}", message);
 
         /// <summary>
         /// throw Invalid Instance Code
@@ -62,12 +57,7 @@ namespace BiiSoft
         /// <param name="code"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected UserFriendlyException InvalidCodeException(string code, string message = "") => InvalidException($"{L("Code_", InstanceName)} : {code}" + message);
-
-        protected void ValidateFind(object model)
-        {
-            if (model == null) NotFoundException();
-        }
+        protected UserFriendlyException InvalidCodeException(string code, string message = "") => InvalidException($"{L("Code_", InstanceName)} : {code}", message);
 
         /// <summary>
         /// throw Invalid Instance Code
@@ -76,7 +66,7 @@ namespace BiiSoft
         /// <param name="message"></param>
         protected void ValidateCodeInput(string code, string message = "")
         {
-            if (code.IsNullOrWhiteSpace()) InputException(L("Code_", InstanceName) + message);
+            if (code.IsNullOrWhiteSpace()) InputException(L("Code_", InstanceName), message);
         }
 
         /// <summary>
@@ -86,43 +76,32 @@ namespace BiiSoft
         /// <param name="message"></param>
         protected void ValidateCodeInput(long code, string message = "")
         {
-            if (code <= 0) InputException(L("Code_", InstanceName) + message);
+            if (code <= 0) InputException(L("Code_", InstanceName), message);
         }
 
         protected void ValidateName(string name, string message = "")
         {
-            if (name.IsNullOrWhiteSpace()) InputException(L("Name_", InstanceName) + message);
+            if (name.IsNullOrWhiteSpace()) InputException(L("Name_", InstanceName), message);
         }
 
         protected void ValidateDisplayName(string displayName, string message = "")
         {
-            if (displayName.IsNullOrWhiteSpace()) InputException(L("DisplayName") + message);
+            if (displayName.IsNullOrWhiteSpace()) InputException(L("DisplayName"), message);
         }
 
-        protected void ValidateRequired(string value, string message)
+        protected void ValidateInput(string value, string instance, string message = "")
         {
-            if (value.IsNullOrWhiteSpace()) RequiredException(message);
+            if (value.IsNullOrWhiteSpace()) InputException(instance, message);
         }
 
-        protected void ValidateInput(string value, string message)
+        protected void ValidateSelect(Guid? id, string instance, string message = "")
         {
-            if (value.IsNullOrWhiteSpace()) InputException(message);
+            if (id.IsNullOrEmpty()) SelectException(instance, message);
         }
 
-        protected void ValidateEmpty(string value, string message)
+        protected void ValidateSelect(long? id, string instance, string message = "")
         {
-            if (value.IsNullOrEmpty()) EmptyException(message);
-        }
-
-
-        protected void ValidateSelect(Guid? id, string message)
-        {
-            if (!id.IsNullOrEmpty()) SelectException(message);
-        }
-
-        protected void ValidateSelect(long? id, string message)
-        {
-            if (!id.IsNullOrZero()) SelectException(message);
+            if (id.IsNullOrZero()) SelectException(instance, message);
         }
 
         #endregion
@@ -160,15 +139,15 @@ namespace BiiSoft
                    await _repository.FirstOrDefaultAsync(u => u.Id.Equals(id));
         }
 
-        protected virtual void ValidateDeletable(TEntity input)
+        protected virtual void ValidateDeletable(TEntity input, string message = "")
         {
-            if (input is ICanModifyEntity entity && entity.CannotDelete) NotDeletableException();
+            if (input is ICanModifyEntity entity && entity.CannotDelete) NotDeletableException(InstanceName, message);
         }
 
         public virtual async Task<IdentityResult> DeleteAsync(TPrimaryKey id)
         {
             var entity = await GetAsync(id, false);
-            ValidateFind(entity);
+            if (entity == null) NotFoundException(InstanceName);
             ValidateDeletable(entity);
 
             await _repository.DeleteAsync(entity);
@@ -176,9 +155,9 @@ namespace BiiSoft
         }
 
         protected abstract void UpdateInstance(long userId, TEntity input, TEntity entity);
-        protected virtual void ValidateEditable(TEntity input)
+        protected virtual void ValidateEditable(TEntity input, string message = "")
         {
-            if (input is ICanModifyEntity entity && entity.CannotEdit) NotEditableException();
+            if (input is ICanModifyEntity entity && entity.CannotEdit) NotEditableException(InstanceName, message);
         }
 
         public virtual async Task<IdentityResult> UpdateAsync(long userId, TEntity input)
@@ -186,7 +165,7 @@ namespace BiiSoft
             await ValidateInputAsync(input);
 
             var entity = await GetAsync(input.Id, false);
-            ValidateFind(entity);
+            if(entity == null) NotFoundException(InstanceName);
             ValidateEditable(entity);
 
             UpdateInstance(userId, input, entity);
@@ -232,12 +211,12 @@ namespace BiiSoft
         /// <returns></returns>
         protected string GenerateCode(long index)
         {
-            return index.GenerateCode(BiiSoftConsts.LocationCodeLength, Prefix);
+            return index.GenerateCode(CodeLength, Prefix);
         }
 
         protected bool IsCode(string code)
         {
-            return code.IsCode(BiiSoftConsts.LocationCodeLength, Prefix);
+            return code.IsCode(CodeLength, Prefix);
         }
 
         /// <summary>
@@ -369,7 +348,7 @@ namespace BiiSoft
         public async Task<IdentityResult> EnableAsync(long userId, TPrimaryKey id)
         {
             var entity = await GetAsync(id, false);
-            ValidateFind(entity);
+            if(entity == null) NotFoundException(InstanceName);
 
             entity.Enable(true);
             entity.LastModifierUserId = userId;
@@ -382,7 +361,7 @@ namespace BiiSoft
         public async Task<IdentityResult> DisableAsync(long userId, TPrimaryKey id)
         {
             var entity = await GetAsync(id, false);
-            ValidateFind(entity);
+            if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(false);
             entity.LastModifierUserId = userId;
@@ -404,7 +383,7 @@ namespace BiiSoft
         public async Task<IdentityResult> SetAsDefaultAsync(long userId, TPrimaryKey id)
         {
             var entity = await GetAsync(id);
-            ValidateFind(entity);
+            if (entity == null) NotFoundException(InstanceName);
 
             var modificationTime = Clock.Now;
 
@@ -448,7 +427,7 @@ namespace BiiSoft
         public async Task<IdentityResult> EnableAsync(long userId, TPrimaryKey id)
         {
             var entity = await GetAsync(id, false);
-            ValidateFind(entity);
+            if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(true);
             entity.LastModifierUserId = userId;
@@ -461,7 +440,7 @@ namespace BiiSoft
         public async Task<IdentityResult> DisableAsync(long userId, TPrimaryKey id)
         {
             var entity = await GetAsync(id, false);
-            ValidateFind(entity);
+            if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(false);
             entity.LastModifierUserId = userId;

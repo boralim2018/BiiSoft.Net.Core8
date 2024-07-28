@@ -8,7 +8,6 @@ namespace BiiSoft.Branches.Dto
         {
             CreateMap<CreateUpdateBranchInputDto, Branch>().ReverseMap();
             CreateMap<BranchDetailDto, Branch>().ReverseMap();
-            CreateMap<BranchContactAddressDto, BranchContactAddress>().ReverseMap();
         }
     }
 }

@@ -1,9 +1,5 @@
-﻿using BiiSoft.Enums;
+﻿using BiiSoft.ContactInfo.Dto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BiiSoft.Branches.Dto
 {
@@ -17,7 +13,9 @@ namespace BiiSoft.Branches.Dto
         public string Email { get; set; }
         public string Website { get; set; }
         public string TaxRegistrationNumber { get; set; }
-        public List<BranchContactAddressDto> ContactAddresses { get; set; }
+        public ContactAddressDto BillingAddress { get; set; }
+        public bool SameAsBillingAddress { get; set; }
+        public ContactAddressDto ShippingAddress { get; set; }
     }
 
 }

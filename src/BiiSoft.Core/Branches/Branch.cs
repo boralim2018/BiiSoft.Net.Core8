@@ -1,13 +1,10 @@
 ﻿using Abp.Domain.Entities;
-using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
+using BiiSoft.ContactInfo;
 using BiiSoft.Entities;
-using BiiSoft.Enums;
-using BiiSoft.Extensions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace BiiSoft.Branches
 {
@@ -26,25 +23,27 @@ namespace BiiSoft.Branches
         public string Email { get; protected set; }
         [MaxLength(BiiSoftConsts.MaxLengthLongCode)]
         public string Website { get; protected set; }
-        public void SetWebsite(string website) { Website = website; }
-
         public string TaxRegistrationNumber { get; protected set; }
-        
-        public static Branch Create(int tenantId, long? userId, string name, string displayName)
-        {
-            return new Branch
-            {
-                Id = Guid.NewGuid(),
-                TenantId = tenantId,
-                CreatorUserId = userId,
-                CreationTime = Clock.Now,
-                Name = name,
-                DisplayName = displayName,
-                IsActive = true,
-            };
-        }
 
-        public static Branch Create(int tenantId, long? userId, string name, string displayName, string businessId, string phoneNumber, string email, string website, string taxRegistrationNumber)
+        public Guid BillingAddressId { get; set; }
+        public ContactAddress BillingAddress { get; set; }
+        public bool SameAsBillingAddress { get; set; }
+        public Guid ShippingAddressId { get; set; }
+        public ContactAddress ShippingAddress { get; set; }
+      
+        public static Branch Create(
+            int tenantId, 
+            long? userId, 
+            string name, 
+            string displayName, 
+            string businessId, 
+            string phoneNumber, 
+            string email, 
+            string website, 
+            string taxRegistrationNumber,
+            Guid billingAddressId,
+            bool sameAsBillingAddress,
+            Guid shippingAddressId)
         {
             return new Branch
             {
@@ -59,12 +58,26 @@ namespace BiiSoft.Branches
                 Email = email,             
                 Website = website,
                 TaxRegistrationNumber = taxRegistrationNumber,
+                BillingAddressId = billingAddressId,                
+                SameAsBillingAddress = sameAsBillingAddress,
+                ShippingAddressId = sameAsBillingAddress ? billingAddressId : shippingAddressId,
                 IsActive = true
             };
         }
 
 
-        public void Update(long? userId, string name, string displayName, string businessId, string phoneNumber, string email, string website, string taxRegistrationNumber)
+        public void Update(
+            long? userId,
+            string name,
+            string displayName,
+            string businessId,
+            string phoneNumber,
+            string email,
+            string website,
+            string taxRegistrationNumber,
+            Guid billingAddressId,
+            bool saveAsBillingAddress,
+            Guid shippingAddressId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -75,6 +88,10 @@ namespace BiiSoft.Branches
             Email = email;
             Website = website;
             TaxRegistrationNumber = taxRegistrationNumber;
+            BillingAddressId = billingAddressId;
+            SameAsBillingAddress = saveAsBillingAddress;
+            ShippingAddressId = SameAsBillingAddress ? billingAddressId : shippingAddressId;
+            
         }
     }
 }

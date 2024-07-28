@@ -136,26 +136,26 @@ namespace BiiSoft.Locations
 
                         Guid? countryId = null;
                         var countryISO = worksheet.GetString(i, 4);
-                        ValidateInput(countryISO, $"{L("Code_", L("Country"))}, Row = {i}");
-                        if (!countryDic.ContainsKey(countryISO)) InvalidException($"{L("Code_", L("Currency"))}, Row = {i}");
+                        ValidateInput(countryISO, L("Code_", L("Country")), $", Row = {i}");
+                        if (!countryDic.ContainsKey(countryISO)) InvalidException(L("Code_", L("Currency")), $", Row = {i}");
                         countryId = countryDic[countryISO];
 
                         Guid? cityProvinceId = null;
                         var cityProvinceISO = worksheet.GetString(i, 5);
-                        ValidateInput(cityProvinceISO, $"{L("Code_", L("CityProvince"))}, Row = {i}");
-                        if (!cityProvinceDic.ContainsKey(cityProvinceISO)) InvalidException($"{L("Code_", L("CityProvince"))}, Row = {i}");
+                        ValidateInput(cityProvinceISO, L("Code_", L("CityProvince")), $", Row = {i}");
+                        if (!cityProvinceDic.ContainsKey(cityProvinceISO)) InvalidException(L("Code_", L("CityProvince")), $", Row = {i}");
                         cityProvinceId = cityProvinceDic[cityProvinceISO];
 
                         Guid? khanDistrictId = null;
                         var khanDistrictCode = worksheet.GetString(i, 6);
-                        ValidateInput(khanDistrictCode, $"{L("Code_", L("KhanDistrict"))}, Row = {i}");
-                        if (!khanDistrictDic.ContainsKey(khanDistrictCode)) InvalidException($"{L("Code_", L("KhanDistrict"))}, Row = {i}");
+                        ValidateInput(khanDistrictCode, L("Code_", L("KhanDistrict")), $", Row = {i}");
+                        if (!khanDistrictDic.ContainsKey(khanDistrictCode)) InvalidException(L("Code_", L("KhanDistrict")), $", Row = {i}");
                         khanDistrictId = khanDistrictDic[khanDistrictCode];
 
                         Guid? sangkatCommuneId = null;
                         var sangkatCommuneCode = worksheet.GetString(i, 7);
-                        ValidateInput(sangkatCommuneCode, $"{L("Code_", L("SangkatCommune"))}, Row = {i}");
-                        if (!sangkatCommuneDic.ContainsKey(sangkatCommuneCode)) InvalidException($"{L("Code_", L("SangkatCommune"))}, Row = {i}");
+                        ValidateInput(sangkatCommuneCode, L("Code_", L("SangkatCommune")), $" , Row = {i}");
+                        if (!sangkatCommuneDic.ContainsKey(sangkatCommuneCode)) InvalidException(L("Code_", L("SangkatCommune")), $", Row = {i}");
                         sangkatCommuneId = sangkatCommuneDic[sangkatCommuneCode];
 
                         var latitude = worksheet.GetDecimalOrNull(i, 8);

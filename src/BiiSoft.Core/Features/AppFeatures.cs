@@ -12,7 +12,6 @@
         public const string Administration = "App.Administration";
         public const string Administration_Roles = "App.Administration.Roles";
         public const string Administration_Users = "App.Administration.Users";
-        //public const string Administration_Users_Groups = "App.Administration.Users.Groups";
         public const string Administration_AuditLogs = "App.Administration.AuditLogs";
         public const string Administration_OrganizationUnits = "App.Administration.OrganizationUnits";
 

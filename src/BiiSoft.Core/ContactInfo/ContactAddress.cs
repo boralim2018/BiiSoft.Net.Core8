@@ -1,35 +1,42 @@
-﻿using Abp.Timing;
-using BiiSoft.ContactInfo;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Text;
+using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
+using Abp.Timing;
+using BiiSoft.Locations;
 
-namespace BiiSoft.Branches
+namespace BiiSoft.ContactInfo
 {
-    [Table("BiiBranchContactAddresses")]
-    public class BranchContactAddress : ContactAddressBase
+    
+    public class ContactAddress : AuditedEntity<Guid>, IMustHaveTenant
     {
-        public Guid BranchId { get; protected set; }
-        public Branch Branch { get; protected set; }
-        public void SetBranch(Guid branchId) => BranchId = branchId; 
-        public bool IsDefault { get; protected set; }
-        public void SetDefault(bool isDefault) => IsDefault = isDefault;
+        public int TenantId { get; set; }
+        public Guid? CountryId { get; protected set; }
+        public Country Country { get; protected set; }        
 
-        public static BranchContactAddress Create(int tenantId, long? userId, Guid? countryId)
-        {
-            return new BranchContactAddress
-            {
-                Id = Guid.NewGuid(),
-                TenantId = tenantId,
-                CreatorUserId = userId,              
-                CreationTime = Clock.Now,
-                CountryId = countryId
-            };
-        }
+        public Guid? CityProvinceId { get; protected set; }
+        public CityProvince CityProvince { get; protected set; }
 
-        public static BranchContactAddress Create (
+        public Guid? KhanDistrictId { get; protected set; }
+        public KhanDistrict KhanDistrict { get; protected set; }
+
+        public Guid? SangkatCommuneId { get; protected set; }
+        public SangkatCommune SangkatCommune { get; protected set; }
+
+        public Guid? VillageId { get; protected set; }
+        public Village Village { get; protected set; }
+
+        public string PostalCode { get; protected set; }
+        public string Street { get; protected set; }
+        public string HouseNo { get; protected set; }
+
+        public Guid? LocationId { get; protected set; }
+        public Location Location { get; protected set; }
+        public void SetLocation(Guid? locationId) => LocationId = locationId;
+
+        public static ContactAddress Create(
             int tenantId,
             long? userId,
-            Guid branchId,
             Guid? countryId,
             Guid? cityProvinceId,
             Guid? khanDistrictId,
@@ -41,13 +48,12 @@ namespace BiiSoft.Branches
             string houseNo
             )
         {
-            return new BranchContactAddress
+            return new ContactAddress
             {
                 Id = Guid.NewGuid(),
                 TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
-                BranchId = branchId,
                 CountryId = countryId,
                 CityProvinceId = cityProvinceId,
                 KhanDistrictId = khanDistrictId,
@@ -60,10 +66,9 @@ namespace BiiSoft.Branches
             };
         }
 
-        public BranchContactAddress Update (
+        public ContactAddress Update(
             long? userId,
-            Guid branchId,
-            Guid? countryId,            
+            Guid? countryId,
             Guid? cityProvinceId,
             Guid? khanDistrictId,
             Guid? sangkatCommuneid,
@@ -76,7 +81,6 @@ namespace BiiSoft.Branches
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
-            BranchId = branchId;
             CountryId = countryId;
             CityProvinceId = cityProvinceId;
             KhanDistrictId = khanDistrictId;
@@ -85,10 +89,11 @@ namespace BiiSoft.Branches
             LocationId = locationId;
             PostalCode = postalCode;
             Street = street;
-            HouseNo = houseNo;   
-            
+            HouseNo = houseNo;
+
             return this;
         }
+
     }
 
 }

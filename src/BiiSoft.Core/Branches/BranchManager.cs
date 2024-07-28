@@ -12,6 +12,7 @@ using System.Transactions;
 using BiiSoft.Authorization.Users;
 using BiiSoft.Locations;
 using Abp.Extensions;
+using BiiSoft.ContactInfo;
 
 namespace BiiSoft.Branches
 {
@@ -27,8 +28,8 @@ namespace BiiSoft.Branches
 
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IBranchContactAddressManager _branchContactAddressManager;
-        private readonly IBiiSoftRepository<BranchContactAddress, Guid> _branchContactAddressRepository;
+        private readonly IContactAddressManager _contactAddressManager;
+        private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<UserBranch, Guid> _userBranchRepository;
         public BranchManager(
             IBiiSoftRepository<Country, Guid> countryRepository,
@@ -38,16 +39,16 @@ namespace BiiSoft.Branches
             IBiiSoftRepository<Village, Guid> villageRepository,
             IBiiSoftRepository<Location, Guid> locationRepository,
             IBiiSoftRepository<UserBranch, Guid> userBranchRepository,
-            IBiiSoftRepository<BranchContactAddress, Guid> branchContactAddressRepository,
-            IBranchContactAddressManager branchContactAddressManager,
+            IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
+            IContactAddressManager contactAddressManager,
             IBiiSoftRepository<Branch, Guid> repository,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager) : base(repository)
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
-            _branchContactAddressManager = branchContactAddressManager;
-            _branchContactAddressRepository = branchContactAddressRepository;
+            _contactAddressManager = contactAddressManager;
+            _contactAddressRepository = contactAddressRepository;
             _userBranchRepository = userBranchRepository;
             _countryRepository = countryRepository;
             _cityProvinceRepository = cityProvinceRepository;
@@ -62,73 +63,91 @@ namespace BiiSoft.Branches
 
         protected override Branch CreateInstance(int? tenantId, long userId, Branch input)
         {
-            return Branch.Create(tenantId.Value, userId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber);
+            return Branch.Create(tenantId.Value, userId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId);
         }
 
         protected override void UpdateInstance(long userId, Branch input, Branch entity)
         {
-            entity.Update(userId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber);
+            entity.Update(userId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId);
 
             input.TenantId = entity.TenantId; //Rquired in UpdateAsync Method
         }
 
         #endregion
 
-        private void ValidateAddress(List<BranchContactAddress> addresses)
+        public override async Task<IdentityResult> InsertAsync(int? tenantId, long userId, Branch input)
         {
-            if (addresses.IsNullOrEmpty()) InputException(L("ContactAddress"));
-        }
-
-        public async Task<IdentityResult> InsertAsync(int? tenantId, long userId, Branch input, List<BranchContactAddress> addresses)
-        {   
-            ValidateAddress(addresses);
-
             await ValidateInputAsync(input);
+
+            await _contactAddressManager.InsertAsync(tenantId, userId, input.BillingAddress);
+            input.BillingAddressId = input.BillingAddress.Id;
+
+            if (!input.SameAsBillingAddress)
+            {
+                await _contactAddressManager.InsertAsync(tenantId, userId, input.ShippingAddress);
+                input.ShippingAddressId = input.ShippingAddress.Id;
+            }
 
             var entity = CreateInstance(tenantId, userId, input);
 
-            await _repository.BulkInsertAsync(new List<Branch> { entity });
-
+            await _repository.InsertAsync(entity);
             input.Id = entity.Id;
+            return IdentityResult.Success;
+        }
 
-            foreach (var address in addresses)
+        public override async Task<IdentityResult> UpdateAsync(long userId, Branch input)
+        {
+            await ValidateInputAsync(input);
+
+            var entity = await GetAsync(input.Id, false);
+            if (entity == null) NotFoundException(InstanceName);
+            ValidateEditable(entity);
+
+            await _contactAddressManager.UpdateAsync(userId, input.BillingAddress);
+            input.BillingAddressId = input.BillingAddress.Id;
+
+            Guid? deleteShippingAddressId = null;
+            if (input.SameAsBillingAddress)
             {
-                address.SetBranch(input.Id);
+                if (!entity.SameAsBillingAddress) deleteShippingAddressId = entity.ShippingAddressId;
+            }
+            else
+            {
+                if (entity.SameAsBillingAddress)
+                {
+                    await _contactAddressManager.InsertAsync(entity.TenantId, userId, input.ShippingAddress);
+                }
+                else
+                {
+                    await _contactAddressManager.UpdateAsync(userId, input.ShippingAddress);
+                }
+                input.ShippingAddressId = input.ShippingAddress.Id;
             }
 
-            await _branchContactAddressManager.BulkInsertAsync(tenantId, userId, addresses);
+            UpdateInstance(userId, input, entity);
+
+            await _repository.UpdateAsync(@entity);
+
+            if(deleteShippingAddressId.HasValue) await _contactAddressManager.DeleteAsync(deleteShippingAddressId.Value);
 
             return IdentityResult.Success;
         }
 
-        public async Task<Branch> GetCompanyInfoAsync()
-        {
-            return await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(u => u.IsDefault);
-        }
-
         public override async Task<IdentityResult> DeleteAsync(Guid id)
         {
+            var entity = await GetAsync(id);
+            if (entity == null) NotFoundException(InstanceName);
+            ValidateDeletable(entity);
+
             var members = await _userBranchRepository.GetAll().AsNoTracking().AnyAsync(s => s.BranchId == id);
             if (members) ErrorException(L("AlreadyHasMembers", InstanceName));
 
-            var address = await _branchContactAddressRepository.GetAll().AsNoTracking().Where(s => s.BranchId == id).ToListAsync();
-            await _branchContactAddressRepository.BulkDeleteAsync(address);
-
-            return await base.DeleteAsync(id);
-        }
-
-        public async Task<IdentityResult> UpdateAsync(long userId, Branch input, List<BranchContactAddress> addresses)
-        {
-            ValidateAddress(addresses);
-
-            await base.UpdateAsync(userId, input);
-
-            foreach (var address in addresses)
-            {
-                address.SetBranch(input.Id);
-            }
-
-            await _branchContactAddressManager.BulkSyncAsync(input.TenantId, userId, input.Id, addresses);
+            var address = await _contactAddressRepository.GetAll().AsNoTracking()
+                                .Where(s => s.Id == entity.BillingAddressId || (!entity.SameAsBillingAddress && s.Id == entity.ShippingAddressId))
+                                .ToListAsync();
+           
+            await _repository.DeleteAsync(entity);
+            if(address.Any()) await _contactAddressRepository.BulkDeleteAsync(address);
 
             return IdentityResult.Success;
         }
@@ -145,7 +164,6 @@ namespace BiiSoft.Branches
         {
             var branchs = new List<Branch>();
             var branchHash = new HashSet<string>();
-            var addressDic = new Dictionary<string, BranchContactAddress>();
             var defaultBranch = "";
 
             var countryDic = new Dictionary<string, Guid>();
@@ -196,14 +214,14 @@ namespace BiiSoft.Branches
 
                         var country = worksheet.GetString(i, 8);
                         ValidateInput(country, L("Country") + $", Row = {i}");
-                        if (!countryDic.ContainsKey(country)) InvalidException(L("Country") + $", Row = {i}");
+                        if (!countryDic.ContainsKey(country)) InvalidException(L("Country"), $", Row = {i}");
                         var countryId = countryDic[country];
 
                         var cityProvince = worksheet.GetString(i, 9);
                         Guid? cityProvinceId = null;
                         if (!cityProvince.IsNullOrWhiteSpace())
                         {
-                            if (!cityProvinceDic.ContainsKey(cityProvince)) InvalidException(L("CityProvince") + $", Row = {i}");
+                            if (!cityProvinceDic.ContainsKey(cityProvince)) InvalidException(L("CityProvince"), $", Row = {i}");
                             cityProvinceId = cityProvinceDic[cityProvince];
                         }
 
@@ -211,54 +229,96 @@ namespace BiiSoft.Branches
                         Guid? khanDistrictId = null;
                         if (!khanDistrict.IsNullOrWhiteSpace())
                         {
-                            if (!khanDistrictDic.ContainsKey(khanDistrict)) InvalidException(L("KhanDistrict") + $", Row = {i}");
+                            if (!khanDistrictDic.ContainsKey(khanDistrict)) InvalidException(L("KhanDistrict"), $", Row = {i}");
                             khanDistrictId = khanDistrictDic[khanDistrict];
                         }
                         
-                        var sangkatCommune = worksheet.GetString(i, 10);
+                        var sangkatCommune = worksheet.GetString(i, 11);
                         Guid? sangkatCommuneId = null;
                         if (!sangkatCommune.IsNullOrWhiteSpace())
                         {
-                            if (!sangkatCommuneDic.ContainsKey(sangkatCommune)) InvalidException(L("SangkatCommune") + $", Row = {i}");
+                            if (!sangkatCommuneDic.ContainsKey(sangkatCommune)) InvalidException(L("SangkatCommune"), $", Row = {i}");
                             sangkatCommuneId = sangkatCommuneDic[sangkatCommune];
                         }
 
-                        var village = worksheet.GetString(i, 10);
+                        var village = worksheet.GetString(i, 12);
                         Guid? villageId = null;
                         if (!village.IsNullOrWhiteSpace())
                         {
-                            if (!villageDic.ContainsKey(village)) InvalidException(L("Village") + $", Row = {i}");
+                            if (!villageDic.ContainsKey(village)) InvalidException(L("Village"), $", Row = {i}");
                             villageId = villageDic[village];
                         }
 
-                        var location = worksheet.GetString(i, 11);
-                        Guid? locationId = null;
-                        if (!location.IsNullOrWhiteSpace())
+                        var postalCode = worksheet.GetString(i, 13);
+                        var street = worksheet.GetString(i, 14);
+                        var houseNo = worksheet.GetString(i, 15);
+
+                        var sameAsBillingAddress = worksheet.GetBool(i, 16);
+
+                        ContactAddress shippingAddress = null;
+                        if (!sameAsBillingAddress) 
                         {
-                            if (!locationDic.ContainsKey(location)) InvalidException(L("Location") + $", Row = {i}");
-                            locationId = locationDic[location];
+                            var country2 = worksheet.GetString(i, 17);
+                            ValidateInput(country2, L("Country") + $", Row = {i}");
+                            if (!countryDic.ContainsKey(country2)) InvalidException(L("Country"), $", Row = {i}");
+                            var countryId2 = countryDic[country2];
+
+                            var cityProvince2 = worksheet.GetString(i, 18);
+                            Guid? cityProvinceId2 = null;
+                            if (!cityProvince.IsNullOrWhiteSpace())
+                            {
+                                if (!cityProvinceDic.ContainsKey(cityProvince2)) InvalidException(L("CityProvince"), $", Row = {i}");
+                                cityProvinceId2 = cityProvinceDic[cityProvince2];
+                            }
+
+                            var khanDistrict2 = worksheet.GetString(i, 19);
+                            Guid? khanDistrictId2 = null;
+                            if (!khanDistrict2.IsNullOrWhiteSpace())
+                            {
+                                if (!khanDistrictDic.ContainsKey(khanDistrict2)) InvalidException(L("KhanDistrict"), $", Row = {i}");
+                                khanDistrictId2 = khanDistrictDic[khanDistrict2];
+                            }
+
+                            var sangkatCommune2 = worksheet.GetString(i, 20);
+                            Guid? sangkatCommuneId2 = null;
+                            if (!sangkatCommune2.IsNullOrWhiteSpace())
+                            {
+                                if (!sangkatCommuneDic.ContainsKey(sangkatCommune2)) InvalidException(L("SangkatCommune"), $", Row = {i}");
+                                sangkatCommuneId2 = sangkatCommuneDic[sangkatCommune2];
+                            }
+
+                            var village2 = worksheet.GetString(i, 21);
+                            Guid? villageId2 = null;
+                            if (!village2.IsNullOrWhiteSpace())
+                            {
+                                if (!villageDic.ContainsKey(village2)) InvalidException(L("Village"), $", Row = {i}");
+                                villageId = villageDic[village2];
+                            }
+
+                            var postalCode2 = worksheet.GetString(i, 22);
+                            var street2 = worksheet.GetString(i, 23);
+                            var houseNo2 = worksheet.GetString(i, 24);
+
+                            shippingAddress = ContactAddress.Create(tenantId.Value, userId, countryId2, cityProvinceId2, khanDistrictId2, sangkatCommuneId2, villageId2, null, postalCode2, street2, houseNo2);
                         }
 
-                        var postalCode = worksheet.GetString(i, 11);
-                        var street = worksheet.GetString(i, 12);
-                        var houseNo = worksheet.GetString(i, 13);
-
-                        var isDefault = worksheet.GetBool(i, 14);
+                        var isDefault = worksheet.GetBool(i, 25);
                         if (isDefault && defaultBranch != "") MoreThanException(L("Default"), 1.ToString(), $", Row = {i}");
                         else if (isDefault) defaultBranch = name;
 
-                        var cannotEdit = worksheet.GetBool(i, 15);
-                        var cannotDelete = worksheet.GetBool(i, 16);
+                        var cannotEdit = worksheet.GetBool(i, 26);
+                        var cannotDelete = worksheet.GetBool(i, 27);
 
-                        var entity = Branch.Create(tenantId.Value, userId, name, displayName, businessId, phone, email, website, taxNumber);
+                        var billingAddress = ContactAddress.Create(tenantId.Value, userId, countryId, cityProvinceId, khanDistrictId, sangkatCommuneId, villageId, null, postalCode, street, houseNo);
+
+                        var entity = Branch.Create(tenantId.Value, userId, name, displayName, businessId, phone, email, website, taxNumber, billingAddress.Id, sameAsBillingAddress, sameAsBillingAddress ? billingAddress.Id : shippingAddress.Id);
                         if(isDefault) entity.SetDefault(isDefault);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
-                        var address = BranchContactAddress.Create(tenantId.Value, userId, entity.Id, countryId, cityProvinceId, khanDistrictId, sangkatCommuneId, villageId, locationId, postalCode, street, houseNo);
-                        address.SetDefault(true);
-                        addressDic.Add(entity.Name, address);
-
+                        entity.BillingAddress = billingAddress;
+                        entity.ShippingAddress = shippingAddress;
+                       
                         branchs.Add(entity);
                         branchHash.Add(entity.Name);
                     }
@@ -268,7 +328,7 @@ namespace BiiSoft.Branches
             if (!branchs.Any()) return IdentityResult.Success;
 
             var updateBranchDic = new Dictionary<string, Branch>();
-            var updateAddressDic = new Dictionary<string, BranchContactAddress>();
+            var updateAddressDic = new Dictionary<Guid, ContactAddress>();
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -280,50 +340,97 @@ namespace BiiSoft.Branches
 
                     if (updateBranchDic.Any())
                     {
-                        updateAddressDic = await _branchContactAddressRepository.GetAll().AsNoTracking()
-                                                 .Where(s => s.IsDefault)
-                                                 .Where(s => updateBranchDic.ContainsKey(s.Branch.Name))
-                                                 .ToDictionaryAsync(k => k.Branch.Name, v => v);
+                        var updateAddressIds = updateBranchDic.Values.SelectMany(s =>
+                        {
+                            List<Guid> ids = new List<Guid> { s.BillingAddressId };
+                            if (!s.SameAsBillingAddress) ids.Add(s.ShippingAddressId);
+                            return ids;
+                        })
+                        .GroupBy(s => s)
+                        .Select(s => s.Key)
+                        .ToHashSet();
+
+                        updateAddressDic = await _contactAddressRepository.GetAll().AsNoTracking()
+                                                 .Where(s => updateAddressIds.Contains(s.Id))
+                                                 .ToDictionaryAsync(k => k.Id, v => v);
                     }
                 }
             }
 
             var addBranchs = new List<Branch>();
-            var addAddresses = new List<BranchContactAddress>();
+            var addAddresses = new List<ContactAddress>();
+            var updateAddresses = new List<ContactAddress>();
+            var deleteAddresses = new List<ContactAddress>();
 
             foreach (var l in branchs)
             {
                 if (updateBranchDic.ContainsKey(l.Name))
                 {
-                    updateBranchDic[l.Name].Update(userId, l.Name, l.DisplayName, l.BusinessId, l.PhoneNumber, l.Email, l.Website, l.TaxRegistrationNumber);
-                    updateBranchDic[l.Name].SetCannotEdit(l.CannotEdit);
-                    updateBranchDic[l.Name].SetCannotDelete(l.CannotDelete);
+                    var updateBranch = updateBranchDic[l.Name];
+
+                    var updateAddress = updateAddressDic.ContainsKey(updateBranch.BillingAddressId) ? updateAddressDic[updateBranch.BillingAddressId] : null;
+                    if (updateAddress != null)
+                    {
+                        updateAddress.Update(userId, updateBranch.BillingAddress.CountryId, updateBranch.BillingAddress.CityProvinceId, updateBranch.BillingAddress.KhanDistrictId, updateBranch.BillingAddress.SangkatCommuneId, updateBranch.BillingAddress.VillageId, updateBranch.BillingAddress.LocationId, updateBranch.BillingAddress.PostalCode, updateBranch.BillingAddress.Street, updateBranch.BillingAddress.HouseNo);
+                        updateBranch.BillingAddressId = updateAddress.Id;
+                        updateAddresses.Add(updateAddress);
+                    }
+                    else
+                    {
+                        addAddresses.Add(updateBranch.BillingAddress);
+                    }
+
+                    if (l.SameAsBillingAddress)
+                    {
+                        if (!updateBranch.SameAsBillingAddress)
+                        {
+                            var deleteAddress = updateAddressDic.ContainsKey(updateBranch.ShippingAddressId) ? updateAddressDic[updateBranch.ShippingAddressId] : null;
+                            if(deleteAddress != null) deleteAddresses.Add(deleteAddress);
+                        }
+                    }
+                    else
+                    {
+                        if (updateBranch.SameAsBillingAddress)
+                        {
+                            addAddresses.Add(updateBranch.ShippingAddress);
+                        }
+                        else
+                        {
+                            var updateAddress2 = updateAddressDic.ContainsKey(updateBranch.ShippingAddressId) ? updateAddressDic[updateBranch.ShippingAddressId] : null;
+                            if (updateAddress2 != null)
+                            {
+                                updateAddress2.Update(userId, updateBranch.ShippingAddress.CountryId, updateBranch.ShippingAddress.CityProvinceId, updateBranch.ShippingAddress.KhanDistrictId, updateBranch.ShippingAddress.SangkatCommuneId, updateBranch.ShippingAddress.VillageId, updateBranch.ShippingAddress.LocationId, updateBranch.ShippingAddress.PostalCode, updateBranch.ShippingAddress.Street, updateBranch.ShippingAddress.HouseNo);
+                                updateBranch.ShippingAddressId = updateAddress2.Id;
+                                updateAddresses.Add(updateAddress2);
+                            }
+                            else
+                            {
+                                addAddresses.Add(updateBranch.ShippingAddress);
+                            }
+                        }
+                    }
+
+                    updateBranch.Update(userId, l.Name, l.DisplayName, l.BusinessId, l.PhoneNumber, l.Email, l.Website, l.TaxRegistrationNumber, l.BillingAddressId, l.SameAsBillingAddress, l.ShippingAddressId);
+                    updateBranch.SetCannotEdit(l.CannotEdit);
+                    updateBranch.SetCannotDelete(l.CannotDelete);
                 }
                 else
                 {
                     addBranchs.Add(l);
                 }
-
-                if (updateAddressDic.ContainsKey(l.Name))
-                {
-                    var a = addressDic[l.Name];
-                    updateAddressDic[l.Name].Update(userId, updateBranchDic[l.Name].Id, a.CountryId, a.CityProvinceId, a.KhanDistrictId, a.SangkatCommuneId, a.VillageId, a.LocationId, a.PostalCode, a.Street, a.HouseNo);
-                }
-                else
-                {
-                    addAddresses.Add(addressDic[l.Name]);
-                }
-
             }
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
                 using (_unitOfWorkManager.Current.SetTenantId(tenantId))
                 {
+                    if (updateAddresses.Any()) await _contactAddressRepository.BulkUpdateAsync(updateAddresses);
+                    if (addAddresses.Any()) await _contactAddressRepository.BulkInsertAsync(addAddresses);
+
                     if (updateBranchDic.Any()) await _repository.BulkUpdateAsync(updateBranchDic.Values.ToList());
                     if (addBranchs.Any()) await _repository.BulkInsertAsync(addBranchs);
-                    if (updateAddressDic.Any()) await _branchContactAddressRepository.BulkUpdateAsync(updateAddressDic.Values.ToList());
-                    if (addAddresses.Any()) await _branchContactAddressRepository.BulkInsertAsync(addAddresses);
+                   
+                    if(deleteAddresses.Any()) await _contactAddressRepository.BulkDeleteAsync(deleteAddresses);
                 }
 
                 await uow.CompleteAsync();

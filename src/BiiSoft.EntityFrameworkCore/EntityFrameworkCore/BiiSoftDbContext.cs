@@ -12,6 +12,7 @@ using BiiSoft.BFiles;
 using BiiSoft.Locations;
 using BiiSoft.Currencies;
 using Abp.Application.Editions;
+using BiiSoft.ContactInfo;
 
 namespace BiiSoft.EntityFrameworkCore
 {
@@ -28,11 +29,11 @@ namespace BiiSoft.EntityFrameworkCore
         public DbSet<SangkatCommune> SangkatCommunes { get; set; }
         public DbSet<Village> Villages { get; set; }
 
+        public DbSet<ContactAddress> ContactAddresses { get; set; }
+
         public DbSet<Branch> Branchs { get; set; }
         public DbSet<UserBranch> UserBranches { get; set; }
-        public DbSet<BranchContactAddress> BranchContactAddresses { get; set; }
-        //public DbSet<UserGroup> UserGroups { get; set; }
-        //public DbSet<UserGroupMember> UserGroupMembers { get; set; }
+      
         public DbSet<Currency> Currencies { get; set; }
 
         //public DbSet<CompanySetting> CompanySettings { get; set; }
@@ -127,17 +128,8 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(e => e.SangkatCommune).WithMany().HasForeignKey(e => e.SangkatCommuneId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<Branch>(e =>
+            modelBuilder.Entity<ContactAddress>(e =>
             {
-                e.HasIndex(i => new { i.TenantId, i.Name }).IsUnique(true);
-                e.HasIndex(i => new { i.TenantId, i.DisplayName });
-                e.HasIndex(i => i.No);
-            });
-
-            modelBuilder.Entity<BranchContactAddress>(e =>
-            {
-                e.HasIndex(i => new { i.AddressType, i.IsDefault });
-                e.HasOne(i => i.Branch).WithMany().HasForeignKey(i => i.BranchId).IsRequired(true).OnDelete(DeleteBehavior.Cascade);
                 e.HasOne(i => i.Country).WithMany().HasForeignKey(i => i.CountryId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.CityProvince).WithMany().HasForeignKey(i => i.CityProvinceId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.KhanDistrict).WithMany().HasForeignKey(i => i.KhanDistrictId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
@@ -146,25 +138,21 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.Location).WithMany().HasForeignKey(i => i.LocationId).IsRequired(false).OnDelete(deleteBehavior: DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<Branch>(e =>
+            {
+                e.HasIndex(i => new { i.TenantId, i.Name }).IsUnique(true);
+                e.HasIndex(i => new { i.TenantId, i.DisplayName });
+                e.HasIndex(i => i.No);
+                e.HasOne(i => i.BillingAddress).WithMany().HasForeignKey(i => i.BillingAddressId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.ShippingAddress).WithMany().HasForeignKey(i => i.ShippingAddressId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            });
+
             modelBuilder.Entity<UserBranch>(e =>
             {
                 e.HasOne(i => i.Member).WithMany().HasForeignKey(i => i.MemberId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.Branch).WithMany().HasForeignKey(i => i.BranchId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
-
-            //modelBuilder.Entity<UserGroup>(e =>
-            //{
-            //    e.HasIndex(i => new { i.TenantId, i.Name }).IsUnique(true);
-            //    e.HasIndex(i => new { i.TenantId, i.DisplayName });
-            //});
-
-            //modelBuilder.Entity<UserGroupMember>(e =>
-            //{
-            //    e.HasIndex(i => new { i.TenantId, i.IsDefault });
-            //    e.HasOne(i => i.Member).WithMany().HasForeignKey(i => i.MemberId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
-            //    e.HasOne(i => i.UserGroup).WithMany().HasForeignKey(i => i.UserGroupId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
-            //});
 
             modelBuilder.Entity<Currency>(e =>
             {

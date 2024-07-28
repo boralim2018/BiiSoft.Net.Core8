@@ -23,20 +23,26 @@ namespace BiiSoft.EntityFrameworkCore.Repositories
 
         }
 
-        public IQueryable<TEntity> FromSql(FormattableString sqlQuery)
-        {
-            return GetContext().Set<TEntity>().FromSql(sqlQuery);
-        }
+        //public IQueryable<TEntity> FromSql(FormattableString sqlQuery)
+        //{
+        //    return GetContext().Set<TEntity>().FromSql(sqlQuery);
+        //}
 
-        public IQueryable<TEntity> FromSqlRaw(string sqlQuery)
-        {
-            return GetContext().Set<TEntity>().FromSqlRaw(sqlQuery);
-        }
+        //public IQueryable<TEntity> FromSqlRaw(string sqlQuery)
+        //{
+        //    return GetContext().Set<TEntity>().FromSqlRaw(sqlQuery);
+        //}
 
         public async Task BulkInsertAsync(IList<TEntity> list)
         {
             var context = await this.GetContextAsync(); 
             await context.BulkInsertAsync(list);
+        }
+
+        public async Task BulkInsertAsync(TEntity entity)
+        {
+            var context = await this.GetContextAsync();
+            await context.BulkInsertAsync(new List<TEntity> { entity });
         }
 
         public async Task BulkUpdateAsync(IList<TEntity> list)
@@ -45,10 +51,22 @@ namespace BiiSoft.EntityFrameworkCore.Repositories
             await context.BulkUpdateAsync(list);
         }
 
+        public async Task BulkUpdateAsync(TEntity entity)
+        {
+            var context = await this.GetContextAsync();
+            await context.BulkUpdateAsync(new List<TEntity> { entity });
+        }
+
         public async Task BulkDeleteAsync(IList<TEntity> list)
         {
             var context = await this.GetContextAsync();
             await context.BulkDeleteAsync(list);
+        }
+
+        public async Task BulkDeleteAsync(TEntity entity)
+        {
+            var context = await this.GetContextAsync();
+            await context.BulkDeleteAsync(new List<TEntity> { entity });
         }
 
         public async Task BulkInsertOrUpdateAsync(IList<TEntity> list)
@@ -57,10 +75,22 @@ namespace BiiSoft.EntityFrameworkCore.Repositories
             await context.BulkInsertOrUpdateAsync(list);            
         }
 
+        public async Task BulkInsertOrUpdateAsync(TEntity entity)
+        {
+            var context = await this.GetContextAsync();
+            await context.BulkInsertOrUpdateAsync(new List<TEntity> { entity });
+        }
+
         public async Task BulkInsertOrUpdateOrDeleteAsync(IList<TEntity> list)
         {
             var context = await this.GetContextAsync();
             await context.BulkInsertOrUpdateOrDeleteAsync(list);
+        }
+        
+        public async Task BulkInsertOrUpdateOrDeleteAsync(TEntity entity)
+        {
+            var context = await this.GetContextAsync();
+            await context.BulkInsertOrUpdateOrDeleteAsync(new List<TEntity> { entity });
         }
 
         public async Task BulkReadAsync(IList<TEntity> list)

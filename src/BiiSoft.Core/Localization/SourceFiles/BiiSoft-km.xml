@@ -174,6 +174,7 @@
 		<text name="Exception">កំហុសលើកលែង</text>
 		<text name="LoginAsTenant">ចូលជាអ្នកជាវនេះ</text>
 		<text name="RecordNotFound">មិនមានទិន្នន័យ</text>
+		<text name="NotFound">{0} មិនមានក្នុងប្រព័ន្ធ</text>
 		<text name="Result">លទ្ធផល</text>
 		<text name="LoginAttempt">ប៉ុនប៉ងចូល</text>
 		<text name="LoginTime">ម៉ោងចូល</text>

@@ -40,7 +40,7 @@ namespace BiiSoft.Locations
             base.ValidateInput(input);
 
             ValidateInput(input.ISO, L("Code_", L("ISO")));
-            if (input.ISO.Length > 6) MoreThanCharsException(L("Code_", L("ISO")), 6);
+            if (input.ISO.Length > 6) MoreThanCharactersException(L("Code_", L("ISO")), 6);
             ValidateSelect(input.CountryId, L("Country"));
         }
 
@@ -112,14 +112,14 @@ namespace BiiSoft.Locations
                         ValidateDisplayName(displayName);
 
                         var iso = worksheet.GetString(i, 4);
-                        ValidateInput(iso, $"{L("Code_", L("ISO"))}, Row = {i}");
-                        if (iso.Length > 6) MoreThanCharsException(L("Code_", L("ISO")), 6);
-                        if (isoHash.Contains(iso)) DuplicateException($"{L("Code_", L("ISO"))} : {iso}, Row = {i}");
+                        ValidateInput(iso, L("Code_", L("ISO")), $", Row = {i}");
+                        if (iso.Length > 6) MoreThanCharactersException(L("Code_", L("ISO")), 6, $", Row = {i}");
+                        if (isoHash.Contains(iso)) DuplicateException(L("Code_", L("ISO")), $" : {iso}, Row = {i}");
 
                         Guid? countryId = null;
                         var countryISO = worksheet.GetString(i, 5);
-                        ValidateInput(countryISO, $"{L("Code_", L("Country"))}, Row = {i}");
-                        if (!countryDic.ContainsKey(countryISO)) InvalidException($"{L("Code_", L("Country"))} : {countryISO}, Row = {i}");
+                        ValidateInput(countryISO, L("Code_", L("Country")), $", Row = {i}");
+                        if (!countryDic.ContainsKey(countryISO)) InvalidException(L("Code_", L("Country")), $" : {countryISO}, Row = {i}");
                         countryId = countryDic[countryISO];
 
                         var latitude = worksheet.GetDecimalOrNull(i, 6);

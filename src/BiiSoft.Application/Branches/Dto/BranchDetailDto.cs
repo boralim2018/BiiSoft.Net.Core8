@@ -1,8 +1,6 @@
-﻿using BiiSoft.Dtos;
-using BiiSoft.Enums;
+﻿using BiiSoft.ContactInfo.Dto;
+using BiiSoft.Dtos;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace BiiSoft.Branches.Dto
 {
@@ -19,6 +17,8 @@ namespace BiiSoft.Branches.Dto
         public Guid? NextId { get; set; }
         public Guid? PreviousId { get; set; }
         public Guid? LastId { get; set; }
-        public List<BranchContactAddressDto> ContactAddresses { get; set; }
+        public ContactAddressDto BillingAddress { get; set; }
+        public bool SameAsBillingAddress { get; set; }
+        public ContactAddressDto ShippingAddress { get; set; }
     }
 }

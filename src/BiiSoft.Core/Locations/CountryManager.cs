@@ -38,16 +38,16 @@ namespace BiiSoft.Locations
         protected override void ValidateInput(Country input)
         {
             ValidateInput(input.Code, L("Code_", L("Location")));
-            if (input.Code.Length != BiiSoftConsts.LocationCodeLength) InvalidException($"{L("Code_", L("Location"))} : {input.Code}");
+            if (input.Code.Length != BiiSoftConsts.LocationCodeLength) InvalidException(L("Code_", L("Location")), $" : {input.Code}");
 
             base.ValidateInput(input);
 
             ValidateCodeInput(input.CountryCode);
-            if (input.CountryCode.ToString().Length > 3) MoreThanCharsCodeException(3);
+            if (input.CountryCode.ToString().Length > 3) MoreThanCharactersException(L("Code_", L("Country")), 3);
             ValidateInput(input.ISO, L("Code_", L("ISO")));
-            if (input.ISO.Length != 3) EqualCharsException(L("Code_", L("ISO")), 3);
+            if (input.ISO.Length != 3) EqualCharactersException(L("Code_", L("ISO")), 3);
             ValidateInput(input.ISO2, L("Code_", L("ISO2")));
-            if (input.ISO2.Length != 2) EqualCharsException(L("Code_", L("ISO2")), 2);
+            if (input.ISO2.Length != 2) EqualCharactersException(L("Code_", L("ISO2")), 2);
         }
 
         protected override async Task ValidateInputAsync(Country input)
@@ -113,9 +113,9 @@ namespace BiiSoft.Locations
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
                         string code = worksheet.GetString(i, 1);
-                        ValidateInput(code, $"{L("Code_", L("Location"))}, Row = {i}");
-                        if (code.Length != BiiSoftConsts.LocationCodeLength) InvalidException($"{L("Code_", L("Location"))} : {code}, Row = {i}");
-                        if (locationHash.Contains(code)) DuplicateException($"{L("Code_", L("Location"))} : {code}, Row = {i}");
+                        ValidateInput(code, L("Code_", L("Location")), $", Row = {i}");
+                        if (code.Length != BiiSoftConsts.LocationCodeLength) InvalidException(L("Code_", L("Location")), $" : {code}, Row = {i}");
+                        if (locationHash.Contains(code)) DuplicateException(L("Code_", L("Location")), $" : {code}, Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
                         ValidateName(name, $", Row = {i}");
@@ -126,17 +126,17 @@ namespace BiiSoft.Locations
 
                         int countryCode = Convert.ToInt32(worksheet.Cells[i, 4].Value??0);
                         ValidateCodeInput(countryCode, $", Row = {i}");
-                        if (countryCode.ToString().Length > 3) MoreThanCharsCodeException(3);
+                        if (countryCode.ToString().Length > 3) MoreThanCharactersException(L("Code_", L("Country")), 3, $", Row = {i}");
                         if (countryHash.Contains(countryCode)) DuplicateCodeException(countryCode.ToString(), $", Row = {i}");
                         
                         var iso = worksheet.GetString(i, 5);
-                        ValidateInput(iso, $"{L("Code_", L("ISO"))}, Row = {i}");
-                        if (iso.Length != 3) EqualCharsException(L("Code_", L("ISO")), 3, $", Row = {i}");
-                        if (isoHash.Contains(iso)) DuplicateException($"{L("Code_", L("ISO"))} : {iso}, Row = {i}");
+                        ValidateInput(iso, L("Code_", L("ISO")), $", Row = {i}");
+                        if (iso.Length != 3) EqualCharactersException(L("Code_", L("ISO")), 3, $", Row = {i}");
+                        if (isoHash.Contains(iso)) DuplicateException(L("Code_", L("ISO")), $" : {iso}, Row = {i}");
 
                         var iso2 = worksheet.GetString(i, 6);
-                        ValidateInput(iso2, $"{L("Code_", L("ISO2"))}, Row = {i}");
-                        if (iso2.Length != 2) EqualCharsException(L("Code_", L("ISO2")), 2, $", Row = {i}");
+                        ValidateInput(iso2, L("Code_", L("ISO2")), $", Row = {i}");
+                        if (iso2.Length != 2) EqualCharactersException(L("Code_", L("ISO2")), 2, $", Row = {i}");
 
                         var phonePrefix = worksheet.GetString(i, 7);
 
@@ -144,7 +144,7 @@ namespace BiiSoft.Locations
                         var currencyCode = worksheet.GetString(i, 8);
                         if (!currencyCode.IsNullOrWhiteSpace())
                         {
-                            if (!currencyDic.ContainsKey(currencyCode)) InvalidException($"{L("Code_", L("Currency"))}, Row = {i}");
+                            if (!currencyDic.ContainsKey(currencyCode)) InvalidException(L("Code_", L("Currency")), $", Row = {i}");
 
                             currencyId = currencyDic[currencyCode];
                         }

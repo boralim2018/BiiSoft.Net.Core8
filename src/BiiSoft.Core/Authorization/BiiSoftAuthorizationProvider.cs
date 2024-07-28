@@ -1221,15 +1221,6 @@ namespace BiiSoft.Authorization
             #region Administrations
             var administrationPage = page.CreateChildPermission(PermissionNames.Pages_Administrations, L("Administrations"));
 
-            //var groupPage = administrationPage.CreateChildPermission(PermissionNames.Pages_Administrations_Groups, L("Groups"), featureDependency: new SimpleFeatureDependency(AppFeatures.Administration_Users_Groups));
-            //groupPage.CreateChildPermission(PermissionNames.Pages_Administrations_Groups_Create, L("Create"), featureDependency: new SimpleFeatureDependency(AppFeatures.Administration_Users_Groups));
-            //groupPage.CreateChildPermission(PermissionNames.Pages_Administrations_Groups_View, L("View"), featureDependency: new SimpleFeatureDependency(AppFeatures.Administration_Users_Groups));
-            //groupPage.CreateChildPermission(PermissionNames.Pages_Administrations_Groups_Edit, L("Edit"), featureDependency: new SimpleFeatureDependency(AppFeatures.Administration_Users_Groups));
-            //groupPage.CreateChildPermission(PermissionNames.Pages_Administrations_Groups_Delete, L("Delete"), featureDependency: new SimpleFeatureDependency(AppFeatures.Administration_Users_Groups));
-            //groupPage.CreateChildPermission(PermissionNames.Pages_Administrations_Groups_Enable, L("Enable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Administration_Users_Groups));
-            //groupPage.CreateChildPermission(PermissionNames.Pages_Administrations_Groups_Disable, L("Disable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Administration_Users_Groups));
-            //groupPage.CreateChildPermission(PermissionNames.Pages_Administrations_Groups_ChangeMember, L("ChangeMembers"), featureDependency: new SimpleFeatureDependency(AppFeatures.Administration_Users_Groups));
-
             var userPage = administrationPage.CreateChildPermission(PermissionNames.Pages_Administrations_Users, L("Users"));
             userPage.CreateChildPermission(PermissionNames.Pages_Administrations_Users_Create, L("Create"));
             userPage.CreateChildPermission(PermissionNames.Pages_Administrations_Users_View, L("View"));
