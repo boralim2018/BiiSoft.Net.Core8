@@ -15,7 +15,7 @@ namespace BiiSoft.Branches
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long No { get; private set; }
         public int TenantId { get; set; }
-        [MaxLength(BiiSoftConsts.MaxLengthLongCode), Required]
+        [MaxLength(BiiSoftConsts.MaxLengthLongCode)]
         public string BusinessId { get; protected set; }
         [MaxLength(BiiSoftConsts.MaxLengthLongCode)]
         public string PhoneNumber { get; protected set; }

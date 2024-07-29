@@ -5,6 +5,8 @@ using Abp.Localization;
 using Abp.UI.Inputs;
 using AutoMapper;
 using BiiSoft.Authorization.Roles;
+using BiiSoft.ContactInfo;
+using BiiSoft.ContactInfo.Dto;
 using BiiSoft.Editions;
 using BiiSoft.Editions.Dto;
 using BiiSoft.Localization.Dto;
@@ -58,6 +60,8 @@ namespace BiiSoft
             ////Permission
             //configuration.CreateMap<Permission, FlatPermissionDto>();
             //configuration.CreateMap<Permission, FlatPermissionWithLevelDto>();
+
+            configuration.CreateMap<ContactAddressDto, ContactAddress>().ReverseMap();
 
             //Language
             configuration.CreateMap<ApplicationLanguage, ApplicationLanguageEditDto>();

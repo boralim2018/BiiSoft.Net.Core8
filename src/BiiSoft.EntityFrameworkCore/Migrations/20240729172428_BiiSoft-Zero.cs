@@ -361,7 +361,7 @@ namespace BiiSoft.Migrations
                     No = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TenantId = table.Column<int>(type: "integer", nullable: false),
-                    BusinessId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    BusinessId = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                     PhoneNumber = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                     Email = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                     Website = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),

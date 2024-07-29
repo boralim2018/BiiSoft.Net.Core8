@@ -632,6 +632,10 @@
 		<text name="LegalName">ឈ្មោះចុះបញ្ជី</text>
 		<text name="Address">អាសយដ្ឋាន</text>
 		<text name="ContactAddress">អាសយដ្ឋានទំនាក់ទំនង</text>
+		<text name="BillingAddress">អាសយដ្ឋានវិក្កយបត្រ</text>
+		<text name="ShippingAddress">អាសយដ្ឋានដឹកជញ្ជូន</text>
+		<text name="SameAsBillingAddress">ដូចអាសយដ្ឋានវិក្កយបត្រ</text>
+		<text name="PlaceOfBirth">ទីកន្លែងកំណើត</text>
 		<text name="AlreadyHasMembers">{0} មានសមាជិកភាពហើយ</text>
 		<text name="BusinessId">អក្សរកាត់</text>
 		<text name="PhoneNumber">លេខទូរសព្ទ</text>

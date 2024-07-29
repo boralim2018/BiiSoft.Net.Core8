@@ -1720,7 +1720,6 @@ namespace BiiSoft.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("BusinessId")
-                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20240728060004_BiiSoft-Zero")]
+    [Migration("20240729172428_BiiSoft-Zero")]
     partial class BiiSoftZero
     {
         /// <inheritdoc />
@@ -1723,7 +1723,6 @@ namespace BiiSoft.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("BusinessId")
-                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
