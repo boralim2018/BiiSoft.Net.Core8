@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Services;
+﻿using Abp.Domain.Entities;
+using Abp.Domain.Services;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ namespace BiiSoft.Locations
 {
     public interface IVillageManager : IDomainService
     {
-        Task<Village> GetAsync(Guid id, bool readOnly = true);
-        Task<IdentityResult> InsertAsync(int? tenantId, long userId, Village input);
+        Task<Village> FindAsync(IEntity<Guid> innput);
+        Task<Village> GetAsync(IEntity<Guid> innput);
+        Task<IdentityResult> InsertAsync(long userId, Village input);
         Task<IdentityResult> UpdateAsync(long userId, Village input);
-        Task<IdentityResult> DeleteAsync(Guid id);
-        Task<IdentityResult> EnableAsync(long userId, Guid id);
-        Task<IdentityResult> DisableAsync(long userId, Guid id);
+        Task<IdentityResult> DeleteAsync(IEntity<Guid> innput);
+        Task<IdentityResult> EnableAsync(long userId, IEntity<Guid> innput);
+        Task<IdentityResult> DisableAsync(long userId, IEntity<Guid> innput);
         Task<IdentityResult> ImportAsync(long userId, string fileToken);
     }
    

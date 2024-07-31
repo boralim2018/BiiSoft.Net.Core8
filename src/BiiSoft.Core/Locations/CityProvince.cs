@@ -1,5 +1,5 @@
 ﻿using Abp.Timing;
-using BiiSoft.Enums;
+using BiiSoft.Entities;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,14 +7,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BiiSoft.Locations
 {
     [Table("BiiCityProvinces")]
-    public class CityProvince : LocationBase
+    public class CityProvince : CanModifyNameActiveEntity<Guid>
     {
+        [MaxLength(6)]
+        public string Code { get; private set; }
         [MaxLength(6)]
         public string ISO { get; private set; }
         public Guid? CountryId { get; private set; }
         public Country Country { get; private set; }
 
-        public static CityProvince Create(long? userId, string code, string name, string displayName, string iso, Guid? countryId, decimal? lat, decimal? lng)
+        public static CityProvince Create(long? userId, string code, string name, string displayName, string iso, Guid? countryId)
         {
             return new CityProvince
             {
@@ -26,14 +28,12 @@ namespace BiiSoft.Locations
                 DisplayName = displayName,
                 ISO = iso,
                 CountryId = countryId,
-                Latitude = lat,
-                Longitude = lng,
                 IsActive = true,
             };
         }
 
 
-        public void Update(long? userId, string code, string name, string displayName, string iso, Guid? countryId, decimal? lat, decimal? lng)
+        public void Update(long? userId, string code, string name, string displayName, string iso, Guid? countryId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -41,8 +41,6 @@ namespace BiiSoft.Locations
             Name = name;
             DisplayName = displayName;          
             ISO = iso;
-            Latitude = lat;
-            Longitude = lng;
             CountryId = countryId;
         } 
        

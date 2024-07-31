@@ -57,14 +57,14 @@ namespace BiiSoft.Locations
             if (find != null && find.ISO == input.ISO) DuplicateException($"{L("Code_", L("ISO"))} : {input.ISO}");
         }
 
-        protected override CityProvince CreateInstance(int? tenantId, long userId, CityProvince input)
+        protected override CityProvince CreateInstance(long userId, CityProvince input)
         {
-            return CityProvince.Create(userId, input.Code, input.Name, input.DisplayName, input.ISO, input.CountryId, input.Latitude, input.Longitude);
+            return CityProvince.Create(userId, input.Code, input.Name, input.DisplayName, input.ISO, input.CountryId);
         }
 
         protected override void UpdateInstance(long userId, CityProvince input, CityProvince entity)
         {
-            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.ISO, input.CountryId, input.Latitude, input.Longitude);
+            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.ISO, input.CountryId);
         }
 
         #endregion
@@ -127,7 +127,7 @@ namespace BiiSoft.Locations
                         var cannotEdit = worksheet.GetBool(i, 8);
                         var cannotDelete = worksheet.GetBool(i, 9); 
 
-                        var entity = CityProvince.Create(userId, code, name, displayName, iso, countryId, latitude, longitude);
+                        var entity = CityProvince.Create(userId, code, name, displayName, iso, countryId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
@@ -155,7 +155,7 @@ namespace BiiSoft.Locations
             {
                 if (updateCityProvinceDic.ContainsKey(l.Code))
                 {
-                    updateCityProvinceDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.ISO, l.CountryId, l.Latitude, l.Longitude);
+                    updateCityProvinceDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.ISO, l.CountryId);
                     updateCityProvinceDic[l.Code].SetCannotEdit(l.CannotEdit);
                     updateCityProvinceDic[l.Code].SetCannotDelete(l.CannotDelete);
                 }

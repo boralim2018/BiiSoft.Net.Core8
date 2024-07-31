@@ -62,14 +62,14 @@ namespace BiiSoft.Locations
             if (find) DuplicateCodeException(input.Code);
         }
 
-        protected override KhanDistrict CreateInstance(int? tenantId, long userId, KhanDistrict input)
+        protected override KhanDistrict CreateInstance(long userId, KhanDistrict input)
         {
-            return KhanDistrict.Create(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.Latitude, input.Longitude);
+            return KhanDistrict.Create(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId);
         }
 
         protected override void UpdateInstance(long userId, KhanDistrict input, KhanDistrict entity)
         {
-            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.Latitude, input.Longitude);
+            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId);
         }
 
         #endregion
@@ -134,7 +134,7 @@ namespace BiiSoft.Locations
                         var cannotEdit = worksheet.GetBool(i, 8);
                         var cannotDelete = worksheet.GetBool(i, 9); 
 
-                        var entity = KhanDistrict.Create(userId, code, name, displayName, countryId, cityProvinceId, latitude, longitude);
+                        var entity = KhanDistrict.Create(userId, code, name, displayName, countryId, cityProvinceId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
@@ -161,7 +161,7 @@ namespace BiiSoft.Locations
             {
                 if (updateKhanDistrictDic.ContainsKey(l.Code))
                 {
-                    updateKhanDistrictDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.CountryId, l.CityProvinceId, l.Latitude, l.Longitude);
+                    updateKhanDistrictDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.CountryId, l.CityProvinceId);
                     updateKhanDistrictDic[l.Code].SetCannotEdit(l.CannotEdit);
                     updateKhanDistrictDic[l.Code].SetCannotDelete(l.CannotDelete);
                 }

@@ -119,24 +119,27 @@ namespace BiiSoft
 
         protected abstract Task ValidateInputAsync(TEntity input);
 
-        protected abstract TEntity CreateInstance(int? tenantId, long userId, TEntity input);
+        protected abstract TEntity CreateInstance(long userId, TEntity input);
 
-        public virtual async Task<IdentityResult> InsertAsync(int? tenantId, long userId, TEntity input)
+        public virtual async Task<IdentityResult> InsertAsync(long userId, TEntity input)
         {
             await ValidateInputAsync(input);
 
-            var entity = CreateInstance(tenantId, userId, input);
+            var entity = CreateInstance(userId, input);
 
             await _repository.InsertAsync(entity);
             input.Id = entity.Id;
             return IdentityResult.Success;
         }
 
-        public virtual async Task<TEntity> GetAsync(TPrimaryKey id, bool readOnly = true)
+        public virtual async Task<TEntity> FindAsync(IEntity<TPrimaryKey> input)
         {
-            return readOnly ?
-                   await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(id)) :
-                   await _repository.FirstOrDefaultAsync(u => u.Id.Equals(id));
+            return await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(input.Id));
+        }
+
+        public virtual async Task<TEntity> GetAsync(IEntity<TPrimaryKey> input)
+        {
+            return await _repository.FirstOrDefaultAsync(u => u.Id.Equals(input.Id));
         }
 
         protected virtual void ValidateDeletable(TEntity input, string message = "")
@@ -144,9 +147,9 @@ namespace BiiSoft
             if (input is ICanModifyEntity entity && entity.CannotDelete) NotDeletableException(InstanceName, message);
         }
 
-        public virtual async Task<IdentityResult> DeleteAsync(TPrimaryKey id)
+        public virtual async Task<IdentityResult> DeleteAsync(IEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(id, false);
+            var entity = await GetAsync(input);
             if (entity == null) NotFoundException(InstanceName);
             ValidateDeletable(entity);
 
@@ -164,7 +167,7 @@ namespace BiiSoft
         {
             await ValidateInputAsync(input);
 
-            var entity = await GetAsync(input.Id, false);
+            var entity = await GetAsync(input);
             if(entity == null) NotFoundException(InstanceName);
             ValidateEditable(entity);
 
@@ -298,10 +301,10 @@ namespace BiiSoft
             if (find) DuplicateCodeException(input.Code);
         }
 
-        public override async Task<IdentityResult> InsertAsync(int? tenantId, long userId, TEntity input)
+        public override async Task<IdentityResult> InsertAsync(long userId, TEntity input)
         {
             await SetCodeAsync(input);
-            return await base.InsertAsync(tenantId, userId, input);
+            return await base.InsertAsync(userId, input);
         }
         #endregion
     }
@@ -345,9 +348,9 @@ namespace BiiSoft
 
         }
 
-        public async Task<IdentityResult> EnableAsync(long userId, TPrimaryKey id)
+        public async Task<IdentityResult> EnableAsync(long userId, IEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(id, false);
+            var entity = await GetAsync(input);
             if(entity == null) NotFoundException(InstanceName);
 
             entity.Enable(true);
@@ -358,9 +361,9 @@ namespace BiiSoft
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DisableAsync(long userId, TPrimaryKey id)
+        public async Task<IdentityResult> DisableAsync(long userId, IEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(id, false);
+            var entity = await GetAsync(input);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(false);
@@ -380,14 +383,14 @@ namespace BiiSoft
 
         }
 
-        public async Task<IdentityResult> SetAsDefaultAsync(long userId, TPrimaryKey id)
+        public async Task<IdentityResult> SetAsDefaultAsync(long userId, IEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(id);
+            var entity = await GetAsync(input);
             if (entity == null) NotFoundException(InstanceName);
 
             var modificationTime = Clock.Now;
 
-            var otherDefault = await _repository.GetAll().Where(s => !s.Id.Equals(id) && s.IsDefault).AsNoTracking().ToListAsync();
+            var otherDefault = await _repository.GetAll().Where(s => !s.Id.Equals(input.Id) && s.IsDefault).AsNoTracking().ToListAsync();
             foreach (var d in otherDefault)
             {
                 d.SetDefault(false);
@@ -424,9 +427,9 @@ namespace BiiSoft
             ValidateDisplayName((input as INameEntity).DisplayName);
         }
 
-        public async Task<IdentityResult> EnableAsync(long userId, TPrimaryKey id)
+        public async Task<IdentityResult> EnableAsync(long userId, IEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(id, false);
+            var entity = await GetAsync(input);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(true);
@@ -437,9 +440,9 @@ namespace BiiSoft
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DisableAsync(long userId, TPrimaryKey id)
+        public async Task<IdentityResult> DisableAsync(long userId, IEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(id, false);
+            var entity = await GetAsync(input);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(false);

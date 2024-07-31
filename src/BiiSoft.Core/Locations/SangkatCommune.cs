@@ -1,13 +1,19 @@
-﻿using Abp.Timing;
+﻿using Abp.Domain.Entities;
+using Abp.Timing;
+using BiiSoft.Entities;
 using BiiSoft.Enums;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BiiSoft.Locations
 {
     [Table("BiiSangkatCommunes")]
-    public class SangkatCommune : LocationBase
+    public class SangkatCommune : CanModifyNameActiveEntity<Guid>, IMustHaveTenant
     {
+        public int TenantId { get; set; }
+        [MaxLength(12)]
+        public string Code { get; private set; }
         public Guid? CountryId { get; private set; }
         public Country Country { get; private set; }
         public Guid? CityProvinceId { get; private set; }
@@ -16,7 +22,7 @@ namespace BiiSoft.Locations
         public KhanDistrict KhanDistrict { get; private set; }
 
 
-        public static SangkatCommune Create(long? userId, string code, string name, string displayName, Guid? countryId, Guid? cityProvinceId, Guid? khanDistrictId, decimal? lat, decimal? lng)
+        public static SangkatCommune Create(long? userId, string code, string name, string displayName, Guid? countryId, Guid? cityProvinceId, Guid? khanDistrictId)
         {
             return new SangkatCommune
             {
@@ -28,15 +34,13 @@ namespace BiiSoft.Locations
                 DisplayName = displayName,     
                 CountryId = countryId,
                 CityProvinceId = cityProvinceId,
-                KhanDistrictId = khanDistrictId,        
-                Latitude = lat,
-                Longitude = lng,
+                KhanDistrictId = khanDistrictId,  
                 IsActive = true,
             };
         }
 
 
-        public void Update(long? userId, string code, string name, string displayName, Guid? countryId, Guid? cityProvinceId, Guid? khanDistrictId, decimal? lat, decimal? lng)
+        public void Update(long? userId, string code, string name, string displayName, Guid? countryId, Guid? cityProvinceId, Guid? khanDistrictId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -46,8 +50,6 @@ namespace BiiSoft.Locations
             CountryId = countryId;
             CityProvinceId = cityProvinceId;
             KhanDistrictId = khanDistrictId;
-            Latitude = lat;
-            Longitude = lng;
         } 
        
     }

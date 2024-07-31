@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Services;
+﻿using Abp.Domain.Entities;
+using Abp.Domain.Services;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -9,12 +10,13 @@ namespace BiiSoft.Locations
 {
     public interface ICountryManager : IDomainService
     {
-        Task<Country> GetAsync(Guid id, bool readOnly = true);
-        Task<IdentityResult> InsertAsync(int? tenantId, long userId, Country input);
+        Task<Country> FindAsync(IEntity<Guid> input);
+        Task<Country> GetAsync(IEntity<Guid> input);
+        Task<IdentityResult> InsertAsync(long userId, Country input);
         Task<IdentityResult> UpdateAsync(long userId, Country input);
-        Task<IdentityResult> DeleteAsync(Guid id);
-        Task<IdentityResult> EnableAsync(long userId, Guid id);
-        Task<IdentityResult> DisableAsync(long userId, Guid id);
+        Task<IdentityResult> DeleteAsync(IEntity<Guid> input);
+        Task<IdentityResult> EnableAsync(long userId, IEntity<Guid> input);
+        Task<IdentityResult> DisableAsync(long userId, IEntity<Guid> input);
         Task<IdentityResult> ImportAsync(long userId, string fileToken);
     }
    

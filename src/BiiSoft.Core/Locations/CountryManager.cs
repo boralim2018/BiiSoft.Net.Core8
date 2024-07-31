@@ -37,13 +37,10 @@ namespace BiiSoft.Locations
 
         protected override void ValidateInput(Country input)
         {
-            ValidateInput(input.Code, L("Code_", L("Location")));
-            if (input.Code.Length != BiiSoftConsts.LocationCodeLength) InvalidException(L("Code_", L("Location")), $" : {input.Code}");
-
             base.ValidateInput(input);
 
-            ValidateCodeInput(input.CountryCode);
-            if (input.CountryCode.ToString().Length > 3) MoreThanCharactersException(L("Code_", L("Country")), 3);
+            ValidateCodeInput(input.Code);
+            if (input.Code.ToString().Length > 3) MoreThanCharactersException(L("Code_", L("Country")), 3);
             ValidateInput(input.ISO, L("Code_", L("ISO")));
             if (input.ISO.Length != 3) EqualCharactersException(L("Code_", L("ISO")), 3);
             ValidateInput(input.ISO2, L("Code_", L("ISO2")));
@@ -61,22 +58,22 @@ namespace BiiSoft.Locations
             }
 
             var find = await _repository.GetAll().AsNoTracking()
-                             .FirstOrDefaultAsync(s => s.Id != input.Id && (s.CountryCode == input.CountryCode || s.Code == input.Code || s.ISO == input.ISO || s.Name == input.Name));
+                             .FirstOrDefaultAsync(s => s.Id != input.Id && (s.Code == input.Code || s.Code == input.Code || s.ISO == input.ISO || s.Name == input.Name));
 
             if (find != null && find.Code == input.Code) DuplicateException($"{L("Code_", L("Location"))} : {input.Code}");
             if (find != null && find.Name == input.Name) DuplicateNameException(input.Name);
-            if (find != null && find.CountryCode == input.CountryCode) DuplicateCodeException(input.CountryCode.ToString());
+            if (find != null && find.Code == input.Code) DuplicateCodeException(input.Code.ToString());
             if (find != null && find.ISO == input.ISO) throw DuplicateException($"{L("Code_", L("ISO"))} : {input.ISO}");
         }
 
-        protected override Country CreateInstance(int? tenantId, long userId, Country input)
+        protected override Country CreateInstance(long userId, Country input)
         {
-            return Country.Create(userId, input.Code, input.CountryCode, input.Name, input.DisplayName, input.ISO, input.ISO, input.PhonePrefix, input.CurrencyId, input.Latitude, input.Longitude);
+            return Country.Create(userId, input.Code, input.Name, input.DisplayName, input.ISO, input.ISO, input.PhonePrefix, input.CurrencyId);
         }
 
         protected override void UpdateInstance(long userId, Country input, Country entity)
         {
-            entity.Update(userId, input.Code, input.CountryCode, input.Name, input.DisplayName, input.ISO2, input.ISO, input.PhonePrefix, input.CurrencyId, input.Latitude, input.Longitude);
+            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.ISO2, input.ISO, input.PhonePrefix, input.CurrencyId);
         }
         #endregion
 
@@ -154,7 +151,7 @@ namespace BiiSoft.Locations
                         var cannotEdit = worksheet.GetBool(i, 11);
                         var cannotDelete = worksheet.GetBool(i, 12);
 
-                        var entity = Country.Create(userId, code, countryCode, name, displayName, iso2, iso, phonePrefix, currencyId, latitude, longitude);
+                        var entity = Country.Create(userId, code, name, displayName, iso2, iso, phonePrefix, currencyId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
@@ -183,7 +180,7 @@ namespace BiiSoft.Locations
             {
                 if (updateCountryDic.ContainsKey(l.Code))
                 {
-                    updateCountryDic[l.Code].Update(userId, l.Code, l.CountryCode, l.Name, l.DisplayName, l.ISO2, l.ISO, l.PhonePrefix, l.CurrencyId, l.Latitude, l.Longitude);
+                    updateCountryDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.ISO2, l.ISO, l.PhonePrefix, l.CurrencyId);
                     updateCountryDic[l.Code].SetCannotEdit(l.CannotEdit);
                     updateCountryDic[l.Code].SetCannotDelete(l.CannotDelete);
                 }

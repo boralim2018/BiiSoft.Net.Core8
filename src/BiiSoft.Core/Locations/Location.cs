@@ -8,14 +8,22 @@ using Abp.Timing;
 namespace BiiSoft.Locations
 {
     [Table("BiiLocations")]
-    public class Location : LocationBase, IMayHaveTenant, ICodeEntity
+    public class Location : CanModifyNameActiveEntity<Guid>, IMustHaveTenant
     {
-        public int? TenantId { get; set; }
+        public int TenantId { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
+
+
+        [Column(TypeName = "decimal(19,8)")]
+        public decimal? Latitude { get; protected set; }
+        [Column(TypeName = "decimal(19,8)")]
+        public decimal? Longitude { get; protected set; }
 
         public static Location Create(
-            int? tenantId,
-            long UserId,
-            string code,
+            int tenantId,
+            long userId,
             string name,
             string displayName,
             decimal? latitude,
@@ -26,9 +34,8 @@ namespace BiiSoft.Locations
             {
                 Id = Guid.NewGuid(),
                 TenantId = tenantId,
-                CreatorUserId = UserId,
+                CreatorUserId = userId,
                 CreationTime = Clock.Now,
-                Code = code,
                 Name = name,
                 DisplayName = displayName,
                 Latitude = latitude,
@@ -38,39 +45,20 @@ namespace BiiSoft.Locations
         }
 
         public void Update(
-            long UserId,
-            string code,
+            long userId,
             string name,
             string displayName,
             decimal? latitude,
             decimal? longitude
             )
         {
-            LastModifierUserId = UserId;
+            LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
-            Code = code;
             Name = name;
             DisplayName = displayName;
             Latitude = latitude;
             Longitude = longitude;
         }
-    }
-
-    public abstract class LocationBase : CanModifyNameActiveEntity<Guid>
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-
-        [Required]
-        [MaxLength(BiiSoftConsts.MaxLengthLongCode)]
-        public string Code { get; protected set; }
-        public void SetCode(string code) => Code = code;
-
-        [Column(TypeName = "decimal(19,8)")]
-        public decimal? Latitude { get; protected set; }
-        [Column(TypeName = "decimal(19,8)")]
-        public decimal? Longitude { get; protected set; }
-
     }
 
 }

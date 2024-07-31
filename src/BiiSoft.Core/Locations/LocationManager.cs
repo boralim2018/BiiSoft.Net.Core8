@@ -32,9 +32,9 @@ namespace BiiSoft.Locations
         protected override int CodeLength => BiiSoftConsts.LocationCodeLength;
         protected override string InstanceName => L("Location");
 
-        protected override Location CreateInstance(int? tenantId, long userId, Location input)
+        protected override Location CreateInstance(long userId, Location input)
         {
-            return Location.Create(tenantId, userId, input.Code, input.Name, input.DisplayName, input.Latitude, input.Longitude);
+            return Location.Create(input.TenantId, userId, input.Code, input.Name, input.DisplayName, input.Latitude, input.Longitude);
         }
 
         protected override void UpdateInstance(long userId, Location input, Location entity)
