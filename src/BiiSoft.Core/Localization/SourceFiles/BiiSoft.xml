@@ -283,6 +283,7 @@
 		<text name="Ledger">Ledger</text>
 		<text name="ProfitLoss">Profit Loss</text>
 		<text name="BalanceSheet">Balance Sheet</text>
+		<text name="FindBranches">Find Branches</text>
 		<text name="Branches">Branches</text>
 		<text name="Branch">Branch</text>
 		<text name="Contracts">Contracts</text>

@@ -4,14 +4,11 @@ using BiiSoft.Authorization.Roles;
 using BiiSoft.Authorization.Users;
 using BiiSoft.MultiTenancy;
 using Abp.Localization;
-using BiiSoft.Editions;
 using System;
-using System.Linq;
 using BiiSoft.Branches;
 using BiiSoft.BFiles;
 using BiiSoft.Locations;
 using BiiSoft.Currencies;
-using Abp.Application.Editions;
 using BiiSoft.ContactInfo;
 
 namespace BiiSoft.EntityFrameworkCore

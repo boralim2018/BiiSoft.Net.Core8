@@ -23,7 +23,7 @@ namespace BiiSoft.Branches
         public bool MultiBranchesEnable { get; protected set; }
         public void EnableMultiBranches(bool enable) { MultiBranchesEnable = enable; }
 
-        public ContactAddressLevel ContactAddressLevel { get; protected set; }
+        public AddressLevel ContactAddressLevel { get; protected set; }
 
         #region Financing
         public DateTime? BusinessStartDate { get; protected set; }
