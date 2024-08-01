@@ -21,7 +21,7 @@ using BiiSoft.FileStorages;
 using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
-using Abp.Runtime.Session;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Locations
 {
@@ -54,27 +54,32 @@ namespace BiiSoft.Locations
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Create)]
         public async Task<Guid> Create(CreateUpdateLocationInputDto input)
         {
-            var entity = ObjectMapper.Map<Location>(input);            
-            await _locationManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity);
+            var entity = MapEntity<Location, Guid>(input);
+
+            await _locationManager.InsertAsync(entity);
             return entity.Id;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
-            await _locationManager.DeleteAsync(input.Id);
+            CheckErrors(await _locationManager.DeleteAsync(input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            await _locationManager.DisableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _locationManager.DisableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            await _locationManager.EnableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _locationManager.EnableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Locations)]
@@ -90,7 +95,6 @@ namespace BiiSoft.Locations
                                     (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                                     (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                                     s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                                     s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
                         select new FindLocationDto
@@ -98,7 +102,6 @@ namespace BiiSoft.Locations
                             Id = l.Id,
                             Name = l.Name,
                             DisplayName = l.DisplayName,
-                            Code = l.Code,
                             IsActive = l.IsActive,
                         };
 
@@ -134,7 +137,6 @@ namespace BiiSoft.Locations
                             DisplayName = l.DisplayName,
                             CannotDelete = l.CannotDelete,
                             CannotEdit = l.CannotEdit,
-                            Code = l.Code,
                             IsActive = l.IsActive,
                             Latitude = l.Latitude,
                             Longitude = l.Longitude,
@@ -189,7 +191,6 @@ namespace BiiSoft.Locations
                                     (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                                     (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                                     s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                                     s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
                         join u in _userRepository.GetAll().AsNoTracking()
@@ -206,7 +207,6 @@ namespace BiiSoft.Locations
                             DisplayName = l.DisplayName,
                             CannotDelete = l.CannotDelete,
                             CannotEdit = l.CannotEdit,
-                            Code = l.Code,
                             IsActive = l.IsActive,
                             Latitude = l.Latitude,
                             Longitude = l.Longitude,
@@ -364,14 +364,17 @@ namespace BiiSoft.Locations
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            await _locationManager.ImportAsync(AbpSession.TenantId, AbpSession.UserId.Value, input.Token);
+            var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _locationManager.ImportAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Edit)]
         public async Task Update(CreateUpdateLocationInputDto input)
         {
-            var entity = ObjectMapper.Map<Location>(input);
-            await _locationManager.UpdateAsync(AbpSession.UserId.Value, entity);
+            var entity = MapEntity<Location, Guid>(input);
+
+            CheckErrors(await _locationManager.UpdateAsync(entity));
         }
     }
 }

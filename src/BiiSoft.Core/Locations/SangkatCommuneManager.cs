@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Locations
 {
@@ -42,7 +43,7 @@ namespace BiiSoft.Locations
         protected override void ValidateInput(SangkatCommune input)
         {
             ValidateCodeInput(input.Code);
-            if (input.Code.Length != BiiSoftConsts.LocationCodeLength) InvalidCodeException(input.Code);
+            if (input.Code.Length > BiiSoftConsts.SangkatCommuneCodeLength) InvalidCodeException(input.Code);
 
             base.ValidateInput(input);
 
@@ -69,14 +70,14 @@ namespace BiiSoft.Locations
             if (find) DuplicateCodeException(input.Code);
         }
 
-        protected override SangkatCommune CreateInstance(int? tenantId, long userId, SangkatCommune input)
+        protected override SangkatCommune CreateInstance(SangkatCommune input)
         {
-            return SangkatCommune.Create(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.Latitude, input.Longitude);
+            return SangkatCommune.Create(input.TenantId, input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.KhanDistrictId);
         }
 
-        protected override void UpdateInstance(long userId, SangkatCommune input, SangkatCommune entity)
+        protected override void UpdateInstance(SangkatCommune input, SangkatCommune entity)
         {
-            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.Latitude, input.Longitude);
+            entity.Update(input.LastModifierUserId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.KhanDistrictId);
         }
 
         #endregion
@@ -88,7 +89,7 @@ namespace BiiSoft.Locations
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(long userId, string fileToken)
+        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
         {
             var sangkatCommunes = new List<SangkatCommune>();
             var sangkatCommuneHash = new HashSet<string>();
@@ -104,7 +105,7 @@ namespace BiiSoft.Locations
             }
 
             //var excelPackage = Read(input, _appFolders);
-            var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
                 // Get the work book in the file
@@ -117,7 +118,7 @@ namespace BiiSoft.Locations
                     {
                         string code = worksheet.GetString(i, 1);
                         ValidateCodeInput(code, $", Row = {i}");
-                        if (code.Length != BiiSoftConsts.LocationCodeLength) InvalidCodeException(code, $", Row = {i}");
+                        if (code.Length > BiiSoftConsts.SangkatCommuneCodeLength) InvalidCodeException(code, $", Row = {i}");
                         if (sangkatCommuneHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
@@ -149,7 +150,7 @@ namespace BiiSoft.Locations
                         var cannotEdit = worksheet.GetBool(i, 9);
                         var cannotDelete = worksheet.GetBool(i, 10);
 
-                        var entity = SangkatCommune.Create(userId, code, name, displayName, countryId, cityProvinceId, khanDistrictId, latitude, longitude);
+                        var entity = SangkatCommune.Create(input.TenantId.Value, input.UserId, code, name, displayName, countryId, cityProvinceId, khanDistrictId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
@@ -176,7 +177,7 @@ namespace BiiSoft.Locations
             {
                 if (updateSangkatCommuneDic.ContainsKey(l.Code))
                 {
-                    updateSangkatCommuneDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.CountryId, l.CityProvinceId, l.KhanDistrictId, l.Latitude, l.Longitude);
+                    updateSangkatCommuneDic[l.Code].Update(input.UserId, l.Code, l.Name, l.DisplayName, l.CountryId, l.CityProvinceId, l.KhanDistrictId);
                     updateSangkatCommuneDic[l.Code].SetCannotEdit(l.CannotEdit);
                     updateSangkatCommuneDic[l.Code].SetCannotDelete(l.CannotDelete);
                 }

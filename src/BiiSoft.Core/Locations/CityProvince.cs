@@ -9,6 +9,8 @@ namespace BiiSoft.Locations
     [Table("BiiCityProvinces")]
     public class CityProvince : CanModifyNameActiveEntity<Guid>
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
         [MaxLength(6)]
         public string Code { get; private set; }
         [MaxLength(6)]

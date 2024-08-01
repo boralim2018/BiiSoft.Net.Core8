@@ -22,6 +22,7 @@ using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.KhanDistricts.Dto;
+using BiiSoft.Entities;
 
 namespace BiiSoft.KhanDistricts
 {
@@ -54,28 +55,32 @@ namespace BiiSoft.KhanDistricts
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_KhanDistricts_Create)]
         public async Task<Guid> Create(CreateUpdateKhanDistrictInputDto input)
         {
-            var entity = ObjectMapper.Map<KhanDistrict>(input);
+            var entity = MapEntity<KhanDistrict, Guid>(input);
             
-            await _khanDistrictManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity);
+            CheckErrors(await _khanDistrictManager.InsertAsync(entity));
             return entity.Id;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_KhanDistricts_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
-            await _khanDistrictManager.DeleteAsync(input.Id);
+            CheckErrors(await _khanDistrictManager.DeleteAsync(input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_KhanDistricts_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            await _khanDistrictManager.DisableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _khanDistrictManager.DisableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_KhanDistricts_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            await _khanDistrictManager.EnableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _khanDistrictManager.EnableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_KhanDistricts)]
@@ -149,8 +154,6 @@ namespace BiiSoft.KhanDistricts
                             CannotEdit = l.CannotEdit,
                             Code = l.Code,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -233,8 +236,6 @@ namespace BiiSoft.KhanDistricts
                             CannotDelete = l.CannotDelete,
                             CannotEdit = l.CannotEdit,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -393,14 +394,17 @@ namespace BiiSoft.KhanDistricts
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            await _khanDistrictManager.ImportAsync(AbpSession.UserId.Value, input.Token);
+            var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _khanDistrictManager.ImportAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_KhanDistricts_Edit)]
         public async Task Update(CreateUpdateKhanDistrictInputDto input)
         {
-            var entity = ObjectMapper.Map<KhanDistrict>(input);
-            await _khanDistrictManager.UpdateAsync(AbpSession.UserId.Value, entity);
+            var entity = MapEntity<KhanDistrict, Guid>(input);
+
+            CheckErrors(await _khanDistrictManager.UpdateAsync(entity));
         }
     }
 }

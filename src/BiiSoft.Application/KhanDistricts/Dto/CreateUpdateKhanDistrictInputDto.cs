@@ -15,8 +15,6 @@ namespace BiiSoft.KhanDistricts.Dto
         public string Code { get; set; }
         public Guid? CountryId { get; set; }
         public Guid? CityProvinceId { get; set; }
-        public decimal? Latitude { get; set; }
-        public decimal? Longitude { get; set; }
     }
 
 }

@@ -21,6 +21,7 @@ using BiiSoft.FileStorages;
 using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Currencies
 {
@@ -53,9 +54,9 @@ namespace BiiSoft.Currencies
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_Create)]
         public async Task<long> Create(CreateUpdateCurrencyInputDto input)
         {
-            var entity = ObjectMapper.Map<Currency>(input);
+            var entity = MapEntity<Currency, long>(input);
             
-            await _currencyManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity);
+            CheckErrors(await _currencyManager.InsertAsync(entity));
             return entity.Id;
         }
 
@@ -68,19 +69,25 @@ namespace BiiSoft.Currencies
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_Disable)]
         public async Task Disable(EntityDto<long> input)
         {
-            await _currencyManager.DisableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<long>, long>(input);
+
+            CheckErrors(await _currencyManager.DisableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_Enable)]
         public async Task Enable(EntityDto<long> input)
         {
-            await _currencyManager.EnableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<long>, long>(input);
+
+            CheckErrors(await _currencyManager.EnableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_SetAsDefault)]
         public async Task SetAsDefault(EntityDto<long> input)
         {
-            await _currencyManager.SetAsDefaultAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<long>, long>(input);
+
+            CheckErrors(await _currencyManager.SetAsDefaultAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Currencies)]
@@ -364,14 +371,17 @@ namespace BiiSoft.Currencies
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            await _currencyManager.ImportAsync(AbpSession.UserId.Value, input.Token);
+            var entity = MapEntity<ImportExcelEntity<long>, long>(input);
+
+            CheckErrors(await _currencyManager.ImportAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_Edit)]
         public async Task Update(CreateUpdateCurrencyInputDto input)
         {
-            var entity = ObjectMapper.Map<Currency>(input);
-            await _currencyManager.UpdateAsync(AbpSession.UserId.Value, entity);
+            var entity = MapEntity<Currency, long>(input);
+
+            CheckErrors(await _currencyManager.UpdateAsync(entity));
         }
     }
 }

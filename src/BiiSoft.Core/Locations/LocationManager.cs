@@ -11,10 +11,11 @@ using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.FileStorages;
 using BiiSoft.Extensions;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Locations
 {
-    public class LocationManager : BiiSoftCodeGenerateNameActiveValidateServiceBase<Location, Guid>, ILocationManager
+    public class LocationManager : BiiSoftNameActiveValidateServiceBase<Location, Guid>, ILocationManager
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
@@ -28,18 +29,17 @@ namespace BiiSoft.Locations
         }
 
         #region override base class
-        protected override string Prefix => "L";
-        protected override int CodeLength => BiiSoftConsts.LocationCodeLength;
+      
         protected override string InstanceName => L("Location");
 
-        protected override Location CreateInstance(long userId, Location input)
+        protected override Location CreateInstance(Location input)
         {
-            return Location.Create(input.TenantId, userId, input.Code, input.Name, input.DisplayName, input.Latitude, input.Longitude);
+            return Location.Create(input.TenantId, input.CreatorUserId.Value, input.Name, input.DisplayName, input.Latitude, input.Longitude);
         }
 
-        protected override void UpdateInstance(long userId, Location input, Location entity)
+        protected override void UpdateInstance(Location input, Location entity)
         {
-            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.Latitude, input.Longitude);
+            entity.Update(input.LastModifierUserId.Value, input.Name, input.DisplayName, input.Latitude, input.Longitude);
         }
 
         #endregion
@@ -52,24 +52,12 @@ namespace BiiSoft.Locations
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(int? tenantId, long userId, string fileToken)
+        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
         {
             var locations = new List<Location>();
-            var locationHash = new HashSet<string>();
-            var latestCode = "";
-
-            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
-            {
-                using (_unitOfWorkManager.Current.SetTenantId(tenantId))
-                {
-                    latestCode = await GetLatestCodeAsync();
-                }
-            }
-
-            if (latestCode.IsNullOrWhiteSpace()) latestCode = GenerateCode(0);
-
+          
             //var excelPackage = Read(input, _appFolders);
-            var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
                 // Get the work book in the file
@@ -79,81 +67,34 @@ namespace BiiSoft.Locations
                     // retrive first worksheets
                     var worksheet = excelPackage.Workbook.Worksheets[0];
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
-                    {
-                        var code = worksheet.GetString(i, 1); 
-                        ValidateAutoCodeIfHasValue(code, $", Row: {i}");
-
-                        if (code.IsNullOrWhiteSpace())
-                        {
-                            code = latestCode.NextCode(Prefix);
-                            ValidateCodeOutOfRange(latestCode, $", Row = {i}");
-
-                            latestCode = code;
-                        }
-                        else
-                        {
-                            latestCode = latestCode.MaxCode(code, Prefix);
-                        }
-
-                        if (locationHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
-
-                        var name = worksheet.GetString(i, 2);
+                    { 
+                        var name = worksheet.GetString(i, 1);
                         ValidateName(name, $", Row: {i}");
 
-                        var displayName = worksheet.GetString(i, 3);
+                        var displayName = worksheet.GetString(i, 2);
                         ValidateDisplayName(name, $", Row: {i}");
 
-                        var latitude = worksheet.GetDecimalOrNull(i, 4);
-                        var longitude = worksheet.GetDecimalOrNull(i, 5);
-                        var cannotEdit = worksheet.GetBool(i, 6);
-                        var cannotDelete = worksheet.GetBool(i, 7); 
+                        var latitude = worksheet.GetDecimalOrNull(i, 3);
+                        var longitude = worksheet.GetDecimalOrNull(i, 4);
+                        var cannotEdit = worksheet.GetBool(i, 5);
+                        var cannotDelete = worksheet.GetBool(i, 6); 
 
-                        var entity = Location.Create(tenantId, userId, code, name, displayName, latitude, longitude);
+                        var entity = Location.Create(input.TenantId.Value, input.UserId.Value, name, displayName, latitude, longitude);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
                         locations.Add(entity);
-                        locationHash.Add(entity.Code);
                     }
                 }
             }
 
             if (!locations.Any()) return IdentityResult.Success;
 
-            var updateLocationDic = new Dictionary<string, Location>();
-
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                using (_unitOfWorkManager.Current.SetTenantId(tenantId))
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
                 {
-                    updateLocationDic = await _repository.GetAll().AsNoTracking()
-                               .Where(s => locationHash.Contains(s.Code))
-                               .ToDictionaryAsync(k => k.Code, v => v);
-                }
-            }
-           
-            var addLocations = new List<Location>();
-
-            foreach (var l in locations)
-            {
-                if (updateLocationDic.ContainsKey(l.Code))
-                {
-                    updateLocationDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.Latitude, l.Longitude);
-                    updateLocationDic[l.Code].SetCannotEdit(l.CannotEdit);
-                    updateLocationDic[l.Code].SetCannotDelete(l.CannotDelete);
-                }
-                else
-                {
-                    addLocations.Add(l);
-                }
-            }
-
-            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
-            {
-                using (_unitOfWorkManager.Current.SetTenantId(tenantId))
-                {
-                    if (updateLocationDic.Any()) await _repository.BulkUpdateAsync(updateLocationDic.Values.ToList());
-                    if (addLocations.Any()) await _repository.BulkInsertAsync(addLocations);
+                   await _repository.BulkInsertAsync(locations);
                 }
 
                 await uow.CompleteAsync();
@@ -162,5 +103,114 @@ namespace BiiSoft.Locations
             return IdentityResult.Success;
         }
 
+        //public async Task<IdentityResult> ImportAsync(int? tenantId, long userId, string fileToken)
+        //{
+        //    var locations = new List<Location>();
+        //    var locationHash = new HashSet<string>();
+        //    var latestCode = "";
+
+        //    using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+        //    {
+        //        using (_unitOfWorkManager.Current.SetTenantId(tenantId))
+        //        {
+        //            latestCode = await GetLatestCodeAsync();
+        //        }
+        //    }
+
+        //    if (latestCode.IsNullOrWhiteSpace()) latestCode = GenerateCode(0);
+
+        //    //var excelPackage = Read(input, _appFolders);
+        //    var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+        //    if (excelPackage != null)
+        //    {
+        //        // Get the work book in the file
+        //        var workBook = excelPackage.Workbook;
+        //        if (workBook != null)
+        //        {
+        //            // retrive first worksheets
+        //            var worksheet = excelPackage.Workbook.Worksheets[0];
+        //            for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
+        //            {
+        //                var code = worksheet.GetString(i, 1);
+        //                ValidateAutoCodeIfHasValue(code, $", Row: {i}");
+
+        //                if (code.IsNullOrWhiteSpace())
+        //                {
+        //                    code = latestCode.NextCode(Prefix);
+        //                    ValidateCodeOutOfRange(latestCode, $", Row = {i}");
+
+        //                    latestCode = code;
+        //                }
+        //                else
+        //                {
+        //                    latestCode = latestCode.MaxCode(code, Prefix);
+        //                }
+
+        //                if (locationHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
+
+        //                var name = worksheet.GetString(i, 2);
+        //                ValidateName(name, $", Row: {i}");
+
+        //                var displayName = worksheet.GetString(i, 3);
+        //                ValidateDisplayName(name, $", Row: {i}");
+
+        //                var latitude = worksheet.GetDecimalOrNull(i, 4);
+        //                var longitude = worksheet.GetDecimalOrNull(i, 5);
+        //                var cannotEdit = worksheet.GetBool(i, 6);
+        //                var cannotDelete = worksheet.GetBool(i, 7);
+
+        //                var entity = Location.Create(tenantId, userId, code, name, displayName, latitude, longitude);
+        //                entity.SetCannotEdit(cannotEdit);
+        //                entity.SetCannotDelete(cannotDelete);
+
+        //                locations.Add(entity);
+        //                locationHash.Add(entity.Code);
+        //            }
+        //        }
+        //    }
+
+        //    if (!locations.Any()) return IdentityResult.Success;
+
+        //    var updateLocationDic = new Dictionary<string, Location>();
+
+        //    using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+        //    {
+        //        using (_unitOfWorkManager.Current.SetTenantId(tenantId))
+        //        {
+        //            updateLocationDic = await _repository.GetAll().AsNoTracking()
+        //                       .Where(s => locationHash.Contains(s.Code))
+        //                       .ToDictionaryAsync(k => k.Code, v => v);
+        //        }
+        //    }
+
+        //    var addLocations = new List<Location>();
+
+        //    foreach (var l in locations)
+        //    {
+        //        if (updateLocationDic.ContainsKey(l.Code))
+        //        {
+        //            updateLocationDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.Latitude, l.Longitude);
+        //            updateLocationDic[l.Code].SetCannotEdit(l.CannotEdit);
+        //            updateLocationDic[l.Code].SetCannotDelete(l.CannotDelete);
+        //        }
+        //        else
+        //        {
+        //            addLocations.Add(l);
+        //        }
+        //    }
+
+        //    using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+        //    {
+        //        using (_unitOfWorkManager.Current.SetTenantId(tenantId))
+        //        {
+        //            if (updateLocationDic.Any()) await _repository.BulkUpdateAsync(updateLocationDic.Values.ToList());
+        //            if (addLocations.Any()) await _repository.BulkInsertAsync(addLocations);
+        //        }
+
+        //        await uow.CompleteAsync();
+        //    }
+
+        //    return IdentityResult.Success;
+        //}
     }
 }

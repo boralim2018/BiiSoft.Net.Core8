@@ -260,3 +260,4 @@ src/BiiSoft.Web.Mvc/App_Data/Logs/
 src/BiiSoft.Migrator/Logs/Logs.txt
 build/outputs/
 docker/mvc/Mvc-Logs/
+src/BiiSoft.Web.Host/wwwroot/Downloads/

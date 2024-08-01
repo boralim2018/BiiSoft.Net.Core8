@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
 using Abp.Domain.Entities;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Locations
 {
@@ -66,14 +67,14 @@ namespace BiiSoft.Locations
             if (find != null && find.ISO == input.ISO) throw DuplicateException($"{L("Code_", L("ISO"))} : {input.ISO}");
         }
 
-        protected override Country CreateInstance(long userId, Country input)
+        protected override Country CreateInstance(Country input)
         {
-            return Country.Create(userId, input.Code, input.Name, input.DisplayName, input.ISO, input.ISO, input.PhonePrefix, input.CurrencyId);
+            return Country.Create(input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.ISO, input.ISO, input.PhonePrefix, input.CurrencyId);
         }
 
-        protected override void UpdateInstance(long userId, Country input, Country entity)
+        protected override void UpdateInstance(Country input, Country entity)
         {
-            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.ISO2, input.ISO, input.PhonePrefix, input.CurrencyId);
+            entity.Update(input.LastModifierUserId, input.Code, input.Name, input.DisplayName, input.ISO2, input.ISO, input.PhonePrefix, input.CurrencyId);
         }
         #endregion
 
@@ -83,12 +84,11 @@ namespace BiiSoft.Locations
         /// <param name="userId"></param>
         /// <param name="fileToken"></param>
         /// <returns></returns>
-        public async Task<IdentityResult> ImportAsync(long userId, string fileToken)
+        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
         {
             var countries = new List<Country>();
-            var countryHash = new HashSet<int>();
+            var countryHash = new HashSet<string>();
             var nameHash = new HashSet<string>();
-            var locationHash = new HashSet<string>();
             var isoHash = new HashSet<string>();
             var currencyDic = new Dictionary<string, long>();
 
@@ -98,7 +98,7 @@ namespace BiiSoft.Locations
             }
 
             //var excelPackage = Read(input, _appFolders);
-            var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
                 // Get the work book in the file
@@ -110,9 +110,9 @@ namespace BiiSoft.Locations
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
                         string code = worksheet.GetString(i, 1);
-                        ValidateInput(code, L("Code_", L("Location")), $", Row = {i}");
-                        if (code.Length != BiiSoftConsts.LocationCodeLength) InvalidException(L("Code_", L("Location")), $" : {code}, Row = {i}");
-                        if (locationHash.Contains(code)) DuplicateException(L("Code_", L("Location")), $" : {code}, Row = {i}");
+                        ValidateCodeInput(code, $", Row = {i}");
+                        if (code.Length > BiiSoftConsts.CountryCodeLength) InvalidException(L("Code_", InstanceName), $" : {code}, Row = {i}");
+                        if (countryHash.Contains(code)) DuplicateException(L("Code_", InstanceName), $" : {code}, Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
                         ValidateName(name, $", Row = {i}");
@@ -121,24 +121,19 @@ namespace BiiSoft.Locations
                         var displayName = worksheet.GetString(i, 3);
                         ValidateDisplayName(displayName, $", Row = {i}");
 
-                        int countryCode = Convert.ToInt32(worksheet.Cells[i, 4].Value??0);
-                        ValidateCodeInput(countryCode, $", Row = {i}");
-                        if (countryCode.ToString().Length > 3) MoreThanCharactersException(L("Code_", L("Country")), 3, $", Row = {i}");
-                        if (countryHash.Contains(countryCode)) DuplicateCodeException(countryCode.ToString(), $", Row = {i}");
-                        
-                        var iso = worksheet.GetString(i, 5);
+                        var iso = worksheet.GetString(i, 4);
                         ValidateInput(iso, L("Code_", L("ISO")), $", Row = {i}");
                         if (iso.Length != 3) EqualCharactersException(L("Code_", L("ISO")), 3, $", Row = {i}");
                         if (isoHash.Contains(iso)) DuplicateException(L("Code_", L("ISO")), $" : {iso}, Row = {i}");
 
-                        var iso2 = worksheet.GetString(i, 6);
+                        var iso2 = worksheet.GetString(i, 5);
                         ValidateInput(iso2, L("Code_", L("ISO2")), $", Row = {i}");
                         if (iso2.Length != 2) EqualCharactersException(L("Code_", L("ISO2")), 2, $", Row = {i}");
 
-                        var phonePrefix = worksheet.GetString(i, 7);
+                        var phonePrefix = worksheet.GetString(i, 6);
 
                         long? currencyId = null;
-                        var currencyCode = worksheet.GetString(i, 8);
+                        var currencyCode = worksheet.GetString(i, 7);
                         if (!currencyCode.IsNullOrWhiteSpace())
                         {
                             if (!currencyDic.ContainsKey(currencyCode)) InvalidException(L("Code_", L("Currency")), $", Row = {i}");
@@ -146,18 +141,15 @@ namespace BiiSoft.Locations
                             currencyId = currencyDic[currencyCode];
                         }
 
-                        var latitude = worksheet.GetDecimalOrNull(i, 9);
-                        var longitude = worksheet.GetDecimalOrNull(i, 10);
-                        var cannotEdit = worksheet.GetBool(i, 11);
-                        var cannotDelete = worksheet.GetBool(i, 12);
+                        var cannotEdit = worksheet.GetBool(i, 8);
+                        var cannotDelete = worksheet.GetBool(i, 9);
 
-                        var entity = Country.Create(userId, code, name, displayName, iso2, iso, phonePrefix, currencyId);
+                        var entity = Country.Create(input.UserId, code, name, displayName, iso2, iso, phonePrefix, currencyId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
                         countries.Add(entity);
-                        locationHash.Add(code);
-                        countryHash.Add(countryCode);
+                        countryHash.Add(code);
                         isoHash.Add(iso);
                     }
                 }
@@ -170,7 +162,7 @@ namespace BiiSoft.Locations
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
                 updateCountryDic = await _repository.GetAll().AsNoTracking()
-                                        .Where(s => locationHash.Contains(s.Code))
+                                        .Where(s => countryHash.Contains(s.Code))
                                         .ToDictionaryAsync(k => k.Code, v => v);
             }
 
@@ -180,7 +172,7 @@ namespace BiiSoft.Locations
             {
                 if (updateCountryDic.ContainsKey(l.Code))
                 {
-                    updateCountryDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.ISO2, l.ISO, l.PhonePrefix, l.CurrencyId);
+                    updateCountryDic[l.Code].Update(input.UserId, l.Code, l.Name, l.DisplayName, l.ISO2, l.ISO, l.PhonePrefix, l.CurrencyId);
                     updateCountryDic[l.Code].SetCannotEdit(l.CannotEdit);
                     updateCountryDic[l.Code].SetCannotDelete(l.CannotDelete);
                 }

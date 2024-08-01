@@ -10,6 +10,7 @@ using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.FileStorages;
 using BiiSoft.Extensions;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Currencies
 {
@@ -45,14 +46,14 @@ namespace BiiSoft.Currencies
         }
 
 
-        protected override Currency CreateInstance(int? tenantId, long userId, Currency input)
+        protected override Currency CreateInstance(Currency input)
         {
-            return Currency.Create(userId, input.Name, input.DisplayName, input.Code, input.Symbol);
+            return Currency.Create(input.CreatorUserId, input.Name, input.DisplayName, input.Code, input.Symbol);
         }
 
-        protected override void UpdateInstance(long userId, Currency input, Currency entity)
+        protected override void UpdateInstance(Currency input, Currency entity)
         {
-            entity.Update(userId, input.Name, input.DisplayName, input.Code, input.Symbol);
+            entity.Update(input.LastModifierUserId, input.Name, input.DisplayName, input.Code, input.Symbol);
         }
 
         #endregion
@@ -65,14 +66,14 @@ namespace BiiSoft.Currencies
         /// <param name="input"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(long userId, string fileToken)
+        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<long> input)
         {  
             var currencys = new List<Currency>();
             var currencyHash = new HashSet<string>();
             var defaultCode = "";
 
             //var excelPackage = Read(input, _appFolders);
-            var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
                 // Get the work book in the file
@@ -99,7 +100,7 @@ namespace BiiSoft.Currencies
                         if (isDefault && defaultCode != "") MoreThanException(L("Default"), 1.ToString(), $", Row = {i}");
                         else if (isDefault) defaultCode = code;
 
-                        var entity = Currency.Create(userId, name, displayName, code, symbol??code);
+                        var entity = Currency.Create(input.UserId, name, displayName, code, symbol??code);
                         if(isDefault) entity.SetDefault(isDefault);
 
                         currencys.Add(entity);
@@ -130,7 +131,7 @@ namespace BiiSoft.Currencies
             {   
                 if (updateCurrencyDic.ContainsKey(i.Code))
                 {
-                    updateCurrencyDic[i.Code].Update(userId, i.Name, i.DisplayName, i.Code, i.Symbol);
+                    updateCurrencyDic[i.Code].Update(input.UserId, i.Name, i.DisplayName, i.Code, i.Symbol);
                     updateCurrencyDic[i.Code].SetDefault(i.IsDefault);
                 }
                 else

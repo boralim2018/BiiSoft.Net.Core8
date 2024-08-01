@@ -22,6 +22,7 @@ using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.SangkatCommunes.Dto;
+using BiiSoft.Entities;
 
 namespace BiiSoft.SangkatCommunes
 {
@@ -43,39 +44,43 @@ namespace BiiSoft.SangkatCommunes
             IBiiSoftRepository<SangkatCommune, Guid> sangkatCommuneRepository,
             IBiiSoftRepository<User, long> userRepository)
         {
-            _sangkatCommuneManager=sangkatCommuneManager;
-            _sangkatCommuneRepository=sangkatCommuneRepository;
-            _userRepository=userRepository;
-            _fileStorageManager=fileStorageManager;
-            _appFolders=appFolders;
-            _unitOfWorkManager=unitOfWorkManager;
+            _sangkatCommuneManager = sangkatCommuneManager;
+            _sangkatCommuneRepository = sangkatCommuneRepository;
+            _userRepository = userRepository;
+            _fileStorageManager = fileStorageManager;
+            _appFolders = appFolders;
+            _unitOfWorkManager = unitOfWorkManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Create)]
         public async Task<Guid> Create(CreateUpdateSangkatCommuneInputDto input)
         {
-            var entity = ObjectMapper.Map<SangkatCommune>(input);
-            
-            await _sangkatCommuneManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity);
+            var entity = MapEntity<SangkatCommune, Guid>(input);
+
+            CheckErrors(await _sangkatCommuneManager.InsertAsync(entity));
             return entity.Id;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
-            await _sangkatCommuneManager.DeleteAsync(input.Id);
+            CheckErrors(await _sangkatCommuneManager.DeleteAsync(input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            await _sangkatCommuneManager.DisableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _sangkatCommuneManager.DisableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            await _sangkatCommuneManager.EnableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _sangkatCommuneManager.EnableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_SangkatCommunes)]
@@ -153,8 +158,6 @@ namespace BiiSoft.SangkatCommunes
                             CannotEdit = l.CannotEdit,
                             Code = l.Code,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -185,10 +188,10 @@ namespace BiiSoft.SangkatCommunes
                                })
                                .FirstOrDefaultAsync();
 
-            if (record.First != null) result.FirstId = record.First.Id;
-            if (record.Pervious != null) result.PreviousId = record.Pervious.Id;
-            if (record.Next != null) result.NextId = record.Next.Id;
-            if (record.Last != null) result.LastId = record.Last.Id;
+            if (record.First is not null) result.FirstId = record.First.Id;
+            if (record.Pervious is not null) result.PreviousId = record.Pervious.Id;
+            if (record.Next is not null) result.NextId = record.Next.Id;
+            if (record.Last is not null) result.LastId = record.Last.Id;
 
             return result;
         }
@@ -242,8 +245,6 @@ namespace BiiSoft.SangkatCommunes
                             CannotDelete = l.CannotDelete,
                             CannotEdit = l.CannotEdit,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -293,7 +294,7 @@ namespace BiiSoft.SangkatCommunes
             using (var p = new ExcelPackage())
             {
                 var ws = p.CreateSheet(result.FileName.RemoveExtension());
-              
+
                 #region Row 1 Header Table
                 int rowTableHeader = 1;
                 //int colHeaderTable = 1;
@@ -324,14 +325,14 @@ namespace BiiSoft.SangkatCommunes
                         if (col.ColumnName == "CreatorUserName")
                         {
                             var newValue = value;
-                            if(row.CreationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.CreationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
+                            if (row.CreationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.CreationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
 
                             col.WriteCell(ws, rowIndex, colIndex, newValue);
                         }
                         else if (col.ColumnName == "LastModifierUserName")
                         {
                             var newValue = value;
-                            if(row.LastModificationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.LastModificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
+                            if (row.LastModificationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.LastModificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
 
                             col.WriteCell(ws, rowIndex, colIndex, newValue);
                         }
@@ -375,7 +376,7 @@ namespace BiiSoft.SangkatCommunes
                 //int colHeaderTable = 1;
 
                 // write header collumn table
-                var displayColumns = new List<ColumnOutput> { 
+                var displayColumns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("LocationCode"), Width = 200, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Name_",L("SangkatCommune")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
@@ -404,14 +405,17 @@ namespace BiiSoft.SangkatCommunes
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            await _sangkatCommuneManager.ImportAsync(AbpSession.UserId.Value, input.Token);
+            var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _sangkatCommuneManager.ImportAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Edit)]
         public async Task Update(CreateUpdateSangkatCommuneInputDto input)
         {
-            var entity = ObjectMapper.Map<SangkatCommune>(input);
-            await _sangkatCommuneManager.UpdateAsync(AbpSession.UserId.Value, entity);
+            var entity = MapEntity<SangkatCommune, Guid>(input);
+
+            CheckErrors(await _sangkatCommuneManager.UpdateAsync(entity));
         }
     }
 }

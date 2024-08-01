@@ -24,6 +24,7 @@ using Abp.Runtime.Session;
 using BiiSoft.Locations;
 using BiiSoft.Countries.Dto;
 using BiiSoft.Currencies;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Countries
 {
@@ -56,9 +57,9 @@ namespace BiiSoft.Countries
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Countries_Create)]
         public async Task<Guid> Create(CreateUpdateCountryInputDto input)
         {
-            var entity = ObjectMapper.Map<Country>(input);
+            var entity = MapEntity<Country, Guid>(input);
             
-            await _countryManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity);
+            CheckErrors(await _countryManager.InsertAsync(entity));
             return entity.Id;
         }
 
@@ -71,13 +72,17 @@ namespace BiiSoft.Countries
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Countries_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            await _countryManager.DisableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _countryManager.DisableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Countries_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            await _countryManager.EnableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _countryManager.EnableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Countries)]
@@ -107,7 +112,6 @@ namespace BiiSoft.Countries
                             Code = l.Code,
                             Name = l.Name,
                             DisplayName = l.DisplayName,
-                            CountryCode = l.CountryCode,
                             ISO = l.ISO,
                             ISO2 = l.ISO2,
                             PhonePrefix = l.PhonePrefix,
@@ -148,8 +152,6 @@ namespace BiiSoft.Countries
                             CannotEdit = l.CannotEdit,
                             Code = l.Code,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -158,7 +160,6 @@ namespace BiiSoft.Countries
                             LastModifierUserName = m == null ? "" : m.UserName,
                             CurrencyId = l.CurrencyId,
                             CurrencyCode = l.CurrencyId.HasValue ? l.Currency.Code : "",
-                            CountryCode = l.CountryCode,
                             PhonePrefix = l.PhonePrefix,
                             ISO = l.ISO,
                             ISO2 = l.ISO2
@@ -224,19 +225,17 @@ namespace BiiSoft.Countries
                             Id = l.Id,
                             No = l.No,
                             Name = l.Name,
+                            Code = l.Code,
                             DisplayName = l.DisplayName,
                             CannotDelete = l.CannotDelete,
                             CannotEdit = l.CannotEdit,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
                             LastModifierUserId = u.LastModifierUserId,
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserName = m == null ? "" : m.UserName,
-                            CountryCode = l.CountryCode,
                             ISO = l.ISO,
                             ISO2 = l.ISO2,
                             PhonePrefix = l.PhonePrefix,
@@ -365,16 +364,13 @@ namespace BiiSoft.Countries
 
                 // write header collumn table
                 var displayColumns = new List<ColumnOutput> { 
-                    new ColumnOutput{ ColumnTitle = L("LocationCode"), Width = 200, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 200, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Name_",L("Country")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Code_", L("Country")), Width = 150, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("ISO"), Width = 150, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("ISO2"), Width = 150, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("PhonePrefix"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("Currency"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Latitude"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Longitude"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
                 };
@@ -395,15 +391,18 @@ namespace BiiSoft.Countries
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            await _countryManager.ImportAsync(AbpSession.UserId.Value, input.Token);
+            var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _countryManager.ImportAsync(entity));
 
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Countries_Edit)]
         public async Task Update(CreateUpdateCountryInputDto input)
         {
-            var entity = ObjectMapper.Map<Country>(input);
-            await _countryManager.UpdateAsync(AbpSession.UserId.Value, entity);
+            var entity = MapEntity<Country, Guid>(input);
+
+            CheckErrors(await _countryManager.UpdateAsync(entity));
         }
     }
 }

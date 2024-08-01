@@ -15,8 +15,6 @@ namespace BiiSoft.CityProvinces.Dto
         public string Code { get; set; }
         public string ISO { get; set; }
         public Guid? CountryId { get; set; }
-        public decimal? Latitude { get; set; }
-        public decimal? Longitude { get; set; }
     }
 
 }

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Locations
 {
@@ -35,7 +36,7 @@ namespace BiiSoft.Locations
         protected override void ValidateInput(CityProvince input)
         {
             ValidateCodeInput(input.Code);
-            if (input.Code.Length != BiiSoftConsts.LocationCodeLength) InvalidCodeException(input.Code);
+            if (input.Code.Length > BiiSoftConsts.CountryCodeLength) InvalidCodeException(input.Code);
 
             base.ValidateInput(input);
 
@@ -57,14 +58,14 @@ namespace BiiSoft.Locations
             if (find != null && find.ISO == input.ISO) DuplicateException($"{L("Code_", L("ISO"))} : {input.ISO}");
         }
 
-        protected override CityProvince CreateInstance(long userId, CityProvince input)
+        protected override CityProvince CreateInstance(CityProvince input)
         {
-            return CityProvince.Create(userId, input.Code, input.Name, input.DisplayName, input.ISO, input.CountryId);
+            return CityProvince.Create(input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.ISO, input.CountryId);
         }
 
-        protected override void UpdateInstance(long userId, CityProvince input, CityProvince entity)
+        protected override void UpdateInstance(CityProvince input, CityProvince entity)
         {
-            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.ISO, input.CountryId);
+            entity.Update(input.LastModifierUserId, input.Code, input.Name, input.DisplayName, input.ISO, input.CountryId);
         }
 
         #endregion
@@ -76,7 +77,7 @@ namespace BiiSoft.Locations
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(long userId, string fileToken)
+        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
         {
             var cityProvinces = new List<CityProvince>();
             var cityProvinceHash = new HashSet<string>();
@@ -89,7 +90,7 @@ namespace BiiSoft.Locations
             }
 
             //var excelPackage = Read(input, _appFolders);
-            var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
                 // Get the work book in the file
@@ -102,7 +103,7 @@ namespace BiiSoft.Locations
                     {
                         var code = worksheet.GetString(i, 1);
                         ValidateCodeInput(code, $", Row = {i}");
-                        if (code.Length != BiiSoftConsts.LocationCodeLength) InvalidCodeException(code, $", Row = {i}");
+                        if (code.Length > BiiSoftConsts.CountryCodeLength) InvalidCodeException(code, $", Row = {i}");
                         if (cityProvinceHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
@@ -127,7 +128,7 @@ namespace BiiSoft.Locations
                         var cannotEdit = worksheet.GetBool(i, 8);
                         var cannotDelete = worksheet.GetBool(i, 9); 
 
-                        var entity = CityProvince.Create(userId, code, name, displayName, iso, countryId);
+                        var entity = CityProvince.Create(input.UserId, code, name, displayName, iso, countryId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
@@ -155,7 +156,7 @@ namespace BiiSoft.Locations
             {
                 if (updateCityProvinceDic.ContainsKey(l.Code))
                 {
-                    updateCityProvinceDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.ISO, l.CountryId);
+                    updateCityProvinceDic[l.Code].Update(input.UserId, l.Code, l.Name, l.DisplayName, l.ISO, l.CountryId);
                     updateCityProvinceDic[l.Code].SetCannotEdit(l.CannotEdit);
                     updateCityProvinceDic[l.Code].SetCannotDelete(l.CannotDelete);
                 }

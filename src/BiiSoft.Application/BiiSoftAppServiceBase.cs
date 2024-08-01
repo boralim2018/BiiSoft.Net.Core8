@@ -7,14 +7,11 @@ using Abp.Runtime.Session;
 using BiiSoft.Authorization.Users;
 using BiiSoft.MultiTenancy;
 using Abp.Dependency;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Abp.Extensions;
-using Microsoft.Extensions.Configuration;
-using BiiSoft.Configuration;
-using Abp.Threading;
 using System.Globalization;
 using Abp.Localization;
+using BiiSoft.Entities;
+using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
 
 namespace BiiSoft
 {
@@ -74,5 +71,32 @@ namespace BiiSoft
         {
             identityResult.CheckErrors(LocalizationManager);
         }
+
+        protected TEntity MapEntity<TEntity, TPrimaryKey>(object input)
+        {
+            var entity = ObjectMapper.Map<TEntity>(input);
+
+            if (entity is IUserEntity<TPrimaryKey>)
+            {
+                (entity as IUserEntity<TPrimaryKey>).UserId = AbpSession.UserId;
+            }
+            else if(entity is ICreationAudited)
+            {
+                (entity as ICreationAudited).CreatorUserId = AbpSession.UserId;
+            }
+
+            if (entity is IModificationAudited) 
+            { 
+                (entity as IModificationAudited).LastModifierUserId = AbpSession.UserId;
+            }
+
+            if(entity is IMayHaveTenant || entity is IMayHaveTenant)
+            {
+                (entity as IMayHaveTenant).TenantId = AbpSession.TenantId;
+            }
+
+            return entity;
+        }
+
     }
 }

@@ -13,13 +13,10 @@ namespace BiiSoft.Countries.Dto
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Code { get; set; }
-        public int CountryCode { get; set; }
         public string ISO { get; set; }
         public string ISO2 { get; set; }
         public string PhonePrefix { get; set; }
         public long? CurrencyId { get; set; }
-        public decimal? Latitude { get; set; }
-        public decimal? Longitude { get; set; }
     }
 
 }

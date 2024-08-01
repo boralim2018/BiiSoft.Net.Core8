@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20240729172428_BiiSoft-Zero")]
+    [Migration("20240801110514_BiiSoft-Zero")]
     partial class BiiSoftZero
     {
         /// <inheritdoc />
@@ -1942,9 +1942,8 @@ namespace BiiSoft.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasMaxLength(6)
+                        .HasColumnType("character varying(6)");
 
                     b.Property<Guid?>("CountryId")
                         .HasColumnType("uuid");
@@ -1972,12 +1971,6 @@ namespace BiiSoft.Migrations
 
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
-
-                    b.Property<decimal?>("Latitude")
-                        .HasColumnType("decimal(19,8)");
-
-                    b.Property<decimal?>("Longitude")
-                        .HasColumnType("decimal(19,8)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2022,13 +2015,8 @@ namespace BiiSoft.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
-
-                    b.Property<int>("CountryCode")
                         .HasMaxLength(3)
-                        .HasColumnType("integer");
+                        .HasColumnType("character varying(3)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp without time zone");
@@ -2061,12 +2049,6 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<decimal?>("Latitude")
-                        .HasColumnType("decimal(19,8)");
-
-                    b.Property<decimal?>("Longitude")
-                        .HasColumnType("decimal(19,8)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -2085,9 +2067,6 @@ namespace BiiSoft.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.HasIndex("CountryCode")
                         .IsUnique();
 
                     b.HasIndex("CurrencyId");
@@ -2126,9 +2105,8 @@ namespace BiiSoft.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)");
 
                     b.Property<Guid?>("CountryId")
                         .HasColumnType("uuid");
@@ -2153,12 +2131,6 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<decimal?>("Latitude")
-                        .HasColumnType("decimal(19,8)");
-
-                    b.Property<decimal?>("Longitude")
-                        .HasColumnType("decimal(19,8)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -2169,6 +2141,9 @@ namespace BiiSoft.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -2200,11 +2175,6 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("CannotEdit")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -2242,7 +2212,7 @@ namespace BiiSoft.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
 
-                    b.Property<int?>("TenantId")
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -2252,9 +2222,6 @@ namespace BiiSoft.Migrations
                     b.HasIndex("Name");
 
                     b.HasIndex("No");
-
-                    b.HasIndex("Code", "TenantId")
-                        .IsUnique();
 
                     b.ToTable("BiiLocations");
                 });
@@ -2275,9 +2242,8 @@ namespace BiiSoft.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)");
 
                     b.Property<Guid?>("CountryId")
                         .HasColumnType("uuid");
@@ -2305,12 +2271,6 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<decimal?>("Latitude")
-                        .HasColumnType("decimal(19,8)");
-
-                    b.Property<decimal?>("Longitude")
-                        .HasColumnType("decimal(19,8)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -2321,6 +2281,9 @@ namespace BiiSoft.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -2358,9 +2321,8 @@ namespace BiiSoft.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
 
                     b.Property<Guid?>("CountryId")
                         .HasColumnType("uuid");
@@ -2388,12 +2350,6 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<decimal?>("Latitude")
-                        .HasColumnType("decimal(19,8)");
-
-                    b.Property<decimal?>("Longitude")
-                        .HasColumnType("decimal(19,8)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -2407,6 +2363,9 @@ namespace BiiSoft.Migrations
 
                     b.Property<Guid?>("SangkatCommuneId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

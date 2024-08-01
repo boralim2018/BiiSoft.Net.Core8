@@ -10,6 +10,8 @@ namespace BiiSoft.Locations
     [Table("BiiCountries")]
     public  class Country : CanModifyNameActiveEntity<Guid>
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
         [MaxLength(3)]
         public string Code { get; private set; }
         [MaxLength(2)]

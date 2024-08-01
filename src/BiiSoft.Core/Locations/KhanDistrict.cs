@@ -11,6 +11,8 @@ namespace BiiSoft.Locations
     public class KhanDistrict : CanModifyNameActiveEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
         [MaxLength(9)]
         public string Code { get; private set; }
         public Guid? CountryId { get; private set; }

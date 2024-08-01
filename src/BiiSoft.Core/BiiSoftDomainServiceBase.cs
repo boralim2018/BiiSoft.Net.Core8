@@ -107,7 +107,7 @@ namespace BiiSoft
         #endregion
     }
 
-    public abstract class BiiSoftValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftValidateServiceBase 
+    public abstract class BiiSoftValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftValidateServiceBase, IBiiSoftValidateServiceBase<TEntity, TPrimaryKey> 
         where TEntity : Entity<TPrimaryKey>
     {
 
@@ -119,27 +119,27 @@ namespace BiiSoft
 
         protected abstract Task ValidateInputAsync(TEntity input);
 
-        protected abstract TEntity CreateInstance(long userId, TEntity input);
+        protected abstract TEntity CreateInstance(TEntity input);
 
-        public virtual async Task<IdentityResult> InsertAsync(long userId, TEntity input)
+        public virtual async Task<IdentityResult> InsertAsync(TEntity input)
         {
             await ValidateInputAsync(input);
 
-            var entity = CreateInstance(userId, input);
+            var entity = CreateInstance(input);
 
             await _repository.InsertAsync(entity);
             input.Id = entity.Id;
             return IdentityResult.Success;
         }
 
-        public virtual async Task<TEntity> FindAsync(IEntity<TPrimaryKey> input)
+        public virtual async Task<TEntity> FindAsync(TPrimaryKey id)
         {
-            return await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(input.Id));
+            return await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(id));
         }
 
-        public virtual async Task<TEntity> GetAsync(IEntity<TPrimaryKey> input)
+        public virtual async Task<TEntity> GetAsync(TPrimaryKey id)
         {
-            return await _repository.FirstOrDefaultAsync(u => u.Id.Equals(input.Id));
+            return await _repository.FirstOrDefaultAsync(u => u.Id.Equals(id));
         }
 
         protected virtual void ValidateDeletable(TEntity input, string message = "")
@@ -147,7 +147,7 @@ namespace BiiSoft
             if (input is ICanModifyEntity entity && entity.CannotDelete) NotDeletableException(InstanceName, message);
         }
 
-        public virtual async Task<IdentityResult> DeleteAsync(IEntity<TPrimaryKey> input)
+        public virtual async Task<IdentityResult> DeleteAsync(TPrimaryKey input)
         {
             var entity = await GetAsync(input);
             if (entity == null) NotFoundException(InstanceName);
@@ -157,21 +157,21 @@ namespace BiiSoft
             return IdentityResult.Success;
         }
 
-        protected abstract void UpdateInstance(long userId, TEntity input, TEntity entity);
+        protected abstract void UpdateInstance(TEntity input, TEntity entity);
         protected virtual void ValidateEditable(TEntity input, string message = "")
         {
             if (input is ICanModifyEntity entity && entity.CannotEdit) NotEditableException(InstanceName, message);
         }
 
-        public virtual async Task<IdentityResult> UpdateAsync(long userId, TEntity input)
+        public virtual async Task<IdentityResult> UpdateAsync(TEntity input)
         {
             await ValidateInputAsync(input);
 
-            var entity = await GetAsync(input);
+            var entity = await GetAsync(input.Id);
             if(entity == null) NotFoundException(InstanceName);
             ValidateEditable(entity);
 
-            UpdateInstance(userId, input, entity);
+            UpdateInstance(input, entity);
 
             await _repository.UpdateAsync(@entity);
             return IdentityResult.Success;
@@ -301,10 +301,10 @@ namespace BiiSoft
             if (find) DuplicateCodeException(input.Code);
         }
 
-        public override async Task<IdentityResult> InsertAsync(long userId, TEntity input)
+        public override async Task<IdentityResult> InsertAsync(TEntity input)
         {
             await SetCodeAsync(input);
-            return await base.InsertAsync(userId, input);
+            return await base.InsertAsync(input);
         }
         #endregion
     }
@@ -341,33 +341,33 @@ namespace BiiSoft
         }
     }
 
-    public abstract class BiiSoftNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftNameValidateServiceBase<TEntity, TPrimaryKey> where TEntity : NameActiveEntity<TPrimaryKey>
+    public abstract class BiiSoftNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftNameValidateServiceBase<TEntity, TPrimaryKey>, IActiveValidateServiceBase<TEntity, TPrimaryKey> where TEntity : NameActiveEntity<TPrimaryKey>
     {
         public BiiSoftNameActiveValidateServiceBase(IBiiSoftRepository<TEntity, TPrimaryKey> repository) : base(repository)
         {
 
         }
 
-        public async Task<IdentityResult> EnableAsync(long userId, IEntity<TPrimaryKey> input)
+        public async Task<IdentityResult> EnableAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input);
+            var entity = await GetAsync(input.Id);
             if(entity == null) NotFoundException(InstanceName);
 
             entity.Enable(true);
-            entity.LastModifierUserId = userId;
+            entity.LastModifierUserId = input.UserId;
             entity.LastModificationTime = Clock.Now;
 
             await _repository.UpdateAsync(entity);
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DisableAsync(long userId, IEntity<TPrimaryKey> input)
+        public async Task<IdentityResult> DisableAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input);
+            var entity = await GetAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(false);
-            entity.LastModifierUserId = userId;
+            entity.LastModifierUserId = input.UserId;
             entity.LastModificationTime = Clock.Now;
 
             await _repository.UpdateAsync(entity);
@@ -375,7 +375,7 @@ namespace BiiSoft
         }
     }
 
-    public abstract class BiiSoftDefaultNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftNameActiveValidateServiceBase<TEntity, TPrimaryKey> where TEntity : DefaultNameActiveEntity<TPrimaryKey>, IDefaultNameEntity
+    public abstract class BiiSoftDefaultNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftNameActiveValidateServiceBase<TEntity, TPrimaryKey>, IDefaultActiveValidateServiceBase<TEntity, TPrimaryKey> where TEntity : DefaultNameActiveEntity<TPrimaryKey>, IDefaultNameEntity
     {
 
         public BiiSoftDefaultNameActiveValidateServiceBase(IBiiSoftRepository<TEntity, TPrimaryKey> repository) : base(repository)
@@ -383,9 +383,9 @@ namespace BiiSoft
 
         }
 
-        public async Task<IdentityResult> SetAsDefaultAsync(long userId, IEntity<TPrimaryKey> input)
+        public async Task<IdentityResult> SetAsDefaultAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input);
+            var entity = await GetAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             var modificationTime = Clock.Now;
@@ -394,12 +394,12 @@ namespace BiiSoft
             foreach (var d in otherDefault)
             {
                 d.SetDefault(false);
-                d.LastModifierUserId = userId;
+                d.LastModifierUserId = input.UserId;
                 d.LastModificationTime = modificationTime;
             }
 
             entity.SetDefault(true);
-            entity.LastModifierUserId = userId;
+            entity.LastModifierUserId = input.UserId;
             entity.LastModificationTime = modificationTime;
 
             otherDefault.Add(entity);
@@ -412,7 +412,7 @@ namespace BiiSoft
     }
 
 
-    public abstract class BiiSoftCodeGenerateNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftCodeGenerateServiceBase<TEntity, TPrimaryKey> 
+    public abstract class BiiSoftCodeGenerateNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftCodeGenerateServiceBase<TEntity, TPrimaryKey>, IActiveValidateServiceBase<TEntity, TPrimaryKey>
         where TEntity : NameActiveEntity<TPrimaryKey>, ICodeEntity
     {
         public BiiSoftCodeGenerateNameActiveValidateServiceBase(IBiiSoftRepository<TEntity, TPrimaryKey> repository) : base(repository)
@@ -427,26 +427,26 @@ namespace BiiSoft
             ValidateDisplayName((input as INameEntity).DisplayName);
         }
 
-        public async Task<IdentityResult> EnableAsync(long userId, IEntity<TPrimaryKey> input)
+        public async Task<IdentityResult> EnableAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input);
+            var entity = await GetAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(true);
-            entity.LastModifierUserId = userId;
+            entity.LastModifierUserId = input.UserId;
             entity.LastModificationTime = Clock.Now;
 
             await _repository.UpdateAsync(entity);
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DisableAsync(long userId, IEntity<TPrimaryKey> input)
+        public async Task<IdentityResult> DisableAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input);
+            var entity = await GetAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(false);
-            entity.LastModifierUserId = userId;
+            entity.LastModifierUserId = input.UserId;
             entity.LastModificationTime = Clock.Now;
 
             await _repository.UpdateAsync(entity);

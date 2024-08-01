@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
+using Microsoft.AspNetCore.Components.Forms;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Locations
 {
@@ -40,7 +42,7 @@ namespace BiiSoft.Locations
         protected override void ValidateInput(KhanDistrict input)
         {
             ValidateCodeInput(input.Code);
-            if (input.Code.Length != BiiSoftConsts.LocationCodeLength) InvalidCodeException(input.Code);
+            if (input.Code.Length > BiiSoftConsts.KhanDistrictCodeLength) InvalidCodeException(input.Code);
 
             base.ValidateInput(input);
 
@@ -62,14 +64,14 @@ namespace BiiSoft.Locations
             if (find) DuplicateCodeException(input.Code);
         }
 
-        protected override KhanDistrict CreateInstance(long userId, KhanDistrict input)
+        protected override KhanDistrict CreateInstance(KhanDistrict input)
         {
-            return KhanDistrict.Create(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId);
+            return KhanDistrict.Create(input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId);
         }
 
-        protected override void UpdateInstance(long userId, KhanDistrict input, KhanDistrict entity)
+        protected override void UpdateInstance(KhanDistrict input, KhanDistrict entity)
         {
-            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId);
+            entity.Update(input.LastModifierUserId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId);
         }
 
         #endregion
@@ -81,7 +83,7 @@ namespace BiiSoft.Locations
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(long userId, string fileToken)
+        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
         {
             var khanDistricts = new List<KhanDistrict>();
             var khanDistrictHash = new HashSet<string>();
@@ -95,7 +97,7 @@ namespace BiiSoft.Locations
             }
 
             //var excelPackage = Read(input, _appFolders);
-            var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
                 // Get the work book in the file
@@ -108,7 +110,7 @@ namespace BiiSoft.Locations
                     {
                         string code = worksheet.GetString(i, 1);
                         ValidateCodeInput(code, $", Row = {i}");
-                        if (code.Length != BiiSoftConsts.LocationCodeLength) InvalidCodeException(code, $", Row = {i}");
+                        if (code.Length > BiiSoftConsts.KhanDistrictCodeLength) InvalidCodeException(code, $", Row = {i}");
                         if (khanDistrictHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
@@ -134,7 +136,7 @@ namespace BiiSoft.Locations
                         var cannotEdit = worksheet.GetBool(i, 8);
                         var cannotDelete = worksheet.GetBool(i, 9); 
 
-                        var entity = KhanDistrict.Create(userId, code, name, displayName, countryId, cityProvinceId);
+                        var entity = KhanDistrict.Create(input.UserId, code, name, displayName, countryId, cityProvinceId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
@@ -161,7 +163,7 @@ namespace BiiSoft.Locations
             {
                 if (updateKhanDistrictDic.ContainsKey(l.Code))
                 {
-                    updateKhanDistrictDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.CountryId, l.CityProvinceId);
+                    updateKhanDistrictDic[l.Code].Update(input.UserId, l.Code, l.Name, l.DisplayName, l.CountryId, l.CityProvinceId);
                     updateKhanDistrictDic[l.Code].SetCannotEdit(l.CannotEdit);
                     updateKhanDistrictDic[l.Code].SetCannotDelete(l.CannotDelete);
                 }

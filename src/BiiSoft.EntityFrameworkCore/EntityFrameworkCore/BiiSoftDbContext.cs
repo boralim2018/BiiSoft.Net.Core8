@@ -66,7 +66,6 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<Location>(e =>
             {
-                e.HasIndex(i => new { i.Code, i.TenantId }).IsUnique(true);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
                 e.HasIndex(i => i.No);
@@ -75,7 +74,6 @@ namespace BiiSoft.EntityFrameworkCore
             modelBuilder.Entity<Country>(e =>
             {
                 e.HasIndex(i => i.Code).IsUnique(true);
-                e.HasIndex(i => i.CountryCode).IsUnique(true);
                 e.HasIndex(i => i.Name).IsUnique(true);
                 e.HasIndex(i => i.DisplayName);
                 e.HasIndex(i => i.No);

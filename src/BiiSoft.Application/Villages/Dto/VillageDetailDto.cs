@@ -16,8 +16,6 @@ namespace BiiSoft.Villages.Dto
         public string KhanDistrictName { get; set; }
         public Guid? SangkatCommuneId { get; set; }
         public string SangkatCommuneName { get; set; }
-        public decimal? Latitude { get; set; }
-        public decimal? Longitude { get; set; }
 
         public Guid? FirstId { get; set; }
         public Guid? NextId { get; set; }

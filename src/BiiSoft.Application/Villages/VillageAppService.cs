@@ -22,6 +22,7 @@ using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.Villages.Dto;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Villages
 {
@@ -54,28 +55,32 @@ namespace BiiSoft.Villages
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Villages_Create)]
         public async Task<Guid> Create(CreateUpdateVillageInputDto input)
         {
-            var entity = ObjectMapper.Map<Village>(input);
+            var entity = MapEntity<Village, Guid>(input);
             
-            await _villageManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity);
+            CheckErrors(await _villageManager.InsertAsync(entity));
             return entity.Id;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Villages_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
-            await _villageManager.DeleteAsync(input.Id);
+            CheckErrors(await _villageManager.DeleteAsync(input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Villages_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            await _villageManager.DisableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _villageManager.DisableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Villages_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            await _villageManager.EnableAsync(AbpSession.UserId.Value, input.Id);
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _villageManager.EnableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Villages)]
@@ -157,8 +162,6 @@ namespace BiiSoft.Villages
                             CannotEdit = l.CannotEdit,
                             Code = l.Code,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -251,8 +254,6 @@ namespace BiiSoft.Villages
                             CannotDelete = l.CannotDelete,
                             CannotEdit = l.CannotEdit,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -415,14 +416,17 @@ namespace BiiSoft.Villages
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            await _villageManager.ImportAsync(AbpSession.UserId.Value, input.Token);
+            var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _villageManager.ImportAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Villages_Edit)]
         public async Task Update(CreateUpdateVillageInputDto input)
         {
-            var entity = ObjectMapper.Map<Village>(input);
-            await _villageManager.UpdateAsync(AbpSession.UserId.Value, entity);
+            var entity = MapEntity<Village, Guid>(input);
+
+            CheckErrors(await _villageManager.UpdateAsync(entity));
         }
     }
 }

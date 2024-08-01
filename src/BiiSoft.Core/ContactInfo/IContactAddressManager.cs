@@ -1,5 +1,7 @@
-﻿using Abp.Domain.Services;
+﻿using Abp.Domain.Entities;
+using Abp.Domain.Services;
 using BiiSoft.Branches;
+using BiiSoft.Locations;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,13 +10,9 @@ using System.Threading.Tasks;
 
 namespace BiiSoft.ContactInfo
 {
-    public interface IContactAddressManager : IDomainService
+    public interface IContactAddressManager : IBiiSoftValidateServiceBase<ContactAddress, Guid>
     {
-        Task<ContactAddress> GetAsync(Guid id, bool readOnly = true);
-        Task<IdentityResult> InsertAsync(int? tenantId, long userId, ContactAddress input);
-        Task<IdentityResult> UpdateAsync(long userId, ContactAddress input);
-        Task<IdentityResult> DeleteAsync(Guid id);
-        Task<IdentityResult> ChangeLocationAsync(long userId, Guid? locationId, Guid id);
+        Task<IdentityResult> ChangeLocationAsync(long userId, IEntity<Guid?> location, IEntity<Guid> input);
 
         Task BulkValidateAsync(List<ContactAddress> input);
         Task<IdentityResult> BulkInsertAsync(int? tenantId, long userId, List<ContactAddress> input);

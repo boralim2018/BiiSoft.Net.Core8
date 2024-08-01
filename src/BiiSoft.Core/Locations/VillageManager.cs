@@ -1,5 +1,4 @@
 ﻿using Abp.Domain.Uow;
-using Abp.Timing;
 using BiiSoft.FileStorages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Locations
 {
@@ -45,7 +45,7 @@ namespace BiiSoft.Locations
         protected override void ValidateInput(Village input)
         {
             ValidateCodeInput(input.Code);
-            if (input.Code.Length != BiiSoftConsts.LocationCodeLength) InvalidCodeException(input.Code);
+            if (input.Code.Length > BiiSoftConsts.VillageCodeLength) InvalidCodeException(input.Code);
 
             base.ValidateInput(input);
 
@@ -75,14 +75,14 @@ namespace BiiSoft.Locations
             if (find) DuplicateCodeException(input.Code);
         }
 
-        protected override Village CreateInstance(int? tenantId, long userId, Village input)
+        protected override Village CreateInstance(Village input)
         {
-            return Village.Create(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId, input.Latitude, input.Longitude);
+            return Village.Create(input.TenantId, input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId);
         }
 
-        protected override void UpdateInstance(long userId, Village input, Village entity)
+        protected override void UpdateInstance(Village input, Village entity)
         {
-            entity.Update(userId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId, input.Latitude, input.Longitude);
+            entity.Update(input.LastModifierUserId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId);
         }
 
         #endregion
@@ -94,7 +94,7 @@ namespace BiiSoft.Locations
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(long userId, string fileToken)
+        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
         {
             var villages = new List<Village>();
             var villageHash = new HashSet<string>();
@@ -112,7 +112,7 @@ namespace BiiSoft.Locations
             }
 
             //var excelPackage = Read(input, _appFolders);
-            var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
                 // Get the work book in the file
@@ -125,7 +125,7 @@ namespace BiiSoft.Locations
                     {
                         string code = worksheet.GetString(i, 1);
                         ValidateCodeInput(code, $", Row = {i}");
-                        if (code.Length != BiiSoftConsts.LocationCodeLength) InvalidCodeException(code, $", Row = {i}");
+                        if (code.Length > BiiSoftConsts.VillageCodeLength) InvalidCodeException(code, $", Row = {i}");
                         if (villageHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
@@ -163,7 +163,7 @@ namespace BiiSoft.Locations
                         var cannotEdit = worksheet.GetBool(i, 10);
                         var cannotDelete = worksheet.GetBool(i, 11);
 
-                        var entity = Village.Create(userId, code, name, displayName, countryId, cityProvinceId, khanDistrictId, sangkatCommuneId, latitude, longitude);
+                        var entity = Village.Create(input.TenantId.Value, input.UserId, code, name, displayName, countryId, cityProvinceId, khanDistrictId, sangkatCommuneId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
@@ -190,7 +190,7 @@ namespace BiiSoft.Locations
             {
                 if (updateVillageDic.ContainsKey(l.Code))
                 {
-                    updateVillageDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.CountryId, l.CityProvinceId, l.KhanDistrictId, l.SangkatCommuneId, l.Latitude, l.Longitude);
+                    updateVillageDic[l.Code].Update(input.UserId, l.Code, l.Name, l.DisplayName, l.CountryId, l.CityProvinceId, l.KhanDistrictId, l.SangkatCommuneId);
                     updateVillageDic[l.Code].SetCannotEdit(l.CannotEdit);
                     updateVillageDic[l.Code].SetCannotDelete(l.CannotDelete);
                 }

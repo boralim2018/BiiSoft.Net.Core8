@@ -10,7 +10,5 @@ namespace BiiSoft.KhanDistricts.Dto
         public string Code { get; set; }
         public string CountryName { get; set; }
         public string CityProvinceName { get; set; }
-        public decimal? Latitude { get; set; }
-        public decimal? Longitude { get; set; }
     }
 }

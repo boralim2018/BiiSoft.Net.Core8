@@ -12,7 +12,5 @@ namespace BiiSoft.Villages.Dto
         public string CityProvinceName { get; set; }
         public string KhanDistrictName { get; set; }
         public string SangkatCommuneName { get; set; }
-        public decimal? Latitude { get; set; }
-        public decimal? Longitude { get; set; }
     }
 }

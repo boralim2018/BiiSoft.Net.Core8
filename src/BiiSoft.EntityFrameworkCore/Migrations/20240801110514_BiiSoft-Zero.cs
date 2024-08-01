@@ -42,7 +42,11 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Latitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true),
+                    Longitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -51,12 +55,7 @@ namespace BiiSoft.Migrations
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CannotEdit = table.Column<bool>(type: "boolean", nullable: false),
-                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    Latitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true),
-                    Longitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true)
+                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -90,7 +89,9 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CountryCode = table.Column<int>(type: "integer", maxLength: 3, nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
                     ISO2 = table.Column<string>(type: "character varying(2)", maxLength: 2, nullable: true),
                     ISO = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
                     PhonePrefix = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: true),
@@ -103,12 +104,7 @@ namespace BiiSoft.Migrations
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CannotEdit = table.Column<bool>(type: "boolean", nullable: false),
-                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    Latitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true),
-                    Longitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true)
+                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -126,6 +122,9 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: true),
                     ISO = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: true),
                     CountryId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -136,12 +135,7 @@ namespace BiiSoft.Migrations
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CannotEdit = table.Column<bool>(type: "boolean", nullable: false),
-                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    Latitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true),
-                    Longitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true)
+                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -159,6 +153,10 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(9)", maxLength: 9, nullable: true),
                     CountryId = table.Column<Guid>(type: "uuid", nullable: true),
                     CityProvinceId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -169,12 +167,7 @@ namespace BiiSoft.Migrations
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CannotEdit = table.Column<bool>(type: "boolean", nullable: false),
-                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    Latitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true),
-                    Longitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true)
+                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -198,6 +191,10 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: true),
                     CountryId = table.Column<Guid>(type: "uuid", nullable: true),
                     CityProvinceId = table.Column<Guid>(type: "uuid", nullable: true),
                     KhanDistrictId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -209,12 +206,7 @@ namespace BiiSoft.Migrations
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CannotEdit = table.Column<bool>(type: "boolean", nullable: false),
-                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    Latitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true),
-                    Longitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true)
+                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -244,6 +236,10 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
                     CountryId = table.Column<Guid>(type: "uuid", nullable: true),
                     CityProvinceId = table.Column<Guid>(type: "uuid", nullable: true),
                     KhanDistrictId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -256,12 +252,7 @@ namespace BiiSoft.Migrations
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CannotEdit = table.Column<bool>(type: "boolean", nullable: false),
-                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    Latitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true),
-                    Longitude = table.Column<decimal>(type: "numeric(19,8)", nullable: true)
+                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -493,12 +484,6 @@ namespace BiiSoft.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_BiiCountries_CountryCode",
-                table: "BiiCountries",
-                column: "CountryCode",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BiiCountries_CurrencyId",
                 table: "BiiCountries",
                 column: "CurrencyId");
@@ -582,12 +567,6 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiKhanDistricts_No",
                 table: "BiiKhanDistricts",
                 column: "No");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiLocations_Code_TenantId",
-                table: "BiiLocations",
-                columns: new[] { "Code", "TenantId" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiLocations_DisplayName",

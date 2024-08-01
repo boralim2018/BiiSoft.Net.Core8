@@ -8,16 +8,9 @@ using System.Threading.Tasks;
 
 namespace BiiSoft.Locations
 {
-    public interface ICityProvinceManager : IDomainService
+    public interface ICityProvinceManager : IActiveValidateServiceBase<CityProvince, Guid>, IImporxExcelValidateSerivceBase<Guid>
     {
-        Task<CityProvince> FindAsync(IEntity<Guid> innput);
-        Task<CityProvince> GetAsync(IEntity<Guid> input);
-        Task<IdentityResult> InsertAsync(long userId, CityProvince input);
-        Task<IdentityResult> UpdateAsync(long userId, CityProvince input);
-        Task<IdentityResult> DeleteAsync(IEntity<Guid> innput);
-        Task<IdentityResult> EnableAsync(long userId, IEntity<Guid> innput);
-        Task<IdentityResult> DisableAsync(long userId, IEntity<Guid> innput);
-        Task<IdentityResult> ImportAsync(long userId, string fileToken);
+       
     }
    
 }

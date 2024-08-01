@@ -12,6 +12,8 @@ namespace BiiSoft.Locations
     public class SangkatCommune : CanModifyNameActiveEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
         [MaxLength(12)]
         public string Code { get; private set; }
         public Guid? CountryId { get; private set; }
@@ -22,11 +24,12 @@ namespace BiiSoft.Locations
         public KhanDistrict KhanDistrict { get; private set; }
 
 
-        public static SangkatCommune Create(long? userId, string code, string name, string displayName, Guid? countryId, Guid? cityProvinceId, Guid? khanDistrictId)
+        public static SangkatCommune Create(int tenantId, long? userId, string code, string name, string displayName, Guid? countryId, Guid? cityProvinceId, Guid? khanDistrictId)
         {
             return new SangkatCommune
             {
                 Id = Guid.NewGuid(),
+                TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
                 Code = code,

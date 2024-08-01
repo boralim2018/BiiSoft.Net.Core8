@@ -1,16 +1,20 @@
 using Abp.Application.Editions;
 using Abp.Application.Features;
+using Abp.Application.Services.Dto;
 using Abp.Authorization.Users;
 using Abp.Localization;
 using Abp.UI.Inputs;
 using AutoMapper;
 using BiiSoft.Authorization.Roles;
+using BiiSoft.BFiles;
 using BiiSoft.ContactInfo;
 using BiiSoft.ContactInfo.Dto;
 using BiiSoft.Editions;
 using BiiSoft.Editions.Dto;
+using BiiSoft.Entities;
 using BiiSoft.Localization.Dto;
 using BiiSoft.Roles.Dto;
+using System;
 
 namespace BiiSoft
 {
@@ -62,6 +66,10 @@ namespace BiiSoft
             //configuration.CreateMap<Permission, FlatPermissionWithLevelDto>();
 
             configuration.CreateMap<ContactAddressDto, ContactAddress>().ReverseMap();
+            configuration.CreateMap<EntityDto<Guid>, UserEntity<Guid>>().ReverseMap();
+            configuration.CreateMap<EntityDto<long>, UserEntity<long>>().ReverseMap();
+            configuration.CreateMap<FileTokenInput, ImportExcelEntity<Guid>>().ReverseMap();
+            configuration.CreateMap<FileTokenInput, ImportExcelEntity<long>>().ReverseMap();
 
             //Language
             configuration.CreateMap<ApplicationLanguage, ApplicationLanguageEditDto>();

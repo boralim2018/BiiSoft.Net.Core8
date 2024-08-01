@@ -13,6 +13,8 @@ using BiiSoft.Authorization.Users;
 using BiiSoft.Locations;
 using Abp.Extensions;
 using BiiSoft.ContactInfo;
+using Abp.Domain.Entities;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Branches
 {
@@ -61,70 +63,70 @@ namespace BiiSoft.Branches
         protected override string InstanceName => L("Branch");
         protected override bool IsUniqueName => true;
 
-        protected override Branch CreateInstance(int? tenantId, long userId, Branch input)
+        protected override Branch CreateInstance(Branch input)
         {
-            return Branch.Create(tenantId.Value, userId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId);
+            return Branch.Create(input.TenantId, input.CreatorUserId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId);
         }
 
-        protected override void UpdateInstance(long userId, Branch input, Branch entity)
+        protected override void UpdateInstance(Branch input, Branch entity)
         {
-            entity.Update(userId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId);
+            entity.Update(input.LastModifierUserId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId);
 
             input.TenantId = entity.TenantId; //Rquired in UpdateAsync Method
         }
 
         #endregion
 
-        public override async Task<IdentityResult> InsertAsync(int? tenantId, long userId, Branch input)
+        public override async Task<IdentityResult> InsertAsync(Branch input)
         {
             await ValidateInputAsync(input);
 
-            await _contactAddressManager.InsertAsync(tenantId, userId, input.BillingAddress);
+            await _contactAddressManager.InsertAsync(input.BillingAddress);
             input.BillingAddressId = input.BillingAddress.Id;
 
             if (!input.SameAsBillingAddress)
             {
-                await _contactAddressManager.InsertAsync(tenantId, userId, input.ShippingAddress);
+                await _contactAddressManager.InsertAsync(input.ShippingAddress);
                 input.ShippingAddressId = input.ShippingAddress.Id;
             }
 
-            var entity = CreateInstance(tenantId, userId, input);
+            var entity = CreateInstance(input);
 
             await _repository.InsertAsync(entity);
             input.Id = entity.Id;
             return IdentityResult.Success;
         }
 
-        public override async Task<IdentityResult> UpdateAsync(long userId, Branch input)
+        public override async Task<IdentityResult> UpdateAsync(Branch input)
         {
             await ValidateInputAsync(input);
 
-            var entity = await GetAsync(input.Id, false);
+            var entity = await GetAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
             ValidateEditable(entity);
 
-            await _contactAddressManager.UpdateAsync(userId, input.BillingAddress);
+            await _contactAddressManager.UpdateAsync(input.BillingAddress);
             input.BillingAddressId = input.BillingAddress.Id;
 
             Guid? deleteShippingAddressId = null;
             if (input.SameAsBillingAddress)
-            {
+            {   
                 if (!entity.SameAsBillingAddress) deleteShippingAddressId = entity.ShippingAddressId;
             }
             else
             {
                 if (entity.SameAsBillingAddress)
                 {
-                    await _contactAddressManager.InsertAsync(entity.TenantId, userId, input.ShippingAddress);
+                    await _contactAddressManager.InsertAsync(input.ShippingAddress);
                 }
                 else
                 {
-                    await _contactAddressManager.UpdateAsync(userId, input.ShippingAddress);
+                    await _contactAddressManager.UpdateAsync(input.ShippingAddress);
                 }
                 input.ShippingAddressId = input.ShippingAddress.Id;
             }
 
-            UpdateInstance(userId, input, entity);
+            UpdateInstance(input, entity);
 
             await _repository.UpdateAsync(@entity);
 
@@ -160,7 +162,7 @@ namespace BiiSoft.Branches
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(int? tenantId, long userId, string fileToken)
+        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
         {
             var branchs = new List<Branch>();
             var branchHash = new HashSet<string>();
@@ -171,23 +173,21 @@ namespace BiiSoft.Branches
             var khanDistrictDic = new Dictionary<string, Guid>();
             var sangkatCommuneDic = new Dictionary<string, Guid>();
             var villageDic = new Dictionary<string, Guid>();
-            var locationDic = new Dictionary<string, Guid>();
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                using (_unitOfWorkManager.Current.SetTenantId(tenantId))
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
                 {
                     countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.ISO, v => v.Id);
                     cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.ISO, v => v.Id);
                     khanDistrictDic = await _khanDistrictRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
                     sangkatCommuneDic = await _sangkatCommuneRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
                     villageDic = await _villageRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
-                    locationDic = await _locationRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
                 }
             }
 
             //var excelPackage = Read(input, _appFolders);
-            var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
                 // Get the work book in the file
@@ -299,7 +299,7 @@ namespace BiiSoft.Branches
                             var street2 = worksheet.GetString(i, 23);
                             var houseNo2 = worksheet.GetString(i, 24);
 
-                            shippingAddress = ContactAddress.Create(tenantId.Value, userId, countryId2, cityProvinceId2, khanDistrictId2, sangkatCommuneId2, villageId2, null, postalCode2, street2, houseNo2);
+                            shippingAddress = ContactAddress.Create(input.TenantId.Value, input.UserId, countryId2, cityProvinceId2, khanDistrictId2, sangkatCommuneId2, villageId2, null, postalCode2, street2, houseNo2);
                         }
 
                         var isDefault = worksheet.GetBool(i, 25);
@@ -309,9 +309,9 @@ namespace BiiSoft.Branches
                         var cannotEdit = worksheet.GetBool(i, 26);
                         var cannotDelete = worksheet.GetBool(i, 27);
 
-                        var billingAddress = ContactAddress.Create(tenantId.Value, userId, countryId, cityProvinceId, khanDistrictId, sangkatCommuneId, villageId, null, postalCode, street, houseNo);
+                        var billingAddress = ContactAddress.Create(input.TenantId.Value, input.UserId, countryId, cityProvinceId, khanDistrictId, sangkatCommuneId, villageId, null, postalCode, street, houseNo);
 
-                        var entity = Branch.Create(tenantId.Value, userId, name, displayName, businessId, phone, email, website, taxNumber, billingAddress.Id, sameAsBillingAddress, sameAsBillingAddress ? billingAddress.Id : shippingAddress.Id);
+                        var entity = Branch.Create(input.TenantId.Value, input.UserId, name, displayName, businessId, phone, email, website, taxNumber, billingAddress.Id, sameAsBillingAddress, sameAsBillingAddress ? billingAddress.Id : shippingAddress.Id);
                         if(isDefault) entity.SetDefault(isDefault);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
@@ -332,7 +332,7 @@ namespace BiiSoft.Branches
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                using (_unitOfWorkManager.Current.SetTenantId(tenantId))
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
                 {
                     updateBranchDic = await _repository.GetAll().AsNoTracking()
                                .Where(s => branchHash.Contains(s.Name))
@@ -371,7 +371,7 @@ namespace BiiSoft.Branches
                     var updateAddress = updateAddressDic.ContainsKey(updateBranch.BillingAddressId) ? updateAddressDic[updateBranch.BillingAddressId] : null;
                     if (updateAddress != null)
                     {
-                        updateAddress.Update(userId, updateBranch.BillingAddress.CountryId, updateBranch.BillingAddress.CityProvinceId, updateBranch.BillingAddress.KhanDistrictId, updateBranch.BillingAddress.SangkatCommuneId, updateBranch.BillingAddress.VillageId, updateBranch.BillingAddress.LocationId, updateBranch.BillingAddress.PostalCode, updateBranch.BillingAddress.Street, updateBranch.BillingAddress.HouseNo);
+                        updateAddress.Update(input.UserId, updateBranch.BillingAddress.CountryId, updateBranch.BillingAddress.CityProvinceId, updateBranch.BillingAddress.KhanDistrictId, updateBranch.BillingAddress.SangkatCommuneId, updateBranch.BillingAddress.VillageId, updateBranch.BillingAddress.LocationId, updateBranch.BillingAddress.PostalCode, updateBranch.BillingAddress.Street, updateBranch.BillingAddress.HouseNo);
                         updateBranch.BillingAddressId = updateAddress.Id;
                         updateAddresses.Add(updateAddress);
                     }
@@ -399,7 +399,7 @@ namespace BiiSoft.Branches
                             var updateAddress2 = updateAddressDic.ContainsKey(updateBranch.ShippingAddressId) ? updateAddressDic[updateBranch.ShippingAddressId] : null;
                             if (updateAddress2 != null)
                             {
-                                updateAddress2.Update(userId, updateBranch.ShippingAddress.CountryId, updateBranch.ShippingAddress.CityProvinceId, updateBranch.ShippingAddress.KhanDistrictId, updateBranch.ShippingAddress.SangkatCommuneId, updateBranch.ShippingAddress.VillageId, updateBranch.ShippingAddress.LocationId, updateBranch.ShippingAddress.PostalCode, updateBranch.ShippingAddress.Street, updateBranch.ShippingAddress.HouseNo);
+                                updateAddress2.Update(input.UserId, updateBranch.ShippingAddress.CountryId, updateBranch.ShippingAddress.CityProvinceId, updateBranch.ShippingAddress.KhanDistrictId, updateBranch.ShippingAddress.SangkatCommuneId, updateBranch.ShippingAddress.VillageId, updateBranch.ShippingAddress.LocationId, updateBranch.ShippingAddress.PostalCode, updateBranch.ShippingAddress.Street, updateBranch.ShippingAddress.HouseNo);
                                 updateBranch.ShippingAddressId = updateAddress2.Id;
                                 updateAddresses.Add(updateAddress2);
                             }
@@ -410,7 +410,7 @@ namespace BiiSoft.Branches
                         }
                     }
 
-                    updateBranch.Update(userId, l.Name, l.DisplayName, l.BusinessId, l.PhoneNumber, l.Email, l.Website, l.TaxRegistrationNumber, l.BillingAddressId, l.SameAsBillingAddress, l.ShippingAddressId);
+                    updateBranch.Update(input.UserId, l.Name, l.DisplayName, l.BusinessId, l.PhoneNumber, l.Email, l.Website, l.TaxRegistrationNumber, l.BillingAddressId, l.SameAsBillingAddress, l.ShippingAddressId);
                     updateBranch.SetCannotEdit(l.CannotEdit);
                     updateBranch.SetCannotDelete(l.CannotDelete);
                 }
@@ -422,7 +422,7 @@ namespace BiiSoft.Branches
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                using (_unitOfWorkManager.Current.SetTenantId(tenantId))
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
                 {
                     if (updateAddresses.Any()) await _contactAddressRepository.BulkUpdateAsync(updateAddresses);
                     if (addAddresses.Any()) await _contactAddressRepository.BulkInsertAsync(addAddresses);

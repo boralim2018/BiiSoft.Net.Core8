@@ -23,6 +23,7 @@ using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.ContactInfo;
 using BiiSoft.ContactInfo.Dto;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Branches
 {
@@ -60,14 +61,12 @@ namespace BiiSoft.Branches
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Create)]
         public async Task<Guid> Create(CreateUpdateBranchInputDto input)
-        {           
+        {   
+            var entity = ObjectMapper.Map<Branch>(input);  
+            entity.TenantId = AbpSession.TenantId.Value;
+            entity.CreatorUserId = AbpSession.UserId;
 
-            var tenantId = AbpSession.TenantId;
-            var userId = AbpSession.UserId.Value;
-
-            var entity = ObjectMapper.Map<Branch>(input);           
-
-            CheckErrors(await _branchManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity));
+            CheckErrors(await _branchManager.InsertAsync(entity));
 
             return entity.Id;
         }
@@ -81,19 +80,28 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            CheckErrors(await _branchManager.DisableAsync(AbpSession.UserId.Value, input.Id));
+            var entity = ObjectMapper.Map<UserEntity<Guid>>(input);
+            entity.UserId = AbpSession.UserId;
+
+            CheckErrors(await _branchManager.DisableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            CheckErrors(await _branchManager.EnableAsync(AbpSession.UserId.Value, input.Id));
+            var entity = ObjectMapper.Map<UserEntity<Guid>>(input);
+            entity.UserId = AbpSession.UserId;
+
+            CheckErrors(await _branchManager.EnableAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_SetAsDefault)]
         public async Task SetAsDefault(EntityDto<Guid> input)
         {
-            CheckErrors(await _branchManager.SetAsDefaultAsync(AbpSession.UserId.Value, input.Id));
+            var entity = ObjectMapper.Map<UserEntity<Guid>>(input);
+            entity.UserId = AbpSession.UserId;
+
+            CheckErrors(await _branchManager.SetAsDefaultAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Branches)]
@@ -463,17 +471,18 @@ namespace BiiSoft.Branches
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            CheckErrors(await _branchManager.ImportAsync(AbpSession.TenantId, AbpSession.UserId.Value, input.Token));
+            var entity = ObjectMapper.Map<ImportExcelEntity<Guid>>(input);
+
+            CheckErrors(await _branchManager.ImportAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Edit)]
         public async Task Update(CreateUpdateBranchInputDto input)
         {
-            var userId = AbpSession.UserId.Value;
-
             var entity = ObjectMapper.Map<Branch>(input);
+            entity.LastModifierUserId = AbpSession.UserId;
 
-            CheckErrors(await _branchManager.UpdateAsync(AbpSession.UserId.Value, entity));          
+            CheckErrors(await _branchManager.UpdateAsync(entity));          
         }
 
     }

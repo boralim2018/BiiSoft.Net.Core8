@@ -7,6 +7,7 @@ using BiiSoft.ChartOfAccounts;
 using System.Text;
 using Abp.Domain.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
+using BiiSoft.Enums;
 
 namespace BiiSoft.Branches
 {
@@ -21,6 +22,8 @@ namespace BiiSoft.Branches
 
         public bool MultiBranchesEnable { get; protected set; }
         public void EnableMultiBranches(bool enable) { MultiBranchesEnable = enable; }
+
+        public ContactAddressLevel ContactAddressLevel { get; protected set; }
 
         #region Financing
         public DateTime? BusinessStartDate { get; protected set; }

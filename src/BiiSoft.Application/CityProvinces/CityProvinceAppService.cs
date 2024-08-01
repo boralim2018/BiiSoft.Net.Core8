@@ -23,6 +23,8 @@ using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.CityProvinces.Dto;
 using BiiSoft.Dtos;
+using BiiSoft.Entities;
+using Abp.Domain.Entities;
 
 namespace BiiSoft.CityProvinces
 {
@@ -56,27 +58,34 @@ namespace BiiSoft.CityProvinces
         public async Task<Guid> Create(CreateUpdateCityProvinceInputDto input)
         {
             var entity = ObjectMapper.Map<CityProvince>(input);
+            entity.CreatorUserId = AbpSession.UserId;
             
-            await _cityProvinceManager.InsertAsync(AbpSession.TenantId, AbpSession.UserId.Value, entity);
+            CheckErrors(await _cityProvinceManager.InsertAsync(entity));
             return entity.Id;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
-            await _cityProvinceManager.DeleteAsync(input.Id);
+            CheckErrors(await _cityProvinceManager.DeleteAsync(input.Id));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            await _cityProvinceManager.DisableAsync(AbpSession.UserId.Value, input.Id);
+            var entiry = ObjectMapper.Map<UserEntity<Guid>>(input);
+            entiry.UserId = AbpSession.UserId;
+
+            await _cityProvinceManager.DisableAsync(entiry);
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            await _cityProvinceManager.EnableAsync(AbpSession.UserId.Value, input.Id);
+            var entiry = ObjectMapper.Map<UserEntity<Guid>>(input);
+            entiry.UserId = AbpSession.UserId;
+
+            await _cityProvinceManager.EnableAsync(entiry);
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_CityProvinces)]
@@ -148,8 +157,6 @@ namespace BiiSoft.CityProvinces
                             CannotEdit = l.CannotEdit,
                             Code = l.Code,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -177,10 +184,10 @@ namespace BiiSoft.CityProvinces
                                })
                                .FirstOrDefaultAsync();
 
-            if (record.First != null) result.FirstId = record.First.Id;
-            if (record.Pervious != null) result.PreviousId = record.Pervious.Id;
-            if (record.Next != null) result.NextId = record.Next.Id;
-            if (record.Last != null) result.LastId = record.Last.Id;
+            if (record.First is not null) result.FirstId = record.First.Id;
+            if (record.Pervious is not null) result.PreviousId = record.Pervious.Id;
+            if (record.Next is not null) result.NextId = record.Next.Id;
+            if (record.Last is not null) result.LastId = record.Last.Id;
 
             return result;
         }
@@ -227,8 +234,6 @@ namespace BiiSoft.CityProvinces
                             CannotDelete = l.CannotDelete,
                             CannotEdit = l.CannotEdit,
                             IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
                             CreatorUserName = u.UserName,
@@ -388,14 +393,20 @@ namespace BiiSoft.CityProvinces
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            await _cityProvinceManager.ImportAsync(AbpSession.UserId.Value, input.Token);
+            var entity = ObjectMapper.Map<ImportExcelEntity<Guid>>(input);
+            entity.UserId = AbpSession.UserId;
+            entity.TenantId = AbpSession.TenantId;
+
+            CheckErrors(await _cityProvinceManager.ImportAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Edit)]
         public async Task Update(CreateUpdateCityProvinceInputDto input)
         {
             var entity = ObjectMapper.Map<CityProvince>(input);
-            await _cityProvinceManager.UpdateAsync(AbpSession.UserId.Value, entity);
+            entity.LastModifierUserId = AbpSession.UserId;
+
+            CheckErrors(await _cityProvinceManager.UpdateAsync(entity));
         }
     }
 }

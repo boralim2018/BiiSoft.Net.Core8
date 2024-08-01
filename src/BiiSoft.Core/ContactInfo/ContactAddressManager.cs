@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BiiSoft.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Abp.Timing;
+using Abp.Domain.Entities;
 
 namespace BiiSoft.ContactInfo
 {
@@ -40,14 +41,14 @@ namespace BiiSoft.ContactInfo
 
         protected override string InstanceName => L("ContactAddress");
 
-        protected override ContactAddress CreateInstance(int? tenantId, long userId, ContactAddress input)
+        protected override ContactAddress CreateInstance(ContactAddress input)
         {
-            return ContactAddress.Create(tenantId.Value, userId, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId, input.VillageId, input.LocationId, input.PostalCode, input.Street, input.HouseNo);
+            return ContactAddress.Create(input.TenantId, input.CreatorUserId, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId, input.VillageId, input.LocationId, input.PostalCode, input.Street, input.HouseNo);
         }
 
-        protected override void UpdateInstance(long userId, ContactAddress input, ContactAddress entity)
+        protected override void UpdateInstance(ContactAddress input, ContactAddress entity)
         {
-            entity.Update(userId, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId, input.VillageId, input.LocationId, input.PostalCode, input.Street, input.HouseNo);
+            entity.Update(input.LastModifierUserId, input.CountryId, input.CityProvinceId, input.KhanDistrictId, input.SangkatCommuneId, input.VillageId, input.LocationId, input.PostalCode, input.Street, input.HouseNo);
         }
 
         protected override async Task ValidateInputAsync(ContactAddress input)
@@ -144,7 +145,7 @@ namespace BiiSoft.ContactInfo
             await BulkValidateAsync(input);
 
             var entities = input.Select(s => {
-                var e = CreateInstance(tenantId, userId, s);
+                var e = CreateInstance(s);
                 s.Id = e.Id;
                 return e;
             }).ToList();
@@ -164,7 +165,7 @@ namespace BiiSoft.ContactInfo
             foreach (var i in input)
             {
                 if (!entities.ContainsKey(i.Id)) NotFoundException(InstanceName);
-                UpdateInstance(userId, i, entities[i.Id]);
+                UpdateInstance(i, entities[i.Id]);
             }
 
             await _repository.BulkUpdateAsync(entities.Values.ToList());
@@ -182,17 +183,17 @@ namespace BiiSoft.ContactInfo
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> ChangeLocationAsync(long userId, Guid? locationId, Guid id)
+        public async Task<IdentityResult> ChangeLocationAsync(long userId, IEntity<Guid?> location, IEntity<Guid> input)
         {
-            ValidateSelect(locationId, L("Location"));
+            ValidateSelect(location.Id, L("Location"));
 
-            var find = await _locationRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == locationId);
+            var find = await _locationRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == location.Id);
             if (!find) InvalidException(L("Location"));
 
-            var entity = await GetAsync(id, false);
+            var entity = await GetAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
-            entity.SetLocation(locationId);
+            entity.SetLocation(location.Id);
             entity.LastModifierUserId = userId;
             entity.LastModificationTime = Clock.Now;
 
