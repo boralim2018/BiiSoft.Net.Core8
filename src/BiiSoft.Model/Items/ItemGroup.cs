@@ -7,7 +7,6 @@ using System.Text;
 using Abp.Timing;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BiiSoft.Extensions;
 using BiiSoft.Entities;
 using BiiSoft.ChartOfAccounts;
 using BiiSoft.Taxes;

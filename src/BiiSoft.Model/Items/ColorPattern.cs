@@ -4,19 +4,18 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
-using BiiSoft.Extensions;
 using BiiSoft.Entities;
 
 namespace BiiSoft.Items
 {
-    [Table("BiiUnits")]
-    public class Unit : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    [Table("BiiColorPatterns")]
+    public class ColorPattern : CanModifyDefaultNameActiveEntity<Guid>, IMayHaveTenant
     {
-        public int TenantId { get; set; }
+        public int? TenantId { get; set; }
 
-        public static Unit Create(int tenantId, long userId, string name, string displayName)
+        public static ColorPattern Create(int? tenantId, long userId, string name, string displayName)
         {
-            return new Unit
+            return new ColorPattern
             {
                 Id = Guid.NewGuid(),
                 TenantId = tenantId,

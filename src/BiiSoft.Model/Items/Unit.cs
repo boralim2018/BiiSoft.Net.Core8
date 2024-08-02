@@ -1,25 +1,21 @@
-﻿using Abp.Domain.Entities.Auditing;
-using Abp.Domain.Entities;
-using Abp.Timing;
+﻿using Abp.Domain.Entities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 using System.ComponentModel.DataAnnotations.Schema;
-using BiiSoft.Extensions;
+using Abp.Domain.Entities.Auditing;
+using Abp.Timing;
 using BiiSoft.Entities;
 
 namespace BiiSoft.Items
 {
-    [Table("BiiItemSizes")]
-    public class ItemSize : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    [Table("BiiUnits")]
+    public class Unit : DefaultNameActiveEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
 
-        public static ItemSize Create(int tenantId, long userId, string name, string displayName)
+        public static Unit Create(int tenantId, long userId, string name, string displayName)
         {
-            return new ItemSize
+            return new Unit
             {
                 Id = Guid.NewGuid(),
                 TenantId = tenantId,
@@ -33,10 +29,10 @@ namespace BiiSoft.Items
 
         public void Update(long userId, string name, string displayName)
         {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
+            LastModifierUserId = userId;
+            LastModificationTime = Clock.Now;
+            Name = name;
+            DisplayName = displayName;
         }
 
     }

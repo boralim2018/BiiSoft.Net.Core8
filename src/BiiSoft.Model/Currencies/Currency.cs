@@ -1,7 +1,6 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
 using BiiSoft.Entities;
-using BiiSoft.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace BiiSoft.Currencies

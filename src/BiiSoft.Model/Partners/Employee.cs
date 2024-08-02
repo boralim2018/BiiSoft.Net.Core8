@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using BiiSoft.ChartOfAccounts;
-using BiiSoft.Extensions;
 
 namespace BiiSoft.Partners
 {

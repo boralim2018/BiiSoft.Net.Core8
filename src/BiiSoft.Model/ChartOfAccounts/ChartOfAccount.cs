@@ -1,8 +1,6 @@
 ﻿using Abp.Domain.Entities;
-using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
 using BiiSoft.Enums;
-using BiiSoft.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

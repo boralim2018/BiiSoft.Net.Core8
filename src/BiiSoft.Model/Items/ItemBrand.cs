@@ -1,22 +1,24 @@
-﻿using Abp.Domain.Entities;
+﻿using Abp.Domain.Entities.Auditing;
+using Abp.Domain.Entities;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Abp.Timing;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Abp.Domain.Entities.Auditing;
-using Abp.Timing;
-using BiiSoft.Extensions;
 using BiiSoft.Entities;
 
 namespace BiiSoft.Items
 {
-    [Table("BiiItemModels")]
-    public class ItemModel : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    [Table("BiiItemBrands")]
+    public class ItemBrand : DefaultNameActiveEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
 
-        public static ItemModel Create(int tenantId, long userId, string name, string displayName)
+        public static ItemBrand Create(int tenantId, long userId, string name, string displayName)
         {
-            return new ItemModel
+            return new ItemBrand
             {
                 Id = Guid.NewGuid(),
                 TenantId = tenantId,

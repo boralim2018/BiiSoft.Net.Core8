@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
-using BiiSoft.Extensions;
 using BiiSoft.Entities;
 
 namespace BiiSoft.Items
