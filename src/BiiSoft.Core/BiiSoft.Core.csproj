@@ -15,6 +15,14 @@
     <EmbeddedResource Include="Localization\SourceFiles\*.xml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="ChartOfAccounts\**" />
+    <Compile Remove="Taxes\**" />
+    <EmbeddedResource Remove="ChartOfAccounts\**" />
+    <EmbeddedResource Remove="Taxes\**" />
+    <None Remove="ChartOfAccounts\**" />
+    <None Remove="Taxes\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Abp.AutoMapper" Version="9.2.2" />
     <PackageReference Include="Abp.MailKit" Version="9.2.2" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
@@ -24,9 +32,7 @@
     <PackageReference Include="Hangfire.PostgreSql" Version="1.20.9" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ChartOfAccounts\" />
     <Folder Include="MultiTenancy\" />
-    <Folder Include="Taxes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BiiSoft.Model\BiiSoft.Model.csproj" />
