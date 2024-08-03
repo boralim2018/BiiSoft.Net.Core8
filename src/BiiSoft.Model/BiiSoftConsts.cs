@@ -53,7 +53,7 @@ namespace BiiSoft
         public const string ResourcesFolder = "biisoft-resources";
 
         public const int CountryCodeLength = 3;
-        public const int ProvinceCodeLength = 6;
+        public const int CityProvinceCodeLength = 6;
         public const int KhanDistrictCodeLength = 9;
         public const int SangkatCommuneCodeLength = 12;
         public const int VillageCodeLength = 15;

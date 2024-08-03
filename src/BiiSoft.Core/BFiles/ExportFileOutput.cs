@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BiiSoft.Columns;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BiiSoft.BFiles
@@ -11,4 +13,14 @@ namespace BiiSoft.BFiles
         public string FileToken { get; set; }
         public string FileUrl { get; set; }      
     }
+
+    public class ExportFileInput 
+    {
+        [Required]
+        public string FileName { get; set; }
+
+        public List<ColumnOutput> Columns { get; set; }
+        public IReadOnlyList<object> Items { get; set; }
+    }   
+   
 }

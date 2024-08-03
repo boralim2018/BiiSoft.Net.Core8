@@ -13,29 +13,22 @@ using System.Linq.Dynamic.Core;
 using Abp.Linq.Extensions;
 using Abp.Extensions;
 using BiiSoft.Authorization.Users;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
 using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
-using Abp.Runtime.Session;
 using BiiSoft.Locations;
 using BiiSoft.Countries.Dto;
-using BiiSoft.Currencies;
 using BiiSoft.Entities;
 
 namespace BiiSoft.Countries
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class CountryAppService : BiiSoftAppServiceBase, ICountryAppService
+    public class CountryAppService : BiiSoftExcelAppServiceBase, ICountryAppService
     {
         private readonly ICountryManager _countryManager;
         private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
-        private readonly IFileStorageManager _fileStorageManager;
-        private readonly IAppFolders _appFolders;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         
         public CountryAppService(
@@ -45,12 +38,11 @@ namespace BiiSoft.Countries
             ICountryManager countryManager,
             IBiiSoftRepository<Country, Guid> countryRepository,
             IBiiSoftRepository<User, long> userRepository)
+        : base(fileStorageManager, appFolders)
         {
             _countryManager=countryManager;
             _countryRepository=countryRepository;
             _userRepository=userRepository;
-            _fileStorageManager=fileStorageManager;
-            _appFolders=appFolders;
             _unitOfWorkManager=unitOfWorkManager;
         }
 
@@ -263,12 +255,7 @@ namespace BiiSoft.Countries
             if (input.Columns == null || !input.Columns.Any(s => s.Visible)) throw new UserFriendlyException(L("ColumnsIsRequired", L("ExportExcel")));
 
             input.UsePagination = false;
-            var result = new ExportFileOutput
-            {
-                FileName = "Country.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
+           
             PagedResultDto<CountryListDto> listResult;
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -278,70 +265,14 @@ namespace BiiSoft.Countries
                 }
             }
 
-            using (var p = new ExcelPackage())
+            var excelInput = new ExportFileInput
             {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-              
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
+                FileName = "Country.xlsx",
+                Items = listResult.Items,
+                Columns = input.Columns
+            };
 
-                // write header collumn table
-                var displayColumns = input.Columns.
-                    Where(s => s.Visible)
-                    .OrderBy(s => s.Index)
-                    .ToList();
-
-                //foreach (var i in displayColumns)
-                //{
-                //    ws.AddTextToCell(rowTableHeader, colHeaderTable, i.ColumnTitle, true);
-                //    if (i.Width > 0) ws.Column(colHeaderTable).Width = i.Width.PixcelToInches();
-
-                //    colHeaderTable += 1;
-                //}
-                #endregion Row 1
-
-                var rowIndex = rowTableHeader + 1;
-                foreach (var row in listResult.Items)
-                {
-                    var colIndex = 1;
-                    foreach (var col in displayColumns)
-                    {
-                        var value = row.GetType().GetProperty(col.ColumnName).GetValue(row);
-
-                        if (col.ColumnName == "CreatorUserName")
-                        {
-                            var newValue = value;
-                            if(row.CreationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.CreationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else if (col.ColumnName == "LastModifierUserName")
-                        {
-                            var newValue = value;
-                            if(row.LastModificationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.LastModificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else
-                        {
-                            col.WriteCell(ws, rowIndex, colIndex, value);
-                        }
-
-                        colIndex++;
-                    }
-                    rowIndex++;
-                }
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, rowIndex - 1);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
-
+            return await ExportExcelAsync(excelInput);
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Countries_ImportExcel)]

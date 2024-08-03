@@ -26,13 +26,11 @@ using BiiSoft.Entities;
 namespace BiiSoft.Locations
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class LocationAppService : BiiSoftAppServiceBase, ILocationAppService
+    public class LocationAppService : BiiSoftExcelAppServiceBase, ILocationAppService
     {
         private readonly ILocationManager _locationManager;
         private readonly IBiiSoftRepository<Location, Guid> _locationRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
-        private readonly IFileStorageManager _fileStorageManager;
-        private readonly IAppFolders _appFolders;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public LocationAppService(
@@ -42,12 +40,11 @@ namespace BiiSoft.Locations
             ILocationManager locationManager,
             IBiiSoftRepository<Location, Guid> locationRepository,
             IBiiSoftRepository<User, long> userRepository)
+        : base(fileStorageManager, appFolders)
         {
             _locationManager=locationManager;
             _locationRepository=locationRepository;
             _userRepository=userRepository;
-            _fileStorageManager=fileStorageManager;
-            _appFolders=appFolders;
             _unitOfWorkManager=unitOfWorkManager;
         }
 
@@ -56,7 +53,7 @@ namespace BiiSoft.Locations
         {
             var entity = MapEntity<Location, Guid>(input);
 
-            await _locationManager.InsertAsync(entity);
+            CheckErrors(await _locationManager.InsertAsync(entity));
             return entity.Id;
         }
 
@@ -238,12 +235,7 @@ namespace BiiSoft.Locations
             if (input.Columns == null || !input.Columns.Any(s => s.Visible)) throw new UserFriendlyException(L("ColumnsIsRequired", L("ExportExcel")));
 
             input.UsePagination = false;
-            var result = new ExportFileOutput
-            {
-                FileName = "Location.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
+            
             PagedResultDto<LocationListDto> listResult;
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -253,69 +245,14 @@ namespace BiiSoft.Locations
                 }
             }
 
-            using (var p = new ExcelPackage())
+            var excelInput = new ExportFileInput
             {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
+                FileName = "Location.xlsx",
+                Items = listResult.Items,
+                Columns = input.Columns
+            };
 
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = input.Columns.
-                    Where(s => s.Visible)
-                    .OrderBy(s => s.Index)
-                    .ToList();
-
-                //foreach (var i in displayColumns)
-                //{
-                //    ws.AddTextToCell(rowTableHeader, colHeaderTable, i.ColumnTitle, true);
-                //    if (i.Width > 0) ws.Column(colHeaderTable).Width = i.Width.PixcelToInches();
-
-                //    colHeaderTable += 1;
-                //}
-                #endregion Row 1
-
-                var rowIndex = rowTableHeader + 1;
-                foreach (var row in listResult.Items)
-                {
-                    var colIndex = 1;
-                    foreach (var col in displayColumns)
-                    {
-                        var value = row.GetType().GetProperty(col.ColumnName.ToPascalCase()).GetValue(row);
-
-                        if (col.ColumnName == "CreatorUserName")
-                        {
-                            var newValue = value;
-                            if(row.CreationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.CreationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else if (col.ColumnName == "LastModifierUserName")
-                        {
-                            var newValue = value;
-                            if(row.LastModificationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.LastModificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else
-                        {
-                            col.WriteCell(ws, rowIndex, colIndex, value);
-                        }
-
-                        colIndex++;
-                    }
-                    rowIndex++;
-                }
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, rowIndex - 1);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await ExportExcelAsync(excelInput);
 
         }
 

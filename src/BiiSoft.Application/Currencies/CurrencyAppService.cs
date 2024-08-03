@@ -14,9 +14,6 @@ using System.Linq.Dynamic.Core;
 using Abp.Linq.Extensions;
 using Abp.Extensions;
 using BiiSoft.Authorization.Users;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
 using BiiSoft.Folders;
 using Abp.Domain.Uow;
@@ -26,13 +23,11 @@ using BiiSoft.Entities;
 namespace BiiSoft.Currencies
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class CurrencyAppService : BiiSoftAppServiceBase, ICurrencyAppService
+    public class CurrencyAppService : BiiSoftExcelAppServiceBase, ICurrencyAppService
     {
         private readonly ICurrencyManager _currencyManager;
         private readonly IBiiSoftRepository<Currency, long> _currencyRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
-        private readonly IFileStorageManager _fileStorageManager;
-        private readonly IAppFolders _appFolders;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public CurrencyAppService(
@@ -42,12 +37,11 @@ namespace BiiSoft.Currencies
             ICurrencyManager currencyManager,
             IBiiSoftRepository<Currency, long> currencyRepository,
             IBiiSoftRepository<User, long> userRepository)
+        : base(fileStorageManager, appFolders)
         {
             _currencyManager=currencyManager;
             _currencyRepository=currencyRepository;
             _userRepository=userRepository;
-            _fileStorageManager=fileStorageManager;
-            _appFolders=appFolders;
             _unitOfWorkManager=unitOfWorkManager;
         }
 
@@ -247,12 +241,7 @@ namespace BiiSoft.Currencies
             if (input.Columns == null || !input.Columns.Any(s => s.Visible)) throw new UserFriendlyException(L("ColumnsIsRequired", L("ExportExcel")));
 
             input.UsePagination = false;
-            var result = new ExportFileOutput
-            {
-                FileName = "Currency.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
+           
             PagedResultDto<CurrencyListDto> listResult;
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -262,69 +251,14 @@ namespace BiiSoft.Currencies
                 }
             }
 
-            using (var p = new ExcelPackage())
+            var excelInput = new ExportFileInput
             {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
+                FileName = "Currency.xlsx",
+                Items = listResult.Items,
+                Columns = input.Columns
+            };
 
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = input.Columns.
-                    Where(s => s.Visible)
-                    .OrderBy(s => s.Index)
-                    .ToList();
-
-                //foreach (var i in displayColumns)
-                //{
-                //    ws.AddTextToCell(rowTableHeader, colHeaderTable, i.ColumnTitle, true);
-                //    if (i.Width > 0) ws.Column(colHeaderTable).Width = i.Width.PixcelToInches();
-
-                //    colHeaderTable += 1;
-                //}
-                #endregion Row 1
-
-                var rowIndex = rowTableHeader + 1;
-                foreach (var row in listResult.Items)
-                {
-                    var colIndex = 1;
-                    foreach (var col in displayColumns)
-                    {
-                        var value = row.GetType().GetProperty(col.ColumnName.ToPascalCase()).GetValue(row);
-
-                        if (col.ColumnName == "CreatorUserName")
-                        {
-                            var newValue = value;
-                            if(row.CreationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.CreationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else if (col.ColumnName == "LastModifierUserName")
-                        {
-                            var newValue = value;
-                            if(row.LastModificationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.LastModificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else
-                        {
-                            col.WriteCell(ws, rowIndex, colIndex, value);
-                        }
-
-                        colIndex++;
-                    }
-                    rowIndex++;
-                }
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, rowIndex - 1);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await ExportExcelAsync(excelInput);
 
         }
 

@@ -27,13 +27,11 @@ using BiiSoft.Entities;
 namespace BiiSoft.KhanDistricts
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class KhanDistrictAppService : BiiSoftAppServiceBase, IKhanDistrictAppService
+    public class KhanDistrictAppService : BiiSoftExcelAppServiceBase, IKhanDistrictAppService
     {
         private readonly IKhanDistrictManager _khanDistrictManager;
         private readonly IBiiSoftRepository<KhanDistrict, Guid> _khanDistrictRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
-        private readonly IFileStorageManager _fileStorageManager;
-        private readonly IAppFolders _appFolders;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public KhanDistrictAppService(
@@ -43,12 +41,11 @@ namespace BiiSoft.KhanDistricts
             IKhanDistrictManager khanDistrictManager,
             IBiiSoftRepository<KhanDistrict, Guid> khanDistrictRepository,
             IBiiSoftRepository<User, long> userRepository)
+        : base(fileStorageManager, appFolders)
         {
             _khanDistrictManager=khanDistrictManager;
             _khanDistrictRepository=khanDistrictRepository;
             _userRepository=userRepository;
-            _fileStorageManager=fileStorageManager;
-            _appFolders=appFolders;
             _unitOfWorkManager=unitOfWorkManager;
         }
 
@@ -266,12 +263,7 @@ namespace BiiSoft.KhanDistricts
             if (input.Columns == null || !input.Columns.Any(s => s.Visible)) throw new UserFriendlyException(L("ColumnsIsRequired", L("ExportExcel")));
 
             input.UsePagination = false;
-            var result = new ExportFileOutput
-            {
-                FileName = "KhanDistrict.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
+         
             PagedResultDto<KhanDistrictListDto> listResult;
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -281,69 +273,14 @@ namespace BiiSoft.KhanDistricts
                 }
             }
 
-            using (var p = new ExcelPackage())
+            var excelInput = new ExportFileInput
             {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-              
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
+                FileName = "KhanDistrict.xlsx",
+                Items = listResult.Items,
+                Columns = input.Columns
+            };
 
-                // write header collumn table
-                var displayColumns = input.Columns.
-                    Where(s => s.Visible)
-                    .OrderBy(s => s.Index)
-                    .ToList();
-
-                //foreach (var i in displayColumns)
-                //{
-                //    ws.AddTextToCell(rowTableHeader, colHeaderTable, i.ColumnTitle, true);
-                //    if (i.Width > 0) ws.Column(colHeaderTable).Width = i.Width.PixcelToInches();
-
-                //    colHeaderTable += 1;
-                //}
-                #endregion Row 1
-
-                var rowIndex = rowTableHeader + 1;
-                foreach (var row in listResult.Items)
-                {
-                    var colIndex = 1;
-                    foreach (var col in displayColumns)
-                    {
-                        var value = row.GetType().GetProperty(col.ColumnName).GetValue(row);
-
-                        if (col.ColumnName == "CreatorUserName")
-                        {
-                            var newValue = value;
-                            if(row.CreationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.CreationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else if (col.ColumnName == "LastModifierUserName")
-                        {
-                            var newValue = value;
-                            if(row.LastModificationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.LastModificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else
-                        {
-                            col.WriteCell(ws, rowIndex, colIndex, value);
-                        }
-
-                        colIndex++;
-                    }
-                    rowIndex++;
-                }
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, rowIndex - 1);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await ExportExcelAsync(excelInput);
 
         }
 

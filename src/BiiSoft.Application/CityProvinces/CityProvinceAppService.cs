@@ -29,13 +29,11 @@ using Abp.Domain.Entities;
 namespace BiiSoft.CityProvinces
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class CityProvinceAppService : BiiSoftAppServiceBase, ICityProvinceAppService
+    public class CityProvinceAppService : BiiSoftExcelAppServiceBase, ICityProvinceAppService
     {
         private readonly ICityProvinceManager _cityProvinceManager;
         private readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
-        private readonly IFileStorageManager _fileStorageManager;
-        private readonly IAppFolders _appFolders;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public CityProvinceAppService(
@@ -45,20 +43,18 @@ namespace BiiSoft.CityProvinces
             ICityProvinceManager cityProvinceManager,
             IBiiSoftRepository<CityProvince, Guid> cityProvinceRepository,
             IBiiSoftRepository<User, long> userRepository)
+        : base(fileStorageManager, appFolders)
         {
             _cityProvinceManager=cityProvinceManager;
             _cityProvinceRepository=cityProvinceRepository;
             _userRepository=userRepository;
-            _fileStorageManager=fileStorageManager;
-            _appFolders=appFolders;
             _unitOfWorkManager=unitOfWorkManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Create)]
         public async Task<Guid> Create(CreateUpdateCityProvinceInputDto input)
         {
-            var entity = ObjectMapper.Map<CityProvince>(input);
-            entity.CreatorUserId = AbpSession.UserId;
+            var entity = MapEntity<CityProvince, Guid>(input);
             
             CheckErrors(await _cityProvinceManager.InsertAsync(entity));
             return entity.Id;
@@ -73,19 +69,17 @@ namespace BiiSoft.CityProvinces
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            var entiry = ObjectMapper.Map<UserEntity<Guid>>(input);
-            entiry.UserId = AbpSession.UserId;
+            var entiry = MapEntity<UserEntity<Guid>, Guid>(input);
 
-            await _cityProvinceManager.DisableAsync(entiry);
+            CheckErrors(await _cityProvinceManager.DisableAsync(entiry));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            var entiry = ObjectMapper.Map<UserEntity<Guid>>(input);
-            entiry.UserId = AbpSession.UserId;
+            var entiry = MapEntity<UserEntity<Guid>, Guid>(input);
 
-            await _cityProvinceManager.EnableAsync(entiry);
+            CheckErrors(await _cityProvinceManager.EnableAsync(entiry));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_CityProvinces)]
@@ -265,12 +259,7 @@ namespace BiiSoft.CityProvinces
             if (input.Columns == null || !input.Columns.Any(s => s.Visible)) throw new UserFriendlyException(L("ColumnsIsRequired", L("ExportExcel")));
 
             input.UsePagination = false;
-            var result = new ExportFileOutput
-            {
-                FileName = "CityProvince.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
+          
             PagedResultDto<CityProvinceListDto> listResult;
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -280,69 +269,14 @@ namespace BiiSoft.CityProvinces
                 }
             }
 
-            using (var p = new ExcelPackage())
+            var excelInput = new ExportFileInput
             {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-              
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
+                FileName = "CityProvince.xlsx",
+                Items = listResult.Items,
+                Columns = input.Columns
+            };
 
-                // write header collumn table
-                var displayColumns = input.Columns.
-                    Where(s => s.Visible)
-                    .OrderBy(s => s.Index)
-                    .ToList();
-
-                //foreach (var i in displayColumns)
-                //{
-                //    ws.AddTextToCell(rowTableHeader, colHeaderTable, i.ColumnTitle, true);
-                //    if (i.Width > 0) ws.Column(colHeaderTable).Width = i.Width.PixcelToInches();
-
-                //    colHeaderTable += 1;
-                //}
-                #endregion Row 1
-
-                var rowIndex = rowTableHeader + 1;
-                foreach (var row in listResult.Items)
-                {
-                    var colIndex = 1;
-                    foreach (var col in displayColumns)
-                    {
-                        var value = row.GetType().GetProperty(col.ColumnName).GetValue(row);
-
-                        if (col.ColumnName == "CreatorUserName")
-                        {
-                            var newValue = value;
-                            if(row.CreationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.CreationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else if (col.ColumnName == "LastModifierUserName")
-                        {
-                            var newValue = value;
-                            if(row.LastModificationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.LastModificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else
-                        {
-                            col.WriteCell(ws, rowIndex, colIndex, value);
-                        }
-
-                        colIndex++;
-                    }
-                    rowIndex++;
-                }
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, rowIndex - 1);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await ExportExcelAsync(excelInput);
 
         }
 
@@ -357,18 +291,15 @@ namespace BiiSoft.CityProvinces
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            var entity = ObjectMapper.Map<ImportExcelEntity<Guid>>(input);
-            entity.UserId = AbpSession.UserId;
-            entity.TenantId = AbpSession.TenantId;
-
+            var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
+          
             CheckErrors(await _cityProvinceManager.ImportExcelAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Edit)]
         public async Task Update(CreateUpdateCityProvinceInputDto input)
         {
-            var entity = ObjectMapper.Map<CityProvince>(input);
-            entity.LastModifierUserId = AbpSession.UserId;
+            var entity = MapEntity<CityProvince, Guid>(input);
 
             CheckErrors(await _cityProvinceManager.UpdateAsync(entity));
         }

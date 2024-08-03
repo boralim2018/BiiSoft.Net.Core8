@@ -28,15 +28,13 @@ using BiiSoft.Entities;
 namespace BiiSoft.Branches
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class BranchAppService : BiiSoftAppServiceBase, IBranchAppService
+    public class BranchAppService : BiiSoftExcelAppServiceBase, IBranchAppService
     {
         private readonly IBranchManager _branchManager;
         private readonly IBiiSoftRepository<Branch, Guid> _branchRepository;
         private readonly IContactAddressManager _contactAddressManager;
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
-        private readonly IFileStorageManager _fileStorageManager;
-        private readonly IAppFolders _appFolders;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public BranchAppService(
@@ -48,23 +46,20 @@ namespace BiiSoft.Branches
             IContactAddressManager contactAddressManager,
             IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
             IBiiSoftRepository<User, long> userRepository)
+        : base(fileStorageManager, appFolders)
         {
             _branchManager=branchManager;
             _branchRepository=branchRepository;
             _contactAddressManager=contactAddressManager;
             _contactAddressRepository=contactAddressRepository;
             _userRepository=userRepository;
-            _fileStorageManager=fileStorageManager;
-            _appFolders=appFolders;
             _unitOfWorkManager=unitOfWorkManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Create)]
         public async Task<Guid> Create(CreateUpdateBranchInputDto input)
         {   
-            var entity = ObjectMapper.Map<Branch>(input);  
-            entity.TenantId = AbpSession.TenantId.Value;
-            entity.CreatorUserId = AbpSession.UserId;
+            var entity = MapEntity<Branch, Guid>(input); 
 
             CheckErrors(await _branchManager.InsertAsync(entity));
 
@@ -80,8 +75,7 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
-            var entity = ObjectMapper.Map<UserEntity<Guid>>(input);
-            entity.UserId = AbpSession.UserId;
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
             CheckErrors(await _branchManager.DisableAsync(entity));
         }
@@ -89,8 +83,7 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
-            var entity = ObjectMapper.Map<UserEntity<Guid>>(input);
-            entity.UserId = AbpSession.UserId;
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
             CheckErrors(await _branchManager.EnableAsync(entity));
         }
@@ -98,8 +91,7 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_SetAsDefault)]
         public async Task SetAsDefault(EntityDto<Guid> input)
         {
-            var entity = ObjectMapper.Map<UserEntity<Guid>>(input);
-            entity.UserId = AbpSession.UserId;
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
             CheckErrors(await _branchManager.SetAsDefaultAsync(entity));
         }
@@ -321,12 +313,7 @@ namespace BiiSoft.Branches
             if (input.Columns == null || !input.Columns.Any(s => s.Visible)) throw new UserFriendlyException(L("ColumnsIsRequired", L("ExportExcel")));
 
             input.UsePagination = false;
-            var result = new ExportFileOutput
-            {
-                FileName = "Branch.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
+          
             PagedResultDto<BranchListDto> listResult;
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -336,69 +323,14 @@ namespace BiiSoft.Branches
                 }
             }
 
-            using (var p = new ExcelPackage())
+            var excelInput = new ExportFileInput
             {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
+                FileName = "Branch.xlsx",
+                Items = listResult.Items,
+                Columns = input.Columns
+            };
 
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = input.Columns.
-                    Where(s => s.Visible)
-                    .OrderBy(s => s.Index)
-                    .ToList();
-
-                //foreach (var i in displayColumns)
-                //{
-                //    ws.AddTextToCell(rowTableHeader, colHeaderTable, i.ColumnTitle, true);
-                //    if (i.Width > 0) ws.Column(colHeaderTable).Width = i.Width.PixcelToInches();
-
-                //    colHeaderTable += 1;
-                //}
-                #endregion Row 1
-
-                var rowIndex = rowTableHeader + 1;
-                foreach (var row in listResult.Items)
-                {
-                    var colIndex = 1;
-                    foreach (var col in displayColumns)
-                    {
-                        var value = row.GetType().GetProperty(col.ColumnName.ToPascalCase()).GetValue(row);
-
-                        if (col.ColumnName == "CreatorUserName")
-                        {
-                            var newValue = value;
-                            if(row.CreationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.CreationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else if (col.ColumnName == "LastModifierUserName")
-                        {
-                            var newValue = value;
-                            if(row.LastModificationTime.HasValue) newValue += $"\r\n{Convert.ToDateTime(row.LastModificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
-
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else
-                        {
-                            col.WriteCell(ws, rowIndex, colIndex, value);
-                        }
-
-                        colIndex++;
-                    }
-                    rowIndex++;
-                }
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, rowIndex - 1);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await ExportExcelAsync(excelInput);
 
         }
 
@@ -413,7 +345,7 @@ namespace BiiSoft.Branches
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
-            var entity = ObjectMapper.Map<ImportExcelEntity<Guid>>(input);
+            var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
 
             CheckErrors(await _branchManager.ImportExcelAsync(entity));
         }
@@ -421,8 +353,7 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Edit)]
         public async Task Update(CreateUpdateBranchInputDto input)
         {
-            var entity = ObjectMapper.Map<Branch>(input);
-            entity.LastModifierUserId = AbpSession.UserId;
+            var entity = MapEntity<Branch, Guid>(input);
 
             CheckErrors(await _branchManager.UpdateAsync(entity));          
         }

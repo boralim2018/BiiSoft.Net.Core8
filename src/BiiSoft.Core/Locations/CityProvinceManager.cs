@@ -43,7 +43,7 @@ namespace BiiSoft.Locations
         protected override void ValidateInput(CityProvince input)
         {
             ValidateCodeInput(input.Code);
-            if (input.Code.Length > BiiSoftConsts.CountryCodeLength) InvalidCodeException(input.Code);
+            if (input.Code.Length > BiiSoftConsts.CityProvinceCodeLength) InvalidCodeException(input.Code);
 
             base.ValidateInput(input);
 
@@ -149,7 +149,7 @@ namespace BiiSoft.Locations
                     {
                         var code = worksheet.GetString(i, 1);
                         ValidateCodeInput(code, $", Row = {i}");
-                        if (code.Length > BiiSoftConsts.CountryCodeLength) InvalidCodeException(code, $", Row = {i}");
+                        if (code.Length > BiiSoftConsts.CityProvinceCodeLength) InvalidCodeException(code, $", Row = {i}");
                         if (cityProvinceHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
