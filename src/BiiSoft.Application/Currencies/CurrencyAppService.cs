@@ -332,39 +332,7 @@ namespace BiiSoft.Currencies
         [UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
-            var result = new ExportFileOutput
-            {
-                FileName = "Currency.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> { 
-                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 200, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("Currency")), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Symbol"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 }
-                };
-
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _currencyManager.ExportExcelTemplateAsync();
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_ImportExcel)]
@@ -373,7 +341,7 @@ namespace BiiSoft.Currencies
         {
             var entity = MapEntity<ImportExcelEntity<long>, long>(input);
 
-            CheckErrors(await _currencyManager.ImportAsync(entity));
+            CheckErrors(await _currencyManager.ImportExcelAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_Edit)]

@@ -406,65 +406,7 @@ namespace BiiSoft.Branches
         [UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
-            var result = new ExportFileOutput
-            {
-                FileName = "Branch.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> { 
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("Branch")), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("BusinessId"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("PhoneNumber"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Email"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Website"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("TaxRegistrationNumber"), Width = 150, IsRequired = true },
-
-                    new ColumnOutput{ ColumnTitle = L("Country"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("CityProvince"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("KhanDistrict"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("SangkatCommune"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Village"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("PostalCode"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Street"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("HouseNo"), Width = 150 },
-
-                    new ColumnOutput{ ColumnTitle = L("SameAsBillingAddress"), Width = 150 },
-
-                    new ColumnOutput{ ColumnTitle = L("Country") + 2, Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("CityProvince") + 2, Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("KhanDistrict") + 2, Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("SangkatCommune") + 2, Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Village") + 2, Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("PostalCode") + 2, Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Street") + 2, Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("HouseNo") + 2, Width = 150 },
-
-                    new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
-                };
-
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _branchManager.ExportExcelTemplateAsync();
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_ImportExcel)]
@@ -473,7 +415,7 @@ namespace BiiSoft.Branches
         {
             var entity = ObjectMapper.Map<ImportExcelEntity<Guid>>(input);
 
-            CheckErrors(await _branchManager.ImportAsync(entity));
+            CheckErrors(await _branchManager.ImportExcelAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Edit)]

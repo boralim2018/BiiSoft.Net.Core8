@@ -15,8 +15,6 @@ using BiiSoft.Roles.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
-using BiiSoft.Dtos;
-using Microsoft.AspNetCore.Http;
 
 namespace BiiSoft.Roles
 {

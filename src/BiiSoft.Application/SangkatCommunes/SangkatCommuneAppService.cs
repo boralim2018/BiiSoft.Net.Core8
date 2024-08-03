@@ -361,44 +361,7 @@ namespace BiiSoft.SangkatCommunes
         [UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
-            var result = new ExportFileOutput
-            {
-                FileName = "SangkatCommune.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> {
-                    new ColumnOutput{ ColumnTitle = L("LocationCode"), Width = 200, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("SangkatCommune")), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Country"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("CityProvince"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("KhanDistrict"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Latitude"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Longitude"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
-                };
-
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _sangkatCommuneManager.ExportExcelTemplateAsync();
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_SangkatCommunes_ImportExcel)]
@@ -407,7 +370,7 @@ namespace BiiSoft.SangkatCommunes
         {
             var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _sangkatCommuneManager.ImportAsync(entity));
+            CheckErrors(await _sangkatCommuneManager.ImportExcelAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Edit)]

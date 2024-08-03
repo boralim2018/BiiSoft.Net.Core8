@@ -323,41 +323,7 @@ namespace BiiSoft.Locations
         [UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
-            var result = new ExportFileOutput
-            {
-                FileName = "Location.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> { 
-                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 200 },
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("Location")), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Latitude"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Longitude"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
-                };
-
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _locationManager.ExportExcelTemplateAsync();
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_ImportExcel)]
@@ -366,7 +332,7 @@ namespace BiiSoft.Locations
         {
             var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _locationManager.ImportAsync(entity));
+            CheckErrors(await _locationManager.ImportExcelAsync(entity));
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Edit)]

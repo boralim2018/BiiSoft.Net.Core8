@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
 using BiiSoft.Entities;
+using BiiSoft.BFiles;
+using BiiSoft.Columns;
+using OfficeOpenXml;
+using BiiSoft.Folders;
 
 namespace BiiSoft.Locations
 {
@@ -19,7 +23,9 @@ namespace BiiSoft.Locations
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
+        private readonly IAppFolders _appFolders;
         public CityProvinceManager(
+            IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<Country, Guid> countryRepository,
@@ -28,6 +34,7 @@ namespace BiiSoft.Locations
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _countryRepository = countryRepository;
+            _appFolders = appFolders;
         }
 
         #region override
@@ -69,7 +76,46 @@ namespace BiiSoft.Locations
         }
 
         #endregion
-              
+
+        public async Task<ExportFileOutput> ExportExcelTemplateAsync()
+        {
+            var result = new ExportFileOutput
+            {
+                FileName = $"{InstanceName}.xlsx",
+                FileToken = $"{Guid.NewGuid()}.xlsx"
+            };
+
+            using (var p = new ExcelPackage())
+            {
+                var ws = p.CreateSheet(result.FileName.RemoveExtension());
+
+                #region Row 1 Header Table
+                int rowTableHeader = 1;
+                //int colHeaderTable = 1;
+
+                // write header collumn table
+                var displayColumns = new List<ColumnOutput> {
+                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 200, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Name_",L("CityProvince")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("ISO"), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("Country")), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
+                };
+
+                #endregion Row 1
+
+                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
+
+                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
+
+                await _fileStorageManager.UploadTempFile(result.FileToken, p);
+            }
+
+            return result;
+        }
+
         /// <summary>
         ///  Import data from excel file template. Must call in close connection
         /// </summary>
@@ -77,7 +123,7 @@ namespace BiiSoft.Locations
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
+        public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
             var cityProvinces = new List<CityProvince>();
             var cityProvinceHash = new HashSet<string>();
@@ -86,7 +132,7 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.ISO, v => v.Id);
+                countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
             }
 
             //var excelPackage = Read(input, _appFolders);
@@ -118,15 +164,13 @@ namespace BiiSoft.Locations
                         if (isoHash.Contains(iso)) DuplicateException(L("Code_", L("ISO")), $" : {iso}, Row = {i}");
 
                         Guid? countryId = null;
-                        var countryISO = worksheet.GetString(i, 5);
-                        ValidateInput(countryISO, L("Code_", L("Country")), $", Row = {i}");
-                        if (!countryDic.ContainsKey(countryISO)) InvalidException(L("Code_", L("Country")), $" : {countryISO}, Row = {i}");
-                        countryId = countryDic[countryISO];
+                        var countryCode = worksheet.GetString(i, 5);
+                        ValidateInput(countryCode, L("Code_", L("Country")), $", Row = {i}");
+                        if (!countryDic.ContainsKey(countryCode)) InvalidException(L("Code_", L("Country")), $" : {countryCode}, Row = {i}");
+                        countryId = countryDic[countryCode];
 
-                        var latitude = worksheet.GetDecimalOrNull(i, 6);
-                        var longitude = worksheet.GetDecimalOrNull(i, 7);
-                        var cannotEdit = worksheet.GetBool(i, 8);
-                        var cannotDelete = worksheet.GetBool(i, 9); 
+                        var cannotEdit = worksheet.GetBool(i, 6);
+                        var cannotDelete = worksheet.GetBool(i, 7); 
 
                         var entity = CityProvince.Create(input.UserId, code, name, displayName, iso, countryId);
                         entity.SetCannotEdit(cannotEdit);

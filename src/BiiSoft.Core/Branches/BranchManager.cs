@@ -13,8 +13,11 @@ using BiiSoft.Authorization.Users;
 using BiiSoft.Locations;
 using Abp.Extensions;
 using BiiSoft.ContactInfo;
-using Abp.Domain.Entities;
 using BiiSoft.Entities;
+using BiiSoft.Folders;
+using BiiSoft.BFiles;
+using OfficeOpenXml;
+using BiiSoft.Columns;
 
 namespace BiiSoft.Branches
 {
@@ -33,7 +36,9 @@ namespace BiiSoft.Branches
         private readonly IContactAddressManager _contactAddressManager;
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<UserBranch, Guid> _userBranchRepository;
+        private readonly IAppFolders _appFolders;
         public BranchManager(
+            IAppFolders appFolders,
             IBiiSoftRepository<Country, Guid> countryRepository,
             IBiiSoftRepository<CityProvince, Guid> cityProvinceRepository,
             IBiiSoftRepository<KhanDistrict, Guid> khanDistrictRepository,
@@ -57,6 +62,7 @@ namespace BiiSoft.Branches
             _khanDistrictRepository = khanDistrictRepository;
             _sangkatCommuneRepository = sangkatCommuneRepository;
             _villageRepository = villageRepository;
+            _appFolders = appFolders;
         }
 
         #region override base class
@@ -154,6 +160,69 @@ namespace BiiSoft.Branches
             return IdentityResult.Success;
         }
 
+        public async Task<ExportFileOutput> ExportExcelTemplateAsync()
+        {
+            var result = new ExportFileOutput
+            {
+                FileName = "Branch.xlsx",
+                FileToken = $"{Guid.NewGuid()}.xlsx"
+            };
+
+            using (var p = new ExcelPackage())
+            {
+                var ws = p.CreateSheet(result.FileName.RemoveExtension());
+
+                #region Row 1 Header Table
+                int rowTableHeader = 1;
+                //int colHeaderTable = 1;
+
+                // write header collumn table
+                var displayColumns = new List<ColumnOutput> {
+                    new ColumnOutput{ ColumnTitle = L("Name_",L("Branch")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("BusinessId"), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("PhoneNumber"), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Email"), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Website"), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("TaxRegistrationNumber"), Width = 150, IsRequired = true },
+
+                    new ColumnOutput{ ColumnTitle = L("Code_",L("Country")), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code_",L("CityProvince")), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("KhanDistrict")), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("SangkatCommune")), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("Village")), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("PostalCode"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Street"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("HouseNo"), Width = 150 },
+
+                    new ColumnOutput{ ColumnTitle = L("SameAsBillingAddress"), Width = 150 },
+
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("Country")) + 2, Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("CityProvince")) + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("KhanDistrict")) + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("SangkatCommune")) + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("Village")) + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("PostalCode") + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Street") + 2, Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("HouseNo") + 2, Width = 150 },
+
+                    new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
+                };
+
+                #endregion Row 1
+
+                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
+
+                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
+
+                await _fileStorageManager.UploadTempFile(result.FileToken, p);
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Import data from excel file template. Must call in close connection
         /// </summary>
@@ -162,7 +231,7 @@ namespace BiiSoft.Branches
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
+        public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
             var branchs = new List<Branch>();
             var branchHash = new HashSet<string>();

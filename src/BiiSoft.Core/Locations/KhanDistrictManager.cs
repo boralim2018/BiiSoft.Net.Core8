@@ -12,8 +12,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
-using Microsoft.AspNetCore.Components.Forms;
 using BiiSoft.Entities;
+using BiiSoft.BFiles;
+using BiiSoft.Columns;
+using OfficeOpenXml;
+using BiiSoft.Folders;
 
 namespace BiiSoft.Locations
 {
@@ -23,7 +26,9 @@ namespace BiiSoft.Locations
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
         private readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
+        private readonly IAppFolders _appFolders;
         public KhanDistrictManager(
+            IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<CityProvince, Guid> cityProvinceRepository,
@@ -34,6 +39,7 @@ namespace BiiSoft.Locations
             _unitOfWorkManager = unitOfWorkManager;
             _countryRepository = countryRepository;
             _cityProvinceRepository = cityProvinceRepository;
+            _appFolders = appFolders;
         }
 
         #region override
@@ -75,7 +81,46 @@ namespace BiiSoft.Locations
         }
 
         #endregion
-        
+
+        public async Task<ExportFileOutput> ExportExcelTemplateAsync()
+        {
+            var result = new ExportFileOutput
+            {
+                FileName = $"{InstanceName}.xlsx",
+                FileToken = $"{Guid.NewGuid()}.xlsx"
+            };
+
+            using (var p = new ExcelPackage())
+            {
+                var ws = p.CreateSheet(result.FileName.RemoveExtension());
+
+                #region Row 1 Header Table
+                int rowTableHeader = 1;
+                //int colHeaderTable = 1;
+
+                // write header collumn table
+                var displayColumns = new List<ColumnOutput> {
+                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 200, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Name_",L("KhanDistrict")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("Country")), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code_", L("CityProvince")), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
+                };
+
+                #endregion Row 1
+
+                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
+
+                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
+
+                await _fileStorageManager.UploadTempFile(result.FileToken, p);
+            }
+
+            return result;
+        }
+
         /// <summary>
         ///  Import data from excel file template. Must call in close connection
         /// </summary>
@@ -83,7 +128,7 @@ namespace BiiSoft.Locations
         /// <param name="fileToken"></param>
         /// <returns></returns>
         /// <exception cref="UserFriendlyException"></exception>
-        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
+        public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
             var khanDistricts = new List<KhanDistrict>();
             var khanDistrictHash = new HashSet<string>();
@@ -92,8 +137,8 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.ISO, v => v.Id);
-                cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.ISO, v => v.Id);
+                countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
             }
 
             //var excelPackage = Read(input, _appFolders);
@@ -120,21 +165,19 @@ namespace BiiSoft.Locations
                         ValidateDisplayName(displayName, $", Row = {i}");
 
                         Guid? countryId = null;
-                        var countryISO = worksheet.GetString(i, 4);
-                        ValidateInput(countryISO, L("Code_", L("Country")), $", Row = {i}");
-                        if (!countryDic.ContainsKey(countryISO)) InvalidException(L("Code_", L("Currency")), $", Row = {i}");
-                        countryId = countryDic[countryISO];
+                        var countryCode = worksheet.GetString(i, 4);
+                        ValidateInput(countryCode, L("Code_", L("Country")), $", Row = {i}");
+                        if (!countryDic.ContainsKey(countryCode)) InvalidException(L("Code_", L("Currency")), $", Row = {i}");
+                        countryId = countryDic[countryCode];
 
                         Guid? cityProvinceId = null;
-                        var cityProvinceISO = worksheet.GetString(i, 5);
-                        ValidateInput(cityProvinceISO, L("Code_", L("CityProvince")), $", Row = {i}");
-                        if (!cityProvinceDic.ContainsKey(cityProvinceISO)) InvalidException(L("Code_", L("CityProvince")), $", Row = {i}");
-                        cityProvinceId = cityProvinceDic[cityProvinceISO];
+                        var cityProvinceCode = worksheet.GetString(i, 5);
+                        ValidateInput(cityProvinceCode, L("Code_", L("CityProvince")), $", Row = {i}");
+                        if (!cityProvinceDic.ContainsKey(cityProvinceCode)) InvalidException(L("Code_", L("CityProvince")), $", Row = {i}");
+                        cityProvinceId = cityProvinceDic[cityProvinceCode];
 
-                        var latitude = worksheet.GetDecimalOrNull(i, 6);
-                        var longitude = worksheet.GetDecimalOrNull(i, 7);
-                        var cannotEdit = worksheet.GetBool(i, 8);
-                        var cannotDelete = worksheet.GetBool(i, 9); 
+                        var cannotEdit = worksheet.GetBool(i, 6);
+                        var cannotDelete = worksheet.GetBool(i, 7); 
 
                         var entity = KhanDistrict.Create(input.UserId, code, name, displayName, countryId, cityProvinceId);
                         entity.SetCannotEdit(cannotEdit);

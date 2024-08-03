@@ -1,5 +1,6 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Services;
+using BiiSoft.BFiles;
 using BiiSoft.Branches;
 using BiiSoft.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -35,6 +36,7 @@ namespace BiiSoft
 
     public interface IImporxExcelValidateSerivceBase<TPrimaryKey> 
     {
-        Task<IdentityResult> ImportAsync(IImportExcelEntity<TPrimaryKey> input);
+        Task<ExportFileOutput> ExportExcelTemplateAsync();
+        Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<TPrimaryKey> input);
     }
 }

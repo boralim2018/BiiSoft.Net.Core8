@@ -14,6 +14,10 @@ using System.Transactions;
 using BiiSoft.Extensions;
 using Abp.Domain.Entities;
 using BiiSoft.Entities;
+using BiiSoft.BFiles;
+using BiiSoft.Columns;
+using OfficeOpenXml;
+using BiiSoft.Folders;
 
 namespace BiiSoft.Locations
 {
@@ -22,7 +26,9 @@ namespace BiiSoft.Locations
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IBiiSoftRepository<Currency, long> _currencyRepository;
+        private readonly IAppFolders _appFolders;
         public CountryManager(
+            IAppFolders appFolders,
             IBiiSoftRepository<Currency, long> currencyRepository,
             IBiiSoftRepository<Country, Guid> repository,
             IFileStorageManager fileStorageManager,
@@ -31,6 +37,7 @@ namespace BiiSoft.Locations
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _currencyRepository = currencyRepository;
+            _appFolders = appFolders;
         }
 
         #region override
@@ -78,13 +85,55 @@ namespace BiiSoft.Locations
         }
         #endregion
 
+        public async Task<ExportFileOutput> ExportExcelTemplateAsync()
+        {
+            var result = new ExportFileOutput
+            {
+                FileName = $"{InstanceName}.xlsx",
+                FileToken = $"{Guid.NewGuid()}.xlsx"
+            };
+
+            using (var p = new ExcelPackage())
+            {
+                var ws = p.CreateSheet(result.FileName.RemoveExtension());
+
+                #region Row 1 Header Table
+                int rowTableHeader = 1;
+                //int colHeaderTable = 1;
+
+                // write header collumn table
+                var displayColumns = new List<ColumnOutput> {
+                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 200, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Name_",L("Country")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("ISO"), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("ISO2"), Width = 150, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("PhonePrefix"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Currency"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
+                };
+
+                #endregion Row 1
+
+                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
+
+                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
+
+                await _fileStorageManager.UploadTempFile(result.FileToken, p);
+            }
+
+            return result;
+        }
+
+
         /// <summary>
         /// Import data from excel file template. Must call in close connection
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="fileToken"></param>
         /// <returns></returns>
-        public async Task<IdentityResult> ImportAsync(IImportExcelEntity<Guid> input)
+        public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
             var countries = new List<Country>();
             var countryHash = new HashSet<string>();
