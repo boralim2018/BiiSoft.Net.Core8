@@ -23,8 +23,8 @@
     <None Remove="Taxes\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Abp.AutoMapper" Version="9.2.2" />
-    <PackageReference Include="Abp.MailKit" Version="9.2.2" />
+    <PackageReference Include="Abp.AutoMapper" Version="9.3.0" />
+    <PackageReference Include="Abp.MailKit" Version="9.3.0" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.310.7" />
     <PackageReference Include="Castle.Windsor.MsDependencyInjection" Version="4.1.0" />

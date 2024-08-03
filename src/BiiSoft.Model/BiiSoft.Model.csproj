@@ -12,6 +12,6 @@
     <RootNamespace>BiiSoft</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Abp.ZeroCore.EntityFrameworkCore" Version="9.2.2" />
+    <PackageReference Include="Abp.ZeroCore.EntityFrameworkCore" Version="9.3.0" />
   </ItemGroup>
 </Project>

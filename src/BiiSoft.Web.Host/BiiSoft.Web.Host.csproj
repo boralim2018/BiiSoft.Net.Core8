@@ -13,7 +13,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="wwwroot\swagger\ui\abp.js" />
     <None Include="wwwroot\swagger\ui\abp.swagger.js" />
     <None Update="Dockerfile">
@@ -31,8 +30,8 @@
     <ProjectReference Include="..\BiiSoft.Web.Core\BiiSoft.Web.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Abp.Castle.Log4Net" Version="9.2.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
+    <PackageReference Include="Abp.Castle.Log4Net" Version="9.3.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
