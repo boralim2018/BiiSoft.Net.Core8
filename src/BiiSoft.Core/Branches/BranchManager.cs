@@ -150,12 +150,11 @@ namespace BiiSoft.Branches
             var members = await _userBranchRepository.GetAll().AsNoTracking().AnyAsync(s => s.BranchId == id);
             if (members) ErrorException(L("AlreadyHasMembers", InstanceName));
 
-            var address = await _contactAddressRepository.GetAll().AsNoTracking()
-                                .Where(s => s.Id == entity.BillingAddressId || (!entity.SameAsBillingAddress && s.Id == entity.ShippingAddressId))
-                                .ToListAsync();
-           
-            await _repository.DeleteAsync(entity);
-            if(address.Any()) await _contactAddressRepository.BulkDeleteAsync(address);
+            var address = new List<Guid>{ entity.BillingAddressId };
+            if (!entity.SameAsBillingAddress) address.Add(entity.ShippingAddressId);
+            
+            await _repository.BulkDeleteAsync(entity);
+            await _contactAddressManager.BulkDeleteAsync(address);
 
             return IdentityResult.Success;
         }

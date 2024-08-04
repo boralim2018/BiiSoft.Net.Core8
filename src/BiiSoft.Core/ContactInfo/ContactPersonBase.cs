@@ -23,8 +23,6 @@ namespace BiiSoft.ContactInfo
         public string Email { get; protected set; }
         public bool DisplayNameFirst { get; protected set; }
 
-        //public virtual string FullName { get => DisplayNameFirst ? $"{Name} {Surname}" : $"{Surname} {Name}"; }
-        //public virtual string FullDisplayName { get => DisplayNameFirst ? $"{Name} {DisplaySurname}" : $"{DisplaySurname} {Name}"; }
 
     }
 

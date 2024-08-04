@@ -9,18 +9,21 @@ using BiiSoft.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Abp.Timing;
 using Abp.Domain.Entities;
+using BiiSoft.Entities;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
 namespace BiiSoft.ContactInfo
 {
     public class ContactAddressManager : BiiSoftValidateServiceBase<ContactAddress, Guid>, IContactAddressManager
     {
 
-        protected readonly IBiiSoftRepository<Country, Guid> _countryRepository;
-        protected readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
-        protected readonly IBiiSoftRepository<KhanDistrict, Guid> _khanDistrictRepository;
-        protected readonly IBiiSoftRepository<SangkatCommune, Guid> _sangkatCommuneRepository;
-        protected readonly IBiiSoftRepository<Village, Guid> _villageRepository;
-        protected readonly IBiiSoftRepository<Location, Guid> _locationRepository;
+        private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
+        private readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
+        private readonly IBiiSoftRepository<KhanDistrict, Guid> _khanDistrictRepository;
+        private readonly IBiiSoftRepository<SangkatCommune, Guid> _sangkatCommuneRepository;
+        private readonly IBiiSoftRepository<Village, Guid> _villageRepository;
+        private readonly IBiiSoftRepository<Location, Guid> _locationRepository;
+        private readonly ILocationManager _locationManager;
 
         public ContactAddressManager(
             IBiiSoftRepository<Country, Guid> countryRepository,
@@ -29,6 +32,7 @@ namespace BiiSoft.ContactInfo
             IBiiSoftRepository<SangkatCommune, Guid> sangkatCommuneRepository,
             IBiiSoftRepository<Village, Guid> villageRepository,
             IBiiSoftRepository<Location, Guid> locationRepository,
+            ILocationManager locationManager,
             IBiiSoftRepository<ContactAddress, Guid> repository) : base(repository)
         {
             _countryRepository = countryRepository;
@@ -37,6 +41,7 @@ namespace BiiSoft.ContactInfo
             _sangkatCommuneRepository = sangkatCommuneRepository;
             _villageRepository = villageRepository;
             _locationRepository = locationRepository;
+            _locationManager = locationManager;
         }
 
         protected override string InstanceName => L("ContactAddress");
@@ -140,13 +145,17 @@ namespace BiiSoft.ContactInfo
 
         }
 
-        public async Task<IdentityResult> BulkInsertAsync(int? tenantId, long userId, List<ContactAddress> input)
+        public async Task<IdentityResult> BulkInsertAsync(IMayHaveTenantBulkInputEntity<ContactAddress> input)
         {
-            await BulkValidateAsync(input);
+            await BulkValidateAsync(input.Items);
 
-            var entities = input.Select(s => {
+            var entities = input.Items.Select(s => {
+                s.TenantId = input.TenantId.Value;
+                s.CreatorUserId = input.UserId;
+
                 var e = CreateInstance(s);
                 s.Id = e.Id;
+
                 return e;
             }).ToList();
 
@@ -154,17 +163,19 @@ namespace BiiSoft.ContactInfo
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> BulkUpdateAsync(long userId, List<ContactAddress> input)
+        public async Task<IdentityResult> BulkUpdateAsync(IBulkInputIntity<ContactAddress> input)
         {
-            await BulkValidateAsync(input);
+            await BulkValidateAsync(input.Items);
 
-            var entities = await _repository.GetAll().AsNoTracking().Where(s => input.Any(r => r.Id.Equals(s.Id))).ToDictionaryAsync(k => k.Id, v => v);
+            var entities = await _repository.GetAll().AsNoTracking().Where(s => input.Items.Any(r => r.Id.Equals(s.Id))).ToDictionaryAsync(k => k.Id, v => v);
 
-            if (entities.Count != input.Count) NotFoundException(InstanceName);
+            if (entities.Count != input.Items.Count) NotFoundException(InstanceName);
 
-            foreach (var i in input)
+            foreach (var i in input.Items)
             {
                 if (!entities.ContainsKey(i.Id)) NotFoundException(InstanceName);
+
+                i.LastModifierUserId = input.UserId;
                 UpdateInstance(i, entities[i.Id]);
             }
 
@@ -174,30 +185,58 @@ namespace BiiSoft.ContactInfo
 
         public async Task<IdentityResult> BulkDeleteAsync(List<Guid> input)
         {
-            var entities = await _repository.GetAll().AsNoTracking().Where(s => input.Contains(s.Id)).ToListAsync();
+            var entities = await _repository.GetAll().Include(s => s.Location).AsNoTracking().Where(s => input.Contains(s.Id)).ToListAsync();
 
             if(entities.Count != input.Count) NotFoundException(InstanceName);
-                       
-            if(entities.Any()) await _repository.BulkDeleteAsync(entities);
+
+            if (entities.Any())
+            {
+                var locations = entities.Where(s => s.Location != null).Select(s => s.Location).ToList();
+
+                await _repository.BulkDeleteAsync(entities);
+                if (locations.Any()) await _locationRepository.BulkDeleteAsync(locations);
+            }
 
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> ChangeLocationAsync(long userId, IEntity<Guid?> location, IEntity<Guid> input)
+        public async Task<IdentityResult> ChangeLocationAsync(ChangeContactAddressLocationInput input)
         {
-            ValidateSelect(location.Id, L("Location"));
+            ValidateSelect(input.LocationId, L("Location"));
 
-            var find = await _locationRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == location.Id);
+            var find = await _locationRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.LocationId.Value);
             if (!find) InvalidException(L("Location"));
 
             var entity = await GetAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
-            entity.SetLocation(location.Id);
-            entity.LastModifierUserId = userId;
+            var locationId = entity.LocationId;
+
+            entity.SetLocation(input.LocationId);
+            entity.LastModifierUserId = input.UserId;
             entity.LastModificationTime = Clock.Now;
 
             await _repository.UpdateAsync(entity);
+            if(locationId.HasValue) await _locationManager.DeleteAsync(locationId.Value);
+
+            return IdentityResult.Success;
+        }
+
+        public async Task<IdentityResult> DeleteLocationAsync(IUserEntity<Guid> input)
+        {
+            var entity = await GetAsync(input.Id);
+            if(entity == null) NotFoundException(InstanceName);
+            
+            if(!entity.LocationId.HasValue) NotFoundException(L("Location"));
+            
+            var locationId = entity.LocationId.Value;
+            
+            entity.SetLocation(null);
+            entity.LastModifierUserId = input.UserId;
+            entity.LastModificationTime = Clock.Now;
+            
+            await _repository.UpdateAsync(entity);
+            await _locationManager.DeleteAsync(locationId);
 
             return IdentityResult.Success;
         }

@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
-using Abp.Domain.Entities;
 using BiiSoft.Entities;
 using BiiSoft.BFiles;
 using BiiSoft.Columns;

@@ -20,6 +20,7 @@ namespace BiiSoft
         Task BulkUpdateAsync(IList<TEntity> list);
         Task BulkUpdateAsync(TEntity entity);
         Task BulkDeleteAsync(IList<TEntity> list);
+        Task BulkDeleteAsync(TEntity list);
         Task BulkInsertOrUpdateAsync(IList<TEntity> list);
         Task BulkInsertOrUpdateAsync(TEntity entity);
         Task BulkInsertOrUpdateOrDeleteAsync(IList<TEntity> list);
