@@ -3,6 +3,7 @@ using System;
 using BiiSoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    partial class BiiSoftDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240804140842_BiiSoft-Zero")]
+    partial class BiiSoftZero
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1756,6 +1759,9 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("LogoId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -1883,9 +1889,6 @@ namespace BiiSoft.Migrations
 
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
-
-                    b.Property<Guid?>("LogoId")
-                        .HasColumnType("uuid");
 
                     b.Property<int>("RoundCostDigts")
                         .ValueGeneratedOnAdd()

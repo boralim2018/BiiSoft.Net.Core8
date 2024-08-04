@@ -4,15 +4,16 @@ using BiiSoft.Entities;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BiiSoft.Classes
+namespace BiiSoft.TransactionTypes
 {
-    public class Class : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    public class TransactionType : DefaultNameActiveEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
 
-        public static Class Create (int tenantId, long? userId, string name, string displayName)
+
+        public static TransactionType Create (int tenantId, long? userId, string name, string displayName)
         {
-            return new Class
+            return new TransactionType
             {
                 Id = Guid.NewGuid(),
                 TenantId = tenantId,

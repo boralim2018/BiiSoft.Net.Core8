@@ -30,7 +30,9 @@ namespace BiiSoft.Branches
         public bool SameAsBillingAddress { get; set; }
         public Guid ShippingAddressId { get; set; }
         public ContactAddress ShippingAddress { get; set; }
-      
+
+        public void SetName(string name) => Name = name; 
+
         public static Branch Create(
             int tenantId, 
             long? userId, 

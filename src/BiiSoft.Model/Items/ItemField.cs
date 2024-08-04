@@ -1,8 +1,5 @@
 ﻿using Abp.Domain.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities.Auditing;
@@ -176,32 +173,6 @@ namespace BiiSoft.Items
         public static Battery Create(int? tenantId, long userId, string name)
         {
             return new Battery
-            {
-                Id = Guid.NewGuid(),
-                TenantId = tenantId,
-                CreatorUserId = userId,
-                CreationTime = Clock.Now,
-                Name = name,
-                IsActive = true
-            };
-        }
-
-        public void Update(long userId, string name)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-        }
-    }
-
-    [Table("BiiOSs")]
-    public class OS : DefaultNameActiveEntity<Guid>, IMayHaveTenant
-    {
-        public int? TenantId { get; set; }
-
-        public static OS Create(int? tenantId, long userId, string name)
-        {
-            return new OS
             {
                 Id = Guid.NewGuid(),
                 TenantId = tenantId,

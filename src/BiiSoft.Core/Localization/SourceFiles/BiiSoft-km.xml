@@ -325,12 +325,12 @@
 		<text name="ColorPattern">ពណ៌ផ្ទៃ</text>
 		<text name="Brands">ម៉ាក</text>
 		<text name="Brand">ម៉ាក</text>
-		<text name="FieldAs">Feild A</text>
-		<text name="FieldA">Feild A</text>
-		<text name="FieldBs">Feild B</text>
-		<text name="FieldB">Feild B</text>
-		<text name="FieldCs">Feild C</text>
-		<text name="FieldC">Feild C</text>
+		<text name="FieldAs">ជួរ A</text>
+		<text name="FieldA">ជួរ A</text>
+		<text name="FieldBs">ជួរ B</text>
+		<text name="FieldB">ជួរ B</text>
+		<text name="FieldCs">ជួរ C</text>
+		<text name="FieldC">ជួរ C</text>
 		<text name="Units">ខ្នាត</text>
 		<text name="Unit">ខ្នាត</text>
 		<text name="PriceLevels">កម្រិកថ្លៃ</text>
@@ -650,6 +650,7 @@
 		<text name="IncorrectCaptchaAnswer">Captcha មិនត្រឹមត្រូវ</text>
 		<text name="CountryISO">ប្រទេស ISO</text>
 		<text name="ProvinceISO">ខេត្ត ISO</text>
+		<text name="Copyright">រក្សាសិទ្ធិ</text>
 		
 	</texts>
 </localizationDictionary>

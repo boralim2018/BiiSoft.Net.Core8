@@ -13,6 +13,30 @@ namespace BiiSoft.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "BiiCompanyAdvanceSettings",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    MultiBranchesEnable = table.Column<bool>(type: "boolean", nullable: false),
+                    MultiCurrencyEnable = table.Column<bool>(type: "boolean", nullable: false),
+                    LineDiscountEnable = table.Column<bool>(type: "boolean", nullable: false),
+                    TotalDiscountEnable = table.Column<bool>(type: "boolean", nullable: false),
+                    CustomTransactionNoEnable = table.Column<bool>(type: "boolean", nullable: false),
+                    ClassEnable = table.Column<bool>(type: "boolean", nullable: false),
+                    ContactAddressLevel = table.Column<int>(type: "integer", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiCompanyAdvanceSettings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BiiFiles",
                 columns: table => new
                 {
@@ -144,6 +168,41 @@ namespace BiiSoft.Migrations
                         name: "FK_BiiCityProvinces_BiiCountries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "BiiCountries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BiiCompanyGeneralSettings",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    CountryId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultTimeZone = table.Column<string>(type: "text", nullable: true),
+                    CurrencyId = table.Column<long>(type: "bigint", nullable: true),
+                    BusinessStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    RoundTotalDigits = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
+                    RoundCostDigts = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiCompanyGeneralSettings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyGeneralSettings_BiiCountries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "BiiCountries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyGeneralSettings_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -360,6 +419,7 @@ namespace BiiSoft.Migrations
                     BillingAddressId = table.Column<Guid>(type: "uuid", nullable: false),
                     SameAsBillingAddress = table.Column<bool>(type: "boolean", nullable: false),
                     ShippingAddressId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LogoId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -478,6 +538,16 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyGeneralSettings_CountryId",
+                table: "BiiCompanyGeneralSettings",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyGeneralSettings_CurrencyId",
+                table: "BiiCompanyGeneralSettings",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiCountries_Code",
                 table: "BiiCountries",
                 column: "Code",
@@ -543,12 +613,6 @@ namespace BiiSoft.Migrations
                 column: "CityProvinceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BiiKhanDistricts_Code",
-                table: "BiiKhanDistricts",
-                column: "Code",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BiiKhanDistricts_CountryId",
                 table: "BiiKhanDistricts",
                 column: "CountryId");
@@ -569,6 +633,12 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiKhanDistricts_TenantId_Code",
+                table: "BiiKhanDistricts",
+                columns: new[] { "TenantId", "Code" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiLocations_DisplayName",
                 table: "BiiLocations",
                 column: "DisplayName");
@@ -587,12 +657,6 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiSangkatCommunes_CityProvinceId",
                 table: "BiiSangkatCommunes",
                 column: "CityProvinceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiSangkatCommunes_Code",
-                table: "BiiSangkatCommunes",
-                column: "Code",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiSangkatCommunes_CountryId",
@@ -620,6 +684,12 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiSangkatCommunes_TenantId_Code",
+                table: "BiiSangkatCommunes",
+                columns: new[] { "TenantId", "Code" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiUserBranchs_BranchId",
                 table: "BiiUserBranchs",
                 column: "BranchId");
@@ -633,12 +703,6 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiVillages_CityProvinceId",
                 table: "BiiVillages",
                 column: "CityProvinceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiVillages_Code",
-                table: "BiiVillages",
-                column: "Code",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiVillages_CountryId",
@@ -669,6 +733,12 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiVillages_SangkatCommuneId",
                 table: "BiiVillages",
                 column: "SangkatCommuneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiVillages_TenantId_Code",
+                table: "BiiVillages",
+                columns: new[] { "TenantId", "Code" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ContactAddresses_CityProvinceId",
@@ -720,6 +790,12 @@ namespace BiiSoft.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "BiiCompanyAdvanceSettings");
+
+            migrationBuilder.DropTable(
+                name: "BiiCompanyGeneralSettings");
+
             migrationBuilder.DropTable(
                 name: "BiiFiles");
 

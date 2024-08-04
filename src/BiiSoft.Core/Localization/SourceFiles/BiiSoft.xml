@@ -650,6 +650,7 @@
 		<text name="IncorrectCaptchaAnswer">Incorrect Captcha Answer</text>
 		<text name="CountryISO">Country ISO</text>
 		<text name="ProvinceISO">Province ISO</text>
+		<text name="Copyright">Copyright</text>
 		
 	</texts>
 </localizationDictionary>

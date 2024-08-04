@@ -25,6 +25,9 @@ using Abp;
 using Abp.Application.Features;
 using BiiSoft.Editions.Dto;
 using Abp.Timing;
+using BiiSoft.Branches;
+using BiiSoft.ContactInfo;
+using System;
 
 namespace BiiSoft.MultiTenancy
 {
@@ -37,7 +40,12 @@ namespace BiiSoft.MultiTenancy
         private readonly RoleManager _roleManager;
         private readonly IAbpZeroDbMigrator _abpZeroDbMigrator;
 
+        private readonly IRepository<Branch, Guid> _branchRepository;
+        private readonly IRepository<ContactAddress, Guid> _contactAddressRepository;
+
         public TenantAppService(
+            IRepository<ContactAddress, Guid> contactAddressRepository,
+            IRepository<Branch, Guid> branchRepository,
             IRepository<Tenant, int> repository,
             TenantManager tenantManager,
             EditionManager editionManager,
@@ -51,6 +59,8 @@ namespace BiiSoft.MultiTenancy
             _userManager = userManager;
             _roleManager = roleManager;
             _abpZeroDbMigrator = abpZeroDbMigrator;
+            _branchRepository = branchRepository;
+            _contactAddressRepository = contactAddressRepository;
         }
 
         public override async Task<TenantDto> GetAsync(EntityDto<int> input)
@@ -139,6 +149,13 @@ namespace BiiSoft.MultiTenancy
                 // Assign admin user to role!
                 CheckErrors(await _userManager.AddToRoleAsync(adminUser, adminRole.Name));
                 await CurrentUnitOfWork.SaveChangesAsync();
+
+                var billingAddressEntity = ContactAddress.Create(tenant.Id, adminUser.Id, null, null, null, null, null, null, "", "", "");
+                await _contactAddressRepository.InsertAsync(billingAddressEntity);
+
+                var branchEntity = Branch.Create(tenant.Id, adminUser.Id, tenant.Name, tenant.Name, "", "", "", "", "", billingAddressEntity.Id, true, billingAddressEntity.Id);
+                branchEntity.SetDefault(true);
+                await _branchRepository.InsertAsync(branchEntity);
             }
 
             return MapToEntityDto(tenant);
@@ -157,6 +174,13 @@ namespace BiiSoft.MultiTenancy
             entity.LastModifierUserId = AbpSession.UserId;
 
             await _tenantManager.UpdateAsync(entity);
+
+            var branchEntity = await _branchRepository.GetAll().Where(s => s.TenantId == input.Id && s.IsDefault).FirstOrDefaultAsync();
+            if(branchEntity != null)
+            {
+                branchEntity.SetName(input.Name);
+                await _branchRepository.UpdateAsync(branchEntity);
+            }
 
             return input;
         }

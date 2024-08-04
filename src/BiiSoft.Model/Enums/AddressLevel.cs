@@ -8,6 +8,7 @@ namespace BiiSoft.Enums
 {
     public enum AddressLevel
     {
+        L0 = 0,
         L1 = 1,
         L2 = 2,
         L3 = 3,

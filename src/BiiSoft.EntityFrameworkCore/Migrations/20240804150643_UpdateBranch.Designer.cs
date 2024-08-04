@@ -12,15 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20240801110514_BiiSoft-Zero")]
-    partial class BiiSoftZero
+    [Migration("20240804150643_UpdateBranch")]
+    partial class UpdateBranch
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -105,7 +105,7 @@ namespace BiiSoft.Migrations
 
                     b.ToTable("AbpFeatures");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("FeatureSetting");
+                    b.HasDiscriminator().HasValue("FeatureSetting");
 
                     b.UseTphMappingStrategy();
                 });
@@ -222,7 +222,7 @@ namespace BiiSoft.Migrations
 
                     b.ToTable("AbpPermissions");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("PermissionSetting");
+                    b.HasDiscriminator().HasValue("PermissionSetting");
 
                     b.UseTphMappingStrategy();
                 });
@@ -1806,6 +1806,112 @@ namespace BiiSoft.Migrations
                     b.ToTable("BiiBranches");
                 });
 
+            modelBuilder.Entity("BiiSoft.Branches.CompanyAdvanceSetting", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("ClassEnable")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ContactAddressLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("CustomTransactionNoEnable")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("LineDiscountEnable")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("MultiBranchesEnable")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("MultiCurrencyEnable")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("TotalDiscountEnable")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BiiCompanyAdvanceSettings");
+                });
+
+            modelBuilder.Entity("BiiSoft.Branches.CompanyGeneralSetting", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("BusinessStartDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid?>("CountryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("CurrencyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DefaultTimeZone")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("LogoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("RoundCostDigts")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(2);
+
+                    b.Property<int>("RoundTotalDigits")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(2);
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.ToTable("BiiCompanyGeneralSettings");
+                });
+
             modelBuilder.Entity("BiiSoft.ContactInfo.ContactAddress", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2149,9 +2255,6 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("CityProvinceId");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
                     b.HasIndex("CountryId");
 
                     b.HasIndex("DisplayName");
@@ -2159,6 +2262,9 @@ namespace BiiSoft.Migrations
                     b.HasIndex("Name");
 
                     b.HasIndex("No");
+
+                    b.HasIndex("TenantId", "Code")
+                        .IsUnique();
 
                     b.ToTable("BiiKhanDistricts");
                 });
@@ -2289,9 +2395,6 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("CityProvinceId");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
                     b.HasIndex("CountryId");
 
                     b.HasIndex("DisplayName");
@@ -2301,6 +2404,9 @@ namespace BiiSoft.Migrations
                     b.HasIndex("Name");
 
                     b.HasIndex("No");
+
+                    b.HasIndex("TenantId", "Code")
+                        .IsUnique();
 
                     b.ToTable("BiiSangkatCommunes");
                 });
@@ -2371,9 +2477,6 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("CityProvinceId");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
-
                     b.HasIndex("CountryId");
 
                     b.HasIndex("DisplayName");
@@ -2385,6 +2488,9 @@ namespace BiiSoft.Migrations
                     b.HasIndex("No");
 
                     b.HasIndex("SangkatCommuneId");
+
+                    b.HasIndex("TenantId", "Code")
+                        .IsUnique();
 
                     b.ToTable("BiiVillages");
                 });
@@ -2707,6 +2813,23 @@ namespace BiiSoft.Migrations
                     b.Navigation("BillingAddress");
 
                     b.Navigation("ShippingAddress");
+                });
+
+            modelBuilder.Entity("BiiSoft.Branches.CompanyGeneralSetting", b =>
+                {
+                    b.HasOne("BiiSoft.Locations.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Currencies.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Currency");
                 });
 
             modelBuilder.Entity("BiiSoft.ContactInfo.ContactAddress", b =>

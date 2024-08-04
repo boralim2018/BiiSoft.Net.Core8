@@ -9,11 +9,11 @@ namespace BiiSoft.Branches
 {
     public interface ICompanySettingManager : IDomainService
     {
-        Task<CompanySetting> GetAsync(long id);
-        Task<CompanySetting> GetCompanySettingAsync();
-        Task<IdentityResult> CreateAsync(CompanySetting @entity);
-        Task<IdentityResult> UpdateAsync(CompanySetting @entity);
-        Task<IdentityResult> RemoveAsync(CompanySetting @entity);
+        Task<CompanyGeneralSetting> GetAsync(long id);
+        Task<CompanyGeneralSetting> GetCompanySettingAsync();
+        Task<IdentityResult> CreateAsync(CompanyGeneralSetting @entity);
+        Task<IdentityResult> UpdateAsync(CompanyGeneralSetting @entity);
+        Task<IdentityResult> RemoveAsync(CompanyGeneralSetting @entity);
     }
    
 }

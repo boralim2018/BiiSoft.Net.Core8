@@ -10,6 +10,7 @@ using BiiSoft.BFiles;
 using BiiSoft.Locations;
 using BiiSoft.Currencies;
 using BiiSoft.ContactInfo;
+using BiiSoft.Enums;
 
 namespace BiiSoft.EntityFrameworkCore
 {
@@ -28,6 +29,8 @@ namespace BiiSoft.EntityFrameworkCore
 
         public DbSet<ContactAddress> ContactAddresses { get; set; }
 
+        public DbSet<CompanyGeneralSetting> CompanyGeneralSettings { get; set; }
+        public DbSet<CompanyAdvanceSetting> CompanyAdvanceSettings { get; set; }
         public DbSet<Branch> Branchs { get; set; }
         public DbSet<UserBranch> UserBranches { get; set; }
       
@@ -92,7 +95,7 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<KhanDistrict>(e =>
             {
-                e.HasIndex(i => i.Code).IsUnique(true);
+                e.HasIndex(i => new { i.TenantId, i.Code }).IsUnique(true);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
                 e.HasIndex(i => i.No);
@@ -102,7 +105,7 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<SangkatCommune>(e =>
             {
-                e.HasIndex(i => i.Code).IsUnique(true);
+                e.HasIndex(i => new { i.TenantId, i.Code }).IsUnique(true);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
                 e.HasIndex(i => i.No);
@@ -113,7 +116,7 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<Village>(e =>
             {
-                e.HasIndex(i => i.Code).IsUnique(true);
+                e.HasIndex(i => new { i.TenantId, i.Code }).IsUnique(true);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
                 e.HasIndex(i => i.No);
@@ -131,6 +134,19 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.SangkatCommune).WithMany().HasForeignKey(i => i.SangkatCommuneId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.Village).WithMany().HasForeignKey(i => i.VillageId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.Location).WithMany().HasForeignKey(i => i.LocationId).IsRequired(false).OnDelete(deleteBehavior: DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<CompanyGeneralSetting>(e =>
+            {
+                e.HasOne(s => s.Currency).WithMany().HasForeignKey(s => s.CurrencyId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(s => s.Country).WithMany().HasForeignKey(s => s.CountryId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.Property(s => s.RoundTotalDigits).HasDefaultValue(2);
+                e.Property(s => s.RoundCostDigts).HasDefaultValue(2);
+            });
+
+            modelBuilder.Entity<CompanyAdvanceSetting>(e =>
+            {
+
             });
 
             modelBuilder.Entity<Branch>(e =>

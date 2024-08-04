@@ -87,15 +87,15 @@ namespace BiiSoft.Authorization
 
             var locationPage = setupPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations, L("Locations"));
 
-            var locationListPage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_List, L("LocationList"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            var locationListPage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_List, L("LocationList"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Create, L("Create"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_View, L("View"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Edit, L("Edit"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Delete, L("Delete"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_ImportExcel, L("ImportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_ExportExcel, L("ExportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Enable, L("Enable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Disable, L("Disable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
 
             var countryPage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Countries, L("Countries"), multiTenancySides: MultiTenancySides.Host);
             countryPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Countries_Create, L("Create"), multiTenancySides: MultiTenancySides.Host);
@@ -670,7 +670,7 @@ namespace BiiSoft.Authorization
 
             var invoicePage = customerPage.CreateChildPermission(PermissionNames.Pages_Customers_Invoices, L("Invoices"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Customers_Invoices));
             invoicePage.CreateChildPermission(PermissionNames.Pages_Customers_Invoices_CreateAccountInvoice, L("CreateAccountInovice"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Customers_Invoices));
-            var crateInvoicePage = invoicePage.CreateChildPermission(PermissionNames.Pages_Customers_Invoices_CreateSaleInvoice, L("CreateSaleInovice"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Customers_Invoices));
+            var crateInvoicePage = invoicePage.CreateChildPermission(PermissionNames.Pages_Customers_Invoices_CreateSaleInvoice, L("CreateSaleInvoice"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Customers_Invoices));
             crateInvoicePage.CreateChildPermission(PermissionNames.Pages_Customers_Invoices_CreateSaleInvoice_FromQuotation, L("FromQuotation"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(requiresAll: true, AppFeatures.Customers_Invoices, AppFeatures.Customers_Quotations));
             crateInvoicePage.CreateChildPermission(PermissionNames.Pages_Customers_Invoices_CreateSaleInvoice_FromContract, L("FromContract"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(requiresAll: true, AppFeatures.Customers_Invoices, AppFeatures.Customers_Contracts));
             crateInvoicePage.CreateChildPermission(PermissionNames.Pages_Customers_Invoices_CreateSaleInvoice_FromSaleOrder, L("FromSaleOrder"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(requiresAll: true, AppFeatures.Customers_Invoices, AppFeatures.Customers_SaleOrders));

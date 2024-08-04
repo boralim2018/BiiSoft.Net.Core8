@@ -135,8 +135,6 @@ namespace BiiSoft.Items
         public Camera Camera { get; private set; }
         public Guid? ScreenId { get; private set; }
         public Screen Screen { get; private set; }
-        public Guid? OSId { get; private set; }
-        public OS OS { get; private set; }
         public Guid? FieldAId { get; private set; }
         public FieldA FieldA { get; private set; }
         public Guid? FieldBId { get; private set; }
@@ -275,7 +273,6 @@ namespace BiiSoft.Items
             Guid? batteryId,
             Guid? cameraId,
             Guid? storageId,
-            Guid? osId,
             Guid? fieldAId,
             Guid? fieldBId,
             Guid? fieldCId,
@@ -319,7 +316,6 @@ namespace BiiSoft.Items
                 BatteryId = batteryId,
                 CameraId = cameraId,
                 StorageId = storageId,
-                OSId = osId,
                 FieldAId = fieldAId,
                 FieldBId = fieldBId,
                 FieldCId = fieldCId,
@@ -363,7 +359,6 @@ namespace BiiSoft.Items
             Guid? batteryId,
             Guid? cameraId,
             Guid? storageId,
-            Guid? osId,
             Guid? fieldAId,
             Guid? fieldBId,
             Guid? fieldCId,
@@ -404,7 +399,6 @@ namespace BiiSoft.Items
             BatteryId = batteryId;
             CameraId = cameraId;
             StorageId = storageId;
-            OSId = osId;
             FieldAId = fieldAId;
             FieldBId = fieldBId;
             FieldCId = fieldCId;

@@ -18,18 +18,19 @@ using BiiSoft.Folders;
 using BiiSoft.BFiles;
 using OfficeOpenXml;
 using BiiSoft.Columns;
+using BiiSoft.MultiTenancy;
 
 namespace BiiSoft.Branches
 {
     public class BranchManager : BiiSoftDefaultNameActiveValidateServiceBase<Branch, Guid>, IBranchManager
     {
-
-        protected readonly IBiiSoftRepository<Country, Guid> _countryRepository;
-        protected readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
-        protected readonly IBiiSoftRepository<KhanDistrict, Guid> _khanDistrictRepository;
-        protected readonly IBiiSoftRepository<SangkatCommune, Guid> _sangkatCommuneRepository;
-        protected readonly IBiiSoftRepository<Village, Guid> _villageRepository;
-        protected readonly IBiiSoftRepository<Location, Guid> _locationRepository;
+        private readonly IBiiSoftRepository<Tenant, int> _tenantRepository;
+        private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
+        private readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
+        private readonly IBiiSoftRepository<KhanDistrict, Guid> _khanDistrictRepository;
+        private readonly IBiiSoftRepository<SangkatCommune, Guid> _sangkatCommuneRepository;
+        private readonly IBiiSoftRepository<Village, Guid> _villageRepository;
+        private readonly IBiiSoftRepository<Location, Guid> _locationRepository;
 
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
@@ -39,6 +40,7 @@ namespace BiiSoft.Branches
         private readonly IAppFolders _appFolders;
         public BranchManager(
             IAppFolders appFolders,
+            IBiiSoftRepository<Tenant, int> tenantRepository,
             IBiiSoftRepository<Country, Guid> countryRepository,
             IBiiSoftRepository<CityProvince, Guid> cityProvinceRepository,
             IBiiSoftRepository<KhanDistrict, Guid> khanDistrictRepository,
@@ -62,6 +64,8 @@ namespace BiiSoft.Branches
             _khanDistrictRepository = khanDistrictRepository;
             _sangkatCommuneRepository = sangkatCommuneRepository;
             _villageRepository = villageRepository;
+            _locationRepository = locationRepository;
+            _tenantRepository = tenantRepository;           
             _appFolders = appFolders;
         }
 
@@ -137,6 +141,16 @@ namespace BiiSoft.Branches
             await _repository.UpdateAsync(@entity);
 
             if(deleteShippingAddressId.HasValue) await _contactAddressManager.DeleteAsync(deleteShippingAddressId.Value);
+
+            if (entity.IsDefault)
+            {
+                var tenant = await _tenantRepository.GetAll().FirstOrDefaultAsync(s => s.Id == entity.TenantId);
+                if (tenant == null)
+                {
+                    tenant.Name = input.Name;
+                    await _tenantRepository.UpdateAsync(tenant);
+                }
+            }
 
             return IdentityResult.Success;
         }
