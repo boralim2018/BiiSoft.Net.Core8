@@ -19,7 +19,7 @@ namespace BiiSoft.Branches
         public string DefaultTimeZone { get; protected set; }
         public long? CurrencyId { get; protected set; }
         public Currency Currency { get; protected set; }
-        public DateTime BusinessStartDate { get; protected set; }
+        public DateTime? BusinessStartDate { get; protected set; }
 
         public int RoundTotalDigits { get; protected set; }
         public int RoundCostDigts { get; protected set; }
@@ -31,10 +31,10 @@ namespace BiiSoft.Branches
         public static CompanyGeneralSetting Create(
             int tenantId,
             long? userId,
-            Guid countryId,
+            Guid? countryId,
             string defaultTimeZone,
-            long currencyId,
-            DateTime businessStartDate,
+            long? currencyId,
+            DateTime? businessStartDate,
             int roundTotalDigits,
             int roundCostDigts)
         {
@@ -54,10 +54,10 @@ namespace BiiSoft.Branches
 
         public void Update(
             long? userId,
-            Guid countryId,
+            Guid? countryId,
             string defaultTimeZone,
-            long currencyId,
-            DateTime businessStartDate,
+            long? currencyId,
+            DateTime? businessStartDate,
             int roundTotalDigits,
             int roundCostDigts)
         {

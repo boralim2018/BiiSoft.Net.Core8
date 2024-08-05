@@ -20,7 +20,7 @@ namespace BiiSoft.Branches
         public void EnableLineDiscount(bool enable) => LineDiscountEnable = enable;
         public bool TotalDiscountEnable { get; protected set; }
         public void EnableTotalDiscount(bool enable) => TotalDiscountEnable = enable;
-        public bool CustomTransactionNoEnable { get; set; }
+        public bool CustomTransactionNoEnable { get; protected set; }
         public void EnableCustomTransactionNo(bool enable) => CustomTransactionNoEnable = enable;
         public bool ClassEnable { get; protected set; }
         public void EnableClass(bool enable) => ClassEnable = enable;

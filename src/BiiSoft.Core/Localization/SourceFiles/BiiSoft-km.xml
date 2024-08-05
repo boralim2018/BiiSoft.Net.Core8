@@ -400,6 +400,11 @@
 		<text name="Villages">ភូមិ</text>
 		
 		<text name="CompanySetting">កំណត់ព័ត៌មានក្រុមហ៊ុន</text>
+		<text name="CompanySetup">របៀបចំព័ត៌មានក្រុមហ៊ុន</text>
+		<text name="CompanyProfile">ព័ត៌មានក្រុមហ៊ុន</text>
+		<text name="GeneralSetting">កំណត់ទូទៅ</text>
+		<text name="DefaultSetting">កំណត់លំនាំដើម</text>
+		<text name="OtherSetting">កំណត់ផ្សេងៗ</text>
 		<text name="LoanList">តារាងកម្ចី</text>
 		<text name="Print">បោះពុម្ព</text>
 		<text name="Void">មោឃៈ</text>

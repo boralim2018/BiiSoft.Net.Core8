@@ -399,6 +399,11 @@
 		<text name="Villages">Villages</text>
 
 		<text name="CompanySetting">Compan Setting</text>
+		<text name="CompanySetup">Company Setup</text>
+		<text name="CompanyProfile">Company Profile</text>
+		<text name="GeneralSetting">General Setting</text>
+		<text name="DefaultSetting">Default Setting</text>
+		<text name="OtherSetting">Other Setting</text>
 		<text name="LoanList">Loan List</text>
 		<text name="Print">Print</text>
 		<text name="Void">Void</text>
