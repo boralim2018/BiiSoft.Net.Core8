@@ -28,6 +28,8 @@ using Abp.Timing;
 using BiiSoft.Branches;
 using BiiSoft.ContactInfo;
 using System;
+using static BiiSoft.Authorization.Roles.StaticRoleNames;
+using Abp.Authorization.Users;
 
 namespace BiiSoft.MultiTenancy
 {
@@ -150,15 +152,22 @@ namespace BiiSoft.MultiTenancy
                 CheckErrors(await _userManager.AddToRoleAsync(adminUser, adminRole.Name));
                 await CurrentUnitOfWork.SaveChangesAsync();
 
-                var billingAddressEntity = ContactAddress.Create(tenant.Id, adminUser.Id, null, null, null, null, null, null, "", "", "");
-                await _contactAddressRepository.InsertAsync(billingAddressEntity);
-
-                var branchEntity = Branch.Create(tenant.Id, adminUser.Id, tenant.Name, tenant.Name, "", "", "", "", "", billingAddressEntity.Id, true, billingAddressEntity.Id);
-                branchEntity.SetDefault(true);
-                await _branchRepository.InsertAsync(branchEntity);
+                await CreateDefaultBranch(tenant);
             }
 
             return MapToEntityDto(tenant);
+        }
+
+        private async Task CreateDefaultBranch(Tenant tenant)
+        {
+            var user = await _userManager.FindByNameAsync(AbpUserBase.AdminUserName);
+            if (user == null) throw new UserFriendlyException(L("NotFound", AbpUserBase.AdminUserName));
+            
+            var billingAddressEntity = ContactAddress.Create(tenant.Id, user.Id, null, null, null, null, null, null, "", "", "");
+            await _contactAddressRepository.InsertAsync(billingAddressEntity);
+            var branchEntity = Branch.Create(tenant.Id, user.Id, tenant.Name, tenant.Name, "", "", "", "", "", billingAddressEntity.Id, true, billingAddressEntity.Id);
+            branchEntity.SetDefault(true);
+            await _branchRepository.InsertAsync(branchEntity);
         }
 
         [AbpAuthorize(PermissionNames.Pages_Tenants_Edit)]
@@ -175,11 +184,18 @@ namespace BiiSoft.MultiTenancy
 
             await _tenantManager.UpdateAsync(entity);
 
-            var branchEntity = await _branchRepository.GetAll().Where(s => s.TenantId == input.Id && s.IsDefault).FirstOrDefaultAsync();
-            if(branchEntity != null)
+            using (CurrentUnitOfWork.SetTenantId(entity.Id))
             {
-                branchEntity.SetName(input.Name);
-                await _branchRepository.UpdateAsync(branchEntity);
+                var branchEntity = await _branchRepository.GetAll().Where(s => s.TenantId == input.Id && s.IsDefault).FirstOrDefaultAsync();
+                if(branchEntity == null)
+                {
+                    await CreateDefaultBranch(entity);
+                }
+                else
+                {
+                    branchEntity.SetName(input.Name);
+                    await _branchRepository.UpdateAsync(branchEntity);
+                }
             }
 
             return input;

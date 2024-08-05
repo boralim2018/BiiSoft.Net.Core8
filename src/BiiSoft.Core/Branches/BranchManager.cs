@@ -145,7 +145,7 @@ namespace BiiSoft.Branches
             if (entity.IsDefault)
             {
                 var tenant = await _tenantRepository.GetAll().FirstOrDefaultAsync(s => s.Id == entity.TenantId);
-                if (tenant == null)
+                if (tenant != null)
                 {
                     tenant.Name = input.Name;
                     await _tenantRepository.UpdateAsync(tenant);

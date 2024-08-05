@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20240804150643_UpdateBranch")]
-    partial class UpdateBranch
+    [Migration("20240805023707_BiiSoft-Zero")]
+    partial class BiiSoftZero
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
