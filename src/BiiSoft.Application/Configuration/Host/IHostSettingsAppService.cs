@@ -15,8 +15,6 @@ namespace BiiSoft.Configuration.Host
 
         Task SendTestEmail(SendTestEmailInput input);
 
-        Task<ListResultDto<string>> GetTimeZones(PagedFilterInputDto input);
-
 
     }
 }

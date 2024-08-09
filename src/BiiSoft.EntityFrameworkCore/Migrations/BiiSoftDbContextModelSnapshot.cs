@@ -1860,7 +1860,7 @@ namespace BiiSoft.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("BusinessStartDate")
+                    b.Property<DateTime?>("BusinessStartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("CountryId")

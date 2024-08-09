@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20240805023707_BiiSoft-Zero")]
+    [Migration("20240809130456_BiiSoft-Zero")]
     partial class BiiSoftZero
     {
         /// <inheritdoc />
@@ -1863,7 +1863,7 @@ namespace BiiSoft.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("BusinessStartDate")
+                    b.Property<DateTime?>("BusinessStartDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<Guid?>("CountryId")

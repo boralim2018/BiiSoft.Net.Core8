@@ -556,6 +556,7 @@
 		<text name="PleaseEnterDeleteToConfirm">សូមបញ្ចូលពាក្យថា "Delete" ដើម្បីបញ្ជាក់</text>
 		<text name="ConfirmDelete">បញ្ជាក់ការលុប</text>
 		<text name="SaveNew">រក្សាទុកបង្កើតថ្មី</text>
+		<text name="SaveNext">រក្សាទុកនិងបន្ត</text>
 		<text name="No.">ល.រ</text>
 		<text name="Code">លេខកូដ</text>
 		<text name="Code_">លេខកូដ{0}</text>
@@ -656,6 +657,9 @@
 		<text name="CountryISO">ប្រទេស ISO</text>
 		<text name="ProvinceISO">ខេត្ត ISO</text>
 		<text name="Copyright">រក្សាសិទ្ធិ</text>
+		<text name="RegionCountry">តំបន់ប្រទេស</text>
+		<text name="Next">បន្ទាប់</text>
+		<text name="Previous">បកក្រោយ</text>
 		
 	</texts>
 </localizationDictionary>

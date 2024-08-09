@@ -555,6 +555,7 @@
 		<text name="PleaseEnterDeleteToConfirm">Please enter "Delete" to confirm</text>		
 		<text name="ConfirmDelete">Confirm Delete</text>		
 		<text name="SaveNew">Save New</text>		
+		<text name="SaveNext">Save Next</text>		
 		<text name="No.">No</text>
 		<text name="Code">Code</text>
 		<text name="Code_">Code {0}</text>
@@ -656,6 +657,9 @@
 		<text name="CountryISO">Country ISO</text>
 		<text name="ProvinceISO">Province ISO</text>
 		<text name="Copyright">Copyright</text>
+		<text name="RegionCountry">Region Country</text>
+		<text name="Next">Next</text>
+		<text name="Previous">Previous</text>
 		
 	</texts>
 </localizationDictionary>

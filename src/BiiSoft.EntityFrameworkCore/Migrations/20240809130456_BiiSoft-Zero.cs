@@ -182,7 +182,7 @@ namespace BiiSoft.Migrations
                     CountryId = table.Column<Guid>(type: "uuid", nullable: true),
                     DefaultTimeZone = table.Column<string>(type: "text", nullable: true),
                     CurrencyId = table.Column<long>(type: "bigint", nullable: true),
-                    BusinessStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    BusinessStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     RoundTotalDigits = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
                     RoundCostDigts = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
                     LogoId = table.Column<Guid>(type: "uuid", nullable: true),

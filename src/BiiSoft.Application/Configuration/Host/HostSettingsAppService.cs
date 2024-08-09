@@ -362,19 +362,6 @@ namespace BiiSoft.Configuration.Host
         }
 
         #endregion
-
-        public async Task<ListResultDto<string>> GetTimeZones(PagedFilterInputDto input)
-        {
-            var timezones = new List<string>();           
-            await Task.Run(() => { 
-                timezones = TimezoneHelper.GetWindowsTimeZoneIds()
-                            .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => s.ToLower().Contains(input.Keyword.ToLower()))
-                            .Skip(input.SkipCount)
-                            .Take(input.MaxResultCount)
-                            .ToList(); 
-            });
-            return new ListResultDto<string> { Items = timezones };
-        }
-
+                
     }
 }
