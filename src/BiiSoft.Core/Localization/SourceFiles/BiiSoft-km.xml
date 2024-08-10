@@ -660,6 +660,15 @@
 		<text name="RegionCountry">តំបន់ប្រទេស</text>
 		<text name="Next">បន្ទាប់</text>
 		<text name="Previous">បកក្រោយ</text>
+		<text name="BusinessStartDate">ថ្ងៃផ្តើមអាជីវកម្ម</text>
+		<text name="Rounding">កាត់ខ្ទង់</text>
+		<text name="Rounding_">កាត់ខ្ទង់{0}</text>
+		<text name="Price">តម្លៃ</text>
+		<text name="Cost">តម្លៃ</text>
+		<text name="Choose">ជ្រើសរើស</text>
+		<text name="Choose_">ជ្រើសរើស{0}</text>
+		<text name="Photo">រូបភាព</text>
+		<text name="Logo">ឡូហ្កូ</text>
 		
 	</texts>
 </localizationDictionary>

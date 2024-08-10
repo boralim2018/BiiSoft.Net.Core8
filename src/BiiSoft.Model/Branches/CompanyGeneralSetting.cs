@@ -22,10 +22,8 @@ namespace BiiSoft.Branches
         public DateTime? BusinessStartDate { get; protected set; }
 
         public int RoundTotalDigits { get; protected set; }
-        public int RoundCostDigts { get; protected set; }
-        public Guid? LogoId { get; protected set; }
-        public void SetLogo(Guid? logoId) => LogoId = logoId;
-
+        public int RoundCostDigits { get; protected set; }
+       
         /*** required one default branch ***/
 
         public static CompanyGeneralSetting Create(
@@ -48,7 +46,7 @@ namespace BiiSoft.Branches
                 CurrencyId = currencyId,
                 BusinessStartDate = businessStartDate,
                 RoundTotalDigits = roundTotalDigits,
-                RoundCostDigts = roundCostDigts
+                RoundCostDigits = roundCostDigts
             };
         }
 
@@ -68,7 +66,7 @@ namespace BiiSoft.Branches
             CurrencyId = currencyId;
             BusinessStartDate = businessStartDate;
             RoundTotalDigits = roundTotalDigits;
-            RoundCostDigts = roundCostDigts;
+            RoundCostDigits = roundCostDigts;
         }
 
     }

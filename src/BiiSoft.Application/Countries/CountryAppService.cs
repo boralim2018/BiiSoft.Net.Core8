@@ -107,6 +107,8 @@ namespace BiiSoft.Countries
                             ISO = l.ISO,
                             ISO2 = l.ISO2,
                             PhonePrefix = l.PhonePrefix,
+                            CurrencyId = l.CurrencyId,
+                            CurrencyCode = l.CurrencyId.HasValue ? l.Currency.Code : "",
                             IsActive = l.IsActive,
                         };
 

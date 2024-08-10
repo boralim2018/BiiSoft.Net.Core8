@@ -10,5 +10,7 @@ namespace BiiSoft.Countries.Dto
         public string ISO { get; set; }
         public string ISO2 { get; set; }
         public string PhonePrefix { get; set; }
+        public long? CurrencyId { get; set; }
+        public string CurrencyCode { get; set; }
     }
 }

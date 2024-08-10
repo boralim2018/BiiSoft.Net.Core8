@@ -660,6 +660,15 @@
 		<text name="RegionCountry">Region Country</text>
 		<text name="Next">Next</text>
 		<text name="Previous">Previous</text>
+		<text name="BusinessStartDate">Business Start Date</text>
+		<text name="Rounding">Rounding</text>
+		<text name="Rounding_">Rounding {0}</text>
+		<text name="Price">Price</text>
+		<text name="Cost">Cost</text>
+		<text name="Choose">Choose</text>
+		<text name="Choose_">Choose {0}</text>
+		<text name="Photo">Photo</text>
+		<text name="Logo">Logo</text>
 		
 	</texts>
 </localizationDictionary>

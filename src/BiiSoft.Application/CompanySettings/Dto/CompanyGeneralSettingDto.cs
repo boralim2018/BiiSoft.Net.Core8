@@ -17,7 +17,6 @@ namespace BiiSoft.CompanySettings.Dto
         public DateTime? BusinessStartDate { get; set; }
 
         public int RoundTotalDigits { get; set; }
-        public int RoundCostDigts { get; set; }
-        public Guid? LogoId { get; set; }
+        public int RoundCostDigits { get; set; }
     }
 }

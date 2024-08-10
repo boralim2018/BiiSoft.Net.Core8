@@ -1,25 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
-using Abp.Configuration;
 using Abp.Extensions;
-using Abp.Net.Mail;
-using Abp.Runtime.Security;
-using Abp.Timing;
 using Abp.Timing.Timezone;
 using BiiSoft.Authorization;
-using BiiSoft.Configuration.Dto;
-using BiiSoft.Configuration.Host.Dto;
-using BiiSoft.Editions;
-using BiiSoft.Security;
 using BiiSoft.Timing;
-using BiiSoft.Dtos;
 using Abp.Collections.Extensions;
-using BiiSoft.CommonLookups;
+using BiiSoft.CommonLookups.Dto;
 
 namespace BiiSoft.CommonLookups
 {
@@ -35,12 +25,13 @@ namespace BiiSoft.CommonLookups
         }
 
 
-        public async Task<ListResultDto<string>> GetTimeZones(PagedFilterInputDto input)
+        public async Task<ListResultDto<string>> GetTimeZones(TimeZonePageFilterInputDto input)
         {
             var timezones = new List<string>();           
             await Task.Run(() => { 
                 timezones = TimezoneHelper.GetWindowsTimeZoneIds()
                             .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => s.ToLower().Contains(input.Keyword.ToLower()))
+                            .OrderBy(x => input.SelectedTimeZones.IsNullOrEmpty() || input.SelectedTimeZones.Contains(x) ? 0 : 1 )
                             .Skip(input.SkipCount)
                             .Take(input.MaxResultCount)
                             .ToList(); 

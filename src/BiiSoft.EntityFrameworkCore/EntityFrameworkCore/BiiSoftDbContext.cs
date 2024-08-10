@@ -141,7 +141,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(s => s.Currency).WithMany().HasForeignKey(s => s.CurrencyId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(s => s.Country).WithMany().HasForeignKey(s => s.CountryId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.Property(s => s.RoundTotalDigits).HasDefaultValue(2);
-                e.Property(s => s.RoundCostDigts).HasDefaultValue(2);
+                e.Property(s => s.RoundCostDigits).HasDefaultValue(2);
             });
 
             modelBuilder.Entity<CompanyAdvanceSetting>(e =>

@@ -18,6 +18,7 @@ using BiiSoft.ContactInfo.Dto;
 using BiiSoft.CompanySettings;
 using BiiSoft.CompanySettings.Dto;
 using BiiSoft.Extensions;
+using BiiSoft.MultiTenancy.Dto;
 
 namespace BiiSoft.Branches
 {
@@ -118,6 +119,8 @@ namespace BiiSoft.Branches
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
 
+            var tenant = await GetCurrentTenantAsync();
+
             var branch = await _branchRepository.GetAll().AsNoTracking()
             .Where(s => s.IsDefault)
             .Select(l =>
@@ -193,8 +196,7 @@ namespace BiiSoft.Branches
                 DefaultTimeZone = s.DefaultTimeZone,
                 BusinessStartDate = s.BusinessStartDate,               
                 RoundTotalDigits = s.RoundTotalDigits,
-                RoundCostDigts = s.RoundCostDigts,
-                LogoId = s.LogoId
+                RoundCostDigits = s.RoundCostDigits
             })
             .FirstOrDefaultAsync();
 
@@ -214,6 +216,7 @@ namespace BiiSoft.Branches
 
             return new CompanySettingDto
             {
+                CompanyLogo = new UpdateLogoInput { LogoId = tenant.LogoId },
                 Branch = branch,
                 GeneralSetting = generalSetting,
                 AdvanceSetting = advanceSetting
