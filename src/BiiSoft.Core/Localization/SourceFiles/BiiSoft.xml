@@ -669,6 +669,13 @@
 		<text name="Choose_">Choose {0}</text>
 		<text name="Photo">Photo</text>
 		<text name="Logo">Logo</text>
+		<text name="MultiBranchesEnable">Multi Branches Enable</text>
+		<text name="MultiCurrencyEnable">Multi Currency Enable</text>
+		<text name="LineDiscountEnable">Line Discount Enable</text>
+		<text name="TotalDiscountEnable">Total Discount Enable</text>
+		<text name="CustomTransactionNoEnable">Custom Transaction No Enable</text>
+		<text name="ClassEnable">Class Enable</text>
+		<text name="ContactAddressLevel">Contact Address Level</text>
 		
 	</texts>
 </localizationDictionary>

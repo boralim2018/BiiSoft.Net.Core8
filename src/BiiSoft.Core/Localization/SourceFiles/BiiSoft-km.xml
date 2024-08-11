@@ -669,6 +669,13 @@
 		<text name="Choose_">ជ្រើសរើស{0}</text>
 		<text name="Photo">រូបភាព</text>
 		<text name="Logo">ឡូហ្កូ</text>
+		<text name="MultiBranchesEnable">ប្រើមុខងារ​ច្រើនសាខា</text>
+		<text name="MultiCurrencyEnable">ប្រើមុខងាររូបិយបណ្ណច្រើន</text>
+		<text name="LineDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃតាមជួរ</text>
+		<text name="TotalDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃចុងក្រោយ</text>
+		<text name="CustomTransactionNoEnable">ប្រើមុខងារដាក់លេខឯកសារខ្លួនឯង</text>
+		<text name="ClassEnable">ប្រើថ្នាក់</text>
+		<text name="ContactAddressLevel">កម្រិតអាសយដ្ឋានទំនាក់ទំនង</text>
 		
 	</texts>
 </localizationDictionary>
