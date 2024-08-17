@@ -674,6 +674,7 @@
 		<text name="LineDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃតាមជួរ</text>
 		<text name="TotalDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃចុងក្រោយ</text>
 		<text name="CustomTransactionNoEnable">ប្រើមុខងារដាក់លេខឯកសារខ្លួនឯង</text>
+		<text name="TransactionNo">លេខប្រតិបត្តិការ</text>
 		<text name="ClassEnable">ប្រើថ្នាក់</text>
 		<text name="ContactAddressLevel">កម្រិតអាសយដ្ឋានទំនាក់ទំនង</text>
 		

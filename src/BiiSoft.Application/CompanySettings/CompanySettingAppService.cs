@@ -19,14 +19,19 @@ using BiiSoft.CompanySettings;
 using BiiSoft.CompanySettings.Dto;
 using BiiSoft.Extensions;
 using BiiSoft.MultiTenancy.Dto;
+using BiiSoft.Entities;
+using BiiSoft.Enums;
+using Abp.Application.Services.Dto;
 
 namespace BiiSoft.Branches
 {
     [AbpAuthorize(PermissionNames.Pages)]
     public class CompanySettingAppService : BiiSoftAppServiceBase, ICompanySettingAppService
     {
+        private readonly ITransactionNoSettingManager _transactionNoSettingManager;
         private readonly ICompanyGeneralSettingManager _companyGeneralSettingManager;
         private readonly ICompanyAdvanceSettingManager _companyAdvanceSettingManager;
+        private readonly IBiiSoftRepository<TransactionNoSetting, long> _transactionNoSettingRepository;
         private readonly IBiiSoftRepository<CompanyGeneralSetting, long> _companyGeneralSettingRepository;
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
         private readonly IBranchManager _branchManager;
@@ -37,8 +42,10 @@ namespace BiiSoft.Branches
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public CompanySettingAppService(
+            ITransactionNoSettingManager transactionNoSettingManager,
             ICompanyGeneralSettingManager companyGeneralSettingManager,
             ICompanyAdvanceSettingManager companyAdvanceSettingManager,
+            IBiiSoftRepository<TransactionNoSetting, long> transactionNoSettingRepository,
             IBiiSoftRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
             IUnitOfWorkManager unitOfWorkManager,
@@ -60,6 +67,8 @@ namespace BiiSoft.Branches
             _companyAdvanceSettingManager=companyAdvanceSettingManager;
             _companyGeneralSettingRepository=companyGeneralSettingRepository;
             _companyAdvanceSettingRepository=companyAdvanceSettingRepository;
+            _transactionNoSettingManager=transactionNoSettingManager;
+            _transactionNoSettingRepository=transactionNoSettingRepository;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_CompanySetting_Edit)]
@@ -111,6 +120,33 @@ namespace BiiSoft.Branches
             }
 
             return entity.Id;
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Company_CompanySetting_Edit)]
+        public async Task<List<NameValueDto<JournalType>>> CreateOrUpdateTransactionNoSetting(List<CreateUpdateTransactionNoSettingInputDto> input)
+        {
+            var createItems = input.Where(s => !s.Id.HasValue).ToList();
+            var updateItems = input.Where(s => s.Id.HasValue).ToList();
+
+            var result = new List<NameValueDto<JournalType>>();
+
+            if (createItems.Any())
+            {
+                var entity = MapEntity<MayHaveTenantBulkInputEntity<TransactionNoSetting>, long>(new { Items = createItems });
+
+                CheckErrors(await _transactionNoSettingManager.BulkInsertAsync(entity));
+
+                result.AddRange(entity.Items.Select(s => new NameValueDto<JournalType> { Name = s.Id.ToString(), Value = s.JournalType }));
+            }
+
+            if (updateItems.Any())
+            {
+                var entity = MapEntity<MayHaveTenantBulkInputEntity<TransactionNoSetting>, long>(new { Items = updateItems });
+
+                CheckErrors(await _transactionNoSettingManager.BulkUpdateAsync(entity));
+            }
+
+            return result;
         }
 
 
@@ -208,18 +244,51 @@ namespace BiiSoft.Branches
                 MultiCurrencyEnable = s.MultiCurrencyEnable,
                 LineDiscountEnable = s.LineDiscountEnable,
                 TotalDiscountEnable = s.TotalDiscountEnable,
-                CustomTransactionNoEnable = s.CustomTransactionNoEnable,
                 ClassEnable = s.ClassEnable,
                 ContactAddressLevel = s.ContactAddressLevel                            
             })
             .FirstOrDefaultAsync();
+
+            
+            var transactionNos = await _transactionNoSettingRepository.GetAll().AsNoTracking().Select(s => new TransactionNoSettingDto
+            {
+                Id = s.Id,
+                JournalType = s.JournalType,
+                CustomTransactionNoEnable = s.CustomTransactionNoEnable,
+                Prefix = s.Prefix,
+                Digits = s.Digits,
+                Start = s.Start,
+                RequiredReference = s.RequiredReference,
+            })
+            .ToListAsync();
+
+            var transactionNoSettings = Enum.GetValues(typeof(JournalType)).Cast<JournalType>()
+            .Select(j => new
+            {
+                JournalType = j,
+                Transaction = transactionNos.FirstOrDefault(t => t.JournalType == j)
+            })
+            .Select(x => new TransactionNoSettingDto
+            {
+                Id = x.Transaction?.Id,
+                JournalType = x.JournalType,
+                JournalTypeName = x.JournalType.ToString(),
+                CustomTransactionNoEnable = x.Transaction?.CustomTransactionNoEnable ?? false,
+                Prefix = x.Transaction?.Prefix ?? "",
+                Digits = x.Transaction?.Digits ?? 0,
+                Start = x.Transaction?.Start ?? 0,
+                RequiredReference = x.Transaction?.RequiredReference ?? false
+            })
+            .ToList();
+
 
             return new CompanySettingDto
             {
                 CompanyLogo = new UpdateLogoInput { LogoId = tenant.LogoId },
                 Branch = branch,
                 GeneralSetting = generalSetting,
-                AdvanceSetting = advanceSetting
+                AdvanceSetting = advanceSetting,
+                TransactionNoSettings = transactionNoSettings
             };
         }
 

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20240810092101_update-tenant")]
-    partial class updatetenant
+    [Migration("20240817054601_BiiSoft-Zero")]
+    partial class BiiSoftZero
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1826,9 +1826,6 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<bool>("CustomTransactionNoEnable")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -1907,6 +1904,55 @@ namespace BiiSoft.Migrations
                     b.HasIndex("CurrencyId");
 
                     b.ToTable("BiiCompanyGeneralSettings");
+                });
+
+            modelBuilder.Entity("BiiSoft.Branches.TransactionNoSetting", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("CustomTransactionNoEnable")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Digits")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("JournalType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Prefix")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("RequiredReference")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Start")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "JournalType")
+                        .IsUnique();
+
+                    b.ToTable("BiiTransactionNoSettings");
                 });
 
             modelBuilder.Entity("BiiSoft.ContactInfo.ContactAddress", b =>

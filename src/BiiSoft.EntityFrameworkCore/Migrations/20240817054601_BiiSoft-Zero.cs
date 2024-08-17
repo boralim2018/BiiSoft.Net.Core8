@@ -12,6 +12,12 @@ namespace BiiSoft.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<Guid>(
+                name: "LogoId",
+                table: "AbpTenants",
+                type: "uuid",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "BiiCompanyAdvanceSettings",
                 columns: table => new
@@ -23,7 +29,6 @@ namespace BiiSoft.Migrations
                     MultiCurrencyEnable = table.Column<bool>(type: "boolean", nullable: false),
                     LineDiscountEnable = table.Column<bool>(type: "boolean", nullable: false),
                     TotalDiscountEnable = table.Column<bool>(type: "boolean", nullable: false),
-                    CustomTransactionNoEnable = table.Column<bool>(type: "boolean", nullable: false),
                     ClassEnable = table.Column<bool>(type: "boolean", nullable: false),
                     ContactAddressLevel = table.Column<int>(type: "integer", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -84,6 +89,29 @@ namespace BiiSoft.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BiiLocations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BiiTransactionNoSettings",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    JournalType = table.Column<int>(type: "integer", nullable: false),
+                    CustomTransactionNoEnable = table.Column<bool>(type: "boolean", nullable: false),
+                    Prefix = table.Column<string>(type: "text", nullable: true),
+                    Digits = table.Column<int>(type: "integer", nullable: false),
+                    Start = table.Column<int>(type: "integer", nullable: false),
+                    RequiredReference = table.Column<bool>(type: "boolean", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiTransactionNoSettings", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -184,8 +212,7 @@ namespace BiiSoft.Migrations
                     CurrencyId = table.Column<long>(type: "bigint", nullable: true),
                     BusinessStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     RoundTotalDigits = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
-                    RoundCostDigts = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
-                    LogoId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RoundCostDigits = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -690,6 +717,12 @@ namespace BiiSoft.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiTransactionNoSettings_TenantId_JournalType",
+                table: "BiiTransactionNoSettings",
+                columns: new[] { "TenantId", "JournalType" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiUserBranchs_BranchId",
                 table: "BiiUserBranchs",
                 column: "BranchId");
@@ -800,6 +833,9 @@ namespace BiiSoft.Migrations
                 name: "BiiFiles");
 
             migrationBuilder.DropTable(
+                name: "BiiTransactionNoSettings");
+
+            migrationBuilder.DropTable(
                 name: "BiiUserBranchs");
 
             migrationBuilder.DropTable(
@@ -828,6 +864,10 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.DropTable(
                 name: "Currencies");
+
+            migrationBuilder.DropColumn(
+                name: "LogoId",
+                table: "AbpTenants");
         }
     }
 }

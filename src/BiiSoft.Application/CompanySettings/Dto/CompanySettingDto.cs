@@ -1,5 +1,6 @@
 ﻿using BiiSoft.Branches.Dto;
 using BiiSoft.MultiTenancy.Dto;
+using System.Collections.Generic;
 
 namespace BiiSoft.CompanySettings.Dto
 {
@@ -9,6 +10,7 @@ namespace BiiSoft.CompanySettings.Dto
         public BranchDetailDto Branch {  get; set; }
         public CompanyGeneralSettingDto GeneralSetting { get; set; }
         public CompanyAdvanceSettingDto AdvanceSetting { get; set; }
+        public List<TransactionNoSettingDto> TransactionNoSettings { get; set; } 
 
     }
 }

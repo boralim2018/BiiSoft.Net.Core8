@@ -674,6 +674,7 @@
 		<text name="LineDiscountEnable">Line Discount Enable</text>
 		<text name="TotalDiscountEnable">Total Discount Enable</text>
 		<text name="CustomTransactionNoEnable">Custom Transaction No Enable</text>
+		<text name="TransactionNo">Transaction No</text>
 		<text name="ClassEnable">Class Enable</text>
 		<text name="ContactAddressLevel">Contact Address Level</text>
 		

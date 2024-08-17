@@ -31,6 +31,7 @@ namespace BiiSoft.EntityFrameworkCore
 
         public DbSet<CompanyGeneralSetting> CompanyGeneralSettings { get; set; }
         public DbSet<CompanyAdvanceSetting> CompanyAdvanceSettings { get; set; }
+        public DbSet<TransactionNoSetting> TransactionNoSettings { get; set; }
         public DbSet<Branch> Branchs { get; set; }
         public DbSet<UserBranch> UserBranches { get; set; }
       
@@ -147,6 +148,11 @@ namespace BiiSoft.EntityFrameworkCore
             modelBuilder.Entity<CompanyAdvanceSetting>(e =>
             {
 
+            });
+             
+            modelBuilder.Entity<TransactionNoSetting>(e =>
+            {
+                e.HasIndex(s => new { s.TenantId, s.JournalType }).IsUnique(true);
             });
 
             modelBuilder.Entity<Branch>(e =>

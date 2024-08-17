@@ -41,7 +41,8 @@ namespace BiiSoft
         protected UserFriendlyException MoreThanCharactersException(string subject, long characters, string message = "") => ErrorException(L("CannotBeMoreThan", subject, L("Characters_", characters)) + message);
         protected UserFriendlyException EqualException(string subject, string compare, string message = "") => ErrorException(L("MustBeEqualTo", subject, compare) + message);
         protected UserFriendlyException EqualCharactersException(string subject, long characters, string message = "") => ErrorException(L("MustBeEqualTo", subject, L("Characters_", characters)) + message);
-
+        protected UserFriendlyException MustBeGreaterThanException(string subject, int value, string message = "") => ErrorException(L("MustBeGreaterThan", subject, value) + message);
+      
         /// <summary>
         /// throw Duplicate Instance Code
         /// </summary>
