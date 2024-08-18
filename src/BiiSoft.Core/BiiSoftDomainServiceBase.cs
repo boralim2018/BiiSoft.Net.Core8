@@ -105,6 +105,16 @@ namespace BiiSoft
             if (id.IsNullOrZero()) SelectException(instance, message);
         }
 
+        protected void ValidateSelect(string value, string instance, string message = "")
+        {
+            if (value.IsNullOrWhiteSpace()) SelectException(instance, message);
+        }
+
+        protected void ValidateSelect(DateTime? date, string instance, string message = "")
+        {
+            if (!date.HasValue || date.Value == DateTime.MinValue) SelectException(instance, message);
+        }
+
         #endregion
     }
 

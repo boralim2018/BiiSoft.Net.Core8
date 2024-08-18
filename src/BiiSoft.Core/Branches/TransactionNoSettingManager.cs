@@ -67,7 +67,7 @@ namespace BiiSoft.ContactInfo
 
             var find = await _repository.GetAll()
                             .AsNoTracking()
-                            .Where(s => journalTypes.Contains(s.JournalType) && ids.Contains(s.Id))
+                            .Where(s => journalTypes.Contains(s.JournalType) && !ids.Any(r => s.Id == r))
                             .FirstOrDefaultAsync();
             if (find != null) DuplicateException(InstanceName, L(find.JournalType.ToString()));
         }
@@ -94,7 +94,9 @@ namespace BiiSoft.ContactInfo
         {
             await BulkValidateAsync(input.Items);
 
-            var entities = await _repository.GetAll().AsNoTracking().Where(s => input.Items.Any(r => r.Id.Equals(s.Id))).ToDictionaryAsync(k => k.Id, v => v);
+            var ids = input.Items.Select(s => s.Id).ToList();
+
+            var entities = await _repository.GetAll().AsNoTracking().Where(s => ids.Contains(s.Id)).ToDictionaryAsync(k => k.Id, v => v);
 
             if (entities.Count != input.Items.Count) NotFoundException(InstanceName);
 

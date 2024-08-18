@@ -35,17 +35,18 @@ namespace BiiSoft.Branches
 
         protected override async Task ValidateInputAsync(CompanyGeneralSetting input)
         {
-            if (input.CountryId.HasValue)
-            {
-                var findCountry = await _countryRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CountryId.Value);
-                if (!findCountry) InvalidException(L("Country"));
-            }
-
-            if (input.CurrencyId.HasValue) 
-            {
-                var findCurrency = await _currencyRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CurrencyId.Value);
-                if (!findCurrency) InvalidException(L("Currency"));
-            }
+            ValidateSelect(input.CountryId, L("Country"));
+            ValidateSelect(input.CurrencyId, L("Currency"));
+            ValidateSelect(input.DefaultTimeZone, L("Timezone"));
+            ValidateSelect(input.BusinessStartDate, L("BusinessStartDate"));
+            ValidateSelect(input.RoundTotalDigits, L("Rounding_", L("Total")));
+            ValidateSelect(input.RoundCostDigits, L("Rounding_", L("Cost")));
+           
+            var findCountry = await _countryRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CountryId.Value);
+            if (!findCountry) InvalidException(L("Country"));
+            
+            var findCurrency = await _currencyRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CurrencyId.Value);
+            if (!findCurrency) InvalidException(L("Currency"));
         }
 
     }
