@@ -11,11 +11,11 @@ using BiiSoft.Branches;
 
 namespace BiiSoft.ContactInfo
 {
-    public class TransactionNoSettingManager : BiiSoftValidateServiceBase<TransactionNoSetting, long>, ITransactionNoSettingManager
+    public class TransactionNoSettingManager : BiiSoftValidateServiceBase<TransactionNoSetting, Guid>, ITransactionNoSettingManager
     {
 
         public TransactionNoSettingManager(
-            IBiiSoftRepository<TransactionNoSetting, long> repository) : base(repository)
+            IBiiSoftRepository<TransactionNoSetting, Guid> repository) : base(repository)
         {
      
         }
@@ -40,7 +40,7 @@ namespace BiiSoft.ContactInfo
             if (input.Start <= 0) MustBeGreaterThanException(L("Start"), 0);
 
             var find = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id != input.Id && s.JournalType == input.JournalType);
-            if (find) DuplicateException(InstanceName, input.JournalType.ToString());
+            if (find) DuplicateException(InstanceName, L(input.JournalType.ToString()));
         }
 
         protected virtual void BulkValidate(List<TransactionNoSetting> input)
@@ -49,18 +49,27 @@ namespace BiiSoft.ContactInfo
             if (!validateInputs.Any()) return;
 
             var validateDigit = validateInputs.Where(s => s.Digits <= 0).FirstOrDefault();
-            if(validateDigit != null) MustBeGreaterThanException(L("Digits"), 0 , validateDigit.JournalType.ToString());
+            if(validateDigit != null) MustBeGreaterThanException(L("Digits"), 0 , L(validateDigit.JournalType.ToString()));
 
             var validateStart = validateInputs.Where(s => s.Start <= 0).FirstOrDefault();
-            if (validateStart != null) MustBeGreaterThanException(L("Start"), 0, validateDigit.JournalType.ToString());
+            if (validateStart != null) MustBeGreaterThanException(L("Start"), 0, L(validateDigit.JournalType.ToString()));
+
+            var duplicate = input.GroupBy(s => s.JournalType).Where(s => s.Count() > 1).FirstOrDefault();
+            if (duplicate != null) DuplicateException(InstanceName, L(duplicate.Key.ToString()));            
         }
 
         public async virtual Task BulkValidateAsync(List<TransactionNoSetting> input)
         {
             BulkValidate(input);
 
-            var find = await _repository.GetAll().AsNoTracking().Where(s => input.Any(i => i.Id != s.Id && i.JournalType == s.JournalType)).FirstOrDefaultAsync();
-            if (find != null) DuplicateException(InstanceName, find.JournalType.ToString());
+            var journalTypes = input.Select(s => s.JournalType).ToList();
+            var ids = input.Where(s => s.Id != Guid.Empty).Select(s => s.Id).ToList();
+
+            var find = await _repository.GetAll()
+                            .AsNoTracking()
+                            .Where(s => journalTypes.Contains(s.JournalType) && ids.Contains(s.Id))
+                            .FirstOrDefaultAsync();
+            if (find != null) DuplicateException(InstanceName, L(find.JournalType.ToString()));
         }
 
         public async Task<IdentityResult> BulkInsertAsync(IMayHaveTenantBulkInputEntity<TransactionNoSetting> input)
@@ -101,7 +110,7 @@ namespace BiiSoft.ContactInfo
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> BulkDeleteAsync(List<long> input)
+        public async Task<IdentityResult> BulkDeleteAsync(List<Guid> input)
         {
             var entities = await _repository.GetAll().AsNoTracking().Where(s => input.Contains(s.Id)).ToListAsync();
 

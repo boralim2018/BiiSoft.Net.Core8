@@ -24,7 +24,7 @@ namespace BiiSoft.Enums
         Invoice = 11,
         SaleReturn = 12,
         CreditNote = 13,
-        ReceiptPayment = 14,
+        ReceivePayment = 14,
         CustomerRefund = 15,
 
         ItemReceipt = 16,

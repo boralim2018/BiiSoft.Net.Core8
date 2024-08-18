@@ -22,6 +22,7 @@ using BiiSoft.MultiTenancy.Dto;
 using BiiSoft.Entities;
 using BiiSoft.Enums;
 using Abp.Application.Services.Dto;
+using Abp.UI;
 
 namespace BiiSoft.Branches
 {
@@ -31,7 +32,7 @@ namespace BiiSoft.Branches
         private readonly ITransactionNoSettingManager _transactionNoSettingManager;
         private readonly ICompanyGeneralSettingManager _companyGeneralSettingManager;
         private readonly ICompanyAdvanceSettingManager _companyAdvanceSettingManager;
-        private readonly IBiiSoftRepository<TransactionNoSetting, long> _transactionNoSettingRepository;
+        private readonly IBiiSoftRepository<TransactionNoSetting, Guid> _transactionNoSettingRepository;
         private readonly IBiiSoftRepository<CompanyGeneralSetting, long> _companyGeneralSettingRepository;
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
         private readonly IBranchManager _branchManager;
@@ -45,7 +46,7 @@ namespace BiiSoft.Branches
             ITransactionNoSettingManager transactionNoSettingManager,
             ICompanyGeneralSettingManager companyGeneralSettingManager,
             ICompanyAdvanceSettingManager companyAdvanceSettingManager,
-            IBiiSoftRepository<TransactionNoSetting, long> transactionNoSettingRepository,
+            IBiiSoftRepository<TransactionNoSetting, Guid> transactionNoSettingRepository,
             IBiiSoftRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
             IUnitOfWorkManager unitOfWorkManager,
@@ -125,6 +126,8 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Company_CompanySetting_Edit)]
         public async Task<List<NameValueDto<JournalType>>> CreateOrUpdateTransactionNoSetting(List<CreateUpdateTransactionNoSettingInputDto> input)
         {
+            if (input.IsNullOrEmpty()) throw new UserFriendlyException(L("IsRequired", L("TransactionNo")));
+
             var createItems = input.Where(s => !s.Id.HasValue).ToList();
             var updateItems = input.Where(s => s.Id.HasValue).ToList();
 
@@ -132,7 +135,12 @@ namespace BiiSoft.Branches
 
             if (createItems.Any())
             {
-                var entity = MapEntity<MayHaveTenantBulkInputEntity<TransactionNoSetting>, long>(new { Items = createItems });
+                var entity = new MayHaveTenantBulkInputEntity<TransactionNoSetting>
+                {
+                    TenantId = AbpSession.TenantId,
+                    UserId = AbpSession.UserId.Value,
+                    Items = ObjectMapper.Map<List<TransactionNoSetting>>(createItems)
+                }; 
 
                 CheckErrors(await _transactionNoSettingManager.BulkInsertAsync(entity));
 
@@ -141,7 +149,12 @@ namespace BiiSoft.Branches
 
             if (updateItems.Any())
             {
-                var entity = MapEntity<MayHaveTenantBulkInputEntity<TransactionNoSetting>, long>(new { Items = updateItems });
+                var entity = new MayHaveTenantBulkInputEntity<TransactionNoSetting>
+                {
+                    TenantId = AbpSession.TenantId,
+                    UserId = AbpSession.UserId.Value,
+                    Items = ObjectMapper.Map<List<TransactionNoSetting>>(updateItems)
+                };
 
                 CheckErrors(await _transactionNoSettingManager.BulkUpdateAsync(entity));
             }
@@ -274,9 +287,9 @@ namespace BiiSoft.Branches
                 JournalType = x.JournalType,
                 JournalTypeName = x.JournalType.ToString(),
                 CustomTransactionNoEnable = x.Transaction?.CustomTransactionNoEnable ?? false,
-                Prefix = x.Transaction?.Prefix ?? "",
-                Digits = x.Transaction?.Digits ?? 0,
-                Start = x.Transaction?.Start ?? 0,
+                Prefix = x.Transaction?.Prefix ?? x.JournalType.GetPrefix(),
+                Digits = x.Transaction?.Digits ?? 4,
+                Start = x.Transaction?.Start ?? 1,
                 RequiredReference = x.Transaction?.RequiredReference ?? false
             })
             .ToList();

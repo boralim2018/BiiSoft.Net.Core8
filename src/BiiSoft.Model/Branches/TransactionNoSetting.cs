@@ -11,7 +11,7 @@ using System.Text;
 namespace BiiSoft.Branches
 {
     [Table("BiiTransactionNoSettings")]
-    public class TransactionNoSetting : AuditedEntity<long>, IMustHaveTenant
+    public class TransactionNoSetting : AuditedEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
         public JournalType JournalType { get; protected set; }
@@ -34,6 +34,7 @@ namespace BiiSoft.Branches
         {
             return new TransactionNoSetting
             {
+                Id = Guid.NewGuid(),
                 TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,

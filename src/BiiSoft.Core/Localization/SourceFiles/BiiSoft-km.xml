@@ -677,6 +677,22 @@
 		<text name="TransactionNo">លេខប្រតិបត្តិការ</text>
 		<text name="ClassEnable">ប្រើថ្នាក់</text>
 		<text name="ContactAddressLevel">កម្រិតអាសយដ្ឋានទំនាក់ទំនង</text>
+
+		<text name="GeneralJournal">ទិនានុប្បវត្តិ</text>
+		<text name="CashIn">លុយ​ចូល</text>
+		<text name="CashOut">លុយចេញ</text>
+		<text name="CashTransfer">ផ្ទេរប្រាក់</text>
+		<text name="CashExchange">ដូរលុយ</text>
+		<text name="PurchaseReturn">ត្រឡប់ទំនិញទិញ</text>
+		<text name="DebitNote">ចំណាំឥណពន្ធ</text>
+		<text name="VendorRefund">ត្រឡប់លុយពីអ្នកផ្គត់ផ្គង់</text>
+		<text name="CreditNote">ចំណាំឥណទាន</text>
+		<text name="CustomerRefund">ត្រឡប់លុយឱ្យអតិថិជន</text>
+		<text name="ItemReceipt">ទទួលទំនិញ</text>
+		<text name="ItemIssue">បញ្ចេញទំនិញ</text>
+		<text name="ItemTransfer">ផ្ទេរទំនិញ</text>
+		<text name="ItemExchange">ដូរទំនិញ</text>
+		<text name="PhysicalCount">រាប់ស្តុកជាក់ស្ដែង</text>
 		
 	</texts>
 </localizationDictionary>

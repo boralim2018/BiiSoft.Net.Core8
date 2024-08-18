@@ -95,8 +95,7 @@ namespace BiiSoft.Migrations
                 name: "BiiTransactionNoSettings",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TenantId = table.Column<int>(type: "integer", nullable: false),
                     JournalType = table.Column<int>(type: "integer", nullable: false),
                     CustomTransactionNoEnable = table.Column<bool>(type: "boolean", nullable: false),

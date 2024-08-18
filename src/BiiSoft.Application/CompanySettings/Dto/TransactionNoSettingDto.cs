@@ -9,7 +9,7 @@ namespace BiiSoft.CompanySettings.Dto
 {
     public class TransactionNoSettingDto
     {
-        public long? Id { get; set; }
+        public Guid? Id { get; set; }
         public JournalType JournalType { get; set; }
         public string JournalTypeName { get; set; }
         public bool CustomTransactionNoEnable { get; set; }

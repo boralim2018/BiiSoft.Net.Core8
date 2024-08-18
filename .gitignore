@@ -261,3 +261,4 @@ src/BiiSoft.Migrator/Logs/Logs.txt
 build/outputs/
 docker/mvc/Mvc-Logs/
 src/BiiSoft.Web.Host/wwwroot/Downloads/
+src/BiiSoft.Web.Host/biisoft-resources

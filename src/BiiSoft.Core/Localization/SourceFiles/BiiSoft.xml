@@ -678,5 +678,21 @@
 		<text name="ClassEnable">Class Enable</text>
 		<text name="ContactAddressLevel">Contact Address Level</text>
 		
+		<text name="GeneralJournal">General Journal</text>
+		<text name="CashIn">Cash In</text>
+		<text name="CashOut">Cash Out</text>
+		<text name="CashTransfer">Cash Transfer</text>
+		<text name="CashExchange">Cash Exchange</text>
+		<text name="PurchaseReturn">Purchase Return</text>
+		<text name="DebitNote">Debit Note</text>		
+		<text name="VendorRefund">Vendor Refund</text>
+		<text name="CreditNote">Credit Note</text>
+		<text name="CustomerRefund">Customer Refund</text>
+		<text name="ItemReceipt">Item Receipt</text>
+		<text name="ItemIssue">Item Issue</text>
+		<text name="ItemTransfer">Item Transfer</text>
+		<text name="ItemExchange">Item Exchange</text>
+		<text name="PhysicalCount">Physical Count</text>
+		
 	</texts>
 </localizationDictionary>
