@@ -75,7 +75,7 @@ namespace BiiSoft.Locations
 
         protected override Country CreateInstance(Country input)
         {
-            return Country.Create(input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.ISO, input.ISO, input.PhonePrefix, input.CurrencyId);
+            return Country.Create(input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.ISO2, input.ISO, input.PhonePrefix, input.CurrencyId);
         }
 
         protected override void UpdateInstance(Country input, Country entity)
