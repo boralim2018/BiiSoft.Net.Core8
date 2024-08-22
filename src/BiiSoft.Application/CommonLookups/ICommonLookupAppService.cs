@@ -7,6 +7,6 @@ namespace BiiSoft.CommonLookups
 {
     public interface ICommonLookupAppService : IApplicationService
     {   
-        Task<ListResultDto<string>> GetTimeZones(TimeZonePageFilterInputDto input);
+        Task<PagedResultDto<string>> GetTimeZones(TimeZonePageFilterInputDto input);
     }
 }
