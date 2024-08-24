@@ -674,6 +674,7 @@
 		<text name="LineDiscountEnable">Line Discount Enable</text>
 		<text name="TotalDiscountEnable">Total Discount Enable</text>
 		<text name="CustomTransactionNoEnable">Custom Transaction No Enable</text>
+		<text name="CustomNo">Custom No</text>
 		<text name="TransactionNo">Transaction No</text>
 		<text name="ClassEnable">Class Enable</text>
 		<text name="ContactAddressLevel">Contact Address Level</text>
@@ -694,6 +695,6 @@
 		<text name="ItemTransfer">Item Transfer</text>
 		<text name="ItemExchange">Item Exchange</text>
 		<text name="PhysicalCount">Physical Count</text>
-		
+		<text name="TransactionType">Transaction Type</text>
 	</texts>
 </localizationDictionary>
