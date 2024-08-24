@@ -677,6 +677,7 @@
 		<text name="TransactionNo">លេខប្រតិបត្តិការ</text>
 		<text name="ClassEnable">ប្រើថ្នាក់</text>
 		<text name="ContactAddressLevel">កម្រិតអាសយដ្ឋានទំនាក់ទំនង</text>
+		<text name="RequiredReference">ត្រូវបំពេញឯកសារយោង</text>
 
 		<text name="GeneralJournal">ទិនានុប្បវត្តិ</text>
 		<text name="CashIn">លុយ​ចូល</text>

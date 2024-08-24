@@ -30,6 +30,9 @@ using BiiSoft.ContactInfo;
 using System;
 using static BiiSoft.Authorization.Roles.StaticRoleNames;
 using Abp.Authorization.Users;
+using BiiSoft.Features;
+using BiiSoft.Enums;
+using BiiSoft.Extensions;
 
 namespace BiiSoft.MultiTenancy
 {
@@ -42,12 +45,18 @@ namespace BiiSoft.MultiTenancy
         private readonly RoleManager _roleManager;
         private readonly IAbpZeroDbMigrator _abpZeroDbMigrator;
 
-        private readonly IRepository<Branch, Guid> _branchRepository;
-        private readonly IRepository<ContactAddress, Guid> _contactAddressRepository;
+        private readonly IBiiSoftRepository<Branch, Guid> _branchRepository;
+        private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
+        private readonly IBiiSoftRepository<CompanyGeneralSetting, long> _companyGeneralSettingRepository;
+        private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
+        private readonly IBiiSoftRepository<TransactionNoSetting, Guid> _transactionNoSettingRepository;
 
         public TenantAppService(
-            IRepository<ContactAddress, Guid> contactAddressRepository,
-            IRepository<Branch, Guid> branchRepository,
+            IBiiSoftRepository<TransactionNoSetting, Guid> transactionNoSettingRepository,
+            IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
+            IBiiSoftRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
+            IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
+            IBiiSoftRepository<Branch, Guid> branchRepository,
             IRepository<Tenant, int> repository,
             TenantManager tenantManager,
             EditionManager editionManager,
@@ -63,6 +72,9 @@ namespace BiiSoft.MultiTenancy
             _abpZeroDbMigrator = abpZeroDbMigrator;
             _branchRepository = branchRepository;
             _contactAddressRepository = contactAddressRepository;
+            _transactionNoSettingRepository = transactionNoSettingRepository;
+            _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
+            _companyGeneralSettingRepository = companyGeneralSettingRepository;
         }
 
         public override async Task<TenantDto> GetAsync(EntityDto<int> input)
@@ -152,22 +164,54 @@ namespace BiiSoft.MultiTenancy
                 CheckErrors(await _userManager.AddToRoleAsync(adminUser, adminRole.Name));
                 await CurrentUnitOfWork.SaveChangesAsync();
 
-                await CreateDefaultBranch(tenant);
+                await CreateDefaultBranch(tenant, adminUser.Id);
+                await CreateCompanySetting(tenant.Id, adminUser.Id);
             }
 
             return MapToEntityDto(tenant);
         }
 
-        private async Task CreateDefaultBranch(Tenant tenant)
-        {
-            var user = await _userManager.FindByNameAsync(AbpUserBase.AdminUserName);
-            if (user == null) throw new UserFriendlyException(L("NotFound", AbpUserBase.AdminUserName));
-            
-            var billingAddressEntity = ContactAddress.Create(tenant.Id, user.Id, null, null, null, null, null, null, "", "", "");
+        private async Task CreateDefaultBranch(Tenant tenant, long userId)
+        {   
+            var billingAddressEntity = ContactAddress.Create(tenant.Id, userId, null, null, null, null, null, null, "", "", "");
             await _contactAddressRepository.InsertAsync(billingAddressEntity);
-            var branchEntity = Branch.Create(tenant.Id, user.Id, tenant.Name, tenant.Name, "", "", "", "", "", billingAddressEntity.Id, true, billingAddressEntity.Id);
+            var branchEntity = Branch.Create(tenant.Id, userId, tenant.Name, tenant.Name, "", "", "", "", "", billingAddressEntity.Id, true, billingAddressEntity.Id);
             branchEntity.SetDefault(true);
             await _branchRepository.InsertAsync(branchEntity);
+        }
+
+        private async Task CreateCompanySetting(int tenantId, long userId)
+        {
+            var findGeneral = await _companyGeneralSettingRepository.GetAll().AsNoTracking().AnyAsync();
+            if (!findGeneral)
+            {
+                var genralSetting = CompanyGeneralSetting.Create(tenantId, userId, null, "", null, null, 2, 2);
+                await _companyGeneralSettingRepository.InsertAsync(genralSetting);
+            }
+
+            var findAdvance = await _companyAdvanceSettingRepository.GetAll().AsNoTracking().AnyAsync();
+            if (!findAdvance)
+            {
+                var multiBranchEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_Branches);
+                var multiCurrencyEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_MultiCurrencies);
+                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false, Enums.AddressLevel.L1);
+                await _companyAdvanceSettingRepository.InsertAsync(advanceSetting);
+            }
+
+            var journalTypes = Enum.GetValues(typeof(JournalType)).Cast<JournalType>()
+                               .ToList();
+
+            var findJournalTyps = await _transactionNoSettingRepository.GetAll().AsNoTracking()
+                                        .Where(s => journalTypes.Contains(s.JournalType))
+                                        .Select(s => s.JournalType)
+                                        .ToListAsync();
+                                        
+            var addJournalTypes = journalTypes.Except(findJournalTyps).ToList();
+            if (addJournalTypes.Any())
+            {
+                var transactionNos = addJournalTypes.Select(s => TransactionNoSetting.Create(tenantId, userId, s, false, s.GetPrefix(), 6, 1, false)).ToList();
+                await _transactionNoSettingRepository.BulkInsertAsync(transactionNos);
+            }
         }
 
         [AbpAuthorize(PermissionNames.Pages_Tenants_Edit)]
@@ -186,16 +230,21 @@ namespace BiiSoft.MultiTenancy
 
             using (CurrentUnitOfWork.SetTenantId(entity.Id))
             {
+                var user = await _userManager.FindByNameAsync(AbpUserBase.AdminUserName);
+                if (user == null) throw new UserFriendlyException(L("NotFound", AbpUserBase.AdminUserName));
+
                 var branchEntity = await _branchRepository.GetAll().Where(s => s.TenantId == input.Id && s.IsDefault).FirstOrDefaultAsync();
                 if(branchEntity == null)
                 {
-                    await CreateDefaultBranch(entity);
+                    await CreateDefaultBranch(entity, user.Id);
                 }
                 else
                 {
                     branchEntity.SetName(input.Name);
                     await _branchRepository.UpdateAsync(branchEntity);
                 }
+
+                await CreateCompanySetting(entity.Id, user.Id);
             }
 
             return input;

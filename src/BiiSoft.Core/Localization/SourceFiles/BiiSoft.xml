@@ -677,6 +677,7 @@
 		<text name="TransactionNo">Transaction No</text>
 		<text name="ClassEnable">Class Enable</text>
 		<text name="ContactAddressLevel">Contact Address Level</text>
+		<text name="RequiredReference">Required Reference</text>
 		
 		<text name="GeneralJournal">General Journal</text>
 		<text name="CashIn">Cash In</text>

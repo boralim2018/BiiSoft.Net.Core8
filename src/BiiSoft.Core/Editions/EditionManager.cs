@@ -10,7 +10,7 @@ namespace BiiSoft.Editions
 {
     public class EditionManager : AbpEditionManager
     {
-        public const string DefaultEditionName = DiamondEditionName;
+        public const string DefaultEditionName = StandardEditionName;
         public const string StandardEditionName = "Standard";
         public const string StandardEditionDisplayName = "ស្តង់ដា";
         public const string GoldEditionName = "Gold";

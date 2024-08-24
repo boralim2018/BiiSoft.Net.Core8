@@ -128,8 +128,8 @@ namespace BiiSoft.Branches
         {
             if (input.IsNullOrEmpty()) throw new UserFriendlyException(L("IsRequired", L("TransactionNo")));
 
-            var createItems = input.Where(s => !s.Id.HasValue).ToList();
-            var updateItems = input.Where(s => s.Id.HasValue).ToList();
+            var createItems = input.Where(s => s.Id.IsNullOrEmpty()).ToList();
+            var updateItems = input.Where(s => !s.Id.IsNullOrEmpty()).ToList();
 
             var result = new List<NameValueDto<JournalType>>();
 
@@ -287,9 +287,9 @@ namespace BiiSoft.Branches
                 JournalType = x.JournalType,
                 JournalTypeName = x.JournalType.ToString(),
                 CustomTransactionNoEnable = x.Transaction?.CustomTransactionNoEnable ?? false,
-                Prefix = x.Transaction?.Prefix ?? x.JournalType.GetPrefix(),
-                Digits = x.Transaction?.Digits ?? 4,
-                Start = x.Transaction?.Start ?? 1,
+                Prefix = x.Transaction?.Prefix ?? "",
+                Digits = x.Transaction?.Digits ?? 0,
+                Start = x.Transaction?.Start ?? 0,
                 RequiredReference = x.Transaction?.RequiredReference ?? false
             })
             .ToList();
