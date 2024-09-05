@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BiiSoft.Entities
 {
     [Serializable]
-    public abstract class CanModifyEntity<TPrimary> : AuditedEntity<TPrimary>, ICanModifyEntity
+    public abstract class CanModifyEntity<TPrimary> : BaseAuditedEntity<TPrimary>, ICanModifyEntity
     {
         [Required]
         public bool CannotEdit { get; protected set; }

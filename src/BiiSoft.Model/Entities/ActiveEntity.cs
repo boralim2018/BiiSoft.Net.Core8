@@ -8,7 +8,7 @@ using System.Text;
 namespace BiiSoft.Entities
 {
     [Serializable]
-    public abstract class ActiveEntity<TPrimary> : AuditedEntity<TPrimary>, IActiveEntity
+    public abstract class ActiveEntity<TPrimary> : BaseAuditedEntity<TPrimary>, IActiveEntity
     {
         [Required]
         public bool IsActive { get; protected set; }

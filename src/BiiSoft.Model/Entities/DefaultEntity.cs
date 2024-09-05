@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace BiiSoft.Entities
 {
     [Serializable]
-    public abstract class DefaultEntity<TPrimary>: AuditedEntity<TPrimary>, IDefaultEntity
+    public abstract class DefaultEntity<TPrimary>: BaseAuditedEntity<TPrimary>, IDefaultEntity
     {
         public bool IsDefault { get; protected set; }
         public void SetDefault(bool isDefault) => IsDefault = isDefault;

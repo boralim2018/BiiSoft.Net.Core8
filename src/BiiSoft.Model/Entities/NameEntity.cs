@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace BiiSoft.Entities
 {
     [Serializable]
-    public abstract class NameEntity<TPrimary> : AuditedEntity<TPrimary>, INameEntity
+    public abstract class NameEntity<TPrimary> : BaseAuditedEntity<TPrimary>, INameEntity
     {
         [Required]
         [MaxLength(BiiSoftConsts.MaxLengthName)]
