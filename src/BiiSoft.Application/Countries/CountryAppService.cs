@@ -13,13 +13,13 @@ using System.Linq.Dynamic.Core;
 using Abp.Linq.Extensions;
 using Abp.Extensions;
 using BiiSoft.Authorization.Users;
-using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.Countries.Dto;
 using BiiSoft.Entities;
+using BiiSoft.FileStorages;
+using BiiSoft.Folders;
 
 namespace BiiSoft.Countries
 {
@@ -127,16 +127,10 @@ namespace BiiSoft.Countries
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Countries_View, PermissionNames.Pages_Setup_Locations_Countries_Edit)]
         public async Task<CountryDetailDto> GetDetail(EntityDto<Guid> input)
         {
-            var query = from l in _countryRepository.GetAll()
-                                .AsNoTracking()
-                                .Where(s => s.Id == input.Id)
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new CountryDetailDto
+            var query = _countryRepository.GetAll()
+                        .AsNoTracking()
+                        .Where(s => s.Id == input.Id)
+                        .Select(l => new CountryDetailDto
                         {
                             Id = l.Id,
                             No = l.No,
@@ -148,37 +142,37 @@ namespace BiiSoft.Countries
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
+                            CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserId = l.LastModifierUserId,
-                            LastModifierUserName = m == null ? "" : m.UserName,
+                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                             CurrencyId = l.CurrencyId,
                             CurrencyCode = l.CurrencyId.HasValue ? l.Currency.Code : "",
                             PhonePrefix = l.PhonePrefix,
                             ISO = l.ISO,
                             ISO2 = l.ISO2
-                        };
+                        });
 
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
             var record = await _countryRepository.GetAll()
                                .AsNoTracking()
-                               .OrderBy(s => s.No)
+                               .Where(s => s.Id != result.Id)
                                .GroupBy(s => 1)
                                .Select(s => new
                                {
-                                   First = s.Where(r => r.No < result.No).Select(n => new { n.No, n.Id }).OrderBy(o => o.No).FirstOrDefault(),
-                                   Pervious = s.Where(r => r.No < result.No).Select(n => new { n.No, n.Id }).OrderByDescending(o => o.No).FirstOrDefault(),
-                                   Next = s.Where(r => r.No > result.No).Select(n => new { n.No, n.Id }).OrderBy(o => o.No).FirstOrDefault(),
-                                   Last = s.Where(r => r.No > result.No).Select(n => new { n.No, n.Id }).OrderByDescending(o => o.No).FirstOrDefault(),
+                                   First = s.Where(r => r.No < result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
+                                   Pervious = s.Where(r => r.No < result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
+                                   Next = s.Where(r => r.No > result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
+                                   Last = s.Where(r => r.No > result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
                                })
                                .FirstOrDefaultAsync();
 
-            if (record.First != null) result.FirstId = record.First.Id;
-            if (record.Pervious != null) result.PreviousId = record.Pervious.Id;
-            if (record.Next != null) result.NextId = record.Next.Id;
-            if (record.Last != null) result.LastId = record.Last.Id;
+            if (record != null && record.First != Guid.Empty) result.FirstId = record.First;
+            if (record != null && record.Pervious != Guid.Empty) result.PreviousId = record.Pervious;
+            if (record != null && record.Next != Guid.Empty) result.NextId = record.Next;
+            if (record != null && record.Last != Guid.Empty) result.LastId = record.Last;
 
             return result;
         }
@@ -192,58 +186,54 @@ namespace BiiSoft.Countries
 
         private async Task<PagedResultDto<CountryListDto>> GetListHelper(PageCountryInputDto input)
         {
-            var query = from l in _countryRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Currencies != null && input.Currencies.Ids != null && input.Currencies.Ids.Any(), s =>
-                                    (input.Currencies.Exclude && (!s.CurrencyId.HasValue || !input.Currencies.Ids.Contains(s.CurrencyId.Value))) ||
-                                    (!input.Currencies.Exclude && input.Currencies.Ids.Contains(s.CurrencyId.Value)))
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new CountryListDto
-                        {
-                            Id = l.Id,
-                            No = l.No,
-                            Name = l.Name,
-                            Code = l.Code,
-                            DisplayName = l.DisplayName,
-                            CannotDelete = l.CannotDelete,
-                            CannotEdit = l.CannotEdit,
-                            IsActive = l.IsActive,
-                            CreationTime = l.CreationTime,
-                            CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
-                            LastModifierUserId = u.LastModifierUserId,
-                            LastModificationTime = l.LastModificationTime,
-                            LastModifierUserName = m == null ? "" : m.UserName,
-                            ISO = l.ISO,
-                            ISO2 = l.ISO2,
-                            PhonePrefix = l.PhonePrefix,
-                            CurrencyCode = l.CurrencyId.HasValue ? l.Currency.Code : "",
-
-                        };
-
+            var query = _countryRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Currencies != null && input.Currencies.Ids != null && input.Currencies.Ids.Any(), s =>
+                            (input.Currencies.Exclude && (!s.CurrencyId.HasValue || !input.Currencies.Ids.Contains(s.CurrencyId.Value))) ||
+                            (!input.Currencies.Exclude && input.Currencies.Ids.Contains(s.CurrencyId.Value)))
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                     
             var totalCount = await query.CountAsync();
             var items = new List<CountryListDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new CountryListDto
+                {
+                    Id = l.Id,
+                    No = l.No,
+                    Name = l.Name,
+                    Code = l.Code,
+                    DisplayName = l.DisplayName,
+                    CannotDelete = l.CannotDelete,
+                    CannotEdit = l.CannotEdit,
+                    IsActive = l.IsActive,
+                    CreationTime = l.CreationTime,
+                    CreatorUserId = l.CreatorUserId,
+                    CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
+                    LastModifierUserId = l.LastModifierUserId,
+                    LastModificationTime = l.LastModificationTime,
+                    LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
+                    ISO = l.ISO,
+                    ISO2 = l.ISO2,
+                    PhonePrefix = l.PhonePrefix,
+                    CurrencyCode = l.CurrencyId.HasValue ? l.Currency.Code : "",
+
+                });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<CountryListDto> { TotalCount = totalCount, Items = items };

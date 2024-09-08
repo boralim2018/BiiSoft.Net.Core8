@@ -14,16 +14,13 @@ using System.Linq.Dynamic.Core;
 using Abp.Linq.Extensions;
 using Abp.Extensions;
 using BiiSoft.Authorization.Users;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Extensions;
-using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.ContactInfo;
 using BiiSoft.ContactInfo.Dto;
 using BiiSoft.Entities;
+using BiiSoft.FileStorages;
+using BiiSoft.Folders;
 
 namespace BiiSoft.Branches
 {
@@ -139,16 +136,10 @@ namespace BiiSoft.Branches
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
 
-            var query = from l in _branchRepository.GetAll()
-                                .AsNoTracking()
-                                .Where(s => s.Id == input.Id)
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new BranchDetailDto
+            var query = _branchRepository.GetAll()
+                        .AsNoTracking()
+                        .Where(s => s.Id == input.Id)
+                        .Select(l => new BranchDetailDto
                         {
                             Id = l.Id,
                             No = l.No,
@@ -163,10 +154,10 @@ namespace BiiSoft.Branches
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
-                            LastModificationTime = l.LastModificationTime,
+                            CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
                             LastModifierUserId = l.LastModifierUserId,
-                            LastModifierUserName = m == null ? "" : m.UserName,
+                            LastModificationTime = l.LastModificationTime,
+                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
 
                             BillingAddress = new ContactAddressDto
                             {
@@ -208,28 +199,28 @@ namespace BiiSoft.Branches
                                 HouseNo = l.ShippingAddress.HouseNo
                             }
 
-                        };
+                        });
 
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
             var record = await _branchRepository.GetAll()
                                .AsNoTracking()
-                               .OrderBy(s => s.Id)
+                               .Where(s => s.Id != result.Id)
                                .GroupBy(s => 1)
-                                .Select(s => new
-                                {
-                                    First = s.Where(r => r.No < result.No).Select(n => new { n.No, n.Id }).OrderBy(o => o.No).FirstOrDefault(),
-                                    Pervious = s.Where(r => r.No < result.No).Select(n => new { n.No, n.Id }).OrderByDescending(o => o.No).FirstOrDefault(),
-                                    Next = s.Where(r => r.No > result.No).Select(n => new { n.No, n.Id }).OrderBy(o => o.No).FirstOrDefault(),
-                                    Last = s.Where(r => r.No > result.No).Select(n => new { n.No, n.Id }).OrderByDescending(o => o.No).FirstOrDefault(),
-                                })
+                               .Select(s => new
+                               {
+                                    First = s.Where(r => r.No < result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
+                                    Pervious = s.Where(r => r.No < result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
+                                    Next = s.Where(r => r.No > result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
+                                    Last = s.Where(r => r.No > result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
+                               })
                                .FirstOrDefaultAsync();
 
-            if (record.First != null) result.FirstId = record.First.Id;
-            if (record.Pervious != null) result.PreviousId = record.Pervious.Id;
-            if (record.Next != null) result.NextId = record.Next.Id;
-            if (record.Last != null) result.LastId = record.Last.Id;
+            if (record != null && record.First != Guid.Empty) result.FirstId = record.First;
+            if (record != null && record.Pervious != Guid.Empty) result.PreviousId = record.Pervious;
+            if (record != null && record.Next != Guid.Empty) result.NextId = record.Next;
+            if (record != null && record.Last != Guid.Empty) result.LastId = record.Last;
 
 
             return result;
@@ -279,10 +270,10 @@ namespace BiiSoft.Branches
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
-                            LastModifierUserId = u.LastModifierUserId,
+                            CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
+                            LastModifierUserId = l.LastModifierUserId,
                             LastModificationTime = l.LastModificationTime,
-                            LastModifierUserName = m == null ? "" : m.UserName,
+                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                             CountryName = !l.BillingAddress.CountryId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.Country.Name : l.BillingAddress.Country.DisplayName,
                             CityProvinceName = !l.BillingAddress.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.CityProvince.Name : l.BillingAddress.CityProvince.DisplayName,
                             KhanDistrictName = !l.BillingAddress.KhanDistrictId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.KhanDistrict.Name : l.BillingAddress.KhanDistrict.DisplayName,

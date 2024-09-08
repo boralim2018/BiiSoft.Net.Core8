@@ -14,11 +14,12 @@ using System.Linq.Dynamic.Core;
 using Abp.Linq.Extensions;
 using Abp.Extensions;
 using BiiSoft.Authorization.Users;
-using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Entities;
+using BiiSoft.FileStorages;
+using BiiSoft.Folders;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BiiSoft.Currencies
 {
@@ -36,7 +37,7 @@ namespace BiiSoft.Currencies
             IAppFolders appFolders,
             ICurrencyManager currencyManager,
             IBiiSoftRepository<Currency, long> currencyRepository,
-            IBiiSoftRepository<User, long> userRepository)
+            IBiiSoftRepository<User, long> userRepository) 
         : base(fileStorageManager, appFolders)
         {
             _currencyManager=currencyManager;
@@ -126,16 +127,10 @@ namespace BiiSoft.Currencies
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_View, PermissionNames.Pages_Setup_Currencies_Edit)]
         public async Task<CurrencyDetailDto> GetDetail(EntityDto<long> input)
         {
-            var query = from l in _currencyRepository.GetAll()
-                                .AsNoTracking()
-                                .Where(s => s.Id == input.Id)
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new CurrencyDetailDto
+            var query = _currencyRepository.GetAll()
+                        .AsNoTracking()
+                        .Where(s => s.Id == input.Id)
+                        .Select(l => new CurrencyDetailDto
                         {
                             Id = l.Id,
                             Name = l.Name,
@@ -146,32 +141,34 @@ namespace BiiSoft.Currencies
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
+                            CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserId = l.LastModifierUserId,
-                            LastModifierUserName = m == null ? "" : m.UserName
-                        };
+                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : ""
+                        });
 
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
             var record = await _currencyRepository.GetAll()
                                .AsNoTracking()
-                               .OrderBy(s => s.Id)
+                               .Where(s => s.Id != result.Id)
                                .GroupBy(s => 1)
                                .Select(s => new
                                {
-                                   First = s.Where(r => r.Id < result.Id).Select(n => n.Id).OrderBy(o => o).FirstOrDefault(),
-                                   Pervious = s.Where(r => r.Id < result.Id).Select(n => n.Id).OrderByDescending(o => o).FirstOrDefault(),
-                                   Next = s.Where(r => r.Id > result.Id).Select(n => n.Id).OrderBy(o => o).FirstOrDefault(),
-                                   Last = s.Where(r => r.Id > result.Id).Select(n => n.Id).OrderByDescending(o => o).FirstOrDefault(),
+                                   First = s.Where(r => r.Id < result.Id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                   Pervious = s.Where(r => r.Id < result.Id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                   Next = s.Where(r => r.Id > result.Id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                   Last = s.Where(r => r.Id > result.Id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
                                })
                                .FirstOrDefaultAsync();
 
-            if (record.First > 0) result.FirstId = record.First;
-            if (record.Pervious > 0) result.PreviousId = record.Pervious;
-            if (record.Next > 0) result.NextId = record.Next;
-            if (record.Last > 0) result.LastId = record.Last;
+            if (record != null && record.First > 0) result.FirstId = record.First;
+            if (record != null && record.Pervious > 0) result.PreviousId = record.Pervious;
+            if (record != null && record.Next > 0) result.NextId = record.Next;
+            if (record != null && record.Last > 0) result.LastId = record.Last;
+
+            //await _currencyManager.MapNavigation(result);
 
             return result;
         }
@@ -185,49 +182,47 @@ namespace BiiSoft.Currencies
 
         private async Task<PagedResultDto<CurrencyListDto>> GetListHelper(PageCurrencyInputDto input)
         {
-            var query = from l in _currencyRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new CurrencyListDto
-                        {
-                            Id = l.Id,
-                            Name = l.Name,
-                            DisplayName = l.DisplayName,
-                            Code = l.Code,
-                            Symbol = l.Symbol,
-                            IsDefault = l.IsDefault,
-                            IsActive = l.IsActive,
-                            CreationTime = l.CreationTime,
-                            CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
-                            LastModifierUserId = u.LastModifierUserId,
-                            LastModificationTime = l.LastModificationTime,
-                            LastModifierUserName = m == null ? "" : m.UserName,
-                        };
+            var query = _currencyRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
 
             var totalCount = await query.CountAsync();
+
+
             var items = new List<CurrencyListDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new CurrencyListDto
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    DisplayName = l.DisplayName,
+                    Code = l.Code,
+                    Symbol = l.Symbol,
+                    IsDefault = l.IsDefault,
+                    IsActive = l.IsActive,
+                    CreationTime = l.CreationTime,
+                    CreatorUserId = l.CreatorUserId,
+                    CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
+                    LastModifierUserId = l.LastModifierUserId,
+                    LastModificationTime = l.LastModificationTime,
+                    LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
+                });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<CurrencyListDto> { TotalCount = totalCount, Items = items };
