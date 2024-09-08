@@ -19,8 +19,6 @@ using System.Transactions;
 using BiiSoft.ContactInfo;
 using BiiSoft.ContactInfo.Dto;
 using BiiSoft.Entities;
-using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 
 namespace BiiSoft.Branches
 {
@@ -36,14 +34,11 @@ namespace BiiSoft.Branches
 
         public BranchAppService(
             IUnitOfWorkManager unitOfWorkManager,
-            IFileStorageManager fileStorageManager,
-            IAppFolders appFolders,
             IBranchManager branchManager,
             IBiiSoftRepository<Branch, Guid> branchRepository,
             IContactAddressManager contactAddressManager,
             IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
             IBiiSoftRepository<User, long> userRepository)
-        : base(fileStorageManager, appFolders)
         {
             _branchManager=branchManager;
             _branchRepository=branchRepository;

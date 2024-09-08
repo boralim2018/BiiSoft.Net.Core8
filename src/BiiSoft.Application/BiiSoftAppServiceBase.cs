@@ -20,7 +20,6 @@ using Abp.Extensions;
 using BiiSoft.Extensions;
 using BiiSoft.Folders;
 using BiiSoft.FileStorages;
-using System.Collections.Generic;
 
 namespace BiiSoft
 {
@@ -113,13 +112,10 @@ namespace BiiSoft
     {
         protected readonly IFileStorageManager _fileStorageManager;
         protected readonly IAppFolders _appFolders; 
-        protected BiiSoftExcelAppServiceBase(
-            IFileStorageManager fileStorageManager,
-            IAppFolders appFolders
-        ) : base()
+        protected BiiSoftExcelAppServiceBase() 
         {
-            _fileStorageManager = fileStorageManager;
-            _appFolders = appFolders;
+            _fileStorageManager = IocManager.Instance.Resolve<IFileStorageManager>();
+            _appFolders = IocManager.Instance.Resolve<IAppFolders>();
         }
 
         protected async Task<ExportFileOutput> ExportExcelAsync(ExportFileInput input)

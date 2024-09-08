@@ -18,8 +18,6 @@ using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.Countries.Dto;
 using BiiSoft.Entities;
-using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 
 namespace BiiSoft.Countries
 {
@@ -33,12 +31,9 @@ namespace BiiSoft.Countries
         
         public CountryAppService(
             IUnitOfWorkManager unitOfWorkManager,
-            IFileStorageManager fileStorageManager,
-            IAppFolders appFolders,
             ICountryManager countryManager,
             IBiiSoftRepository<Country, Guid> countryRepository,
             IBiiSoftRepository<User, long> userRepository)
-        : base(fileStorageManager, appFolders)
         {
             _countryManager=countryManager;
             _countryRepository=countryRepository;

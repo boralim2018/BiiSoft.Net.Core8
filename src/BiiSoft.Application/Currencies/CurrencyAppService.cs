@@ -17,9 +17,6 @@ using BiiSoft.Authorization.Users;
 using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Entities;
-using BiiSoft.FileStorages;
-using BiiSoft.Folders;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BiiSoft.Currencies
 {
@@ -33,12 +30,9 @@ namespace BiiSoft.Currencies
 
         public CurrencyAppService(
             IUnitOfWorkManager unitOfWorkManager,
-            IFileStorageManager fileStorageManager,
-            IAppFolders appFolders,
             ICurrencyManager currencyManager,
             IBiiSoftRepository<Currency, long> currencyRepository,
             IBiiSoftRepository<User, long> userRepository) 
-        : base(fileStorageManager, appFolders)
         {
             _currencyManager=currencyManager;
             _currencyRepository=currencyRepository;

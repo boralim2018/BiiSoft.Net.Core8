@@ -13,18 +13,11 @@ using System.Linq.Dynamic.Core;
 using Abp.Linq.Extensions;
 using Abp.Extensions;
 using BiiSoft.Authorization.Users;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Extensions;
-using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.CityProvinces.Dto;
-using BiiSoft.Dtos;
 using BiiSoft.Entities;
-using Abp.Domain.Entities;
 
 namespace BiiSoft.CityProvinces
 {
@@ -38,12 +31,9 @@ namespace BiiSoft.CityProvinces
 
         public CityProvinceAppService(
             IUnitOfWorkManager unitOfWorkManager,
-            IFileStorageManager fileStorageManager,
-            IAppFolders appFolders,
             ICityProvinceManager cityProvinceManager,
             IBiiSoftRepository<CityProvince, Guid> cityProvinceRepository,
             IBiiSoftRepository<User, long> userRepository)
-        : base(fileStorageManager, appFolders)
         {
             _cityProvinceManager=cityProvinceManager;
             _cityProvinceRepository=cityProvinceRepository;

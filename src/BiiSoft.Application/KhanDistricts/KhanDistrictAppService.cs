@@ -13,8 +13,6 @@ using System.Linq.Dynamic.Core;
 using Abp.Linq.Extensions;
 using Abp.Extensions;
 using BiiSoft.Authorization.Users;
-using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Locations;
@@ -33,12 +31,9 @@ namespace BiiSoft.KhanDistricts
 
         public KhanDistrictAppService(
             IUnitOfWorkManager unitOfWorkManager,
-            IFileStorageManager fileStorageManager,
-            IAppFolders appFolders,
             IKhanDistrictManager khanDistrictManager,
             IBiiSoftRepository<KhanDistrict, Guid> khanDistrictRepository,
             IBiiSoftRepository<User, long> userRepository)
-        : base(fileStorageManager, appFolders)
         {
             _khanDistrictManager=khanDistrictManager;
             _khanDistrictRepository=khanDistrictRepository;
