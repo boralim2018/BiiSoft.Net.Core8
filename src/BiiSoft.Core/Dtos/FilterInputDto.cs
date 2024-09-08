@@ -4,11 +4,6 @@ using System.Text;
 
 namespace BiiSoft.Dtos
 {
-    public class FilterInputDto
-    {
-        public string Keyword { get; set; }
-    }
-
     public class FilterInputDto<TPrimary>
     {
         public bool Exclude { get; set; }

@@ -4,7 +4,7 @@ using System;
 
 namespace BiiSoft.Countries.Dto
 {
-    public class CountryDetailDto : CanModifyNameActiveAuditedDto<Guid>
+    public class CountryDetailDto : CanModifyNameActiveAuditedNavigationDto<Guid>, INoDto
     {      
         public long No { get; set; }
         public string Code { get; set; }
@@ -13,10 +13,5 @@ namespace BiiSoft.Countries.Dto
         public string PhonePrefix { get; set; }
         public long? CurrencyId { get; set; }
         public string CurrencyCode { get; set; }
-
-        public Guid? FirstId { get; set; }
-        public Guid? NextId { get; set; }
-        public Guid? PreviousId { get; set; }
-        public Guid? LastId { get; set; }
     }
 }

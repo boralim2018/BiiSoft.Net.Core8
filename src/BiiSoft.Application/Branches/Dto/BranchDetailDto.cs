@@ -4,7 +4,7 @@ using System;
 
 namespace BiiSoft.Branches.Dto
 {
-    public class BranchDetailDto : DefaultNameActiveAuditedDto<Guid>
+    public class BranchDetailDto : DefaultNameActiveAuditedNavigationDto<Guid>, INoDto
     {
         public long No { get; set; }
         public string BusinessId { get; set; }
@@ -13,10 +13,6 @@ namespace BiiSoft.Branches.Dto
         public string Website { get; set; }
         public string TaxRegistrationNumber { get; set; }
 
-        public Guid? FirstId { get; set; }
-        public Guid? NextId { get; set; }
-        public Guid? PreviousId { get; set; }
-        public Guid? LastId { get; set; }
         public ContactAddressDto BillingAddress { get; set; }
         public bool SameAsBillingAddress { get; set; }
         public ContactAddressDto ShippingAddress { get; set; }
