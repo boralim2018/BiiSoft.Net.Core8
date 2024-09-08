@@ -10,7 +10,7 @@ namespace BiiSoft.Branches
 {
 
     [Table("BiiBranches")]
-    public class Branch : CanModifyDefaultNameActiveEntity<Guid>, IMustHaveTenant
+    public class Branch : CanModifyDefaultNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long No { get; private set; }

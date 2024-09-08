@@ -151,23 +151,25 @@ namespace BiiSoft.Countries
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
-            var record = await _countryRepository.GetAll()
-                               .AsNoTracking()
-                               .Where(s => s.Id != result.Id)
-                               .GroupBy(s => 1)
-                               .Select(s => new
-                               {
-                                   First = s.Where(r => r.No < result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
-                                   Pervious = s.Where(r => r.No < result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
-                                   Next = s.Where(r => r.No > result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
-                                   Last = s.Where(r => r.No > result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
-                               })
-                               .FirstOrDefaultAsync();
+            //var record = await _countryRepository.GetAll()
+            //                   .AsNoTracking()
+            //                   .Where(s => s.Id != result.Id)
+            //                   .GroupBy(s => 1)
+            //                   .Select(s => new
+            //                   {
+            //                       First = s.Where(r => r.No < result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
+            //                       Pervious = s.Where(r => r.No < result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
+            //                       Next = s.Where(r => r.No > result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
+            //                       Last = s.Where(r => r.No > result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
+            //                   })
+            //                   .FirstOrDefaultAsync();
 
-            if (record != null && record.First != Guid.Empty) result.FirstId = record.First;
-            if (record != null && record.Pervious != Guid.Empty) result.PreviousId = record.Pervious;
-            if (record != null && record.Next != Guid.Empty) result.NextId = record.Next;
-            if (record != null && record.Last != Guid.Empty) result.LastId = record.Last;
+            //if (record != null && record.First != Guid.Empty) result.FirstId = record.First;
+            //if (record != null && record.Pervious != Guid.Empty) result.PreviousId = record.Pervious;
+            //if (record != null && record.Next != Guid.Empty) result.NextId = record.Next;
+            //if (record != null && record.Last != Guid.Empty) result.LastId = record.Last;
+
+            await _countryManager.MapNavigation(result);
 
             return result;
         }

@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BiiSoft.Locations
 {
     [Table("BiiKhanDistricts")]
-    public class KhanDistrict : CanModifyNameActiveEntity<Guid>, IMustHaveTenant
+    public class KhanDistrict : CanModifyNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

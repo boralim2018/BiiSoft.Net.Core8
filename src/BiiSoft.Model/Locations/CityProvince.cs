@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BiiSoft.Locations
 {
     [Table("BiiCityProvinces")]
-    public class CityProvince : CanModifyNameActiveEntity<Guid>
+    public class CityProvince : CanModifyNameActiveEntity<Guid>, INoEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long No { get; private set; }

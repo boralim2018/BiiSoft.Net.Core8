@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Abp.Timing;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using BiiSoft.Dtos;
 
 namespace BiiSoft
 {
@@ -119,7 +120,7 @@ namespace BiiSoft
     }
 
     public abstract class BiiSoftValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftValidateServiceBase, IBiiSoftValidateServiceBase<TEntity, TPrimaryKey> 
-        where TEntity : Entity<TPrimaryKey>
+        where TEntity : Entity<TPrimaryKey> where TPrimaryKey : struct
     {
 
         protected readonly IBiiSoftRepository<TEntity, TPrimaryKey> _repository;
@@ -188,6 +189,57 @@ namespace BiiSoft
             return IdentityResult.Success;
         }
 
+        public async Task MapNavigation(INavigationDto<TPrimaryKey> result)
+        {
+            if (typeof(INoEntity).IsAssignableFrom(typeof(TEntity)))
+            {
+                if (result is not INoDto) throw new UserFriendlyException(L("IsRequired", "INoDto"));
+
+                var no = (result as INoDto).No;
+
+                var record = await _repository.GetAll()
+                                   .AsNoTracking()
+                                   .Where(s => !s.Id.Equals(result.Id))
+                                   .GroupBy(s => 1)
+                                   .Select(s => new
+                                   {
+                                       First = s.Where(r => ((INoEntity)r).No < no).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                       Pervious = s.Where(r => ((INoEntity)r).No < no).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                       Next = s.Where(r => ((INoEntity)r).No > no).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                       Last = s.Where(r => ((INoEntity)r).No > no).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                   })
+                                   .FirstOrDefaultAsync();
+
+                if (record != null && !record.First.Equals(Guid.Empty)) result.FirstId = record.First;
+                if (record != null && !record.Pervious.Equals(Guid.Empty)) result.PreviousId = record.Pervious;
+                if (record != null && !record.Next.Equals(Guid.Empty)) result.NextId = record.Next;
+                if (record != null && !record.Last.Equals(Guid.Empty)) result.LastId = record.Last;
+            }
+            else if (typeof(TPrimaryKey) == typeof(long) || typeof(TPrimaryKey) == typeof(int))
+            {
+                var id = Convert.ToInt64(result.Id);
+
+                var record = await _repository.GetAll()
+                               .AsNoTracking()
+                               .Where(s => !s.Id.Equals(result.Id))
+                               .GroupBy(s => 1)
+                               .Select(s => new
+                               {
+                                   First = s.Where(r => Convert.ToInt64(r.Id) < id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                   Pervious = s.Where(r => Convert.ToInt64(r.Id) < id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                   Next = s.Where(r => Convert.ToInt64(r.Id) > id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                   Last = s.Where(r => Convert.ToInt64(r.Id) > id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                               })
+                               .FirstOrDefaultAsync();
+
+                if (record != null && Convert.ToInt64(record.First) > 0) result.FirstId = record.First;
+                if (record != null && Convert.ToInt64(record.Pervious) > 0) result.PreviousId = record.Pervious;
+                if (record != null && Convert.ToInt64(record.Next) > 0) result.NextId = record.Next;
+                if (record != null && Convert.ToInt64(record.Last) > 0) result.LastId = record.Last;
+            }
+
+        }
+
     }
 
     /// <summary>
@@ -195,7 +247,7 @@ namespace BiiSoft
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     public abstract class BiiSoftCodeGenerateServiceBase<TEntity, TPrimaryKey> : BiiSoftValidateServiceBase<TEntity, TPrimaryKey> 
-        where TEntity : Entity<TPrimaryKey>, ICodeEntity
+        where TEntity : Entity<TPrimaryKey>, ICodeEntity where TPrimaryKey : struct
     {
         protected abstract string Prefix { get; }
         protected abstract int CodeLength { get; }
@@ -322,7 +374,7 @@ namespace BiiSoft
 
 
     public abstract class BiiSoftNameValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftValidateServiceBase<TEntity, TPrimaryKey> 
-        where TEntity : NameEntity<TPrimaryKey>
+        where TEntity : NameEntity<TPrimaryKey> where TPrimaryKey : struct
     {
         protected virtual bool IsUniqueName => false;
 
@@ -352,7 +404,8 @@ namespace BiiSoft
         }
     }
 
-    public abstract class BiiSoftNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftNameValidateServiceBase<TEntity, TPrimaryKey>, IActiveValidateServiceBase<TEntity, TPrimaryKey> where TEntity : NameActiveEntity<TPrimaryKey>
+    public abstract class BiiSoftNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftNameValidateServiceBase<TEntity, TPrimaryKey>, IActiveValidateServiceBase<TEntity, TPrimaryKey> 
+        where TEntity : NameActiveEntity<TPrimaryKey> where TPrimaryKey : struct
     {
         public BiiSoftNameActiveValidateServiceBase(IBiiSoftRepository<TEntity, TPrimaryKey> repository) : base(repository)
         {
@@ -386,7 +439,8 @@ namespace BiiSoft
         }
     }
 
-    public abstract class BiiSoftDefaultNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftNameActiveValidateServiceBase<TEntity, TPrimaryKey>, IDefaultActiveValidateServiceBase<TEntity, TPrimaryKey> where TEntity : DefaultNameActiveEntity<TPrimaryKey>, IDefaultNameEntity
+    public abstract class BiiSoftDefaultNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftNameActiveValidateServiceBase<TEntity, TPrimaryKey>, IDefaultActiveValidateServiceBase<TEntity, TPrimaryKey> 
+        where TEntity : DefaultNameActiveEntity<TPrimaryKey>, IDefaultNameEntity where TPrimaryKey : struct
     {
 
         public BiiSoftDefaultNameActiveValidateServiceBase(IBiiSoftRepository<TEntity, TPrimaryKey> repository) : base(repository)
@@ -424,7 +478,7 @@ namespace BiiSoft
 
 
     public abstract class BiiSoftCodeGenerateNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftCodeGenerateServiceBase<TEntity, TPrimaryKey>, IActiveValidateServiceBase<TEntity, TPrimaryKey>
-        where TEntity : NameActiveEntity<TPrimaryKey>, ICodeEntity
+        where TEntity : NameActiveEntity<TPrimaryKey>, ICodeEntity where TPrimaryKey : struct
     {
         public BiiSoftCodeGenerateNameActiveValidateServiceBase(IBiiSoftRepository<TEntity, TPrimaryKey> repository) : base(repository)
         {

@@ -8,7 +8,7 @@ using Abp.Timing;
 namespace BiiSoft.Locations
 {
     [Table("BiiLocations")]
-    public class Location : CanModifyNameActiveEntity<Guid>, IMustHaveTenant
+    public class Location : CanModifyNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
 

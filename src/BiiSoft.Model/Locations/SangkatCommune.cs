@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BiiSoft.Locations
 {
     [Table("BiiSangkatCommunes")]
-    public class SangkatCommune : CanModifyNameActiveEntity<Guid>, IMustHaveTenant
+    public class SangkatCommune : CanModifyNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

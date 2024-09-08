@@ -144,25 +144,25 @@ namespace BiiSoft.Currencies
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
-            var record = await _currencyRepository.GetAll()
-                               .AsNoTracking()
-                               .Where(s => s.Id != result.Id)
-                               .GroupBy(s => 1)
-                               .Select(s => new
-                               {
-                                   First = s.Where(r => r.Id < result.Id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                   Pervious = s.Where(r => r.Id < result.Id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                   Next = s.Where(r => r.Id > result.Id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                   Last = s.Where(r => r.Id > result.Id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                               })
-                               .FirstOrDefaultAsync();
+            //var record = await _currencyRepository.GetAll()
+            //                   .AsNoTracking()
+            //                   .Where(s => s.Id != result.Id)
+            //                   .GroupBy(s => 1)
+            //                   .Select(s => new
+            //                   {
+            //                       First = s.Where(r => r.Id < result.Id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+            //                       Pervious = s.Where(r => r.Id < result.Id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+            //                       Next = s.Where(r => r.Id > result.Id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+            //                       Last = s.Where(r => r.Id > result.Id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+            //                   })
+            //                   .FirstOrDefaultAsync();
 
-            if (record != null && record.First > 0) result.FirstId = record.First;
-            if (record != null && record.Pervious > 0) result.PreviousId = record.Pervious;
-            if (record != null && record.Next > 0) result.NextId = record.Next;
-            if (record != null && record.Last > 0) result.LastId = record.Last;
+            //if (record != null && record.First > 0) result.FirstId = record.First;
+            //if (record != null && record.Pervious > 0) result.PreviousId = record.Pervious;
+            //if (record != null && record.Next > 0) result.NextId = record.Next;
+            //if (record != null && record.Last > 0) result.LastId = record.Last;
 
-            //await _currencyManager.MapNavigation(result);
+            await _currencyManager.MapNavigation(result);
 
             return result;
         }
