@@ -77,41 +77,44 @@ namespace BiiSoft.CityProvinces
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
 
-            var query = from l in _cityProvinceRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Countries != null && input.Countries.Ids != null && input.Countries.Ids.Any(), s =>
-                                    (input.Countries.Exclude && (!s.CountryId.HasValue || !input.Countries.Ids.Contains(s.CountryId.Value))) ||
-                                    (!input.Countries.Exclude && input.Countries.Ids.Contains(s.CountryId.Value)))
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.ISO.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        select new FindCityProvinceDto
-                        {
-                            Id = l.Id,
-                            Code = l.Code,
-                            Name = l.Name,
-                            DisplayName = l.DisplayName,
-                            ISO = l.ISO,
-                            CountryName = !l.CountryId.HasValue ? "" : isDefaultLanguage ? l.Country.Name : l.Country.DisplayName,
-                            IsActive = l.IsActive,
-                        };
+            var query = _cityProvinceRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Countries != null && input.Countries.Ids != null && input.Countries.Ids.Any(), s =>
+                            (input.Countries.Exclude && (!s.CountryId.HasValue || !input.Countries.Ids.Contains(s.CountryId.Value))) ||
+                            (!input.Countries.Exclude && input.Countries.Ids.Contains(s.CountryId.Value)))
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.ISO.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                       
 
             var totalCount = await query.CountAsync();
             var items = new List<FindCityProvinceDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new FindCityProvinceDto
+                {
+                     Id = l.Id,
+                     Code = l.Code,
+                     Name = l.Name,
+                     DisplayName = l.DisplayName,
+                     ISO = l.ISO,
+                     CountryName = !l.CountryId.HasValue ? "" : isDefaultLanguage ? l.Country.Name : l.Country.DisplayName,
+                     IsActive = l.IsActive,
+                });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<FindCityProvinceDto> { TotalCount = totalCount, Items = items };
@@ -122,16 +125,10 @@ namespace BiiSoft.CityProvinces
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
 
-            var query = from l in _cityProvinceRepository.GetAll()
-                                .AsNoTracking()
-                                .Where(s => s.Id == input.Id)
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new CityProvinceDetailDto
+            var query = _cityProvinceRepository.GetAll()
+                        .AsNoTracking()
+                        .Where(s => s.Id == input.Id)
+                        .Select(l => new CityProvinceDetailDto
                         {
                             Id = l.Id,
                             No = l.No,
@@ -143,35 +140,19 @@ namespace BiiSoft.CityProvinces
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
+                            CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserId = l.LastModifierUserId,
-                            LastModifierUserName = m == null ? "" : m.UserName,
+                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                             CountryId = l.CountryId,
                             CountryName = !l.CountryId.HasValue ? "" : isDefaultLanguage ? l.Country.Name : l.Country.DisplayName,
                             ISO = l.ISO
-                        };
+                        });
 
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
-            var record = await _cityProvinceRepository.GetAll()
-                               .AsNoTracking()
-                               .OrderBy(s => s.No)
-                               .GroupBy(s => 1)
-                               .Select(s => new
-                               {
-                                   First = s.Where(r => r.No < result.No).Select(n => new { n.No, n.Id }).OrderBy(o => o.No).FirstOrDefault(),
-                                   Pervious = s.Where(r => r.No < result.No).Select(n => new { n.No, n.Id }).OrderByDescending(o => o.No).FirstOrDefault(),
-                                   Next = s.Where(r => r.No > result.No).Select(n => new { n.No, n.Id }).OrderBy(o => o.No).FirstOrDefault(),
-                                   Last = s.Where(r => r.No > result.No).Select(n => new { n.No, n.Id }).OrderByDescending(o => o.No).FirstOrDefault(),
-                               })
-                               .FirstOrDefaultAsync();
-
-            if (record.First is not null) result.FirstId = record.First.Id;
-            if (record.Pervious is not null) result.PreviousId = record.Pervious.Id;
-            if (record.Next is not null) result.NextId = record.Next.Id;
-            if (record.Last is not null) result.LastId = record.Last.Id;
+            await _cityProvinceManager.MapNavigation(result);
 
             return result;
         }
@@ -187,55 +168,52 @@ namespace BiiSoft.CityProvinces
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
 
-            var query = from l in _cityProvinceRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Countries != null && input.Countries.Ids != null && input.Countries.Ids.Any(), s =>
-                                    (input.Countries.Exclude && (!s.CountryId.HasValue || !input.Countries.Ids.Contains(s.CountryId.Value))) ||
-                                    (!input.Countries.Exclude && input.Countries.Ids.Contains(s.CountryId.Value)))
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new CityProvinceListDto
-                        {
-                            Id = l.Id,
-                            No = l.No,
-                            Name = l.Name,
-                            DisplayName = l.DisplayName,
-                            CannotDelete = l.CannotDelete,
-                            CannotEdit = l.CannotEdit,
-                            IsActive = l.IsActive,
-                            CreationTime = l.CreationTime,
-                            CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
-                            LastModifierUserId = u.LastModifierUserId,
-                            LastModificationTime = l.LastModificationTime,
-                            LastModifierUserName = m == null ? "" : m.UserName,
-                            ISO = l.ISO,
-                            CountryName = !l.CountryId.HasValue ? "" : isDefaultLanguage ? l.Country.Name : l.Country.DisplayName,
-                            Code = l.Code,
-                        };
+            var query = _cityProvinceRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Countries != null && input.Countries.Ids != null && input.Countries.Ids.Any(), s =>
+                            (input.Countries.Exclude && (!s.CountryId.HasValue || !input.Countries.Ids.Contains(s.CountryId.Value))) ||
+                            (!input.Countries.Exclude && input.Countries.Ids.Contains(s.CountryId.Value)))
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                       
 
             var totalCount = await query.CountAsync();
             var items = new List<CityProvinceListDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new CityProvinceListDto
+                {
+                    Id = l.Id,
+                    No = l.No,
+                    Name = l.Name,
+                    DisplayName = l.DisplayName,
+                    CannotDelete = l.CannotDelete,
+                    CannotEdit = l.CannotEdit,
+                    IsActive = l.IsActive,
+                    CreationTime = l.CreationTime,
+                    CreatorUserId = l.CreatorUserId,
+                    CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
+                    LastModificationTime = l.LastModificationTime,
+                    LastModifierUserId = l.LastModifierUserId,
+                    LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
+                    ISO = l.ISO,
+                    CountryName = !l.CountryId.HasValue ? "" : isDefaultLanguage ? l.Country.Name : l.Country.DisplayName,
+                    Code = l.Code,
+                });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<CityProvinceListDto> { TotalCount = totalCount, Items = items };

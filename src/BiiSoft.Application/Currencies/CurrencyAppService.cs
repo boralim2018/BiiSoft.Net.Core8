@@ -82,37 +82,40 @@ namespace BiiSoft.Currencies
         [AbpAuthorize(PermissionNames.Pages_Find_Currencies)]
         public async Task<PagedResultDto<FindCurrencyDto>> Find(PageCurrencyInputDto input)
         {
-            var query = from l in _currencyRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        select new FindCurrencyDto
-                        {
-                            Id = l.Id,
-                            Name = l.Name,
-                            DisplayName = l.DisplayName,
-                            Code = l.Code,
-                            Symbol = l.Symbol,
-                            IsActive = l.IsActive,
-                            IsDefault = l.IsDefault                            
-                        };
+            var query = _currencyRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                        
 
             var totalCount = await query.CountAsync();
             var items = new List<FindCurrencyDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new FindCurrencyDto
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    DisplayName = l.DisplayName,
+                    Code = l.Code,
+                    Symbol = l.Symbol,
+                    IsActive = l.IsActive,
+                    IsDefault = l.IsDefault
+                });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<FindCurrencyDto> { TotalCount = totalCount, Items = items };
@@ -143,24 +146,6 @@ namespace BiiSoft.Currencies
 
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
-
-            //var record = await _currencyRepository.GetAll()
-            //                   .AsNoTracking()
-            //                   .Where(s => s.Id != result.Id)
-            //                   .GroupBy(s => 1)
-            //                   .Select(s => new
-            //                   {
-            //                       First = s.Where(r => r.Id < result.Id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-            //                       Pervious = s.Where(r => r.Id < result.Id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-            //                       Next = s.Where(r => r.Id > result.Id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-            //                       Last = s.Where(r => r.Id > result.Id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-            //                   })
-            //                   .FirstOrDefaultAsync();
-
-            //if (record != null && record.First > 0) result.FirstId = record.First;
-            //if (record != null && record.Pervious > 0) result.PreviousId = record.Pervious;
-            //if (record != null && record.Next > 0) result.NextId = record.Next;
-            //if (record != null && record.Last > 0) result.LastId = record.Last;
 
             await _currencyManager.MapNavigation(result);
 

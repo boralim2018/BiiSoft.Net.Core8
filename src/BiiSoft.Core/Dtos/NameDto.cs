@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Abp.Application.Services.Dto;
+using System;
 
 namespace BiiSoft.Dtos
 {
-    public abstract class NameDto<TPrimary> : IdentityDot<TPrimary>, INameDto
+    public abstract class NameDto<TPrimary> : EntityDto<TPrimary>, INameDto
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }

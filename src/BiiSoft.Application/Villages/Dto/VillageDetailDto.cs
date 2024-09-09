@@ -4,7 +4,7 @@ using System;
 
 namespace BiiSoft.Villages.Dto
 {
-    public class VillageDetailDto : CanModifyNameActiveAuditedDto<Guid>
+    public class VillageDetailDto : CanModifyNameActiveAuditedNavigationDto<Guid>, INoDto
     {      
         public long No { get; set; }
         public string Code { get; set; }
@@ -17,9 +17,5 @@ namespace BiiSoft.Villages.Dto
         public Guid? SangkatCommuneId { get; set; }
         public string SangkatCommuneName { get; set; }
 
-        public Guid? FirstId { get; set; }
-        public Guid? NextId { get; set; }
-        public Guid? PreviousId { get; set; }
-        public Guid? LastId { get; set; }
     }
 }

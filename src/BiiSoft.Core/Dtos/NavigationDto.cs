@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Abp.Application.Services.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BiiSoft.Dtos
 {  
-    public abstract class NavigationDto<TPrimary> : IdentityDot<TPrimary>, INavigationDto<TPrimary> where TPrimary : struct
+    public abstract class NavigationDto<TPrimary> : EntityDto<TPrimary>, INavigationDto<TPrimary> where TPrimary : struct
     {
         public TPrimary? FirstId { get; set; }
         public TPrimary? NextId { get; set; }

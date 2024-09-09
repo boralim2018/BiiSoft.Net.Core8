@@ -12,6 +12,15 @@ namespace BiiSoft.CityProvinces.Dto
     public class PageCityProvinceInputDto : PageAuditedAcitveSortFilterInputDto
     {
         public FilterInputDto<Guid?> Countries { get; set; }
+
+        protected override string MapSortField()
+        {
+            return SortField switch
+            {
+                "CountryName" => "Country.Name",
+                _ => base.MapSortField()
+            };
+        }
     }
 
     public class ExportExcelCityProvinceInputDto : PageCityProvinceInputDto

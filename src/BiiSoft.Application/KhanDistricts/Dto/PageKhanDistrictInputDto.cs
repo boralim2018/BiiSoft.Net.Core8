@@ -13,6 +13,16 @@ namespace BiiSoft.KhanDistricts.Dto
     {
         public FilterInputDto<Guid?> Countries { get; set; }
         public FilterInputDto<Guid?> CityProvinces { get; set; }
+
+        protected override string MapSortField()
+        {
+            return SortField switch
+            {
+                "CountryName" => "Country.Name",
+                "CityProvinceName" => "CityProvince.Name",
+                _ => base.MapSortField()
+            };
+        }
     }
 
     public class ExportExcelKhanDistrictInputDto : PageKhanDistrictInputDto

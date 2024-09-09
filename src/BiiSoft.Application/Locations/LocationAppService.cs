@@ -74,33 +74,36 @@ namespace BiiSoft.Locations
         [AbpAuthorize(PermissionNames.Pages_Find_Locations)]
         public async Task<PagedResultDto<FindLocationDto>> Find(PageLocationInputDto input)
         {
-            var query = from l in _locationRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        select new FindLocationDto
-                        {
-                            Id = l.Id,
-                            Name = l.Name,
-                            DisplayName = l.DisplayName,
-                            IsActive = l.IsActive,
-                        };
+            var query = _locationRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                        
 
             var totalCount = await query.CountAsync();
             var items = new List<FindLocationDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new FindLocationDto
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    DisplayName = l.DisplayName,
+                    IsActive = l.IsActive,
+                });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<FindLocationDto> { TotalCount = totalCount, Items = items };
@@ -109,16 +112,10 @@ namespace BiiSoft.Locations
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_View, PermissionNames.Pages_Setup_Locations_Edit)]
         public async Task<LocationDetailDto> GetDetail(EntityDto<Guid> input)
         {
-            var query = from l in _locationRepository.GetAll()
-                                .AsNoTracking()
-                                .Where(s => s.Id == input.Id)
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new LocationDetailDto
+            var query = _locationRepository.GetAll()
+                        .AsNoTracking()
+                        .Where(s => s.Id == input.Id)
+                        .Select(l => new LocationDetailDto
                         {
                             Id = l.Id,
                             No = l.No,
@@ -131,32 +128,16 @@ namespace BiiSoft.Locations
                             Longitude = l.Longitude,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
+                            CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserId = l.LastModifierUserId,
-                            LastModifierUserName = m == null ? "" : m.UserName
-                        };
+                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
+                        });
 
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
-            var record = await _locationRepository.GetAll()
-                               .AsNoTracking()
-                               .OrderBy(s => s.No)
-                               .GroupBy(s => 1)
-                               .Select(s => new
-                               {
-                                   First = s.Where(r => r.No < result.No).Select(n => new { n.No, n.Id }).OrderBy(o => o.No).FirstOrDefault(),
-                                   Pervious = s.Where(r => r.No < result.No).Select(n => new { n.No, n.Id }).OrderByDescending(o => o.No).FirstOrDefault(),
-                                   Next = s.Where(r => r.No > result.No).Select(n => new { n.No, n.Id }).OrderBy(o => o.No).FirstOrDefault(),
-                                   Last = s.Where(r => r.No > result.No).Select(n => new { n.No, n.Id }).OrderByDescending(o => o.No).FirstOrDefault(),
-                               })
-                               .FirstOrDefaultAsync();
-
-            if (record.First != null) result.FirstId = record.First.Id;
-            if (record.Pervious != null) result.PreviousId = record.Pervious.Id;
-            if (record.Next != null) result.NextId = record.Next.Id;
-            if (record.Last != null) result.LastId = record.Last.Id;
+            await _locationManager.MapNavigation(result);
 
             return result;
         }
@@ -170,50 +151,47 @@ namespace BiiSoft.Locations
 
         private async Task<PagedResultDto<LocationListDto>> GetListHelper(PageLocationInputDto input)
         {
-            var query = from l in _locationRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new LocationListDto
-                        {
-                            Id = l.Id,
-                            No = l.No,
-                            Name = l.Name,
-                            DisplayName = l.DisplayName,
-                            CannotDelete = l.CannotDelete,
-                            CannotEdit = l.CannotEdit,
-                            IsActive = l.IsActive,
-                            Latitude = l.Latitude,
-                            Longitude = l.Longitude,
-                            CreationTime = l.CreationTime,
-                            CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = u.UserName,
-                            LastModifierUserId = u.LastModifierUserId,
-                            LastModificationTime = l.LastModificationTime,
-                            LastModifierUserName = m == null ? "" : m.UserName,
-                        };
+            var query = _locationRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                        
 
             var totalCount = await query.CountAsync();
             var items = new List<LocationListDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new LocationListDto
+                {
+                    Id = l.Id,
+                    No = l.No,
+                    Name = l.Name,
+                    DisplayName = l.DisplayName,
+                    CannotDelete = l.CannotDelete,
+                    CannotEdit = l.CannotEdit,
+                    IsActive = l.IsActive,
+                    Latitude = l.Latitude,
+                    Longitude = l.Longitude,
+                    CreationTime = l.CreationTime,
+                    CreatorUserId = l.CreatorUserId,
+                    CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
+                    LastModificationTime = l.LastModificationTime,
+                    LastModifierUserId = l.LastModifierUserId,
+                    LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
+                });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<LocationListDto> { TotalCount = totalCount, Items = items };

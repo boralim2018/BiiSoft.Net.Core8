@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Abp.Application.Services.Dto;
+using System;
 
 namespace BiiSoft.Dtos
 {
     
-    public abstract class CreatorAuditedDto<TPrimary> : IdentityDot<TPrimary>, ICreatorAuditedDto
+    public abstract class CreatorAuditedDto<TPrimary> : EntityDto<TPrimary>, ICreatorAuditedDto
     {   
         public long? CreatorUserId { get; set; }
         public string CreatorUserName { get; set; }

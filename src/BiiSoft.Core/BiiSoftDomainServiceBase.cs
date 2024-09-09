@@ -11,6 +11,7 @@ using Abp.Timing;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using BiiSoft.Dtos;
+using Abp.Application.Services.Dto;
 
 namespace BiiSoft
 {
@@ -203,10 +204,10 @@ namespace BiiSoft
                                    .GroupBy(s => 1)
                                    .Select(s => new
                                    {
-                                       First = s.Where(r => ((INoEntity)r).No < no).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                       Pervious = s.Where(r => ((INoEntity)r).No < no).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                       Next = s.Where(r => ((INoEntity)r).No > no).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                       Last = s.Where(r => ((INoEntity)r).No > no).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                       First = s.Where(r => ((INoEntity)r).No < no).OrderBy(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
+                                       Pervious = s.Where(r => ((INoEntity)r).No < no).OrderByDescending(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
+                                       Next = s.Where(r => ((INoEntity)r).No > no).OrderBy(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
+                                       Last = s.Where(r => ((INoEntity)r).No > no).OrderByDescending(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
                                    })
                                    .FirstOrDefaultAsync();
 
@@ -217,7 +218,7 @@ namespace BiiSoft
             }
             else if (typeof(TPrimaryKey) == typeof(long) || typeof(TPrimaryKey) == typeof(int))
             {
-                var id = Convert.ToInt64(result.Id);
+                var dto = result as INavigationDto<long>;
 
                 var record = await _repository.GetAll()
                                .AsNoTracking()
@@ -225,17 +226,17 @@ namespace BiiSoft
                                .GroupBy(s => 1)
                                .Select(s => new
                                {
-                                   First = s.Where(r => Convert.ToInt64(r.Id) < id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                   Pervious = s.Where(r => Convert.ToInt64(r.Id) < id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                   Next = s.Where(r => Convert.ToInt64(r.Id) > id).OrderBy(o => o.Id).Select(n => n.Id).FirstOrDefault(),
-                                   Last = s.Where(r => Convert.ToInt64(r.Id) > id).OrderByDescending(o => o.Id).Select(n => n.Id).FirstOrDefault(),
+                                   First = s.Where(r => ((IEntity<long>) r).Id < dto.Id).OrderBy(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
+                                   Pervious = s.Where(r => ((IEntity<long>) r).Id < dto.Id).OrderByDescending(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
+                                   Next = s.Where(r => ((IEntity<long>) r).Id > dto.Id).OrderBy(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
+                                   Last = s.Where(r => ((IEntity<long>) r).Id > dto.Id).OrderByDescending(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
                                })
                                .FirstOrDefaultAsync();
 
-                if (record != null && Convert.ToInt64(record.First) > 0) result.FirstId = record.First;
-                if (record != null && Convert.ToInt64(record.Pervious) > 0) result.PreviousId = record.Pervious;
-                if (record != null && Convert.ToInt64(record.Next) > 0) result.NextId = record.Next;
-                if (record != null && Convert.ToInt64(record.Last) > 0) result.LastId = record.Last;
+                if (record != null && record.First > 0) dto.FirstId = record.First;
+                if (record != null && record.Pervious > 0) dto.PreviousId = record.Pervious;
+                if (record != null && record.Next > 0) dto.NextId = record.Next;
+                if (record != null && record.Last > 0) dto.LastId = record.Last;
             }
 
         }

@@ -108,6 +108,9 @@ namespace BiiSoft
 
     }
 
+    /// <summary>
+    /// Base Excel class provide a method to export data into excel table
+    /// </summary>
     public abstract class BiiSoftExcelAppServiceBase : BiiSoftAppServiceBase
     {
         protected readonly IFileStorageManager _fileStorageManager;
