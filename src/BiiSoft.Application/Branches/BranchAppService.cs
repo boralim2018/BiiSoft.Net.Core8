@@ -91,36 +91,39 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Find_Branches)]
         public async Task<PagedResultDto<FindBranchDto>> Find(PageBranchInputDto input)
         {
-            var query = from l in _branchRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        select new FindBranchDto
-                        {
-                            Id = l.Id,
-                            Name = l.Name,
-                            DisplayName = l.DisplayName,
-                            BusinessId = l.BusinessId,
-                            PhoneNumber = l.PhoneNumber,  
-                            IsActive = l.IsActive,
-                            IsDefault = l.IsDefault                            
-                        };
+            var query = _branchRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                       
 
             var totalCount = await query.CountAsync();
             var items = new List<FindBranchDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new FindBranchDto
+                {
+                    Id = l.Id,
+                    Name = l.Name,
+                    DisplayName = l.DisplayName,
+                    BusinessId = l.BusinessId,
+                    PhoneNumber = l.PhoneNumber,
+                    IsActive = l.IsActive,
+                    IsDefault = l.IsDefault
+                 });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<FindBranchDto> { TotalCount = totalCount, Items = items };
@@ -199,24 +202,7 @@ namespace BiiSoft.Branches
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
-            var record = await _branchRepository.GetAll()
-                               .AsNoTracking()
-                               .Where(s => s.Id != result.Id)
-                               .GroupBy(s => 1)
-                               .Select(s => new
-                               {
-                                    First = s.Where(r => r.No < result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
-                                    Pervious = s.Where(r => r.No < result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
-                                    Next = s.Where(r => r.No > result.No).OrderBy(o => o.No).Select(s => s.Id).FirstOrDefault(),
-                                    Last = s.Where(r => r.No > result.No).OrderByDescending(o => o.No).Select(s => s.Id).FirstOrDefault(),
-                               })
-                               .FirstOrDefaultAsync();
-
-            if (record != null && record.First != Guid.Empty) result.FirstId = record.First;
-            if (record != null && record.Pervious != Guid.Empty) result.PreviousId = record.Pervious;
-            if (record != null && record.Next != Guid.Empty) result.NextId = record.Next;
-            if (record != null && record.Last != Guid.Empty) result.LastId = record.Last;
-
+            await _branchManager.MapNavigation(result);
 
             return result;
         }
@@ -232,60 +218,49 @@ namespace BiiSoft.Branches
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
 
-            var query = from l in _branchRepository.GetAll()
-                                .AsNoTracking()
-                                .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                                .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                                    (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                                    (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                                .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                                    (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                                    (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                                    s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                                    s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))
-                        join u in _userRepository.GetAll().AsNoTracking()
-                        on l.CreatorUserId equals u.Id
-                        join m in _userRepository.GetAll().AsNoTracking()
-                        on l.LastModifierUserId equals m.Id
-                        into modify
-                        from m in modify.DefaultIfEmpty()
-                        select new BranchListDto
-                        {
-                            Id = l.Id,
-                            No = l.No,
-                            Name = l.Name,
-                            DisplayName = l.DisplayName,
-                            BusinessId = l.BusinessId,
-                            PhoneNumber = l.PhoneNumber,
-                            Email = l.Email,
-                            Website = l.Website,
-                            TaxRegistrationNumber = l.TaxRegistrationNumber,
-                            IsDefault = l.IsDefault,
-                            IsActive = l.IsActive,
-                            CreationTime = l.CreationTime,
-                            CreatorUserId = l.CreatorUserId,
-                            CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
-                            LastModifierUserId = l.LastModifierUserId,
-                            LastModificationTime = l.LastModificationTime,
-                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
-                            CountryName = !l.BillingAddress.CountryId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.Country.Name : l.BillingAddress.Country.DisplayName,
-                            CityProvinceName = !l.BillingAddress.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.CityProvince.Name : l.BillingAddress.CityProvince.DisplayName,
-                            KhanDistrictName = !l.BillingAddress.KhanDistrictId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.KhanDistrict.Name : l.BillingAddress.KhanDistrict.DisplayName,
-                            SangkatCommuneName = !l.BillingAddress.SangkatCommuneId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.SangkatCommune.Name : l.BillingAddress.SangkatCommune.DisplayName,
-                            VillageName = !l.BillingAddress.VillageId.HasValue ? "" : isDefaultLanguage ? l.BillingAddress.Village.Name : l.BillingAddress.Village.DisplayName,
-                            PostalCode = l.BillingAddress.PostalCode,
-                            Street = l.BillingAddress.Street,
-                            HouseNo = l.BillingAddress.HouseNo
-                        };
+            var query = _branchRepository.GetAll()
+                        .AsNoTracking()
+                        .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
+                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
+                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
+                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                      
 
             var totalCount = await query.CountAsync();
             var items = new List<BranchListDto>();
             if (totalCount > 0)
             {
-                query = query.OrderBy(input.GetOrdering());
-                if (input.UsePagination) query = query.PageBy(input);
-                items = await query.ToListAsync();
+                var selectQuery = query.OrderBy(input.GetOrdering())
+                .Select(l => new BranchListDto
+                {
+                    Id = l.Id,
+                    No = l.No,
+                    Name = l.Name,
+                    DisplayName = l.DisplayName,
+                    BusinessId = l.BusinessId,
+                    PhoneNumber = l.PhoneNumber,
+                    Email = l.Email,
+                    Website = l.Website,
+                    TaxRegistrationNumber = l.TaxRegistrationNumber,
+                    IsDefault = l.IsDefault,
+                    IsActive = l.IsActive,
+                    CreationTime = l.CreationTime,
+                    CreatorUserId = l.CreatorUserId,
+                    CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
+                    LastModifierUserId = l.LastModifierUserId,
+                    LastModificationTime = l.LastModificationTime,
+                    LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : ""            
+                });
+
+                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
+
+                items = await selectQuery.ToListAsync();
             }
 
             return new PagedResultDto<BranchListDto> { TotalCount = totalCount, Items = items };

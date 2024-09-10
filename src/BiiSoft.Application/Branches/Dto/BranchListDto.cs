@@ -12,13 +12,5 @@ namespace BiiSoft.Branches.Dto
         public string Email { get; set; }
         public string Website { get; set; }
         public string TaxRegistrationNumber { get; set; }
-        public string CountryName { get; set; }
-        public string CityProvinceName { get; set; }
-        public string KhanDistrictName { get; set; }
-        public string SangkatCommuneName { get; set; }
-        public string VillageName { get; set; }
-        public string PostalCode { get; set; }
-        public string Street { get; set; }
-        public string HouseNo { get; set; }
     }
 }
