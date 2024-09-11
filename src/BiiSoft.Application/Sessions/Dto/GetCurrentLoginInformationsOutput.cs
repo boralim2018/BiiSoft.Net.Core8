@@ -23,6 +23,7 @@ namespace BiiSoft.Sessions.Dto
 
         public int RoundTotalDigits { get; set; }
         public int RoundCostDigits { get; set; }
+        public AddressLevel ContactAddressLevel { get; set; }
     }
 
     public class AdvanceSettingDto
@@ -32,6 +33,5 @@ namespace BiiSoft.Sessions.Dto
         public bool LineDiscountEnable { get; set; }
         public bool TotalDiscountEnable { get; set; }
         public bool ClassEnable { get; set; }
-        public AddressLevel ContactAddressLevel { get; set; }
     }
 }

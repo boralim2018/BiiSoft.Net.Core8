@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BiiSoft.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,6 @@ namespace BiiSoft.CompanySettings.Dto
 
         public int RoundTotalDigits { get; set; }
         public int RoundCostDigits { get; set; }
+        public AddressLevel ContactAddressLevel { get; set; }
     }
 }

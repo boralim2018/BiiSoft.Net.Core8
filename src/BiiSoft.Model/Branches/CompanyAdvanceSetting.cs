@@ -23,10 +23,7 @@ namespace BiiSoft.Branches
         public bool ClassEnable { get; protected set; }
         public void EnableClass(bool enable) => ClassEnable = enable;
 
-        public AddressLevel ContactAddressLevel { get; protected set; }
-        public void SetAddressLevel(AddressLevel addressLevel) => ContactAddressLevel = addressLevel;
-
-
+       
         public static CompanyAdvanceSetting Create(
             int tenantId,
             long? userId,
@@ -34,8 +31,7 @@ namespace BiiSoft.Branches
             bool multiCurrencyEnable,
             bool lineDiscountEnable,
             bool totalDiscountEnable,
-            bool classEnable,
-            AddressLevel contactAddressLevel)
+            bool classEnable)
         {
             return new CompanyAdvanceSetting
             {
@@ -46,8 +42,7 @@ namespace BiiSoft.Branches
                 MultiCurrencyEnable = multiCurrencyEnable,
                 LineDiscountEnable = lineDiscountEnable,
                 TotalDiscountEnable = totalDiscountEnable,
-                ClassEnable = classEnable,
-                ContactAddressLevel = contactAddressLevel
+                ClassEnable = classEnable
             };
         }
 
@@ -57,8 +52,7 @@ namespace BiiSoft.Branches
             bool multiCurrencyEnable,
             bool lineDiscountEnable,
             bool totalDiscountEnable,
-            bool classEnable,
-            AddressLevel contactAddressLevel)
+            bool classEnable)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -67,7 +61,6 @@ namespace BiiSoft.Branches
             LineDiscountEnable = lineDiscountEnable;
             TotalDiscountEnable = totalDiscountEnable;
             ClassEnable = classEnable;
-            ContactAddressLevel = contactAddressLevel;
         }
     }
 }

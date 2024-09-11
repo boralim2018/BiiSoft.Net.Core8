@@ -25,12 +25,12 @@ namespace BiiSoft.Branches
 
         protected override CompanyGeneralSetting CreateInstance(CompanyGeneralSetting input)
         {
-            return CompanyGeneralSetting.Create(input.TenantId, input.CreatorUserId, input.CountryId, input.DefaultTimeZone, input.CurrencyId, input.BusinessStartDate, input.RoundTotalDigits, input.RoundCostDigits);
+            return CompanyGeneralSetting.Create(input.TenantId, input.CreatorUserId, input.CountryId, input.DefaultTimeZone, input.CurrencyId, input.BusinessStartDate, input.RoundTotalDigits, input.RoundCostDigits, input.ContactAddressLevel);
         }
 
         protected override void UpdateInstance(CompanyGeneralSetting input, CompanyGeneralSetting entity)
         {
-            entity.Update(input.LastModifierUserId, input.CountryId, input.DefaultTimeZone, input.CurrencyId, input.BusinessStartDate, input.RoundTotalDigits, input.RoundCostDigits);
+            entity.Update(input.LastModifierUserId, input.CountryId, input.DefaultTimeZone, input.CurrencyId, input.BusinessStartDate, input.RoundTotalDigits, input.RoundCostDigits, input.ContactAddressLevel);
         }
 
         protected override async Task ValidateInputAsync(CompanyGeneralSetting input)

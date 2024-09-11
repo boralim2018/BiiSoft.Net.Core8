@@ -245,7 +245,8 @@ namespace BiiSoft.Branches
                 DefaultTimeZone = s.DefaultTimeZone,
                 BusinessStartDate = s.BusinessStartDate,               
                 RoundTotalDigits = s.RoundTotalDigits,
-                RoundCostDigits = s.RoundCostDigits
+                RoundCostDigits = s.RoundCostDigits,
+                ContactAddressLevel = s.ContactAddressLevel
             })
             .FirstOrDefaultAsync();
 
@@ -257,8 +258,7 @@ namespace BiiSoft.Branches
                 MultiCurrencyEnable = s.MultiCurrencyEnable,
                 LineDiscountEnable = s.LineDiscountEnable,
                 TotalDiscountEnable = s.TotalDiscountEnable,
-                ClassEnable = s.ClassEnable,
-                ContactAddressLevel = s.ContactAddressLevel                            
+                ClassEnable = s.ClassEnable
             })
             .FirstOrDefaultAsync();
 

@@ -185,7 +185,7 @@ namespace BiiSoft.MultiTenancy
             var findGeneral = await _companyGeneralSettingRepository.GetAll().AsNoTracking().AnyAsync();
             if (!findGeneral)
             {
-                var genralSetting = CompanyGeneralSetting.Create(tenantId, userId, null, "", null, null, 2, 2);
+                var genralSetting = CompanyGeneralSetting.Create(tenantId, userId, null, "", null, null, 2, 2, AddressLevel.L1);
                 await _companyGeneralSettingRepository.InsertAsync(genralSetting);
             }
 
@@ -194,7 +194,7 @@ namespace BiiSoft.MultiTenancy
             {
                 var multiBranchEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_Branches);
                 var multiCurrencyEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_MultiCurrencies);
-                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false, Enums.AddressLevel.L1);
+                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false);
                 await _companyAdvanceSettingRepository.InsertAsync(advanceSetting);
             }
 

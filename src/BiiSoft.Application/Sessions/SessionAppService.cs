@@ -53,7 +53,8 @@ namespace BiiSoft.Sessions
                                                CurrencyCode = s.CurrencyId.HasValue ? s.Currency.Code : "",
                                                BusinessStartDate = s.BusinessStartDate,
                                                RoundCostDigits = s.RoundCostDigits,
-                                               RoundTotalDigits = s.RoundTotalDigits
+                                               RoundTotalDigits = s.RoundTotalDigits,
+                                               ContactAddressLevel = s.ContactAddressLevel
                                            })
                                            .FirstAsync();
 
@@ -65,8 +66,7 @@ namespace BiiSoft.Sessions
                                                MultiCurrencyEnable = s.MultiCurrencyEnable,
                                                LineDiscountEnable = s.LineDiscountEnable,
                                                TotalDiscountEnable = s.TotalDiscountEnable,
-                                               ClassEnable = s.ClassEnable,
-                                               ContactAddressLevel = s.ContactAddressLevel
+                                               ClassEnable = s.ClassEnable
                                            })
                                            .FirstAsync();
 

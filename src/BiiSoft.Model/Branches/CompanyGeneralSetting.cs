@@ -5,7 +5,7 @@ using System;
 using Abp.Domain.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 using BiiSoft.Locations;
-using System.ComponentModel;
+using BiiSoft.Enums;
 
 namespace BiiSoft.Branches
 {
@@ -23,7 +23,10 @@ namespace BiiSoft.Branches
 
         public int RoundTotalDigits { get; protected set; }
         public int RoundCostDigits { get; protected set; }
-       
+
+        public AddressLevel ContactAddressLevel { get; protected set; }
+        public void SetAddressLevel(AddressLevel addressLevel) => ContactAddressLevel = addressLevel;
+
         /*** required one default branch ***/
 
         public static CompanyGeneralSetting Create(
@@ -34,7 +37,8 @@ namespace BiiSoft.Branches
             long? currencyId,
             DateTime? businessStartDate,
             int roundTotalDigits,
-            int roundCostDigts)
+            int roundCostDigts,
+            AddressLevel contactAddressLevel)
         {
             return new CompanyGeneralSetting
             {
@@ -46,7 +50,8 @@ namespace BiiSoft.Branches
                 CurrencyId = currencyId,
                 BusinessStartDate = businessStartDate,
                 RoundTotalDigits = roundTotalDigits,
-                RoundCostDigits = roundCostDigts
+                RoundCostDigits = roundCostDigts,
+                ContactAddressLevel = contactAddressLevel
             };
         }
 
@@ -57,7 +62,8 @@ namespace BiiSoft.Branches
             long? currencyId,
             DateTime? businessStartDate,
             int roundTotalDigits,
-            int roundCostDigts)
+            int roundCostDigts,
+            AddressLevel contactAddressLevel)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -67,6 +73,7 @@ namespace BiiSoft.Branches
             BusinessStartDate = businessStartDate;
             RoundTotalDigits = roundTotalDigits;
             RoundCostDigits = roundCostDigts;
+            ContactAddressLevel = contactAddressLevel;
         }
 
     }

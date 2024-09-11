@@ -15,6 +15,5 @@ namespace BiiSoft.CompanySettings.Dto
         public bool LineDiscountEnable { get; set; }
         public bool TotalDiscountEnable { get; set; }
         public bool ClassEnable { get; set; }
-        public AddressLevel ContactAddressLevel { get; set; }
     }
 }
