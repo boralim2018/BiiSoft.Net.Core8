@@ -18,6 +18,7 @@ using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.Countries.Dto;
 using BiiSoft.Entities;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Countries
 {

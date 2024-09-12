@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BiiSoft.Enums;
 using Abp.UI;
 using BiiSoft.Extensions;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.BFiles
 {
@@ -16,19 +17,13 @@ namespace BiiSoft.BFiles
         {
         }
 
-        [UnitOfWork(IsDisabled = true)]
         public async Task<BFile> Upload(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName)
         {
 
             var path = BuildPath(tenatId, file);
-
-            //C://Zobookk/zobookk-resources/Documents/Tenant_1/2022_06
-            //var folderToSave = Path.Combine(Directory.GetCurrentDirectory(), BiiSoftConsts.ResourcesFolder, path.FolderName);
             var folderToSave = Path.Combine(BiiSoftConsts.ResourcesFolder, path.FolderName);
             Directory.CreateDirectory(folderToSave);
-
-            //C://Zobookk/zobookk-resources/Documents/Tenant_1/2022_06/0000-0000-0000-0000-0000.jpg
-            //var fullPath = Path.Combine(Directory.GetCurrentDirectory(), BiiSoftConsts.ResourcesFolder, path.FilePath);            
+                        
             var fullPath = Path.Combine(BiiSoftConsts.ResourcesFolder, path.FilePath);            
 
             using (var stream = new FileStream(fullPath, FileMode.Create))
@@ -52,34 +47,19 @@ namespace BiiSoft.BFiles
             
         }
 
-        [UnitOfWork(IsDisabled = true)]
         public async Task<BFile> UploadImage(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName, int resizeMaxWidth)
         {
             var imageExtension = Path.GetExtension(file.FileName).Replace(".","").ToLowerInvariant();
             if (!BiiSoftConsts.ImageMineTypes.ContainsKey(imageExtension)) throw new UserFriendlyException("InvalidImage");
 
-            //Stream saveStream = file.OpenReadStream();
-
-            //if (SKEncodedImageFormatDic.ContainsKey(imageExtension))
-            //{
-            //    saveStream = saveStream.ToFixed(resizeMaxWidth, SKEncodedImageFormatDic[imageExtension]);
-            //}
-
             var path = BuildPath(tenatId, file);
-
-            //C://Zobookk/zobookk-resources/Documents/Tenant_1/2022_06
-            //var folderToSave = Path.Combine(Directory.GetCurrentDirectory(), BiiSoftConsts.ResourcesFolder, path.FolderName);
             var folderToSave = Path.Combine(BiiSoftConsts.ResourcesFolder, path.FolderName);
             Directory.CreateDirectory(folderToSave);
-
-            //C://Zobookk/zobookk-resources/Documents/Tenant_1/2022_06/0000-0000-0000-0000-0000.jpg
-            //var fullPath = Path.Combine(Directory.GetCurrentDirectory(), BiiSoftConsts.ResourcesFolder, path.FilePath);            
             var fullPath = Path.Combine(BiiSoftConsts.ResourcesFolder, path.FilePath);
 
             using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
-                //await saveStream.CopyToAsync(stream);
             }
 
             var gallery = BFile.Create(
@@ -98,10 +78,11 @@ namespace BiiSoft.BFiles
 
         }
 
-        [UnitOfWork(IsDisabled = true)]
         public async Task<BFileDownloadOutput> Download(string mainFolderName, string storageFilePath, string contentType)
         {
             var fullPath = Path.Combine(Directory.GetCurrentDirectory(), mainFolderName, storageFilePath);
+
+            if (!File.Exists(fullPath)) return null;
             
             var memory = new MemoryStream();
 
@@ -118,7 +99,6 @@ namespace BiiSoft.BFiles
             };
         }
 
-        [UnitOfWork(IsDisabled = true)]
         public async Task<bool> Delete(string mainFolderName, string storageFilePath)
         {
             return await Task.Run(() => {

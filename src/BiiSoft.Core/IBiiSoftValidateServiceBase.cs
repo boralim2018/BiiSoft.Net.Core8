@@ -1,6 +1,6 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Services;
-using BiiSoft.BFiles;
+using BiiSoft.BFiles.Dto;
 using BiiSoft.Dtos;
 using BiiSoft.Entities;
 using Microsoft.AspNetCore.Identity;

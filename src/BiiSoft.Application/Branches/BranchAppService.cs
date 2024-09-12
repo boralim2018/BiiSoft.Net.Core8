@@ -19,6 +19,7 @@ using System.Transactions;
 using BiiSoft.ContactInfo;
 using BiiSoft.ContactInfo.Dto;
 using BiiSoft.Entities;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Branches
 {

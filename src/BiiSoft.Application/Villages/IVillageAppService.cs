@@ -1,6 +1,7 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using BiiSoft.BFiles;
+using BiiSoft.BFiles.Dto;
 using BiiSoft.Villages.Dto;
 using System;
 using System.Collections.Generic;

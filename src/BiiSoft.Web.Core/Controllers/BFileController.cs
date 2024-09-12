@@ -11,6 +11,8 @@ using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Domain.Uow;
 using System.Linq;
 using BiiSoft.Authorization;
+using BiiSoft.BFiles.Dto;
+using Amazon.Runtime.Internal.Util;
 
 namespace BiiSoft.Web.Controllers
 {
@@ -34,6 +36,8 @@ namespace BiiSoft.Web.Controllers
             {
                 var bFile = await _bFileManager.DownLoad(AbpSession.TenantId, id);
 
+                if (bFile == null) return null;
+
                 return File(bFile.Stream, bFile.ContentType, fileDownloadName: bFile.FileName);
             }
             catch (UserFriendlyException ex)
@@ -46,7 +50,6 @@ namespace BiiSoft.Web.Controllers
             }
         }
 
-        [AbpMvcAuthorize]
         [DisableAuditing]
         [UnitOfWork(IsDisabled = true)]
         public async Task<BFileUploadOutput> Upload(FileUploadInput input)

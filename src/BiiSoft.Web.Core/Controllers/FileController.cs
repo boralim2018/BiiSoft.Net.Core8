@@ -7,11 +7,11 @@ using Abp.UI;
 using BiiSoft.FileStorages;
 using BiiSoft.Controllers;
 using BiiSoft.Folders;
-using BiiSoft.BFiles;
 using Abp.Authorization;
 using Abp.Web.Models;
 using System.IO;
 using AngleSharp.Common;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Web.Controllers
 {

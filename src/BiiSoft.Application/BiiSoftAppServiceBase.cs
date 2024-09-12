@@ -12,7 +12,6 @@ using Abp.Localization;
 using BiiSoft.Entities;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using BiiSoft.BFiles;
 using OfficeOpenXml;
 using BiiSoft.Columns;
 using System.Linq;
@@ -20,6 +19,7 @@ using Abp.Extensions;
 using BiiSoft.Extensions;
 using BiiSoft.Folders;
 using BiiSoft.FileStorages;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft
 {

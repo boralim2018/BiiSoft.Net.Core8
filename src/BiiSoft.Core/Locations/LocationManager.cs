@@ -12,10 +12,10 @@ using System.Transactions;
 using BiiSoft.FileStorages;
 using BiiSoft.Extensions;
 using BiiSoft.Entities;
-using BiiSoft.BFiles;
 using BiiSoft.Columns;
 using OfficeOpenXml;
 using BiiSoft.Folders;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Locations
 {

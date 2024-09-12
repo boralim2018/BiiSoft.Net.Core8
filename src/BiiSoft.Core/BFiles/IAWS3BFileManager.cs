@@ -1,5 +1,6 @@
 ﻿using Abp.Dependency;
 using Abp.Domain.Services;
+using BiiSoft.BFiles.Dto;
 using BiiSoft.Enums;
 using Microsoft.AspNetCore.Http;
 using System;

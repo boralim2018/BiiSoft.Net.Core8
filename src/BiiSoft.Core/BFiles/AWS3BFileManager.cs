@@ -17,6 +17,8 @@ using BiiSoft.Enums;
 using BiiSoft.Extensions;
 using BiiSoft;
 using System.Collections.Generic;
+using Amazon.S3.Util;
+using BiiSoft.BFiles.Dto;
 
 namespace CorarlERP.FileUploads
 {
@@ -34,10 +36,8 @@ namespace CorarlERP.FileUploads
         public string AWSAccessKey => _appConfiguration["AWS:S3:AccessKey"];
         public string AWSSecretKey => _appConfiguration["AWS:S3:SecretKey"];
         public string AWSRegion => _appConfiguration["AWS:S3:Region"];
-        public string AWSSessionToken => _appConfiguration["AWS:SessionToken"];
         public string AWSBucketName => _appConfiguration["AWS:S3:BucketNameUpload"];
 
-        [UnitOfWork(IsDisabled = true)]
         public async Task<BFile> Upload(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName)
         {
             var imageExtension = Path.GetExtension(file.FileName).Replace(".", "").ToLowerInvariant();
@@ -72,18 +72,12 @@ namespace CorarlERP.FileUploads
 
         }
 
-        [UnitOfWork(IsDisabled = true)]
         public async Task<BFile> UploadImage(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName, int resizeMaxWidth)
         {
             var imageExtension = Path.GetExtension(file.FileName).Replace(".", "").ToLowerInvariant();
             if (!BiiSoftConsts.ImageMineTypes.ContainsKey(imageExtension)) throw new UserFriendlyException("InvalidImage");
 
             Stream saveStream =  file.OpenReadStream();
-
-            //if (SKEncodedImageFormatDic.ContainsKey(imageExtension))
-            //{
-            //    saveStream = saveStream.ToFixed(resizeMaxWidth, SKEncodedImageFormatDic[imageExtension]);
-            //}
 
             var path = BuildPath(tenatId, file);
             var bucketName = this.AWSBucketName;
@@ -116,8 +110,6 @@ namespace CorarlERP.FileUploads
         }
 
 
-
-        [UnitOfWork(IsDisabled = true)]
         public async Task<BFileDownloadOutput> Download(string mainFolderName, string storageFilePath, string contentType)
         {
             await CheckS3Bucket(mainFolderName);
@@ -133,7 +125,7 @@ namespace CorarlERP.FileUploads
 
         private async Task CheckS3Bucket(string bucketName)
         {
-            var bucketExists = await _s3Client.DoesS3BucketExistAsync(bucketName);
+            var bucketExists = await  AmazonS3Util.DoesS3BucketExistV2Async(_s3Client, bucketName);
             if (!bucketExists) throw new UserFriendlyException("MainFolderNotExists"); 
         }
 

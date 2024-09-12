@@ -17,6 +17,7 @@ using BiiSoft.Authorization.Users;
 using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Entities;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Currencies
 {

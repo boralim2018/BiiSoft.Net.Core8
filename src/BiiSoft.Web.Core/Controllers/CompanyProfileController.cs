@@ -9,6 +9,7 @@ using Abp.Timing;
 using Abp.UI;
 using BiiSoft.Authorization;
 using BiiSoft.BFiles;
+using BiiSoft.BFiles.Dto;
 using BiiSoft.Controllers;
 using BiiSoft.MultiTenancy;
 using BiiSoft.MultiTenancy.Dto;

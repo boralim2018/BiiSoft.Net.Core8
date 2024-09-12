@@ -11,9 +11,9 @@ using System.Transactions;
 using BiiSoft.Extensions;
 using BiiSoft.Entities;
 using BiiSoft.Folders;
-using BiiSoft.BFiles;
 using OfficeOpenXml;
 using BiiSoft.Columns;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Locations
 {

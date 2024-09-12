@@ -15,10 +15,10 @@ using Abp.Extensions;
 using BiiSoft.ContactInfo;
 using BiiSoft.Entities;
 using BiiSoft.Folders;
-using BiiSoft.BFiles;
 using OfficeOpenXml;
 using BiiSoft.Columns;
 using BiiSoft.MultiTenancy;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Branches
 {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using BiiSoft.Auditing.Dto;
-using BiiSoft.BFiles;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Auditing
 {

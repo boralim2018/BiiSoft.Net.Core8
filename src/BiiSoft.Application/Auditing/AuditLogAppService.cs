@@ -18,10 +18,10 @@ using Abp.Collections.Extensions;
 using OfficeOpenXml;
 using BiiSoft.Folders;
 using Abp.UI;
-using BiiSoft.BFiles;
 using BiiSoft.FileStorages;
 using BiiSoft.Columns;
 using Abp.EntityFrameworkCore.Repositories;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Auditing
 {

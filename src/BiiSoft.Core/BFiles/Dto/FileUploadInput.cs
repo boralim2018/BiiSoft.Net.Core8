@@ -1,6 +1,6 @@
 ﻿using BiiSoft.Enums;
 
-namespace BiiSoft.BFiles
+namespace BiiSoft.BFiles.Dto
 {
     public class FileUploadInput
     {

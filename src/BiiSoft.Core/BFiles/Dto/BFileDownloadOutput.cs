@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace BiiSoft.BFiles
+namespace BiiSoft.BFiles.Dto
 {
     public class BFileDownloadOutput
     {

@@ -13,6 +13,7 @@ using Abp.Domain.Repositories;
 using BiiSoft.Configuration;
 using BiiSoft.Enums;
 using Microsoft.EntityFrameworkCore;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.BFiles
 {
@@ -23,6 +24,7 @@ namespace BiiSoft.BFiles
         private readonly ILocalBFileManager _localBFileManager;
         private readonly IAWS3BFileManager _aws3BFileManager;
         private readonly IConfigurationRoot _appConfiguration;
+        private readonly bool AwsS3Enable;
 
         public BFileManager()
         {
@@ -31,9 +33,9 @@ namespace BiiSoft.BFiles
             _bFileRepository = IocManager.Instance.Resolve<IRepository<BFile, Guid>>();
             _localBFileManager = IocManager.Instance.Resolve<ILocalBFileManager>();
             _aws3BFileManager = IocManager.Instance.Resolve<IAWS3BFileManager>();
-        }
 
-        public bool AwsS3Enable => _appConfiguration["AWS:S3:Enable"].ToLower() == "true";
+            AwsS3Enable = _appConfiguration["AWS:S3:Enable"].ToLower() == "true";
+        }
 
         [UnitOfWork(IsDisabled = true)]
         public async Task<BFileUploadOutput> Upload(int? tenantId, long curentUserId, UploadSource uploadSource, IFormFile file, string diplayName)
@@ -52,7 +54,7 @@ namespace BiiSoft.BFiles
 
             try
             {
-                await SaveFileHelper(tenantId, bFile);
+                await CreateFileAsync(tenantId, bFile);
             }
             catch (Exception ex)
             {
@@ -76,6 +78,22 @@ namespace BiiSoft.BFiles
             };
         }
 
+        private async Task<BFile> CreateFileAsync(int? tenantId, BFile file)
+        {
+            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(tenantId))
+                {
+                    await _bFileRepository.InsertAsync(file);
+                }
+
+               await uow.CompleteAsync();
+            }
+
+            return file;
+        }
+
+
         [UnitOfWork(IsDisabled = true)]
         public async Task<BFileUploadOutput> UploadImage(int? tenantId, long curentUserId, UploadSource uploadSource, IFormFile file, string diplayName, int resizeMaxWidth)
         {
@@ -93,7 +111,7 @@ namespace BiiSoft.BFiles
 
             try
             {
-                await SaveFileHelper(tenantId, bFile);
+                await CreateFileAsync(tenantId, bFile);
             }
             catch (Exception ex)
             {
@@ -117,63 +135,25 @@ namespace BiiSoft.BFiles
             };
         }
 
-
-        private string GetFileSizeInBytes(long TotalBytes)
-        {
-            return "";
-            //return ByteSize.FromBytes(TotalBytes).ToString();
-
-            // 1 MB //if (TotalBytes >= 1073741824) //Giga Bytes
-            //{
-            // Decimal FileSize = Decimal.Divide(TotalBytes, 1073741824);
-            // return String.Format("{0:##.#} GB", FileSize);
-            //}
-            //else if (TotalBytes >= 1048576) //Mega Bytes
-            //{
-            // Decimal FileSize = Decimal.Divide(TotalBytes, 1048576);
-            // return String.Format("{0:##.#} MB", FileSize);
-            //}
-            //else if (TotalBytes >= 1024) //Kilo Bytes
-            //{
-            // Decimal FileSize = Decimal.Divide(TotalBytes, 1024);
-            // return String.Format("{0:##.#} KB", FileSize);
-            //}
-            //else if (TotalBytes > 0)
-            //{
-            // Decimal FileSize = TotalBytes;
-            // return String.Format("{0:##.#} Bytes", FileSize);
-            //}
-            //else
-            //{
-            // return "0 Bytes";
-            //}
-
-        }
-
-        [UnitOfWork(IsDisabled = true)]
-        private async Task<BFile> SaveFileHelper(int? tenantId, BFile bFile)
+        private async Task<BFile> GetFileAsync(int? tenantId, Guid fileId)
         {
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
                 using (_unitOfWorkManager.Current.SetTenantId(tenantId))
                 {
-                    await _bFileRepository.InsertAsync(bFile);
-                    await _unitOfWorkManager.Current.SaveChangesAsync();
+                    return await _bFileRepository.GetAll().AsNoTracking().FirstOrDefaultAsync(s => s.Id == fileId);
                 }
-                await uow.CompleteAsync();
             }
-
-            return bFile;
         }
-
 
         [UnitOfWork(IsDisabled = true)]
         public async Task Delete(int? tenantId, Guid fileId)
         {
+            var bFile = await GetFileAsync(tenantId, fileId);
+            if (bFile == null) return;
+
             try
             {
-                var bFile = await GetFileHelper(tenantId, fileId);
-
                 if (bFile.FileStorage == FileStorage.AWS)
                 {
                     await _aws3BFileManager.Delete(bFile.StorageFolder, bFile.FilePath);
@@ -192,57 +172,35 @@ namespace BiiSoft.BFiles
                     await uow.CompleteAsync();
                 }
             }
-            catch (UserFriendlyException ex)
-            {
-                throw ex;
-            }
             catch (Exception ex)
             {
                 throw new UserFriendlyException(ex.Message);
             }
         }
 
-
         [UnitOfWork(IsDisabled = true)]
-        public async Task<BFileDownloadOutput> DownLoad(int? tenantId, Guid id)
+        public async Task<BFileDownloadOutput> DownLoad(int? tenantId, Guid fileId)
         {
-            var bFile = await GetFileHelper(tenantId, id);
+            var bFile = await GetFileAsync(tenantId, fileId);
 
-            BFileDownloadOutput galleryFile = null;
+            if (bFile == null) return null;
+
+            BFileDownloadOutput result = null;
 
             if (bFile.FileStorage == FileStorage.AWS)
             {
-                galleryFile = await _aws3BFileManager.Download(bFile.StorageFolder, bFile.FilePath, bFile.FileType);
+                result = await _aws3BFileManager.Download(bFile.StorageFolder, bFile.FilePath, bFile.FileType);
             }
             else if (bFile.FileStorage == FileStorage.Local)
             {
-                galleryFile = await _localBFileManager.Download(bFile.StorageFolder, bFile.FilePath, bFile.FileType);
+                result = await _localBFileManager.Download(bFile.StorageFolder, bFile.FilePath, bFile.FileType);
             }
-            else
-            {
-                throw new UserFriendlyException("FileNotFound");
-            }
+           
+            if(result != null)  result.FileName = bFile.DisplayName;
 
-            galleryFile.FileName = bFile.DisplayName;
-
-            return galleryFile;
+            return result;
         }
 
-        [UnitOfWork(IsDisabled = true)]
-        private async Task<BFile> GetFileHelper(int? tenantId, Guid id)
-        {
-            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
-            {
-                using (_unitOfWorkManager.Current.SetTenantId(tenantId))
-                {
-                    var bFile = await _bFileRepository.GetAll().AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
-
-                    if (bFile == null) throw new UserFriendlyException("RecordNotFound");
-
-                    return bFile;
-                }
-            }
-        }
 
     }
 }

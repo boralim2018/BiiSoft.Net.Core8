@@ -18,6 +18,7 @@ using System.Transactions;
 using BiiSoft.Locations;
 using BiiSoft.CityProvinces.Dto;
 using BiiSoft.Entities;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.CityProvinces
 {

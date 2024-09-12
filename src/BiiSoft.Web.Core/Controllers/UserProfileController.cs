@@ -18,6 +18,7 @@ using Abp.Web.Models;
 using BiiSoft.Authorization;
 using BiiSoft.Authorization.Users;
 using BiiSoft.BFiles;
+using BiiSoft.BFiles.Dto;
 using BiiSoft.Controllers;
 using BiiSoft.Users.Profiles.Dto;
 

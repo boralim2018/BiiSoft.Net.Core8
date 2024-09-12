@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using System.Transactions;
 using BiiSoft.Extensions;
 using BiiSoft.Entities;
-using BiiSoft.BFiles;
 using BiiSoft.Columns;
 using OfficeOpenXml;
 using BiiSoft.Folders;
+using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Locations
 {
