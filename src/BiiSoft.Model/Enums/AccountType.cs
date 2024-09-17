@@ -193,14 +193,47 @@ namespace BiiSoft.Enums
 
     public static class AccountTypeExtensions
     {
-        public static bool IsCurrentAsset(this AccountType type) => type == AccountType.Cash || type == AccountType.Bank || type == AccountType.AccountReceivable || type == AccountType.Inventory || type == AccountType.CurrentAsset;
-        public static bool IsNoneCurrentAsset(this AccountType type) => type == AccountType.FixedAsset || type == AccountType.NoneCurrentAsset;
-        public static bool IsCurrentLiability(this AccountType type) => type == AccountType.AccountPayable || type == AccountType.CreditCard || type == AccountType.CurrentLiability;
+        private static readonly HashSet<AccountType> CurrentAssets = new HashSet<AccountType>
+        {
+            AccountType.Cash,
+            AccountType.Bank,
+            AccountType.AccountReceivable,
+            AccountType.Inventory,
+            AccountType.CurrentAsset
+        };
+
+        public static bool IsCurrentAsset(this AccountType type) => CurrentAssets.Contains(type);
+
+        public static bool IsNoneCurrentAsset(this AccountType type) => type == AccountType.NoneCurrentAsset || type == AccountType.FixedAsset;
+
+        private static readonly HashSet<AccountType> CurrentLiabilities = new HashSet<AccountType>
+        {
+            AccountType.AccountPayable,
+            AccountType.CreditCard,
+            AccountType.CurrentLiability
+        };
+
+        public static bool IsCurrentLiability(this AccountType type) => CurrentLiabilities.Contains(type);
+
         public static bool IsCashEquivalent(this AccountType type) => type == AccountType.Cash || type == AccountType.Bank;
         public static bool IsRevenue(this AccountType type) => type == AccountType.Revenue || type == AccountType.OtherRevenue;
         public static bool IsExpense(this AccountType type) => type == AccountType.Expense || type == AccountType.OtherExpense;
-        public static bool IsAccumulatedDepreciation(this SubAccountType type) => type == SubAccountType.AccumulatedDepletion || type == SubAccountType.AccumulatedDepreciation || type == SubAccountType.AccumulatedAmotization;
-     
+
+        private static readonly HashSet<SubAccountType> AccumulatedDepreciations = new HashSet<SubAccountType> 
+        {
+            SubAccountType.AccumulatedDepletion,
+            SubAccountType.AccumulatedDepreciation,
+            SubAccountType.AccumulatedAmotization
+        };
+
+        public static bool IsAccumulatedDepreciation(this SubAccountType type) => AccumulatedDepreciations.Contains(type);
+
+        public static AccountType Parent(this SubAccountType subType)
+        {
+            int typeValue = (int)subType / 100;
+            return (AccountType)typeValue;
+        }
+
         public static List<SubAccountType> SubTypes(this AccountType type)
         {
             int typeValue = (int)type;
@@ -211,7 +244,7 @@ namespace BiiSoft.Enums
         }
 
 
-        private static readonly Dictionary<AccountType, SubAccountType> DefaultSubTypeDic = new()
+        private static readonly Dictionary<AccountType, SubAccountType> DefaultSubTypeDic = new Dictionary<AccountType, SubAccountType> 
         {
             { AccountType.Cash, SubAccountType.CashOnHand },
             { AccountType.Bank, SubAccountType.Bank },
@@ -237,7 +270,7 @@ namespace BiiSoft.Enums
             return DefaultSubTypeDic.ContainsKey(type) ? DefaultSubTypeDic[type] : default;
         }
 
-        private static readonly Dictionary<SubAccountType, string> Descriptions = new()  
+        private static readonly Dictionary<SubAccountType, string> DescriptionDic = new Dictionary<SubAccountType, string>  
         {
             { SubAccountType.CashOnHand, "Use a Cash on hand account to track cash your company keeps for occasional expenses, also called petty cash.\r\nTo track cash from sales that have not been deposited yet, use a pre-created account called Undeposited funds, instead." },
             { SubAccountType.CashEquivalent, "Use Cash and Cash Equivalents to track cash or assets that can be converted into cash immediately. For example, marketable securities and Treasury bills." },
@@ -398,7 +431,7 @@ namespace BiiSoft.Enums
 
         public static string Description(this SubAccountType type)
         {
-            return Descriptions.ContainsKey(type) ? Descriptions[type] : default;
+            return DescriptionDic.ContainsKey(type) ? DescriptionDic[type] : default;
         }
     }
 }

@@ -13,10 +13,11 @@ using BiiSoft.Entities;
 namespace BiiSoft.ChartOfAccounts
 {
     [Table("BiiChartOfAccounts")]
-    public class ChartOfAccount: CanModifyNameActiveEntity<Guid>, IMayHaveTenant
+    public class ChartOfAccount: CanModifyNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
     {
         public int? TenantId { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
         [Required]
         [MaxLength(BiiSoftConsts.MaxLengthCode)]
         [StringLength(BiiSoftConsts.MaxLengthCode, ErrorMessage = BiiSoftConsts.MaxLengthCodeErrorMessage)]
@@ -35,7 +36,7 @@ namespace BiiSoft.ChartOfAccounts
         public Tax SaleTax { get; private set; }
 
 
-        public static ChartOfAccount Create(int? tenantId, long userId, AccountType accountType, SubAccountType subAccountType, string code, string name, string displayName)
+        public static ChartOfAccount Create(int? tenantId, long userId, SubAccountType subAccountType, string code, string name, string displayName)
         {
             return new ChartOfAccount
             {
@@ -43,7 +44,7 @@ namespace BiiSoft.ChartOfAccounts
                 TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
-                AccountType = accountType,
+                AccountType = subAccountType.Parent(),
                 SubAccountType = subAccountType,
                 Code = code,
                 Name = name,
@@ -52,11 +53,11 @@ namespace BiiSoft.ChartOfAccounts
             };
         }
 
-        public void Update(long userId, AccountType accountType, SubAccountType subAccountType, string code, string name, string displayName)
+        public void Update(long userId, SubAccountType subAccountType, string code, string name, string displayName)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
-            AccountType = accountType;
+            AccountType = subAccountType.Parent();
             SubAccountType = subAccountType;
             Code = code;
             Name = name;
