@@ -10,7 +10,7 @@ using BiiSoft.BFiles;
 using BiiSoft.Locations;
 using BiiSoft.Currencies;
 using BiiSoft.ContactInfo;
-using BiiSoft.Enums;
+using BiiSoft.ChartOfAccounts;
 
 namespace BiiSoft.EntityFrameworkCore
 {
@@ -39,7 +39,7 @@ namespace BiiSoft.EntityFrameworkCore
 
         //public DbSet<CompanySetting> CompanySettings { get; set; }
         //public DbSet<Tax> Taxes { get; set; }
-        //public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
+        public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
 
 
         //public DbSet<Unit> Units { get; set; }
@@ -173,20 +173,22 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<Currency>(e =>
             {
-                e.HasIndex(i => new { i.Code }).IsUnique(true);
-                e.HasIndex(i => new { i.Name });
-                e.HasIndex(i => new { i.DisplayName });
+                e.HasIndex(i => i.Code).IsUnique(true);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
             });
 
-            //modelBuilder.Entity<CompanySetting>(e =>
-            //{
-            //    e.HasOne(s => s.Logo).WithMany().HasForeignKey(s => s.LogoId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            //    e.HasOne(s => s.Currency).WithMany().HasForeignKey(s => s.CurrencyId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            //    e.HasOne(s => s.Class).WithMany().HasForeignKey(s => s.ClassId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            //    e.HasOne(s => s.DefaultAPAccount).WithMany().HasForeignKey(s => s.DefaultAPAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            //    e.HasOne(s => s.DefaultARAccount).WithMany().HasForeignKey(s => s.DefaultARAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            //    e.HasOne(s => s.DefaultBillPaymentAccount).WithMany().HasForeignKey(s => s.DefaultBillPaymentAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            //});
+
+            modelBuilder.Entity<ChartOfAccount>(e =>
+            {
+                e.HasIndex(i => new { i.Code, i.TenantId }).IsUnique(true);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.AccountType);
+                e.HasIndex(i => i.SubAccountType);
+                e.HasOne(i => i.Parent).WithMany().HasForeignKey(i => i.ParentId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            });
+
 
         }
     }

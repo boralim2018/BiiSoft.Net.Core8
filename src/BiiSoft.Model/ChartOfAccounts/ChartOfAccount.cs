@@ -7,15 +7,14 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
-using BiiSoft.Taxes;
 using BiiSoft.Entities;
 
 namespace BiiSoft.ChartOfAccounts
 {
     [Table("BiiChartOfAccounts")]
-    public class ChartOfAccount: CanModifyNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
+    public class ChartOfAccount: CanModifyNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
-        public int? TenantId { get; set; }
+        public int TenantId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long No { get; private set; }
         [Required]
@@ -28,15 +27,9 @@ namespace BiiSoft.ChartOfAccounts
         public Guid? ParentId { get; private set; }
         public  ChartOfAccount Parent { get; private set; }
         public void SetParent(Guid? parentId) => ParentId = parentId;
-        public void SetParent(ChartOfAccount parent) => Parent = parent;
-
-        public Guid? PurchaseTaxId { get; private set; }
-        public Tax PurchaseTax { get; private set; }
-        public Guid? SaleTaxId { get; private set; }
-        public Tax SaleTax { get; private set; }
 
 
-        public static ChartOfAccount Create(int? tenantId, long userId, SubAccountType subAccountType, string code, string name, string displayName)
+        public static ChartOfAccount Create(int tenantId, long userId, SubAccountType subAccountType, string code, string name, string displayName)
         {
             return new ChartOfAccount
             {
