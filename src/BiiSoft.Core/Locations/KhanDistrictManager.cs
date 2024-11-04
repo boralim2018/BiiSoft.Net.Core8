@@ -48,7 +48,7 @@ namespace BiiSoft.Locations
         protected override void ValidateInput(KhanDistrict input)
         {
             ValidateCodeInput(input.Code);
-            if (input.Code.Length > BiiSoftConsts.KhanDistrictCodeLength) InvalidCodeException(input.Code);
+            if (input.Code.Length != BiiSoftConsts.KhanDistrictCodeLength) EqualCharactersException(L("Code_", InstanceName), BiiSoftConsts.KhanDistrictCodeLength);
 
             base.ValidateInput(input);
 
@@ -86,7 +86,7 @@ namespace BiiSoft.Locations
         {
             var result = new ExportFileOutput
             {
-                FileName = $"{InstanceName}.xlsx",
+                FileName = $"KhanDistrict.xlsx",
                 FileToken = $"{Guid.NewGuid()}.xlsx"
             };
 
@@ -111,7 +111,7 @@ namespace BiiSoft.Locations
 
                 #endregion Row 1
 
-                ws.InsertTable(displayColumns, $"KhanDistrictTable", rowTableHeader, 1, 5);
+                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
 
                 result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
 
@@ -155,7 +155,7 @@ namespace BiiSoft.Locations
                     {
                         string code = worksheet.GetString(i, 1);
                         ValidateCodeInput(code, $", Row = {i}");
-                        if (code.Length > BiiSoftConsts.KhanDistrictCodeLength) InvalidCodeException(code, $", Row = {i}");
+                        if (code.Length != BiiSoftConsts.KhanDistrictCodeLength) EqualCharactersException(L("Code_", InstanceName), BiiSoftConsts.KhanDistrictCodeLength, $", Row = {i}");
                         if (khanDistrictHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
 
                         var name = worksheet.GetString(i, 2);

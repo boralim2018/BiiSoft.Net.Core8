@@ -47,7 +47,7 @@ namespace BiiSoft.Locations
             base.ValidateInput(input);
 
             ValidateCodeInput(input.Code);
-            if (input.Code.ToString().Length > 3) MoreThanCharactersException(L("Code_", L("Country")), 3);
+            if (input.Code.ToString().Length != BiiSoftConsts.CountryCodeLength) EqualCharactersException(L("Code_", InstanceName), BiiSoftConsts.CountryCodeLength);
             ValidateInput(input.ISO, L("Code_", L("ISO")));
             if (input.ISO.Length != 3) EqualCharactersException(L("Code_", L("ISO")), 3);
             ValidateInput(input.ISO2, L("Code_", L("ISO2")));
@@ -88,7 +88,7 @@ namespace BiiSoft.Locations
         {
             var result = new ExportFileOutput
             {
-                FileName = $"{InstanceName}.xlsx",
+                FileName = $"Country.xlsx",
                 FileToken = $"{Guid.NewGuid()}.xlsx"
             };
 
@@ -115,7 +115,7 @@ namespace BiiSoft.Locations
 
                 #endregion Row 1
 
-                ws.InsertTable(displayColumns, $"CountryTable", rowTableHeader, 1, 5);
+                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
 
                 result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
 
@@ -159,7 +159,7 @@ namespace BiiSoft.Locations
                     {
                         string code = worksheet.GetString(i, 1);
                         ValidateCodeInput(code, $", Row = {i}");
-                        if (code.Length > BiiSoftConsts.CountryCodeLength) InvalidException(L("Code_", InstanceName), $" : {code}, Row = {i}");
+                        if (code.Length != BiiSoftConsts.CountryCodeLength) EqualCharactersException(L("Code_", InstanceName), BiiSoftConsts.CountryCodeLength, $" : {code}, Row = {i}");
                         if (countryHash.Contains(code)) DuplicateException(L("Code_", InstanceName), $" : {code}, Row = {i}");
 
                         var name = worksheet.GetString(i, 2);

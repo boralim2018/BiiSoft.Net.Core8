@@ -88,14 +88,14 @@ namespace BiiSoft.Authorization
             var locationPage = setupPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations, L("Locations"));
 
             var locationListPage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_List, L("LocationList"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Create, L("Create"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Create, L("Create"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions), multiTenancySides: MultiTenancySides.Tenant);
             locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_View, L("View"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Edit, L("Edit"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Delete, L("Delete"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_ImportExcel, L("ImportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Edit, L("Edit"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions), multiTenancySides: MultiTenancySides.Tenant);
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Delete, L("Delete"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions), multiTenancySides: MultiTenancySides.Tenant);
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_ImportExcel, L("ImportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions), multiTenancySides: MultiTenancySides.Tenant);
             locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_ExportExcel, L("ExportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Enable, L("Enable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
-            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Disable, L("Disable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions));
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Enable, L("Enable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions), multiTenancySides: MultiTenancySides.Tenant);
+            locationListPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Disable, L("Disable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions), multiTenancySides: MultiTenancySides.Tenant);
 
             var countryPage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Countries, L("Countries"), multiTenancySides: MultiTenancySides.Host);
             countryPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Countries_Create, L("Create"), multiTenancySides: MultiTenancySides.Host);

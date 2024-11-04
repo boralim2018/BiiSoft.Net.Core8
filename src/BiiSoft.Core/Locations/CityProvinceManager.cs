@@ -43,7 +43,7 @@ namespace BiiSoft.Locations
         protected override void ValidateInput(CityProvince input)
         {
             ValidateCodeInput(input.Code);
-            if (input.Code.Length > BiiSoftConsts.CityProvinceCodeLength) InvalidCodeException(input.Code);
+            if (input.Code.Length != BiiSoftConsts.CityProvinceCodeLength) EqualCharactersException(L("Code_", InstanceName), BiiSoftConsts.CityProvinceCodeLength);
 
             base.ValidateInput(input);
 
@@ -81,7 +81,7 @@ namespace BiiSoft.Locations
         {
             var result = new ExportFileOutput
             {
-                FileName = $"{InstanceName}.xlsx",
+                FileName = $"CityProvince.xlsx",
                 FileToken = $"{Guid.NewGuid()}.xlsx"
             };
 
@@ -106,7 +106,7 @@ namespace BiiSoft.Locations
 
                 #endregion Row 1
 
-                ws.InsertTable(displayColumns, $"CityProvinceTable", rowTableHeader, 1, 5);
+                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
 
                 result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
 
@@ -149,7 +149,7 @@ namespace BiiSoft.Locations
                     {
                         var code = worksheet.GetString(i, 1);
                         ValidateCodeInput(code, $", Row = {i}");
-                        if (code.Length > BiiSoftConsts.CityProvinceCodeLength) InvalidCodeException(code, $", Row = {i}");
+                        if (code.Length != BiiSoftConsts.CityProvinceCodeLength) EqualCharactersException(L("Code_", InstanceName), BiiSoftConsts.CityProvinceCodeLength, $", Row = {i}");
                         if (cityProvinceHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
