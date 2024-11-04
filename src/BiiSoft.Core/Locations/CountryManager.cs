@@ -115,7 +115,7 @@ namespace BiiSoft.Locations
 
                 #endregion Row 1
 
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
+                ws.InsertTable(displayColumns, $"CountryTable", rowTableHeader, 1, 5);
 
                 result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
 

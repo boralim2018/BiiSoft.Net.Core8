@@ -198,7 +198,7 @@ namespace BiiSoft.Auditing
                     rowIndex++;
                 }
 
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, rowIndex - 1);
+                ws.InsertTable(displayColumns, $"AuditLogTable", rowTableHeader, 1, rowIndex - 1);
 
                 result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
 
