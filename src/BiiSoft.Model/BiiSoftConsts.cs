@@ -57,6 +57,7 @@ namespace BiiSoft
         public const int KhanDistrictCodeLength = 9;
         public const int SangkatCommuneCodeLength = 12;
         public const int VillageCodeLength = 15;
+        public const int ChartOfAccountCodeLength = 6;
 
         #region Theme Setting
 

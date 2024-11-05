@@ -153,10 +153,10 @@ namespace BiiSoft.Locations
                         if (cityProvinceHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
 
                         var name = worksheet.GetString(i, 2);
-                        ValidateName(name);
+                        ValidateName(name, $", Row = {i}");
 
                         var displayName = worksheet.GetString(i, 3);
-                        ValidateDisplayName(displayName);
+                        ValidateDisplayName(displayName, $", Row = {i}");
 
                         var iso = worksheet.GetString(i, 4);
                         ValidateInput(iso, L("Code_", L("ISO")), $", Row = {i}");

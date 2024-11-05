@@ -12,24 +12,26 @@ using BiiSoft.Entities;
 namespace BiiSoft.ChartOfAccounts
 {
     [Table("BiiChartOfAccounts")]
-    public class ChartOfAccount: CanModifyNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
+    public class ChartOfAccount: CanModifyNameActiveEntity<Guid>, IMustHaveTenant, INoEntity, ICodeEntity
     {
         public int TenantId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long No { get; private set; }
+
         [Required]
         [MaxLength(BiiSoftConsts.MaxLengthCode)]
         [StringLength(BiiSoftConsts.MaxLengthCode, ErrorMessage = BiiSoftConsts.MaxLengthCodeErrorMessage)]
         public string Code { get; private set; }
 
+        public void SetCode(string code) => Code = code;
+
         public AccountType AccountType { get; private set; }
         public SubAccountType SubAccountType { get; private set; }
         public Guid? ParentId { get; private set; }
         public  ChartOfAccount Parent { get; private set; }
-        public void SetParent(Guid? parentId) => ParentId = parentId;
 
 
-        public static ChartOfAccount Create(int tenantId, long userId, SubAccountType subAccountType, string code, string name, string displayName)
+        public static ChartOfAccount Create(int tenantId, long userId, SubAccountType subAccountType, string code, string name, string displayName, Guid? parentId)
         {
             return new ChartOfAccount
             {
@@ -42,11 +44,12 @@ namespace BiiSoft.ChartOfAccounts
                 Code = code,
                 Name = name,
                 DisplayName = displayName,
+                ParentId = parentId,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, SubAccountType subAccountType, string code, string name, string displayName)
+        public void Update(long userId, SubAccountType subAccountType, string code, string name, string displayName, Guid? parentId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -55,6 +58,7 @@ namespace BiiSoft.ChartOfAccounts
             Code = code;
             Name = name;
             DisplayName = displayName;
+            ParentId = parentId;
         }
 
     }

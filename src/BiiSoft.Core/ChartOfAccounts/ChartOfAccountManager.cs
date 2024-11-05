@@ -17,16 +17,16 @@ using OfficeOpenXml;
 using BiiSoft.Folders;
 using BiiSoft.BFiles.Dto;
 
-namespace BiiSoft.Locations
+namespace BiiSoft.ChartOfAccounts
 {
-    public class LocationManager : BiiSoftNameActiveValidateServiceBase<Location, Guid>, ILocationManager
+    public class ChartOfAccountManager : BiiSoftNameActiveValidateServiceBase<ChartOfAccount, Guid>, IChartOfAccountManager
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IAppFolders _appFolders;
-        public LocationManager(
+        public ChartOfAccountManager(
             IAppFolders appFolders,
-            IBiiSoftRepository<Location, Guid> repository,
+            IBiiSoftRepository<ChartOfAccount, Guid> repository,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager): base(repository) 
         {
@@ -37,25 +37,63 @@ namespace BiiSoft.Locations
 
         #region override base class
       
-        protected override string InstanceName => L("Location");
+        protected override string InstanceName => L("ChartOfAccount");
 
-        protected override Location CreateInstance(Location input)
+        protected override ChartOfAccount CreateInstance(ChartOfAccount input)
         {
-            return Location.Create(input.TenantId, input.CreatorUserId.Value, input.Name, input.DisplayName, input.Latitude, input.Longitude);
+            return ChartOfAccount.Create(input.TenantId, input.CreatorUserId.Value, input.SubAccountType, input.Code, input.Name, input.DisplayName, input.ParentId);
         }
 
-        protected override void UpdateInstance(Location input, Location entity)
+        protected override void UpdateInstance(ChartOfAccount input, ChartOfAccount entity)
         {
-            entity.Update(input.LastModifierUserId.Value, input.Name, input.DisplayName, input.Latitude, input.Longitude);
+            entity.Update(input.LastModifierUserId.Value, input.SubAccountType, input.Code, input.Name, input.DisplayName, input.ParentId);
         }
 
         #endregion
+
+        private async Task<string> GetLatestCodeAsync(SubAccountType type)
+        {
+            var prefix = type.ToIntStr();
+
+            return await _repository.GetAll()
+                            .AsNoTracking()
+                            .Where(s => s.SubAccountType == type)
+                            .Where(s => s.Code.StartsWith(prefix))
+                            .Where(s => s.Code.Length == BiiSoftConsts.ChartOfAccountCodeLength)
+                            .Select(s => s.Code)
+                            .OrderByDescending(s => s)
+                            .FirstOrDefaultAsync();
+        }
+
+
+        private async Task SetCodeAsync(ChartOfAccount input)
+        {
+            if (!input.Code.IsNullOrWhiteSpace()) return;
+
+            var prefix = input.SubAccountType.ToIntStr();
+            var latestCode = await GetLatestCodeAsync(input.SubAccountType);
+
+            if (latestCode.IsNullOrWhiteSpace())
+            {
+                input.SetCode(1.GenerateCode(BiiSoftConsts.ChartOfAccountCodeLength, prefix));
+            }
+            else
+            {
+                input.SetCode(latestCode.NextCode(prefix));
+            }
+        }
+
+        public override async Task<IdentityResult> InsertAsync(ChartOfAccount input)
+        {
+            await SetCodeAsync(input);
+            return await base.InsertAsync(input);
+        }
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
             var result = new ExportFileOutput
             {
-                FileName = $"Location.xlsx",
+                FileName = $"ChartOfAccount.xlsx",
                 FileToken = $"{Guid.NewGuid()}.xlsx"
             };
 
@@ -69,10 +107,11 @@ namespace BiiSoft.Locations
 
                 // write header collumn table
                 var displayColumns = new List<ColumnOutput> {
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("Location")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Latitude"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Longitude"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("SubAccountType"), Width = 150, IsRequired = true},
+                    new ColumnOutput{ ColumnTitle = L("ParentAccount"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
                 };
@@ -99,7 +138,7 @@ namespace BiiSoft.Locations
         /// <exception cref="UserFriendlyException"></exception>
         public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
-            var locations = new List<Location>();
+            var locations = new List<ChartOfAccount>();
           
             //var excelPackage = Read(input, _appFolders);
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
@@ -112,19 +151,27 @@ namespace BiiSoft.Locations
                     // retrive first worksheets
                     var worksheet = excelPackage.Workbook.Worksheets[0];
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
-                    { 
-                        var name = worksheet.GetString(i, 1);
+                    {
+                        var code = worksheet.GetString(i, 1);
+
+                        var name = worksheet.GetString(i, 2);
                         ValidateName(name, $", Row: {i}");
 
-                        var displayName = worksheet.GetString(i, 2);
+                        var displayName = worksheet.GetString(i, 3);
                         ValidateDisplayName(displayName, $", Row: {i}");
 
-                        var latitude = worksheet.GetDecimalOrNull(i, 3);
-                        var longitude = worksheet.GetDecimalOrNull(i, 4);
-                        var cannotEdit = worksheet.GetBool(i, 5);
-                        var cannotDelete = worksheet.GetBool(i, 6); 
+                        var subtAccount = worksheet.GetString(i, 4);
+                        ValidateInput(subtAccount, L("SubAccountType"), $", Row: {i}");
 
-                        var entity = Location.Create(input.TenantId.Value, input.UserId.Value, name, displayName, latitude, longitude);
+                        SubAccountType subAccountType = (SubAccountType)Enum.Parse(typeof(SubAccountType), subtAccount.Replace(" ", ""));
+                        
+                        Guid? parentId = null;
+                        var parent = worksheet.GetString(i, 5);
+                       
+                        var cannotEdit = worksheet.GetBool(i, 6);
+                        var cannotDelete = worksheet.GetBool(i, 7); 
+
+                        var entity = ChartOfAccount.Create(input.TenantId.Value, input.UserId.Value, subAccountType, code, name, displayName, parentId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
