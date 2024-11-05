@@ -117,35 +117,35 @@ namespace BiiSoft.Authorization
             cityProvincePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_CityProvinces_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Host);
             cityProvincePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_CityProvinces_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Host);
 
-            var khanDistrictPage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts, L("KhanDistricts"), multiTenancySides: MultiTenancySides.Tenant);
-            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant);
-            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_View, L("View"), multiTenancySides: MultiTenancySides.Tenant);
-            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant);
-            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant);
-            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant);
-            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant);
-            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant);
-            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant);
+            var khanDistrictPage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts, L("KhanDistricts"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
+            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Create, L("Create"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
+            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_View, L("View"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
+            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Edit, L("Edit"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
+            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Delete, L("Delete"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
+            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_ExportExcel, L("ExportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
+            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_ImportExcel, L("ImportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
+            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Enable, L("Enable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
+            khanDistrictPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_KhanDistricts_Disable, L("Disable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_KhanDistricts), multiTenancySides: MultiTenancySides.Tenant);
 
-            var sangkatCommunePage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes, L("SangkatCommunes"), multiTenancySides: MultiTenancySides.Tenant);
-            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant);
-            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_View, L("View"), multiTenancySides: MultiTenancySides.Tenant);
-            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant);
-            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant);
-            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant);
-            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant);
-            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant);
-            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant);
+            var sangkatCommunePage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes, L("SangkatCommunes"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
+            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Create, L("Create"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
+            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_View, L("View"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
+            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Edit, L("Edit"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
+            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Delete, L("Delete"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
+            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_ExportExcel, L("ExportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
+            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_ImportExcel, L("ImportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
+            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Enable, L("Enable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
+            sangkatCommunePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Disable, L("Disable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_SangkatCommunes), multiTenancySides: MultiTenancySides.Tenant);
 
-            var villagePage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages, L("Villages"), multiTenancySides: MultiTenancySides.Tenant);
-            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant);
-            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_View, L("View"), multiTenancySides: MultiTenancySides.Tenant);
-            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant);
-            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant);
-            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant);
-            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant);
-            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant);
-            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant);
+            var villagePage = locationPage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages, L("Villages"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
+            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Create, L("Create"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
+            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_View, L("View"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
+            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Edit, L("Edit"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
+            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Delete, L("Delete"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
+            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_ExportExcel, L("ExportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
+            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_ImportExcel, L("ImportExcel"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
+            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Enable, L("Enable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
+            villagePage.CreateChildPermission(PermissionNames.Pages_Setup_Locations_Villages_Disable, L("Disable"), featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Loctions_Villages), multiTenancySides: MultiTenancySides.Tenant);
 
             #endregion
 

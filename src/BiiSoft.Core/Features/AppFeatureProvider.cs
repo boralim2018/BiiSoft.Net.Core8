@@ -51,7 +51,10 @@ namespace BiiSoft.Features
             chatFeature.CreateChildFeature(AppFeatures.Chat_TenantToHost, defaultValue: "false", displayName: L("TenantToHost"), inputType: new CheckboxInputType());
 
             var setupFeature = context.Create(AppFeatures.Setup, defaultValue: "false", displayName: L("Setup"), inputType: new CheckboxInputType());            
-            setupFeature.CreateChildFeature(AppFeatures.Setup_Loctions, defaultValue: "false", displayName: L("Locations"), inputType: new CheckboxInputType());
+            var locationFeature = setupFeature.CreateChildFeature(AppFeatures.Setup_Loctions, defaultValue: "false", displayName: L("Locations"), inputType: new CheckboxInputType());
+            locationFeature.CreateChildFeature(AppFeatures.Setup_Loctions_KhanDistricts, defaultValue: "false", displayName: L("KhanDistricts"), inputType: new CheckboxInputType());
+            locationFeature.CreateChildFeature(AppFeatures.Setup_Loctions_SangkatCommunes, defaultValue: "false", displayName: L("SangkatCommunes"), inputType: new CheckboxInputType());
+            locationFeature.CreateChildFeature(AppFeatures.Setup_Loctions_Villages, defaultValue: "false", displayName: L("Villages"), inputType: new CheckboxInputType());
 
             var itemFeature = setupFeature.CreateChildFeature(AppFeatures.Setup_Items, defaultValue: "false", displayName: L("Items"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Groups, defaultValue: "false", displayName: L("Groups"), inputType: new CheckboxInputType());

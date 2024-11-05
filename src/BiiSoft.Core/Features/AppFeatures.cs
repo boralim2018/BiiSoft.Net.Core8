@@ -17,6 +17,9 @@
 
         public const string Setup = "App.Setup";
         public const string Setup_Loctions = "App.Setup.Locations";
+        public const string Setup_Loctions_KhanDistricts = "App.Setup.Locations.KhanDistricts";
+        public const string Setup_Loctions_SangkatCommunes = "App.Setup.Locations.SangkatCommunes";
+        public const string Setup_Loctions_Villages = "App.Setup.Locations.Villages";
 
         public const string Setup_Items = "App.Setup.Items";
         public const string Setup_Items_Groups = "App.Setup.Items.Groups";
