@@ -3,6 +3,7 @@ using System;
 using BiiSoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    partial class BiiSoftDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241106084312_AccountSetting")]
+    partial class AccountSetting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -13,6 +13,7 @@ namespace BiiSoft.CompanySettings.Dto
             CreateMap<CompanyAdvanceSettingDto, CompanyAdvanceSetting>().ReverseMap();
             CreateMap<CreateUpdateTransactionNoSettingInputDto, TransactionNoSetting>().ReverseMap();
             CreateMap<TransactionNoSettingDto, TransactionNoSetting>().ReverseMap();
+            CreateMap<CompanyAccountSettingDto, CompanyAccountSetting>().ReverseMap();
         }
     }
 }

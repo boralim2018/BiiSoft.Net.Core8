@@ -16,6 +16,7 @@ using BiiSoft.Columns;
 using OfficeOpenXml;
 using BiiSoft.Folders;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Branches;
 
 namespace BiiSoft.ChartOfAccounts
 {
@@ -24,15 +25,23 @@ namespace BiiSoft.ChartOfAccounts
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IAppFolders _appFolders;
+        private readonly IBiiSoftRepository<CompanyAccountSetting, long> _companyAccountSettingRepository;
+        private readonly bool customAccountCodeEnable;
+        
         public ChartOfAccountManager(
             IAppFolders appFolders,
             IBiiSoftRepository<ChartOfAccount, Guid> repository,
+            IBiiSoftRepository<CompanyAccountSetting, long> companyAccountSettingRepository,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager): base(repository) 
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _appFolders = appFolders;
+            _companyAccountSettingRepository = companyAccountSettingRepository;
+
+            var setting = _companyAccountSettingRepository.GetAll().AsNoTracking().FirstOrDefault();
+            customAccountCodeEnable = setting != null && setting.CustomAccountCodeEnable;
         }
 
         #region override base class
@@ -40,7 +49,7 @@ namespace BiiSoft.ChartOfAccounts
         protected override string InstanceName => L("ChartOfAccount");
         protected override bool IsUniqueName => true;
 
-        private bool AutoGenerateAccountCode => true;
+        private bool AutoGenerateAccountCode => !customAccountCodeEnable;
 
         protected override void ValidateInput(ChartOfAccount input)
         {

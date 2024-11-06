@@ -20,10 +20,13 @@ namespace BiiSoft.Branches
         public void EnableLineDiscount(bool enable) => LineDiscountEnable = enable;
         public bool TotalDiscountEnable { get; protected set; }
         public void EnableTotalDiscount(bool enable) => TotalDiscountEnable = enable;
+        public bool CustomAccountCodeEnable { get; protected set; }
+        public void EnableCustomAccountCode(bool enable) => CustomAccountCodeEnable = enable;
         public bool ClassEnable { get; protected set; }
         public void EnableClass(bool enable) => ClassEnable = enable;
-
        
+
+
         public static CompanyAdvanceSetting Create(
             int tenantId,
             long? userId,
@@ -31,6 +34,7 @@ namespace BiiSoft.Branches
             bool multiCurrencyEnable,
             bool lineDiscountEnable,
             bool totalDiscountEnable,
+            bool customAccountCodeEnable,
             bool classEnable)
         {
             return new CompanyAdvanceSetting
@@ -42,6 +46,7 @@ namespace BiiSoft.Branches
                 MultiCurrencyEnable = multiCurrencyEnable,
                 LineDiscountEnable = lineDiscountEnable,
                 TotalDiscountEnable = totalDiscountEnable,
+                CustomAccountCodeEnable = customAccountCodeEnable,
                 ClassEnable = classEnable
             };
         }
@@ -52,6 +57,7 @@ namespace BiiSoft.Branches
             bool multiCurrencyEnable,
             bool lineDiscountEnable,
             bool totalDiscountEnable,
+            bool customAccountCodeEnable,
             bool classEnable)
         {
             LastModifierUserId = userId;
@@ -60,6 +66,7 @@ namespace BiiSoft.Branches
             MultiCurrencyEnable = multiCurrencyEnable;
             LineDiscountEnable = lineDiscountEnable;
             TotalDiscountEnable = totalDiscountEnable;
+            CustomAccountCodeEnable = customAccountCodeEnable;
             ClassEnable = classEnable;
         }
     }

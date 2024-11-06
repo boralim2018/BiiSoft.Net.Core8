@@ -40,7 +40,7 @@ namespace BiiSoft.Branches
         public Guid? DefaultExchangeLossGainAccountId { get; protected set; }
         public ChartOfAccount DefaultExchangeLossGainAccount { get; protected set; }
 
-        public Guid? DefaultItemReceipAccountId { get; protected set; }
+        public Guid? DefaultItemReceiptAccountId { get; protected set; }
         public ChartOfAccount DefaultItemReceiptAccount { get; protected set; }
 
         public Guid? DefaultItemIssueAccountId { get; protected set; }
@@ -59,6 +59,8 @@ namespace BiiSoft.Branches
         public ChartOfAccount DefaultItemExchangeAccount { get; protected set; }
         public Guid? DefaultCashTransferAccountId { get; protected set; }
         public ChartOfAccount DefaultCashTransferAccount { get; protected set; }
+        public Guid? DefaultCashExchangeAccountId { get; protected set; }
+        public ChartOfAccount DefaultCashExchangeAccount { get; protected set; }
 
 
         public static CompanyAccountSetting Create(
@@ -79,7 +81,8 @@ namespace BiiSoft.Branches
             Guid? itemTrasferAccountId,
             Guid? itemProductionAccountId,
             Guid? itemExchangeAccountId,
-            Guid? cashTransferAccountId
+            Guid? cashTransferAccountId,
+            Guid? cashExchangeAccountId
             )
         {
             return new CompanyAccountSetting
@@ -96,18 +99,19 @@ namespace BiiSoft.Branches
                 DefaultReceiptPaymentAccountId = receiptPaymentAccountId,
                 DefaultRetainEarningAccountId = retainEarningAccountId,
                 DefaultExchangeLossGainAccountId = exchangeLossGainAccountId,
-                DefaultItemReceipAccountId = itemReceiptAccountId,
+                DefaultItemReceiptAccountId = itemReceiptAccountId,
                 DefaultItemIssueAccountId = itemIssueAccountId,
                 DefaultItemAdjustmentAccountId = itemAdjustmentAccountId,
                 DefaultItemTransferAccountId = itemTrasferAccountId,
                 DefaultItemProductionAccountId = itemProductionAccountId,
                 DefaultItemExchangeAccountId = itemExchangeAccountId,
-                DefaultCashTransferAccountId = cashTransferAccountId
+                DefaultCashTransferAccountId = cashTransferAccountId,
+                DefaultCashExchangeAccountId = cashExchangeAccountId
             };
         }
 
         public void Update(
-            long? userId, 
+            long? userId,
             Guid? apAccountId,
             Guid? arAccountId,
             Guid? purchaseDiscountAccountId,
@@ -123,7 +127,8 @@ namespace BiiSoft.Branches
             Guid? itemTrasferAccountId,
             Guid? itemProductionAccountId,
             Guid? itemExchangeAccountId,
-            Guid? cashTransferAccountId
+            Guid? cashTransferAccountId,
+            Guid? cashExchangeAccountId
             )
         {
             LastModifierUserId = userId;
@@ -137,13 +142,14 @@ namespace BiiSoft.Branches
             DefaultInventoryPurchaseAccountId = purchaseAccountId;
             DefaultRetainEarningAccountId = retainEarningAccountId;
             DefaultExchangeLossGainAccountId = exchangeLossGainAccountId;
-            DefaultItemReceipAccountId = itemReceiptAccountId;
+            DefaultItemReceiptAccountId = itemReceiptAccountId;
             DefaultItemIssueAccountId = itemIssueAccountId;
             DefaultItemAdjustmentAccountId = itemAdjustmentAccountId;
             DefaultItemTransferAccountId = itemTrasferAccountId;
             DefaultItemProductionAccountId = itemProductionAccountId;
             DefaultItemExchangeAccountId = itemExchangeAccountId;
             DefaultCashTransferAccountId = cashTransferAccountId;
+            DefaultCashExchangeAccountId = cashExchangeAccountId;
         }
 
     }

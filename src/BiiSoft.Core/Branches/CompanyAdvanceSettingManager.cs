@@ -21,16 +21,16 @@ namespace BiiSoft.Branches
             _currencyRepository = currencyRepository;
         }
 
-        protected override string InstanceName => L("OtherSetting");
+        protected override string InstanceName => L("AdvanceSetting");
 
         protected override CompanyAdvanceSetting CreateInstance(CompanyAdvanceSetting input)
         {
-            return CompanyAdvanceSetting.Create(input.TenantId, input.CreatorUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.ClassEnable);
+            return CompanyAdvanceSetting.Create(input.TenantId, input.CreatorUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable);
         }
 
         protected override void UpdateInstance(CompanyAdvanceSetting input, CompanyAdvanceSetting entity)
         {
-            entity.Update(input.LastModifierUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.ClassEnable);
+            entity.Update(input.LastModifierUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable);
         }
 
         protected override async Task ValidateInputAsync(CompanyAdvanceSetting input)

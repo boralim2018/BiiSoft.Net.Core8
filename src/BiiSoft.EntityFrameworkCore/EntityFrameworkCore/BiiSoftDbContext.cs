@@ -40,6 +40,7 @@ namespace BiiSoft.EntityFrameworkCore
         //public DbSet<CompanySetting> CompanySettings { get; set; }
         //public DbSet<Tax> Taxes { get; set; }
         public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
+        public DbSet<CompanyAccountSetting> CompanyAccountSettings { get; set; }
 
 
         //public DbSet<Unit> Units { get; set; }
@@ -189,6 +190,26 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.Parent).WithMany().HasForeignKey(i => i.ParentId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<CompanyAccountSetting>(e =>
+            {
+                e.HasOne(i => i.DefaultAPAccount).WithMany().HasForeignKey(i => i.DefaultAPAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultARAccount).WithMany().HasForeignKey(i => i.DefaultARAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultPurchaseDiscountAccount).WithMany().HasForeignKey(i => i.DefaultPurchaseDiscountAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultSaleDiscountAccount).WithMany().HasForeignKey(i => i.DefaultSaleDiscountAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultInventoryPurchaseAccount).WithMany().HasForeignKey(i => i.DefaultInventoryPurchaseAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultBillPaymentAccount).WithMany().HasForeignKey(i => i.DefaultBillPaymentAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultReceiptPaymentAccount).WithMany().HasForeignKey(i => i.DefaultReceiptPaymentAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultRetainEarningAccount).WithMany().HasForeignKey(i => i.DefaultRetainEarningAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultExchangeLossGainAccount).WithMany().HasForeignKey(i => i.DefaultExchangeLossGainAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultItemReceiptAccount).WithMany().HasForeignKey(i => i.DefaultItemReceiptAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultItemIssueAccount).WithMany().HasForeignKey(i => i.DefaultItemIssueAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultItemAdjustmentAccount).WithMany().HasForeignKey(i => i.DefaultItemAdjustmentAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultItemTransferAccount).WithMany().HasForeignKey(i => i.DefaultItemTransferAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultItemProductionAccount).WithMany().HasForeignKey(i => i.DefaultItemProductionAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultItemExchangeAccount).WithMany().HasForeignKey(i => i.DefaultItemExchangeAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultCashTransferAccount).WithMany().HasForeignKey(i => i.DefaultCashTransferAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultCashExchangeAccount).WithMany().HasForeignKey(i => i.DefaultCashExchangeAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            });
 
         }
     }
