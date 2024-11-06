@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using BiiSoft.Dtos;
 using Abp.Application.Services.Dto;
+using BiiSoft.ChartOfAccounts;
 
 namespace BiiSoft
 {
@@ -176,6 +177,11 @@ namespace BiiSoft
             if (input is ICanModifyEntity entity && entity.CannotEdit) NotEditableException(InstanceName, message);
         }
 
+        protected virtual async Task BeforeInstanceUpdate(TEntity input, TEntity entity)
+        {
+            await Task.Run(() => { });
+        }
+
         public virtual async Task<IdentityResult> UpdateAsync(TEntity input)
         {
             await ValidateInputAsync(input);
@@ -183,6 +189,8 @@ namespace BiiSoft
             var entity = await GetAsync(input.Id);
             if(entity == null) NotFoundException(InstanceName);
             ValidateEditable(entity);
+
+            await BeforeInstanceUpdate(input, entity);
 
             UpdateInstance(input, entity);
 
@@ -398,10 +406,11 @@ namespace BiiSoft
         {
             ValidateInput(input);
 
-            if (!IsUniqueName) return;
-
-            var find = await _repository.GetAll().AsNoTracking().AnyAsync(s => !s.Id.Equals(input.Id) && s.Name == input.Name);
-            if (find) DuplicateNameException(input.Name);
+            if (IsUniqueName)
+            {
+                var find = await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(s => !s.Id.Equals(input.Id) && (s.Name == input.Name || s.DisplayName == input.DisplayName));
+                if (find != null) DuplicateNameException(find.Name == input.Name ? input.Name : input.DisplayName);
+            }
         }
     }
 

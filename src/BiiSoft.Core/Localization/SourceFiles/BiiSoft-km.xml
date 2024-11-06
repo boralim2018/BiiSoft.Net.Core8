@@ -696,6 +696,9 @@
 		<text name="ItemExchange">ដូរទំនិញ</text>
 		<text name="PhysicalCount">រាប់ស្តុកជាក់ស្ដែង</text>
 		<text name="TransactionType">ប្រភេទប្រតិបត្តិការ</text>
+		<text name="ParentAccount">គណនីមេ</text>
+		<text name="AccountType">ប្រភេទគណនី</text>
+		<text name="SubAccountType">ប្រភេទគណនីរង</text>
 		
 	</texts>
 </localizationDictionary>

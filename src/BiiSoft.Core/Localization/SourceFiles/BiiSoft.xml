@@ -696,5 +696,8 @@
 		<text name="ItemExchange">Item Exchange</text>
 		<text name="PhysicalCount">Physical Count</text>
 		<text name="TransactionType">Transaction Type</text>
+		<text name="ParentAccount">Parent Account</text>
+		<text name="AccountType">Account Type</text>
+		<text name="SubAccountType">Sub Account Type</text>
 	</texts>
 </localizationDictionary>

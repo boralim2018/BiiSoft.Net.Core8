@@ -38,10 +38,40 @@ namespace BiiSoft.ChartOfAccounts
         #region override base class
       
         protected override string InstanceName => L("ChartOfAccount");
+        protected override bool IsUniqueName => true;
+
+        private bool AutoGenerateAccountCode => true;
+
+        protected override void ValidateInput(ChartOfAccount input)
+        {
+            ValidateCodeInput(input.Code);
+            base.ValidateInput(input);
+
+            if (input.AccountType != input.SubAccountType.Parent()) InvalidException(L("AccountType"));
+        }
+
+        protected override async Task ValidateInputAsync(ChartOfAccount input)
+        {
+            await base.ValidateInputAsync(input);
+
+            var findCode = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Code == input.Code && s.Id != input.Id);
+            if (findCode) DuplicateCodeException(input.Code);
+
+            if (!input.ParentId.IsNullOrEmpty())
+            {
+                var find = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ParentId);
+                if (!find) InvalidException(L("ParentAccount"));
+            }
+        }
 
         protected override ChartOfAccount CreateInstance(ChartOfAccount input)
         {
             return ChartOfAccount.Create(input.TenantId, input.CreatorUserId.Value, input.SubAccountType, input.Code, input.Name, input.DisplayName, input.ParentId);
+        }
+
+        protected override async Task BeforeInstanceUpdate(ChartOfAccount input, ChartOfAccount entity)
+        {
+            if (AutoGenerateAccountCode && entity.SubAccountType != input.SubAccountType) await SetCodeAsync(input);
         }
 
         protected override void UpdateInstance(ChartOfAccount input, ChartOfAccount entity)
@@ -75,7 +105,7 @@ namespace BiiSoft.ChartOfAccounts
 
             if (latestCode.IsNullOrWhiteSpace())
             {
-                input.SetCode(1.GenerateCode(BiiSoftConsts.ChartOfAccountCodeLength, prefix));
+                input.SetCode(0.GenerateCode(BiiSoftConsts.ChartOfAccountCodeLength, prefix));
             }
             else
             {
@@ -85,7 +115,7 @@ namespace BiiSoft.ChartOfAccounts
 
         public override async Task<IdentityResult> InsertAsync(ChartOfAccount input)
         {
-            await SetCodeAsync(input);
+            if(AutoGenerateAccountCode) await SetCodeAsync(input);
             return await base.InsertAsync(input);
         }
 
@@ -138,8 +168,20 @@ namespace BiiSoft.ChartOfAccounts
         /// <exception cref="UserFriendlyException"></exception>
         public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
-            var locations = new List<ChartOfAccount>();
-          
+            var accounts = new List<ChartOfAccount>();
+
+            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    accounts = await _repository.GetAll().AsNoTracking().ToListAsync();
+                }
+            }
+
+            var addAccounts = new List<ChartOfAccount>();
+            var latestCodeDic = accounts.GroupBy(s => s.SubAccountType)
+                                        .ToDictionary(k => k.Key, v => v.MaxBy(m => m.Code).Code);
+
             //var excelPackage = Read(input, _appFolders);
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
@@ -153,40 +195,85 @@ namespace BiiSoft.ChartOfAccounts
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
                         var code = worksheet.GetString(i, 1);
-
+                        if (!AutoGenerateAccountCode) ValidateCodeInput(code, $", Row: {i}");
+                       
                         var name = worksheet.GetString(i, 2);
                         ValidateName(name, $", Row: {i}");
+
+                        var findName = accounts.Any(a => a.Name == name);
+                        if(findName) DuplicateNameException(name, $", Row: {i}");
 
                         var displayName = worksheet.GetString(i, 3);
                         ValidateDisplayName(displayName, $", Row: {i}");
 
-                        var subtAccount = worksheet.GetString(i, 4);
-                        ValidateInput(subtAccount, L("SubAccountType"), $", Row: {i}");
+                        var findDisplayName = accounts.Any(a => a.DisplayName == displayName);
+                        if (findDisplayName) DuplicateNameException(displayName, $", Row: {i}");
 
-                        SubAccountType subAccountType = (SubAccountType)Enum.Parse(typeof(SubAccountType), subtAccount.Replace(" ", ""));
-                        
+                        var subtAccount = worksheet.GetString(i, 4)?.Replace(" ", "");
+                        ValidateInput(subtAccount, L("SubAccountType"), $", Row: {i}");
+                        SubAccountType subAccountType = (SubAccountType)Enum.Parse(typeof(SubAccountType), subtAccount);
+
                         Guid? parentId = null;
                         var parent = worksheet.GetString(i, 5);
+                        if (!parent.IsNullOrWhiteSpace())
+                        {
+                            var find = accounts.FirstOrDefault(a => a.Name.ToLower() == parent.ToLower().Trim());
+                            if (find != null) InvalidException(L("ParentAccount"), $", Row: {i}");
+
+                            parentId = find.Id;
+                        }
                        
                         var cannotEdit = worksheet.GetBool(i, 6);
-                        var cannotDelete = worksheet.GetBool(i, 7); 
+                        var cannotDelete = worksheet.GetBool(i, 7);
+
+                        if (AutoGenerateAccountCode)
+                        {
+                            if (code.IsNullOrWhiteSpace())
+                            {
+                                if (latestCodeDic.ContainsKey(subAccountType))
+                                {
+                                    code = latestCodeDic[subAccountType].NextCode(subAccountType.ToIntStr());
+                                }
+                                else
+                                {
+                                    code = 0.GenerateCode(BiiSoftConsts.ChartOfAccountCodeLength, subAccountType.ToIntStr());
+                                }
+                            }
+                            else 
+                            {
+                                if (!code.IsCode(BiiSoftConsts.ChartOfAccountCodeLength, subAccountType.ToIntStr())) InvalidCodeException(code, $", Row: {i}");
+                            }
+
+                            if (!latestCodeDic.ContainsKey(subAccountType))
+                            {
+                                latestCodeDic.Add(subAccountType, code);
+                            }
+                            else if (code.CompareTo(latestCodeDic[subAccountType]) > 0)
+                            {
+                                 latestCodeDic[subAccountType] = code;
+                            }
+                        }
+
+                        var findCode = accounts.Any(a => a.Code == code);
+                        if (findCode) DuplicateCodeException(code, $", Row: {i}");
 
                         var entity = ChartOfAccount.Create(input.TenantId.Value, input.UserId.Value, subAccountType, code, name, displayName, parentId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
-                        locations.Add(entity);
+                        addAccounts.Add(entity);
+                        accounts.Add(entity);
                     }
                 }
             }
 
-            if (!locations.Any()) return IdentityResult.Success;
+            if (!addAccounts.Any()) return IdentityResult.Success;
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
                 using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
                 {
-                   await _repository.BulkInsertAsync(locations);
+                   await _repository.BulkInsertAsync(addAccounts);
                 }
 
                 await uow.CompleteAsync();
@@ -194,115 +281,6 @@ namespace BiiSoft.ChartOfAccounts
 
             return IdentityResult.Success;
         }
-
-        //public async Task<IdentityResult> ImportAsync(int? tenantId, long userId, string fileToken)
-        //{
-        //    var locations = new List<Location>();
-        //    var locationHash = new HashSet<string>();
-        //    var latestCode = "";
-
-        //    using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
-        //    {
-        //        using (_unitOfWorkManager.Current.SetTenantId(tenantId))
-        //        {
-        //            latestCode = await GetLatestCodeAsync();
-        //        }
-        //    }
-
-        //    if (latestCode.IsNullOrWhiteSpace()) latestCode = GenerateCode(0);
-
-        //    //var excelPackage = Read(input, _appFolders);
-        //    var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
-        //    if (excelPackage != null)
-        //    {
-        //        // Get the work book in the file
-        //        var workBook = excelPackage.Workbook;
-        //        if (workBook != null)
-        //        {
-        //            // retrive first worksheets
-        //            var worksheet = excelPackage.Workbook.Worksheets[0];
-        //            for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
-        //            {
-        //                var code = worksheet.GetString(i, 1);
-        //                ValidateAutoCodeIfHasValue(code, $", Row: {i}");
-
-        //                if (code.IsNullOrWhiteSpace())
-        //                {
-        //                    code = latestCode.NextCode(Prefix);
-        //                    ValidateCodeOutOfRange(latestCode, $", Row = {i}");
-
-        //                    latestCode = code;
-        //                }
-        //                else
-        //                {
-        //                    latestCode = latestCode.MaxCode(code, Prefix);
-        //                }
-
-        //                if (locationHash.Contains(code)) DuplicateCodeException(code, $", Row = {i}");
-
-        //                var name = worksheet.GetString(i, 2);
-        //                ValidateName(name, $", Row: {i}");
-
-        //                var displayName = worksheet.GetString(i, 3);
-        //                ValidateDisplayName(name, $", Row: {i}");
-
-        //                var latitude = worksheet.GetDecimalOrNull(i, 4);
-        //                var longitude = worksheet.GetDecimalOrNull(i, 5);
-        //                var cannotEdit = worksheet.GetBool(i, 6);
-        //                var cannotDelete = worksheet.GetBool(i, 7);
-
-        //                var entity = Location.Create(tenantId, userId, code, name, displayName, latitude, longitude);
-        //                entity.SetCannotEdit(cannotEdit);
-        //                entity.SetCannotDelete(cannotDelete);
-
-        //                locations.Add(entity);
-        //                locationHash.Add(entity.Code);
-        //            }
-        //        }
-        //    }
-
-        //    if (!locations.Any()) return IdentityResult.Success;
-
-        //    var updateLocationDic = new Dictionary<string, Location>();
-
-        //    using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
-        //    {
-        //        using (_unitOfWorkManager.Current.SetTenantId(tenantId))
-        //        {
-        //            updateLocationDic = await _repository.GetAll().AsNoTracking()
-        //                       .Where(s => locationHash.Contains(s.Code))
-        //                       .ToDictionaryAsync(k => k.Code, v => v);
-        //        }
-        //    }
-
-        //    var addLocations = new List<Location>();
-
-        //    foreach (var l in locations)
-        //    {
-        //        if (updateLocationDic.ContainsKey(l.Code))
-        //        {
-        //            updateLocationDic[l.Code].Update(userId, l.Code, l.Name, l.DisplayName, l.Latitude, l.Longitude);
-        //            updateLocationDic[l.Code].SetCannotEdit(l.CannotEdit);
-        //            updateLocationDic[l.Code].SetCannotDelete(l.CannotDelete);
-        //        }
-        //        else
-        //        {
-        //            addLocations.Add(l);
-        //        }
-        //    }
-
-        //    using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
-        //    {
-        //        using (_unitOfWorkManager.Current.SetTenantId(tenantId))
-        //        {
-        //            if (updateLocationDic.Any()) await _repository.BulkUpdateAsync(updateLocationDic.Values.ToList());
-        //            if (addLocations.Any()) await _repository.BulkInsertAsync(addLocations);
-        //        }
-
-        //        await uow.CompleteAsync();
-        //    }
-
-        //    return IdentityResult.Success;
-        //}
+        
     }
 }

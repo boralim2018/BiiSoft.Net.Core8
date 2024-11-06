@@ -25,7 +25,9 @@ namespace BiiSoft.ChartOfAccounts
 
         public void SetCode(string code) => Code = code;
 
+        [Required]
         public AccountType AccountType { get; private set; }
+        [Required]
         public SubAccountType SubAccountType { get; private set; }
         public Guid? ParentId { get; private set; }
         public  ChartOfAccount Parent { get; private set; }
