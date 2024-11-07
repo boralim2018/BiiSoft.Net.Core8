@@ -30,6 +30,7 @@ namespace BiiSoft.Authorization
             findPage.CreateChildPermission(PermissionNames.Pages_Find_SangkatCommunes, L("FindSangkatCommunes"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Villages, L("FindVillages"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Currencies, L("FindCurrencies"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ChartOfAccounts, L("FindChartOfAccounts"));
             #endregion
 
             #region Host

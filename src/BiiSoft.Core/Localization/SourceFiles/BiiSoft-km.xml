@@ -699,6 +699,7 @@
 		<text name="ParentAccount">គណនីមេ</text>
 		<text name="AccountType">ប្រភេទគណនី</text>
 		<text name="SubAccountType">ប្រភេទគណនីរង</text>
+		<text name="FindChartOfAccounts">ស្វែងរកគណនី</text>
 		
 	</texts>
 </localizationDictionary>

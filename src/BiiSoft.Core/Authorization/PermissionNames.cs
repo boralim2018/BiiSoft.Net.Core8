@@ -20,6 +20,7 @@
         public const string Pages_Find_SangkatCommunes = "Pages.Find.SangkatCommunes";
         public const string Pages_Find_Villages = "Pages.Find.Villages";
         public const string Pages_Find_Currencies = "Pages.Find.Currencies";
+        public const string Pages_Find_ChartOfAccounts = "Pages.Find.ChartOfAccounts";
 
         #region Tenants
         public const string Pages_Tenants = "Pages.Tenants";

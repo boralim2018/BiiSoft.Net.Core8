@@ -699,5 +699,6 @@
 		<text name="ParentAccount">Parent Account</text>
 		<text name="AccountType">Account Type</text>
 		<text name="SubAccountType">Sub Account Type</text>
+		<text name="FindChartOfAccounts">Find Chart Of Accounts</text>
 	</texts>
 </localizationDictionary>
