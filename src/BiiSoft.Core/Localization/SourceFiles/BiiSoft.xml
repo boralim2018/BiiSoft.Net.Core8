@@ -275,6 +275,7 @@
 		<text name="Banks">Banks</text>
 		<text name="Bank">Bank</text>
 		<text name="ChartOfAccounts">Chart of Accounts</text>
+		<text name="ChartOfAccount">Chart of Account</text>
 		<text name="Accounts">Accounts</text>
 		<text name="Account">Account</text>
 		<text name="Journals">Journals</text>
@@ -700,5 +701,6 @@
 		<text name="AccountType">Account Type</text>
 		<text name="SubAccountType">Sub Account Type</text>
 		<text name="FindChartOfAccounts">Find Chart Of Accounts</text>
+		<text name="CustomAccountCodeEnable">Custom Account Code Enable</text>
 	</texts>
 </localizationDictionary>

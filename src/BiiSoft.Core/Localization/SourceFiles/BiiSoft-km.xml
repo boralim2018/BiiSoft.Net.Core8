@@ -275,6 +275,7 @@
 		<text name="Banks">ធនាគារ</text>
 		<text name="Bank">ធនាគារ</text>
 		<text name="ChartOfAccounts">តារាងគណនី</text>
+		<text name="ChartOfAccount">តារាងគណនី</text>
 		<text name="Accounts">គណនី</text>
 		<text name="Account">គណនី</text>
 		<text name="Journals">ទិនានុប្បវត្តិ</text>
@@ -700,6 +701,7 @@
 		<text name="AccountType">ប្រភេទគណនី</text>
 		<text name="SubAccountType">ប្រភេទគណនីរង</text>
 		<text name="FindChartOfAccounts">ស្វែងរកគណនី</text>
+		<text name="CustomAccountCodeEnable">ដាក់កូដគណនីខ្លួនឯង</text>
 		
 	</texts>
 </localizationDictionary>

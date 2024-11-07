@@ -26,7 +26,6 @@ namespace BiiSoft.ChartOfAccounts
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IAppFolders _appFolders;
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
-        private readonly bool _customAccountCodeEnable;
         
         public ChartOfAccountManager(
             IAppFolders appFolders,
@@ -39,16 +38,12 @@ namespace BiiSoft.ChartOfAccounts
             _unitOfWorkManager = unitOfWorkManager;
             _appFolders = appFolders;
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
-
-            _customAccountCodeEnable = _companyAdvanceSettingRepository.GetAll().AsNoTracking().Select(s => s.CustomAccountCodeEnable).FirstOrDefault();
         }
 
         #region override base class
       
         protected override string InstanceName => L("ChartOfAccount");
         protected override bool IsUniqueName => true;
-
-        private bool AutoGenerateCode => !_customAccountCodeEnable;
 
         protected override void ValidateInput(ChartOfAccount input)
         {
@@ -77,9 +72,16 @@ namespace BiiSoft.ChartOfAccounts
             return ChartOfAccount.Create(input.TenantId, input.CreatorUserId.Value, input.SubAccountType, input.Code, input.Name, input.DisplayName, input.ParentId);
         }
 
+        private async Task<bool> CheckAutoGenerateCodeAsync()
+        {
+            return !await _companyAdvanceSettingRepository.GetAll().AsNoTracking().Select(s => s.CustomAccountCodeEnable).FirstOrDefaultAsync();
+        }
+
         protected override async Task BeforeInstanceUpdate(ChartOfAccount input, ChartOfAccount entity)
         {
-            if (AutoGenerateCode && entity.SubAccountType != input.SubAccountType) await SetCodeAsync(input);
+            var autoGenerateCode = await CheckAutoGenerateCodeAsync();
+
+            if (autoGenerateCode && entity.SubAccountType != input.SubAccountType) await SetCodeAsync(input);
         }
 
         protected override void UpdateInstance(ChartOfAccount input, ChartOfAccount entity)
@@ -123,7 +125,8 @@ namespace BiiSoft.ChartOfAccounts
 
         public override async Task<IdentityResult> InsertAsync(ChartOfAccount input)
         {
-            if(AutoGenerateCode) await SetCodeAsync(input);
+            var autoGenerateCode = await CheckAutoGenerateCodeAsync();
+            if (autoGenerateCode) await SetCodeAsync(input);
             return await base.InsertAsync(input);
         }
 
@@ -177,12 +180,14 @@ namespace BiiSoft.ChartOfAccounts
         public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
             var accounts = new List<ChartOfAccount>();
+            var autoGenerateCode = false;
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
                 using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
                 {
                     accounts = await _repository.GetAll().AsNoTracking().ToListAsync();
+                    autoGenerateCode = await CheckAutoGenerateCodeAsync();
                 }
             }
 
@@ -203,7 +208,7 @@ namespace BiiSoft.ChartOfAccounts
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
                         var code = worksheet.GetString(i, 1);
-                        if (!AutoGenerateCode) ValidateCodeInput(code, $", Row: {i}");
+                        if (!autoGenerateCode) ValidateCodeInput(code, $", Row: {i}");
                        
                         var name = worksheet.GetString(i, 2);
                         ValidateName(name, $", Row: {i}");
@@ -234,7 +239,7 @@ namespace BiiSoft.ChartOfAccounts
                         var cannotEdit = worksheet.GetBool(i, 6);
                         var cannotDelete = worksheet.GetBool(i, 7);
 
-                        if (AutoGenerateCode)
+                        if (autoGenerateCode)
                         {
                             if (code.IsNullOrWhiteSpace())
                             {
