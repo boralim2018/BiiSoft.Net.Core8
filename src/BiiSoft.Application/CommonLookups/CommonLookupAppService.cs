@@ -8,10 +8,10 @@ using Abp.Extensions;
 using Abp.Timing.Timezone;
 using BiiSoft.Authorization;
 using BiiSoft.Timing;
-using Abp.Collections.Extensions;
 using BiiSoft.CommonLookups.Dto;
-using BiiSoft.CityProvinces.Dto;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using BiiSoft.Enums;
+using BiiSoft.Extensions;
+using Abp.Collections.Extensions;
 
 namespace BiiSoft.CommonLookups
 {
@@ -26,6 +26,62 @@ namespace BiiSoft.CommonLookups
             _timeZoneService = timeZoneService;
         }
 
+        public async Task<PagedResultDto<NameValueDto<AccountType>>> GetAccountTypes(AccountTypePageFilterInputDto input)
+        {
+            var models = new List<AccountType>();
+            await Task.Run(() => {
+                models = Enum.GetValues(typeof(AccountType))
+                             .Cast<AccountType>()
+                             .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => s.GetName().ToLower().Contains(input.Keyword.ToLower()))
+                             .OrderBy(x => input.SelectedAccountTypes.IsNullOrEmpty() || input.SelectedAccountTypes.Contains(x) ? 0 : 1)
+                             .ToList();
+            });
+
+            var totalCount = models.Count;
+            var items = new List<NameValueDto<AccountType>>();
+            if (totalCount > 0)
+            {
+                if (input.UsePagination)
+                {
+                    items = models.Skip(input.SkipCount).Take(input.MaxResultCount).Select(s => new NameValueDto<AccountType>(s.GetName(), s)).ToList();
+                }
+                else
+                {
+                    items = models.Select(s => new NameValueDto<AccountType>(s.GetName(), s)).ToList();
+                }
+            }
+
+            return new PagedResultDto<NameValueDto<AccountType>> { Items = items, TotalCount = totalCount };
+        }
+
+        public async Task<PagedResultDto<NameValueDto<SubAccountType>>> GetSubAccountTypes(SubAccountTypePageFilterInputDto input)
+        {
+            var models = new List<SubAccountType>();
+            await Task.Run(() => {
+                models = Enum.GetValues(typeof(SubAccountType))
+                             .Cast<SubAccountType>()
+                             .WhereIf(!input.AccountTypes.IsNullOrEmpty(), s => input.AccountTypes.Contains(s.Parent()))
+                             .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => s.GetName().ToLower().Contains(input.Keyword.ToLower()))
+                             .OrderBy(x => input.SelectedSubAccountTypes.IsNullOrEmpty() || input.SelectedSubAccountTypes.Contains(x) ? 0 : 1)
+                             .ToList();
+            });
+
+            var totalCount = models.Count;
+            var items = new List<NameValueDto<SubAccountType>>();
+            if (totalCount > 0)
+            {
+                if (input.UsePagination)
+                {
+                    items = models.Skip(input.SkipCount).Take(input.MaxResultCount).Select(s => new NameValueDto<SubAccountType>(s.GetName(), s)).ToList();
+                }
+                else
+                {
+                    items = models.Select(s => new NameValueDto<SubAccountType>(s.GetName(), s)).ToList();
+                }
+            }
+
+            return new PagedResultDto<NameValueDto<SubAccountType>> { Items = items, TotalCount = totalCount };
+        }
 
         public async Task<PagedResultDto<string>> GetTimeZones(TimeZonePageFilterInputDto input)
         {

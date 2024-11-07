@@ -20,6 +20,9 @@
     <None Remove="Taxes\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Extensions\CollectionExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Abp.AutoMapper" Version="9.3.0" />
     <PackageReference Include="Abp.MailKit" Version="9.3.0" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
