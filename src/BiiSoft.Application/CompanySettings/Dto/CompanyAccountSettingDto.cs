@@ -32,8 +32,8 @@ namespace BiiSoft.Branches
         public Guid? DefaultBillPaymentAccountId { get; set; }
         public string DefaultBillPaymentAccountName { get; set; }
 
-        public Guid? DefaultReceiptPaymentAccountId { get; set; }
-        public string DefaultReceiptPaymentAccountName { get; set; }
+        public Guid? DefaultReceivePaymentAccountId { get; set; }
+        public string DefaultReceivePaymentAccountName { get; set; }
 
         public Guid? DefaultRetainEarningAccountId { get; set; }
         public string DefaultRetainEarningAccountName { get; set; }

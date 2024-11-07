@@ -198,7 +198,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.DefaultSaleDiscountAccount).WithMany().HasForeignKey(i => i.DefaultSaleDiscountAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.DefaultInventoryPurchaseAccount).WithMany().HasForeignKey(i => i.DefaultInventoryPurchaseAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.DefaultBillPaymentAccount).WithMany().HasForeignKey(i => i.DefaultBillPaymentAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-                e.HasOne(i => i.DefaultReceiptPaymentAccount).WithMany().HasForeignKey(i => i.DefaultReceiptPaymentAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.DefaultReceivePaymentAccount).WithMany().HasForeignKey(i => i.DefaultReceivePaymentAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.DefaultRetainEarningAccount).WithMany().HasForeignKey(i => i.DefaultRetainEarningAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.DefaultExchangeLossGainAccount).WithMany().HasForeignKey(i => i.DefaultExchangeLossGainAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.DefaultItemReceiptAccount).WithMany().HasForeignKey(i => i.DefaultItemReceiptAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);

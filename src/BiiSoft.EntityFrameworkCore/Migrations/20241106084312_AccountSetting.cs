@@ -26,7 +26,7 @@ namespace BiiSoft.Migrations
                     DefaultSaleDiscountAccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     DefaultInventoryPurchaseAccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     DefaultBillPaymentAccountId = table.Column<Guid>(type: "uuid", nullable: true),
-                    DefaultReceiptPaymentAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultReceivePaymentAccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     DefaultRetainEarningAccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     DefaultExchangeLossGainAccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     DefaultItemReceiptAccountId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -131,7 +131,7 @@ namespace BiiSoft.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultReceipt~",
-                        column: x => x.DefaultReceiptPaymentAccountId,
+                        column: x => x.DefaultReceivePaymentAccountId,
                         principalTable: "BiiChartOfAccounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -220,9 +220,9 @@ namespace BiiSoft.Migrations
                 column: "DefaultPurchaseDiscountAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BiiCompanyAccountSettings_DefaultReceiptPaymentAccountId",
+                name: "IX_BiiCompanyAccountSettings_DefaultReceivePaymentAccountId",
                 table: "BiiCompanyAccountSettings",
-                column: "DefaultReceiptPaymentAccountId");
+                column: "DefaultReceivePaymentAccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCompanyAccountSettings_DefaultRetainEarningAccountId",

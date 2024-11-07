@@ -1877,7 +1877,7 @@ namespace BiiSoft.Migrations
                     b.Property<Guid?>("DefaultPurchaseDiscountAccountId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("DefaultReceiptPaymentAccountId")
+                    b.Property<Guid?>("DefaultReceivePaymentAccountId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("DefaultRetainEarningAccountId")
@@ -1925,7 +1925,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("DefaultPurchaseDiscountAccountId");
 
-                    b.HasIndex("DefaultReceiptPaymentAccountId");
+                    b.HasIndex("DefaultReceivePaymentAccountId");
 
                     b.HasIndex("DefaultRetainEarningAccountId");
 
@@ -3208,9 +3208,9 @@ namespace BiiSoft.Migrations
                         .HasForeignKey("DefaultPurchaseDiscountAccountId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultReceiptPaymentAccount")
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultReceivePaymentAccount")
                         .WithMany()
-                        .HasForeignKey("DefaultReceiptPaymentAccountId")
+                        .HasForeignKey("DefaultReceivePaymentAccountId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultRetainEarningAccount")
@@ -3251,7 +3251,7 @@ namespace BiiSoft.Migrations
 
                     b.Navigation("DefaultPurchaseDiscountAccount");
 
-                    b.Navigation("DefaultReceiptPaymentAccount");
+                    b.Navigation("DefaultReceivePaymentAccount");
 
                     b.Navigation("DefaultRetainEarningAccount");
 

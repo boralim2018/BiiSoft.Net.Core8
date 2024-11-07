@@ -31,8 +31,8 @@ namespace BiiSoft.Branches
         public Guid? DefaultBillPaymentAccountId { get; protected set; }
         public ChartOfAccount DefaultBillPaymentAccount { get; protected set; }
 
-        public Guid? DefaultReceiptPaymentAccountId { get; protected set; }
-        public ChartOfAccount DefaultReceiptPaymentAccount { get; protected set; }
+        public Guid? DefaultReceivePaymentAccountId { get; protected set; }
+        public ChartOfAccount DefaultReceivePaymentAccount { get; protected set; }
 
         public Guid? DefaultRetainEarningAccountId { get; protected set; }
         public ChartOfAccount DefaultRetainEarningAccount { get; protected set; }
@@ -57,8 +57,10 @@ namespace BiiSoft.Branches
 
         public Guid? DefaultItemExchangeAccountId { get; protected set; }
         public ChartOfAccount DefaultItemExchangeAccount { get; protected set; }
+
         public Guid? DefaultCashTransferAccountId { get; protected set; }
         public ChartOfAccount DefaultCashTransferAccount { get; protected set; }
+
         public Guid? DefaultCashExchangeAccountId { get; protected set; }
         public ChartOfAccount DefaultCashExchangeAccount { get; protected set; }
 
@@ -71,7 +73,7 @@ namespace BiiSoft.Branches
             Guid? purchaseDiscountAccountId,
             Guid? saleDiscountAccountId,           
             Guid? billPaymentAccountId,
-            Guid? receiptPaymentAccountId,
+            Guid? receivePaymentAccountId,
             Guid? purchaseAccountId,
             Guid? retainEarningAccountId,
             Guid? exchangeLossGainAccountId,
@@ -96,7 +98,7 @@ namespace BiiSoft.Branches
                 DefaultPurchaseDiscountAccountId = purchaseDiscountAccountId,
                 DefaultSaleDiscountAccountId = saleDiscountAccountId,
                 DefaultBillPaymentAccountId = billPaymentAccountId,
-                DefaultReceiptPaymentAccountId = receiptPaymentAccountId,
+                DefaultReceivePaymentAccountId = receivePaymentAccountId,
                 DefaultRetainEarningAccountId = retainEarningAccountId,
                 DefaultExchangeLossGainAccountId = exchangeLossGainAccountId,
                 DefaultItemReceiptAccountId = itemReceiptAccountId,
@@ -117,7 +119,7 @@ namespace BiiSoft.Branches
             Guid? purchaseDiscountAccountId,
             Guid? saleDiscountAccountId,
             Guid? billPaymentAccountId,
-            Guid? receiptPaymentAccountId,
+            Guid? receivePaymentAccountId,
             Guid? purchaseAccountId,
             Guid? retainEarningAccountId,
             Guid? exchangeLossGainAccountId,
@@ -138,7 +140,7 @@ namespace BiiSoft.Branches
             DefaultPurchaseDiscountAccountId = purchaseDiscountAccountId;
             DefaultSaleDiscountAccountId = saleDiscountAccountId;
             DefaultBillPaymentAccountId = billPaymentAccountId;
-            DefaultReceiptPaymentAccountId = receiptPaymentAccountId;
+            DefaultReceivePaymentAccountId = receivePaymentAccountId;
             DefaultInventoryPurchaseAccountId = purchaseAccountId;
             DefaultRetainEarningAccountId = retainEarningAccountId;
             DefaultExchangeLossGainAccountId = exchangeLossGainAccountId;
