@@ -11,6 +11,7 @@ using System.IO;
 using OfficeOpenXml;
 using Microsoft.AspNetCore.Http;
 using Abp.Dependency;
+using Amazon.S3.Util;
 
 namespace BiiSoft.FileStorages
 {
@@ -48,7 +49,7 @@ namespace BiiSoft.FileStorages
 
         private async Task CheckS3Bucket(string bucketName)
         {
-            var bucketExists = await _s3Client.DoesS3BucketExistAsync(bucketName);
+            var bucketExists = await AmazonS3Util.DoesS3BucketExistV2Async(_s3Client, bucketName);
             if (!bucketExists) throw new UserFriendlyException("MainFolderNotExists");
         }
 

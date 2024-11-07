@@ -26,4 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BiiSoft.Core\BiiSoft.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ChartOfAccounts\" />
+  </ItemGroup>
 </Project>

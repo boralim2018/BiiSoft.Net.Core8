@@ -19,6 +19,49 @@ namespace BiiSoft.Migrations
                 nullable: true);
 
             migrationBuilder.CreateTable(
+                name: "BiiChartOfAccounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
+                    AccountType = table.Column<int>(type: "integer", nullable: false),
+                    SubAccountType = table.Column<int>(type: "integer", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CannotEdit = table.Column<bool>(type: "boolean", nullable: false),
+                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiChartOfAccounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiChartOfAccounts_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiChartOfAccounts_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiChartOfAccounts_BiiChartOfAccounts_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BiiCompanyAdvanceSettings",
                 columns: table => new
                 {
@@ -29,8 +72,8 @@ namespace BiiSoft.Migrations
                     MultiCurrencyEnable = table.Column<bool>(type: "boolean", nullable: false),
                     LineDiscountEnable = table.Column<bool>(type: "boolean", nullable: false),
                     TotalDiscountEnable = table.Column<bool>(type: "boolean", nullable: false),
+                    CustomAccountCodeEnable = table.Column<bool>(type: "boolean", nullable: false),
                     ClassEnable = table.Column<bool>(type: "boolean", nullable: false),
-                    ContactAddressLevel = table.Column<int>(type: "integer", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -64,6 +107,16 @@ namespace BiiSoft.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BiiFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiFiles_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiFiles_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +142,16 @@ namespace BiiSoft.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BiiLocations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiLocations_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiLocations_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -133,6 +196,152 @@ namespace BiiSoft.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Currencies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Currencies_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Currencies_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BiiCompanyAccountSettings",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    DefaultAPAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultARAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultPurchaseDiscountAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultSaleDiscountAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultInventoryPurchaseAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultBillPaymentAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultReceivePaymentAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultRetainEarningAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultExchangeLossGainAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultItemReceiptAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultItemIssueAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultItemAdjustmentAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultItemTransferAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultItemProductionAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultItemExchangeAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultCashTransferAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DefaultCashExchangeAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiCompanyAccountSettings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultAPAccou~",
+                        column: x => x.DefaultAPAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultARAccou~",
+                        column: x => x.DefaultARAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultBillPay~",
+                        column: x => x.DefaultBillPaymentAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultCashExc~",
+                        column: x => x.DefaultCashExchangeAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultCashTra~",
+                        column: x => x.DefaultCashTransferAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultExchang~",
+                        column: x => x.DefaultExchangeLossGainAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultInvento~",
+                        column: x => x.DefaultInventoryPurchaseAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultItemAdj~",
+                        column: x => x.DefaultItemAdjustmentAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultItemExc~",
+                        column: x => x.DefaultItemExchangeAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultItemIss~",
+                        column: x => x.DefaultItemIssueAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultItemPro~",
+                        column: x => x.DefaultItemProductionAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultItemRec~",
+                        column: x => x.DefaultItemReceiptAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultItemTra~",
+                        column: x => x.DefaultItemTransferAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultPurchas~",
+                        column: x => x.DefaultPurchaseDiscountAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultReceive~",
+                        column: x => x.DefaultReceivePaymentAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultRetainE~",
+                        column: x => x.DefaultRetainEarningAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiCompanyAccountSettings_BiiChartOfAccounts_DefaultSaleDis~",
+                        column: x => x.DefaultSaleDiscountAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -160,6 +369,16 @@ namespace BiiSoft.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BiiCountries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiCountries_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiCountries_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BiiCountries_Currencies_CurrencyId",
                         column: x => x.CurrencyId,
@@ -192,6 +411,16 @@ namespace BiiSoft.Migrations
                 {
                     table.PrimaryKey("PK_BiiCityProvinces", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_BiiCityProvinces_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiCityProvinces_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_BiiCityProvinces_BiiCountries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "BiiCountries",
@@ -212,6 +441,7 @@ namespace BiiSoft.Migrations
                     BusinessStartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     RoundTotalDigits = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
                     RoundCostDigits = table.Column<int>(type: "integer", nullable: false, defaultValue: 2),
+                    ContactAddressLevel = table.Column<int>(type: "integer", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -259,6 +489,16 @@ namespace BiiSoft.Migrations
                 {
                     table.PrimaryKey("PK_BiiKhanDistricts", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_BiiKhanDistricts_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiKhanDistricts_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_BiiKhanDistricts_BiiCityProvinces_CityProvinceId",
                         column: x => x.CityProvinceId,
                         principalTable: "BiiCityProvinces",
@@ -297,6 +537,16 @@ namespace BiiSoft.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BiiSangkatCommunes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiSangkatCommunes_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiSangkatCommunes_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BiiSangkatCommunes_BiiCityProvinces_CityProvinceId",
                         column: x => x.CityProvinceId,
@@ -343,6 +593,16 @@ namespace BiiSoft.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BiiVillages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiVillages_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiVillages_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BiiVillages_BiiCityProvinces_CityProvinceId",
                         column: x => x.CityProvinceId,
@@ -461,6 +721,16 @@ namespace BiiSoft.Migrations
                 {
                     table.PrimaryKey("PK_BiiBranches", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_BiiBranches_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiBranches_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_BiiBranches_ContactAddresses_BillingAddressId",
                         column: x => x.BillingAddressId,
                         principalTable: "ContactAddresses",
@@ -492,6 +762,16 @@ namespace BiiSoft.Migrations
                 {
                     table.PrimaryKey("PK_BiiUserBranchs", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_BiiUserBranchs_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiUserBranchs_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_BiiUserBranchs_AbpUsers_MemberId",
                         column: x => x.MemberId,
                         principalTable: "AbpUsers",
@@ -509,6 +789,16 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiBranches_BillingAddressId",
                 table: "BiiBranches",
                 column: "BillingAddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiBranches_CreatorUserId",
+                table: "BiiBranches",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiBranches_LastModifierUserId",
+                table: "BiiBranches",
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiBranches_No",
@@ -532,6 +822,47 @@ namespace BiiSoft.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiChartOfAccounts_AccountType",
+                table: "BiiChartOfAccounts",
+                column: "AccountType");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiChartOfAccounts_Code_TenantId",
+                table: "BiiChartOfAccounts",
+                columns: new[] { "Code", "TenantId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiChartOfAccounts_CreatorUserId",
+                table: "BiiChartOfAccounts",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiChartOfAccounts_DisplayName",
+                table: "BiiChartOfAccounts",
+                column: "DisplayName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiChartOfAccounts_LastModifierUserId",
+                table: "BiiChartOfAccounts",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiChartOfAccounts_Name",
+                table: "BiiChartOfAccounts",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiChartOfAccounts_ParentId",
+                table: "BiiChartOfAccounts",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiChartOfAccounts_SubAccountType",
+                table: "BiiChartOfAccounts",
+                column: "SubAccountType");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiCityProvinces_Code",
                 table: "BiiCityProvinces",
                 column: "Code",
@@ -541,6 +872,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiCityProvinces_CountryId",
                 table: "BiiCityProvinces",
                 column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCityProvinces_CreatorUserId",
+                table: "BiiCityProvinces",
+                column: "CreatorUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCityProvinces_DisplayName",
@@ -554,6 +890,11 @@ namespace BiiSoft.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiCityProvinces_LastModifierUserId",
+                table: "BiiCityProvinces",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiCityProvinces_Name",
                 table: "BiiCityProvinces",
                 column: "Name");
@@ -562,6 +903,91 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiCityProvinces_No",
                 table: "BiiCityProvinces",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultAPAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultAPAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultARAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultARAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultBillPaymentAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultBillPaymentAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultCashExchangeAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultCashExchangeAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultCashTransferAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultCashTransferAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultExchangeLossGainAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultExchangeLossGainAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultInventoryPurchaseAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultInventoryPurchaseAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultItemAdjustmentAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultItemAdjustmentAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultItemExchangeAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultItemExchangeAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultItemIssueAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultItemIssueAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultItemProductionAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultItemProductionAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultItemReceiptAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultItemReceiptAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultItemTransferAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultItemTransferAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultPurchaseDiscountAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultPurchaseDiscountAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultReceivePaymentAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultReceivePaymentAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultRetainEarningAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultRetainEarningAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCompanyAccountSettings_DefaultSaleDiscountAccountId",
+                table: "BiiCompanyAccountSettings",
+                column: "DefaultSaleDiscountAccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCompanyGeneralSettings_CountryId",
@@ -578,6 +1004,11 @@ namespace BiiSoft.Migrations
                 table: "BiiCountries",
                 column: "Code",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCountries_CreatorUserId",
+                table: "BiiCountries",
+                column: "CreatorUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCountries_CurrencyId",
@@ -602,6 +1033,11 @@ namespace BiiSoft.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiCountries_LastModifierUserId",
+                table: "BiiCountries",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiCountries_Name",
                 table: "BiiCountries",
                 column: "Name",
@@ -618,6 +1054,11 @@ namespace BiiSoft.Migrations
                 column: "PhonePrefix");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiFiles_CreatorUserId",
+                table: "BiiFiles",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiFiles_DisplayName_TenantId",
                 table: "BiiFiles",
                 columns: new[] { "DisplayName", "TenantId" });
@@ -627,6 +1068,11 @@ namespace BiiSoft.Migrations
                 table: "BiiFiles",
                 columns: new[] { "FilePath", "TenantId" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiFiles_LastModifierUserId",
+                table: "BiiFiles",
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiFiles_Name_TenantId",
@@ -644,9 +1090,19 @@ namespace BiiSoft.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiKhanDistricts_CreatorUserId",
+                table: "BiiKhanDistricts",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiKhanDistricts_DisplayName",
                 table: "BiiKhanDistricts",
                 column: "DisplayName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiKhanDistricts_LastModifierUserId",
+                table: "BiiKhanDistricts",
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiKhanDistricts_Name",
@@ -665,9 +1121,19 @@ namespace BiiSoft.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiLocations_CreatorUserId",
+                table: "BiiLocations",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiLocations_DisplayName",
                 table: "BiiLocations",
                 column: "DisplayName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiLocations_LastModifierUserId",
+                table: "BiiLocations",
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiLocations_Name",
@@ -690,6 +1156,11 @@ namespace BiiSoft.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiSangkatCommunes_CreatorUserId",
+                table: "BiiSangkatCommunes",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiSangkatCommunes_DisplayName",
                 table: "BiiSangkatCommunes",
                 column: "DisplayName");
@@ -698,6 +1169,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiSangkatCommunes_KhanDistrictId",
                 table: "BiiSangkatCommunes",
                 column: "KhanDistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiSangkatCommunes_LastModifierUserId",
+                table: "BiiSangkatCommunes",
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiSangkatCommunes_Name",
@@ -727,6 +1203,16 @@ namespace BiiSoft.Migrations
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiUserBranchs_CreatorUserId",
+                table: "BiiUserBranchs",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiUserBranchs_LastModifierUserId",
+                table: "BiiUserBranchs",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiUserBranchs_MemberId",
                 table: "BiiUserBranchs",
                 column: "MemberId");
@@ -742,6 +1228,11 @@ namespace BiiSoft.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiVillages_CreatorUserId",
+                table: "BiiVillages",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiVillages_DisplayName",
                 table: "BiiVillages",
                 column: "DisplayName");
@@ -750,6 +1241,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiVillages_KhanDistrictId",
                 table: "BiiVillages",
                 column: "KhanDistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiVillages_LastModifierUserId",
+                table: "BiiVillages",
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiVillages_Name",
@@ -809,9 +1305,19 @@ namespace BiiSoft.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Currencies_CreatorUserId",
+                table: "Currencies",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Currencies_DisplayName",
                 table: "Currencies",
                 column: "DisplayName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Currencies_LastModifierUserId",
+                table: "Currencies",
+                column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Currencies_Name",
@@ -822,6 +1328,9 @@ namespace BiiSoft.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "BiiCompanyAccountSettings");
+
             migrationBuilder.DropTable(
                 name: "BiiCompanyAdvanceSettings");
 
@@ -836,6 +1345,9 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.DropTable(
                 name: "BiiUserBranchs");
+
+            migrationBuilder.DropTable(
+                name: "BiiChartOfAccounts");
 
             migrationBuilder.DropTable(
                 name: "BiiBranches");

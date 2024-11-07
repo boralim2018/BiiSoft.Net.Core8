@@ -1829,9 +1829,6 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<bool>("CustomAccountCodeEnable")
-                        .HasColumnType("boolean");
-
                     b.Property<Guid?>("DefaultAPAccountId")
                         .HasColumnType("uuid");
 
@@ -1947,6 +1944,9 @@ namespace BiiSoft.Migrations
 
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("CustomAccountCodeEnable")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp without time zone");

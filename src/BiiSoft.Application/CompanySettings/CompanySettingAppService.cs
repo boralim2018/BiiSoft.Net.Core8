@@ -32,9 +32,11 @@ namespace BiiSoft.Branches
         private readonly ITransactionNoSettingManager _transactionNoSettingManager;
         private readonly ICompanyGeneralSettingManager _companyGeneralSettingManager;
         private readonly ICompanyAdvanceSettingManager _companyAdvanceSettingManager;
+        private readonly ICompanyAccountSettingManager _companyAccountSettingManager;
         private readonly IBiiSoftRepository<TransactionNoSetting, Guid> _transactionNoSettingRepository;
         private readonly IBiiSoftRepository<CompanyGeneralSetting, long> _companyGeneralSettingRepository;
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
+        private readonly IBiiSoftRepository<CompanyAccountSetting, long> _companyAccountSettingRepository;
         private readonly IBranchManager _branchManager;
         private readonly IBiiSoftRepository<Branch, Guid> _branchRepository;
         private readonly IContactAddressManager _contactAddressManager;
@@ -46,9 +48,11 @@ namespace BiiSoft.Branches
             ITransactionNoSettingManager transactionNoSettingManager,
             ICompanyGeneralSettingManager companyGeneralSettingManager,
             ICompanyAdvanceSettingManager companyAdvanceSettingManager,
+            ICompanyAccountSettingManager companyAccountSettingManager,
             IBiiSoftRepository<TransactionNoSetting, Guid> transactionNoSettingRepository,
             IBiiSoftRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
+            IBiiSoftRepository<CompanyAccountSetting, long> companyAccountSettingRepository,
             IUnitOfWorkManager unitOfWorkManager,
             IFileStorageManager fileStorageManager,
             IAppFolders appFolders,
@@ -66,9 +70,11 @@ namespace BiiSoft.Branches
             _unitOfWorkManager=unitOfWorkManager;
             _companyGeneralSettingManager=companyGeneralSettingManager;
             _companyAdvanceSettingManager=companyAdvanceSettingManager;
-            _companyGeneralSettingRepository=companyGeneralSettingRepository;
+            _companyAccountSettingManager=companyAccountSettingManager;
+            _transactionNoSettingManager = transactionNoSettingManager;
+            _companyGeneralSettingRepository =companyGeneralSettingRepository;
             _companyAdvanceSettingRepository=companyAdvanceSettingRepository;
-            _transactionNoSettingManager=transactionNoSettingManager;
+            _companyAccountSettingRepository=companyAccountSettingRepository;
             _transactionNoSettingRepository=transactionNoSettingRepository;
         }
 
@@ -118,6 +124,24 @@ namespace BiiSoft.Branches
             else
             {
                 CheckErrors(await _companyAdvanceSettingManager.UpdateAsync(entity));
+            }
+
+            return entity.Id;
+        }
+
+
+        [AbpAuthorize(PermissionNames.Pages_Company_CompanySetting_Edit)]
+        public async Task<long> CreateOrUpdateAccountSetting(CreateUpdateCompanyAccountSettingInputDto input)
+        {
+            var entity = MapEntity<CompanyAccountSetting, long>(input);
+
+            if (input.Id.IsNullOrZero())
+            {
+                CheckErrors(await _companyAccountSettingManager.InsertAsync(entity));
+            }
+            else
+            {
+                CheckErrors(await _companyAccountSettingManager.UpdateAsync(entity));
             }
 
             return entity.Id;
@@ -258,11 +282,48 @@ namespace BiiSoft.Branches
                 MultiCurrencyEnable = s.MultiCurrencyEnable,
                 LineDiscountEnable = s.LineDiscountEnable,
                 TotalDiscountEnable = s.TotalDiscountEnable,
+                CustomAccountCodeEnable = s.CustomAccountCodeEnable,
                 ClassEnable = s.ClassEnable
             })
             .FirstOrDefaultAsync();
 
-            
+            var accountSetting = await _companyAccountSettingRepository.GetAll().AsNoTracking()
+            .Select(s => new CompanyAccountSettingDto
+            {
+                Id = s.Id,
+                DefaultAPAccountId = s.DefaultAPAccountId,
+                DefaultARAccountId = s.DefaultARAccountId,
+                DefaultPurchaseDiscountAccountId = s.DefaultPurchaseDiscountAccountId,
+                DefaultSaleDiscountAccountId = s.DefaultSaleDiscountAccountId,
+                DefaultInventoryPurchaseAccountId = s.DefaultInventoryPurchaseAccountId,
+                DefaultBillPaymentAccountId = s.DefaultBillPaymentAccountId,
+                DefaultReceivePaymentAccountId = s.DefaultReceivePaymentAccountId,
+                DefaultItemReceiptAccountId = s.DefaultItemReceiptAccountId,
+                DefaultItemIssueAccountId = s.DefaultItemIssueAccountId,
+                DefaultItemAdjustmentAccountId = s.DefaultItemAdjustmentAccountId,
+                DefaultItemTransferAccountId = s.DefaultItemTransferAccountId,
+                DefaultItemProductionAccountId = s.DefaultItemProductionAccountId,
+                DefaultItemExchangeAccountId = s.DefaultItemExchangeAccountId,
+                DefaultCashTransferAccountId = s.DefaultCashTransferAccountId,
+                DefaultCashExchangeAccountId = s.DefaultCashExchangeAccountId,
+                DefaultAPAccountName = !s.DefaultAPAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultAPAccount.Name : s.DefaultAPAccount.DisplayName,
+                DefaultARAccountName = !s.DefaultARAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultARAccount.Name : s.DefaultARAccount.DisplayName,
+                DefaultPurchaseDiscountAccountName = !s.DefaultPurchaseDiscountAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultPurchaseDiscountAccount.Name : s.DefaultPurchaseDiscountAccount.DisplayName,
+                DefaultSaleDiscountAccountName = !s.DefaultSaleDiscountAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultSaleDiscountAccount.Name : s.DefaultSaleDiscountAccount.DisplayName,
+                DefaultInventoryPurchaseAccountName = !s.DefaultInventoryPurchaseAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultInventoryPurchaseAccount.Name : s.DefaultInventoryPurchaseAccount.DisplayName,
+                DefaultBillPaymentAccountName = !s.DefaultBillPaymentAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultBillPaymentAccount.Name : s.DefaultBillPaymentAccount.DisplayName,
+                DefaultReceivePaymentAccountName = !s.DefaultReceivePaymentAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultReceivePaymentAccount.Name : s.DefaultReceivePaymentAccount.DisplayName,
+                DefaultItemReceiptAccountName = !s.DefaultItemReceiptAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemReceiptAccount.Name : s.DefaultItemReceiptAccount.DisplayName,
+                DefaultItemIssueAccountName = !s.DefaultItemIssueAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemIssueAccount.Name : s.DefaultItemIssueAccount.DisplayName,
+                DefaultItemAdjustmentAccountName = !s.DefaultItemAdjustmentAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemAdjustmentAccount.Name : s.DefaultItemAdjustmentAccount.DisplayName,
+                DefaultItemTransferAccountName = !s.DefaultItemTransferAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemTransferAccount.Name : s.DefaultItemTransferAccount.DisplayName,
+                DefaultItemProductionAccountName = !s.DefaultItemProductionAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemProductionAccount.Name : s.DefaultItemProductionAccount.DisplayName,
+                DefaultItemExchangeAccountName = !s.DefaultItemExchangeAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemExchangeAccount.Name : s.DefaultItemExchangeAccount.DisplayName,
+                DefaultCashTransferAccountName = !s.DefaultCashTransferAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultCashTransferAccount.Name : s.DefaultCashTransferAccount.DisplayName,
+                DefaultCashExchangeAccountName = !s.DefaultCashExchangeAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultCashExchangeAccount.Name : s.DefaultCashExchangeAccount.DisplayName,
+            })
+            .FirstOrDefaultAsync();
+
             var transactionNos = await _transactionNoSettingRepository.GetAll().AsNoTracking().Select(s => new TransactionNoSettingDto
             {
                 Id = s.Id,
@@ -301,6 +362,7 @@ namespace BiiSoft.Branches
                 Branch = branch,
                 GeneralSetting = generalSetting,
                 AdvanceSetting = advanceSetting,
+                AccountSetting = accountSetting,
                 TransactionNoSettings = transactionNoSettings
             };
         }

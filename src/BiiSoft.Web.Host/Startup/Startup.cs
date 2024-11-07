@@ -101,7 +101,10 @@ namespace BiiSoft.Web.Host.Startup
             services.AddHangfire(config =>
             {
                 //config.UseSqlServerStorage(_appConfiguration.GetConnectionString("Default"));
-                config.UsePostgreSqlStorage(_appConfiguration.GetConnectionString("Default"));                
+                //config.UsePostgreSqlStorage(_appConfiguration.GetConnectionString("Default"));
+                config.UsePostgreSqlStorage(a => { 
+                    a.UseNpgsqlConnection(_appConfiguration.GetConnectionString("Default"));  
+                });
             });
             services.AddHangfireServer();
             GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 2, DelaysInSeconds = new int[] { 300 } });

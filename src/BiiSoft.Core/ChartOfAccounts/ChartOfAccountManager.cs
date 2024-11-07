@@ -25,23 +25,22 @@ namespace BiiSoft.ChartOfAccounts
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IAppFolders _appFolders;
-        private readonly IBiiSoftRepository<CompanyAccountSetting, long> _companyAccountSettingRepository;
-        private readonly bool customAccountCodeEnable;
+        private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
+        private readonly bool _customAccountCodeEnable;
         
         public ChartOfAccountManager(
             IAppFolders appFolders,
             IBiiSoftRepository<ChartOfAccount, Guid> repository,
-            IBiiSoftRepository<CompanyAccountSetting, long> companyAccountSettingRepository,
+            IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager): base(repository) 
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _appFolders = appFolders;
-            _companyAccountSettingRepository = companyAccountSettingRepository;
+            _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
 
-            var setting = _companyAccountSettingRepository.GetAll().AsNoTracking().FirstOrDefault();
-            customAccountCodeEnable = setting != null && setting.CustomAccountCodeEnable;
+            _customAccountCodeEnable = _companyAdvanceSettingRepository.GetAll().AsNoTracking().Select(s => s.CustomAccountCodeEnable).FirstOrDefault();
         }
 
         #region override base class
@@ -49,7 +48,7 @@ namespace BiiSoft.ChartOfAccounts
         protected override string InstanceName => L("ChartOfAccount");
         protected override bool IsUniqueName => true;
 
-        private bool AutoGenerateAccountCode => !customAccountCodeEnable;
+        private bool AutoGenerateCode => !_customAccountCodeEnable;
 
         protected override void ValidateInput(ChartOfAccount input)
         {
@@ -80,7 +79,7 @@ namespace BiiSoft.ChartOfAccounts
 
         protected override async Task BeforeInstanceUpdate(ChartOfAccount input, ChartOfAccount entity)
         {
-            if (AutoGenerateAccountCode && entity.SubAccountType != input.SubAccountType) await SetCodeAsync(input);
+            if (AutoGenerateCode && entity.SubAccountType != input.SubAccountType) await SetCodeAsync(input);
         }
 
         protected override void UpdateInstance(ChartOfAccount input, ChartOfAccount entity)
@@ -124,7 +123,7 @@ namespace BiiSoft.ChartOfAccounts
 
         public override async Task<IdentityResult> InsertAsync(ChartOfAccount input)
         {
-            if(AutoGenerateAccountCode) await SetCodeAsync(input);
+            if(AutoGenerateCode) await SetCodeAsync(input);
             return await base.InsertAsync(input);
         }
 
@@ -204,7 +203,7 @@ namespace BiiSoft.ChartOfAccounts
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
                         var code = worksheet.GetString(i, 1);
-                        if (!AutoGenerateAccountCode) ValidateCodeInput(code, $", Row: {i}");
+                        if (!AutoGenerateCode) ValidateCodeInput(code, $", Row: {i}");
                        
                         var name = worksheet.GetString(i, 2);
                         ValidateName(name, $", Row: {i}");
@@ -235,7 +234,7 @@ namespace BiiSoft.ChartOfAccounts
                         var cannotEdit = worksheet.GetBool(i, 6);
                         var cannotDelete = worksheet.GetBool(i, 7);
 
-                        if (AutoGenerateAccountCode)
+                        if (AutoGenerateCode)
                         {
                             if (code.IsNullOrWhiteSpace())
                             {

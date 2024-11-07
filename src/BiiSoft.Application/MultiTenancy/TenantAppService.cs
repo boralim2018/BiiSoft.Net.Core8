@@ -49,12 +49,14 @@ namespace BiiSoft.MultiTenancy
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<CompanyGeneralSetting, long> _companyGeneralSettingRepository;
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
+        private readonly IBiiSoftRepository<CompanyAccountSetting, long> _companyAccountSettingRepository;
         private readonly IBiiSoftRepository<TransactionNoSetting, Guid> _transactionNoSettingRepository;
-
+        
         public TenantAppService(
             IBiiSoftRepository<TransactionNoSetting, Guid> transactionNoSettingRepository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
             IBiiSoftRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
+            IBiiSoftRepository<CompanyAccountSetting, long> companyAccountSettingRepository,
             IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
             IBiiSoftRepository<Branch, Guid> branchRepository,
             IRepository<Tenant, int> repository,
@@ -75,6 +77,7 @@ namespace BiiSoft.MultiTenancy
             _transactionNoSettingRepository = transactionNoSettingRepository;
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
             _companyGeneralSettingRepository = companyGeneralSettingRepository;
+            _companyAccountSettingRepository = companyAccountSettingRepository;
         }
 
         public override async Task<TenantDto> GetAsync(EntityDto<int> input)
@@ -194,8 +197,20 @@ namespace BiiSoft.MultiTenancy
             {
                 var multiBranchEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_Branches);
                 var multiCurrencyEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_MultiCurrencies);
-                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false);
+                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false, false);
                 await _companyAdvanceSettingRepository.InsertAsync(advanceSetting);
+            }
+
+            var findAccount = await _companyAccountSettingRepository.GetAll().AsNoTracking().AnyAsync();
+            if (!findAccount)
+            {
+                var accountSetting = new CompanyAccountSetting
+                {
+                    TenantId = tenantId,
+                    CreatorUserId = userId,
+                    CreationTime = Clock.Now
+                };
+                await _companyAccountSettingRepository.InsertAsync(accountSetting);
             }
 
             var journalTypes = Enum.GetValues(typeof(JournalType)).Cast<JournalType>()

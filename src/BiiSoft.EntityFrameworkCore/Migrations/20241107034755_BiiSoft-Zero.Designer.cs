@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20240921154854_ChartOfAccount")]
-    partial class ChartOfAccount
+    [Migration("20241107034755_BiiSoft-Zero")]
+    partial class BiiSoftZero
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1818,6 +1818,119 @@ namespace BiiSoft.Migrations
                     b.ToTable("BiiBranches");
                 });
 
+            modelBuilder.Entity("BiiSoft.Branches.CompanyAccountSetting", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("DefaultAPAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultARAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultBillPaymentAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultCashExchangeAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultCashTransferAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultExchangeLossGainAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultInventoryPurchaseAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultItemAdjustmentAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultItemExchangeAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultItemIssueAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultItemProductionAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultItemReceiptAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultItemTransferAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultPurchaseDiscountAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultReceivePaymentAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultRetainEarningAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DefaultSaleDiscountAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DefaultAPAccountId");
+
+                    b.HasIndex("DefaultARAccountId");
+
+                    b.HasIndex("DefaultBillPaymentAccountId");
+
+                    b.HasIndex("DefaultCashExchangeAccountId");
+
+                    b.HasIndex("DefaultCashTransferAccountId");
+
+                    b.HasIndex("DefaultExchangeLossGainAccountId");
+
+                    b.HasIndex("DefaultInventoryPurchaseAccountId");
+
+                    b.HasIndex("DefaultItemAdjustmentAccountId");
+
+                    b.HasIndex("DefaultItemExchangeAccountId");
+
+                    b.HasIndex("DefaultItemIssueAccountId");
+
+                    b.HasIndex("DefaultItemProductionAccountId");
+
+                    b.HasIndex("DefaultItemReceiptAccountId");
+
+                    b.HasIndex("DefaultItemTransferAccountId");
+
+                    b.HasIndex("DefaultPurchaseDiscountAccountId");
+
+                    b.HasIndex("DefaultReceivePaymentAccountId");
+
+                    b.HasIndex("DefaultRetainEarningAccountId");
+
+                    b.HasIndex("DefaultSaleDiscountAccountId");
+
+                    b.ToTable("BiiCompanyAccountSettings");
+                });
+
             modelBuilder.Entity("BiiSoft.Branches.CompanyAdvanceSetting", b =>
                 {
                     b.Property<long>("Id")
@@ -1834,6 +1947,9 @@ namespace BiiSoft.Migrations
 
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("CustomAccountCodeEnable")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp without time zone");
@@ -3018,6 +3134,128 @@ namespace BiiSoft.Migrations
                     b.Navigation("LastModifierUser");
 
                     b.Navigation("ShippingAddress");
+                });
+
+            modelBuilder.Entity("BiiSoft.Branches.CompanyAccountSetting", b =>
+                {
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultAPAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultAPAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultARAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultARAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultBillPaymentAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultBillPaymentAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultCashExchangeAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultCashExchangeAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultCashTransferAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultCashTransferAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultExchangeLossGainAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultExchangeLossGainAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultInventoryPurchaseAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultInventoryPurchaseAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultItemAdjustmentAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultItemAdjustmentAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultItemExchangeAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultItemExchangeAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultItemIssueAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultItemIssueAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultItemProductionAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultItemProductionAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultItemReceiptAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultItemReceiptAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultItemTransferAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultItemTransferAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultPurchaseDiscountAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultPurchaseDiscountAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultReceivePaymentAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultReceivePaymentAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultRetainEarningAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultRetainEarningAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "DefaultSaleDiscountAccount")
+                        .WithMany()
+                        .HasForeignKey("DefaultSaleDiscountAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DefaultAPAccount");
+
+                    b.Navigation("DefaultARAccount");
+
+                    b.Navigation("DefaultBillPaymentAccount");
+
+                    b.Navigation("DefaultCashExchangeAccount");
+
+                    b.Navigation("DefaultCashTransferAccount");
+
+                    b.Navigation("DefaultExchangeLossGainAccount");
+
+                    b.Navigation("DefaultInventoryPurchaseAccount");
+
+                    b.Navigation("DefaultItemAdjustmentAccount");
+
+                    b.Navigation("DefaultItemExchangeAccount");
+
+                    b.Navigation("DefaultItemIssueAccount");
+
+                    b.Navigation("DefaultItemProductionAccount");
+
+                    b.Navigation("DefaultItemReceiptAccount");
+
+                    b.Navigation("DefaultItemTransferAccount");
+
+                    b.Navigation("DefaultPurchaseDiscountAccount");
+
+                    b.Navigation("DefaultReceivePaymentAccount");
+
+                    b.Navigation("DefaultRetainEarningAccount");
+
+                    b.Navigation("DefaultSaleDiscountAccount");
                 });
 
             modelBuilder.Entity("BiiSoft.Branches.CompanyGeneralSetting", b =>

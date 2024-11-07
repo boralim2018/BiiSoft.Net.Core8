@@ -19,6 +19,7 @@ namespace BiiSoft.CompanySettings
         Task<Guid> CreateOrUpdateProfile(CreateUpdateBranchInputDto input);
         Task<long> CreateOrUpdateGeneralSetting(CreateUpdateCompanyGeneralSettingInputDto input);
         Task<long> CreateOrUpdateAdvanceSetting(CreateUpdateCompanyAdvanceSettingInputDto input);
+        Task<long> CreateOrUpdateAccountSetting(CreateUpdateCompanyAccountSettingInputDto input);
         Task<List<NameValueDto<JournalType>>> CreateOrUpdateTransactionNoSetting(List<CreateUpdateTransactionNoSettingInputDto> input);
 
     }
