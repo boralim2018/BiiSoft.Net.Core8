@@ -12,6 +12,7 @@ using BiiSoft.CommonLookups.Dto;
 using BiiSoft.Enums;
 using BiiSoft.Extensions;
 using Abp.Collections.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BiiSoft.CommonLookups
 {
@@ -26,61 +27,33 @@ namespace BiiSoft.CommonLookups
             _timeZoneService = timeZoneService;
         }
 
-        public async Task<PagedResultDto<NameValueDto<AccountType>>> GetAccountTypes(AccountTypePageFilterInputDto input)
+        public async Task<ListResultDto<NameValueDto<AccountType>>> GetAccountTypes()
         {
-            var models = new List<AccountType>();
+            var items = new List<NameValueDto<AccountType>>();
             await Task.Run(() => {
-                models = Enum.GetValues(typeof(AccountType))
+                items = Enum.GetValues(typeof(AccountType))
                              .Cast<AccountType>()
-                             .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => s.GetName().ToLower().Contains(input.Keyword.ToLower()))
-                             .OrderBy(x => input.SelectedAccountTypes.IsNullOrEmpty() || input.SelectedAccountTypes.Contains(x) ? 0 : 1)
+                             .Select(s => new NameValueDto<AccountType>(s.GetName(), s))
                              .ToList();
             });
 
-            var totalCount = models.Count;
-            var items = new List<NameValueDto<AccountType>>();
-            if (totalCount > 0)
-            {
-                if (input.UsePagination)
-                {
-                    items = models.Skip(input.SkipCount).Take(input.MaxResultCount).Select(s => new NameValueDto<AccountType>(s.GetName(), s)).ToList();
-                }
-                else
-                {
-                    items = models.Select(s => new NameValueDto<AccountType>(s.GetName(), s)).ToList();
-                }
-            }
-
-            return new PagedResultDto<NameValueDto<AccountType>> { Items = items, TotalCount = totalCount };
+            return new ListResultDto<NameValueDto<AccountType>> { Items = items };
         }
 
-        public async Task<PagedResultDto<NameValueDto<SubAccountType>>> GetSubAccountTypes(SubAccountTypePageFilterInputDto input)
+        public async Task<ListResultDto<NameValueDto<SubAccountType>>> GetSubAccountTypes(SubAccountTypeFilterInputDto input)
         {
-            var models = new List<SubAccountType>();
+            var items = new List<NameValueDto<SubAccountType>>();
             await Task.Run(() => {
-                models = Enum.GetValues(typeof(SubAccountType))
+                items = Enum.GetValues(typeof(SubAccountType))
                              .Cast<SubAccountType>()
-                             .WhereIf(!input.AccountTypes.IsNullOrEmpty(), s => input.AccountTypes.Contains(s.Parent()))
-                             .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => s.GetName().ToLower().Contains(input.Keyword.ToLower()))
-                             .OrderBy(x => input.SelectedSubAccountTypes.IsNullOrEmpty() || input.SelectedSubAccountTypes.Contains(x) ? 0 : 1)
+                             .WhereIf(input.AccountTypeFilter != null && !input.AccountTypeFilter.Ids.IsNullOrEmpty(), s => 
+                                (input.AccountTypeFilter.Exclude && !input.AccountTypeFilter.Ids.Contains(s.Parent())) ||
+                                (!input.AccountTypeFilter.Exclude && input.AccountTypeFilter.Ids.Contains(s.Parent())))
+                             .Select(s => new NameValueDto<SubAccountType>(s.GetName(), s))
                              .ToList();
             });
 
-            var totalCount = models.Count;
-            var items = new List<NameValueDto<SubAccountType>>();
-            if (totalCount > 0)
-            {
-                if (input.UsePagination)
-                {
-                    items = models.Skip(input.SkipCount).Take(input.MaxResultCount).Select(s => new NameValueDto<SubAccountType>(s.GetName(), s)).ToList();
-                }
-                else
-                {
-                    items = models.Select(s => new NameValueDto<SubAccountType>(s.GetName(), s)).ToList();
-                }
-            }
-
-            return new PagedResultDto<NameValueDto<SubAccountType>> { Items = items, TotalCount = totalCount };
+            return new ListResultDto<NameValueDto<SubAccountType>> { Items = items };
         }
 
         public async Task<PagedResultDto<string>> GetTimeZones(TimeZonePageFilterInputDto input)

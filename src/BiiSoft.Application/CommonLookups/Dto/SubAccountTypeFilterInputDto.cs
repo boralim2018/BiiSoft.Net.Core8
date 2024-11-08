@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BiiSoft.CommonLookups.Dto
 {
-    public class AccountTypePageFilterInputDto : PagedFilterInputDto
+    public class SubAccountTypeFilterInputDto
     {
-        public List<AccountType> SelectedAccountTypes { get; set; } 
+        public FilterInputDto<AccountType> AccountTypeFilter { get; set; }
     }
 }
