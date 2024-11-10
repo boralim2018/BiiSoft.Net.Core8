@@ -37,7 +37,7 @@ namespace BiiSoft.Extensions
         /// <returns>Ex: Prefix = X, Length = 5 return X0001</returns>
         public static string GenerateCode(this int index, int length, string prefix = "")
         {
-            return $"{prefix}{index.ToString().PadLeft(length, '0')}";
+            return $"{prefix}{index.ToString().PadLeft(length - prefix.Length, '0')}";
         }
     }
 }

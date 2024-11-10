@@ -132,6 +132,7 @@ namespace BiiSoft.ChartOfAccounts
                         {
                             Id = l.Id,
                             No = l.No,
+                            Code = l.Code,
                             Name = l.Name,
                             DisplayName = l.DisplayName,
                             CannotDelete = l.CannotDelete,
@@ -200,6 +201,7 @@ namespace BiiSoft.ChartOfAccounts
                 {
                     Id = l.Id,
                     No = l.No,
+                    Code = l.Code,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
                     CannotDelete = l.CannotDelete,

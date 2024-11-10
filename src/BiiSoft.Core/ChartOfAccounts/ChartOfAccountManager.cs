@@ -231,7 +231,7 @@ namespace BiiSoft.ChartOfAccounts
                         if (!parent.IsNullOrWhiteSpace())
                         {
                             var find = accounts.FirstOrDefault(a => a.Name.ToLower() == parent.ToLower().Trim());
-                            if (find != null) InvalidException(L("ParentAccount"), $", Row: {i}");
+                            if (find == null) InvalidException(L("ParentAccount"), $", Row: {i}");
 
                             parentId = find.Id;
                         }

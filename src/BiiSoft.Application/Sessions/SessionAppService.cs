@@ -66,6 +66,7 @@ namespace BiiSoft.Sessions
                                                MultiCurrencyEnable = s.MultiCurrencyEnable,
                                                LineDiscountEnable = s.LineDiscountEnable,
                                                TotalDiscountEnable = s.TotalDiscountEnable,
+                                               CustomAccountCodeEnable = s.CustomAccountCodeEnable,
                                                ClassEnable = s.ClassEnable
                                            })
                                            .FirstAsync();
