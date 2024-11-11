@@ -12,8 +12,8 @@ namespace BiiSoft.ChartOfAccounts.Dto
 {
     public class PageChartOfAccountInputDto : PageAuditedAcitveSortFilterInputDto
     {
-        public FilterInputDto<AccountType> AccountTypes { get; set; }
-        public FilterInputDto<SubAccountType> SubAccountTypes { get; set; }
+        public FilterInputDto<int> AccountTypes { get; set; }
+        public FilterInputDto<int> SubAccountTypes { get; set; }
         public FilterInputDto<Guid?> Parents { get; set; }
     }
 
