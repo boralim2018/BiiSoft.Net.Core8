@@ -702,6 +702,7 @@
 		<text name="SubAccountType">ប្រភេទគណនីរង</text>
 		<text name="FindChartOfAccounts">ស្វែងរកគណនី</text>
 		<text name="CustomAccountCodeEnable">ដាក់កូដគណនីខ្លួនឯង</text>
+		<text name="SubAccountCannotUseAsParent">គណនីរងមិនអាចប្រើជាគណនីមេបានទេ</text>
 		
 	</texts>
 </localizationDictionary>

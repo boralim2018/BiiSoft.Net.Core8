@@ -62,8 +62,9 @@ namespace BiiSoft.ChartOfAccounts
 
             if (!input.ParentId.IsNullOrEmpty())
             {
-                var find = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ParentId);
-                if (!find) InvalidException(L("ParentAccount"));
+                var find = await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(s => s.Id == input.ParentId);
+                if (find == null) InvalidException(L("ParentAccount"));
+                if (find.ParentId != null) ErrorException(L("SubAccountCannotUseAsParent"));
             }
         }
 
@@ -232,6 +233,7 @@ namespace BiiSoft.ChartOfAccounts
                         {
                             var find = accounts.FirstOrDefault(a => a.Name.ToLower() == parent.ToLower().Trim());
                             if (find == null) InvalidException(L("ParentAccount"), $", Row: {i}");
+                            if (find.ParentId != null) ErrorException(L("SubAccountCannotUseAsParent") + $", Row: {i}");
 
                             parentId = find.Id;
                         }

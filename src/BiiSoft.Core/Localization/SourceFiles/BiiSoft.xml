@@ -702,5 +702,6 @@
 		<text name="SubAccountType">Sub Account Type</text>
 		<text name="FindChartOfAccounts">Find Chart Of Accounts</text>
 		<text name="CustomAccountCodeEnable">Custom Account Code Enable</text>
+		<text name="SubAccountCannotUseAsParent">Sub Account cannot use as Parent Account</text>
 	</texts>
 </localizationDictionary>

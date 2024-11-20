@@ -11,8 +11,6 @@ using Abp.Timing;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using BiiSoft.Dtos;
-using Abp.Application.Services.Dto;
-using BiiSoft.ChartOfAccounts;
 
 namespace BiiSoft
 {
