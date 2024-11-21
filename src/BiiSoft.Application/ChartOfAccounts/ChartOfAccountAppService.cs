@@ -103,12 +103,18 @@ namespace BiiSoft.ChartOfAccounts
             var items = new List<FindChartOfAccountDto>();
             if (totalCount > 0)
             {
+                var isDefaultLanguage = await IsDefaultLagnuageAsync();
+
                 var selectQuery = query.OrderBy(input.GetOrdering())
                 .Select(l => new FindChartOfAccountDto
                 {
                     Id = l.Id,
+                    Code = l.Code,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
+                    AccountType = l.AccountType.ToString(),
+                    SubAccountType = l.SubAccountType.ToString(),
+                    ParentAccount = !l.ParentId.HasValue ? "" : isDefaultLanguage ? l.Parent.Name : l.Parent.DisplayName,
                     IsActive = l.IsActive,
                 });
 
