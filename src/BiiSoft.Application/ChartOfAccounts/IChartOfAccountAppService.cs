@@ -21,7 +21,7 @@ namespace BiiSoft.ChartOfAccounts
         Task Delete(EntityDto<Guid> input);
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
-        Task<PagedResultDto<FindChartOfAccountDto>> Find(PageChartOfAccountInputDto input);
+        Task<PagedResultDto<FindChartOfAccountDto>> Find(FindChartOfAccountInputDto input);
         Task ImportExcel(FileTokenInput input);
         Task<ExportFileOutput> ExportExcelTemplate();
         Task<ExportFileOutput> ExportExcel(ExportExcelChartOfAccountInputDto input);

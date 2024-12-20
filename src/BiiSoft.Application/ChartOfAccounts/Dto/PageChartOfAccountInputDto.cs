@@ -15,6 +15,12 @@ namespace BiiSoft.ChartOfAccounts.Dto
         public FilterInputDto<AccountType> AccountTypes { get; set; }
         public FilterInputDto<SubAccountType> SubAccountTypes { get; set; }
         public FilterInputDto<Guid?> Parents { get; set; }
+
+    }
+
+    public class FindChartOfAccountInputDto : PageChartOfAccountInputDto
+    {
+        public bool ExcludeSubAccount { get; set; }
     }
 
     public class ExportExcelChartOfAccountInputDto : PageChartOfAccountInputDto

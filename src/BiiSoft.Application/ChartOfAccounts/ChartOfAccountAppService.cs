@@ -19,6 +19,7 @@ using System.Transactions;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using Abp.Collections.Extensions;
+using BiiSoft.Enums;
 
 namespace BiiSoft.ChartOfAccounts
 {
@@ -74,7 +75,7 @@ namespace BiiSoft.ChartOfAccounts
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_ChartOfAccounts)]
-        public async Task<PagedResultDto<FindChartOfAccountDto>> Find(PageChartOfAccountInputDto input)
+        public async Task<PagedResultDto<FindChartOfAccountDto>> Find(FindChartOfAccountInputDto input)
         {
             var query = _chartOfAccountRepository.GetAll()
                         .AsNoTracking()
@@ -94,6 +95,7 @@ namespace BiiSoft.ChartOfAccounts
                         .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
                             (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(input.ExcludeSubAccount, s => !s.ParentId.HasValue)
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
@@ -112,8 +114,8 @@ namespace BiiSoft.ChartOfAccounts
                     Code = l.Code,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
-                    AccountType = l.AccountType.ToString(),
-                    SubAccountType = l.SubAccountType.ToString(),
+                    AccountType = l.AccountType.GetName(),
+                    SubAccountType = l.SubAccountType.GetName(),
                     ParentAccount = !l.ParentId.HasValue ? "" : isDefaultLanguage ? l.Parent.Name : l.Parent.DisplayName,
                     IsActive = l.IsActive,
                 });
@@ -146,6 +148,8 @@ namespace BiiSoft.ChartOfAccounts
                             IsActive = l.IsActive,
                             AccountType = l.AccountType,
                             SubAccountType = l.SubAccountType,
+                            AccountTypeName = l.AccountType.GetName(),
+                            SubAccountTypeName = l.SubAccountType.GetName(),
                             ParentId = l.ParentId,
                             ParentAccountName = !l.ParentId.HasValue ? "" : isDefaultLanguage ? l.Parent.Name : l.Parent.DisplayName,
                             CreationTime = l.CreationTime,
@@ -213,8 +217,8 @@ namespace BiiSoft.ChartOfAccounts
                     CannotDelete = l.CannotDelete,
                     CannotEdit = l.CannotEdit,
                     IsActive = l.IsActive,
-                    AccountType = l.AccountType,
-                    SubAccountType = l.SubAccountType,
+                    AccountType = l.AccountType.GetName(),
+                    SubAccountType = l.SubAccountType.GetName(),
                     ParentId = l.ParentId,
                     ParentAccountName = !l.ParentId.HasValue ? "" : isDefaultLanguage ? l.Parent.Name : l.Parent.DisplayName,
                     CreationTime = l.CreationTime,
