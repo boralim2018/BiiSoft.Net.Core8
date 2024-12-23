@@ -80,15 +80,15 @@ namespace BiiSoft.ChartOfAccounts
             var query = _chartOfAccountRepository.GetAll()
                         .AsNoTracking()
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                        .WhereIf(input.AccountTypes != null && !input.AccountTypes.Ids.IsNullOrEmpty(), s =>
-                            (input.AccountTypes.Exclude && (!input.AccountTypes.Ids.Contains(s.AccountType))) ||
-                            (!input.AccountTypes.Exclude && input.AccountTypes.Ids.Contains(s.AccountType)))
-                        .WhereIf(input.SubAccountTypes != null && !input.SubAccountTypes.Ids.IsNullOrEmpty(), s =>
-                            (input.SubAccountTypes.Exclude && (!input.SubAccountTypes.Ids.Contains(s.SubAccountType))) ||
-                            (!input.SubAccountTypes.Exclude && input.SubAccountTypes.Ids.Contains(s.SubAccountType)))
-                        .WhereIf(input.Parents != null && input.Parents.Ids != null && input.Parents.Ids.Any(), s =>
-                            (input.Parents.Exclude && (!s.ParentId.HasValue || !input.Parents.Ids.Contains(s.ParentId))) ||
-                            (!input.Parents.Exclude && input.Parents.Ids.Contains(s.ParentId)))
+                        .WhereIf(input.AccountTypeFilter != null && !input.AccountTypeFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.AccountTypeFilter.Exclude && (!input.AccountTypeFilter.Ids.Contains(s.AccountType))) ||
+                            (!input.AccountTypeFilter.Exclude && input.AccountTypeFilter.Ids.Contains(s.AccountType)))
+                        .WhereIf(input.SubAccountTypeFilter != null && !input.SubAccountTypeFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.SubAccountTypeFilter.Exclude && (!input.SubAccountTypeFilter.Ids.Contains(s.SubAccountType))) ||
+                            (!input.SubAccountTypeFilter.Exclude && input.SubAccountTypeFilter.Ids.Contains(s.SubAccountType)))
+                        .WhereIf(input.ParentFilter != null && input.ParentFilter.Ids != null && input.ParentFilter.Ids.Any(), s =>
+                            (input.ParentFilter.Exclude && (!s.ParentId.HasValue || !input.ParentFilter.Ids.Contains(s.ParentId))) ||
+                            (!input.ParentFilter.Exclude && input.ParentFilter.Ids.Contains(s.ParentId)))
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
                             (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
                             (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
@@ -182,15 +182,15 @@ namespace BiiSoft.ChartOfAccounts
             var query = _chartOfAccountRepository.GetAll()
                         .AsNoTracking()
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                        .WhereIf(input.AccountTypes != null && !input.AccountTypes.Ids.IsNullOrEmpty(), s =>
-                            (input.AccountTypes.Exclude && (!input.AccountTypes.Ids.Contains(s.AccountType))) ||
-                            (!input.AccountTypes.Exclude && input.AccountTypes.Ids.Contains(s.AccountType)))
-                        .WhereIf(input.SubAccountTypes != null && !input.SubAccountTypes.Ids.IsNullOrEmpty(), s =>
-                            (input.SubAccountTypes.Exclude && (!input.SubAccountTypes.Ids.Contains(s.SubAccountType))) ||
-                            (!input.SubAccountTypes.Exclude && input.SubAccountTypes.Ids.Contains(s.SubAccountType)))
-                        .WhereIf(input.Parents != null && input.Parents.Ids != null && input.Parents.Ids.Any(), s =>
-                            (input.Parents.Exclude && (!s.ParentId.HasValue || !input.Parents.Ids.Contains(s.ParentId))) ||
-                            (!input.Parents.Exclude && input.Parents.Ids.Contains(s.ParentId)))
+                        .WhereIf(input.AccountTypeFilter != null && !input.AccountTypeFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.AccountTypeFilter.Exclude && (!input.AccountTypeFilter.Ids.Contains(s.AccountType))) ||
+                            (!input.AccountTypeFilter.Exclude && input.AccountTypeFilter.Ids.Contains(s.AccountType)))
+                        .WhereIf(input.SubAccountTypeFilter != null && !input.SubAccountTypeFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.SubAccountTypeFilter.Exclude && (!input.SubAccountTypeFilter.Ids.Contains(s.SubAccountType))) ||
+                            (!input.SubAccountTypeFilter.Exclude && input.SubAccountTypeFilter.Ids.Contains(s.SubAccountType)))
+                        .WhereIf(input.ParentFilter != null && input.ParentFilter.Ids != null && input.ParentFilter.Ids.Any(), s =>
+                            (input.ParentFilter.Exclude && (!s.ParentId.HasValue || !input.ParentFilter.Ids.Contains(s.ParentId))) ||
+                            (!input.ParentFilter.Exclude && input.ParentFilter.Ids.Contains(s.ParentId)))
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
                             (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
                             (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
