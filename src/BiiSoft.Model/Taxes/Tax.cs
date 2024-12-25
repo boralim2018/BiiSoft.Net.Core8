@@ -14,12 +14,11 @@ using BiiSoft.Entities;
 namespace BiiSoft.Taxes
 {
     [Table("BiiTaxes")]
-    public class Tax : CanModifyDefaultNameActiveEntity<Guid>, IMayHaveTenant
+    public class Tax : CanModifyDefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
     {
         public int? TenantId { get; set; }
-
-        
-        [Precision(18, 2)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
         public decimal Rate { get; private set; } 
 
         public Guid? PurchaseAccountId { get; private set; }

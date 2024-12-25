@@ -11,63 +11,7 @@ using BiiSoft.Entities;
 
 namespace BiiSoft.Items
 {
-    public enum WeightUnit
-    {
-        Kg = 0,
-        Hg = 1,
-        Dag = 2,
-        g = 3,
-        dg = 4,
-        cg = 5,
-        mg = 6,
-        T = 7
-    }
-
-    public enum LengthUnit
-    {
-        Km = 0,
-        Hm = 1,
-        Dam = 2,
-        m = 3,
-        dm = 4,
-        cm = 5,
-        mm = 6,
-    }
-
-    public enum CubeUnit
-    {
-        Km3 = 0,
-        Hm3 = 1,
-        Dam3 = 2,
-        m3 = 3,
-        dm3 = 4,
-        cm3 = 5,
-        mm3 = 6,
-    }
-
-    public enum SquareUnit
-    {
-        Km2 = 0,
-        Hm2 = 1,
-        Dam2 = 2,
-        m2 = 3,
-        dm2 = 4,
-        cm2 = 5,
-        mm2 = 6,
-    }
-
-    public enum VolumeUnit
-    {
-        Kl = 0,
-        Hl = 1,
-        Dal = 2,
-        l = 3,
-        dl = 4,
-        cl = 5,
-        ml = 6,
-    }
-
-
+   
     [Table("BiiItems")]
     public class Item : NameActiveEntity<Guid>, IMustHaveTenant
     {
@@ -81,29 +25,28 @@ namespace BiiSoft.Items
         [StringLength(BiiSoftConsts.MaxLengthLongCode, ErrorMessage = BiiSoftConsts.MaxLengthLongCodeErrorMessage)]
         public string Code { get; private set; }
 
-        [Precision(18, 6)]
         public decimal NetWeight { get; private set; }
-        [Precision(18, 6)]
         public decimal GrossWeight { get; private set; }
-
-        [Precision(18, 6)]
-        public decimal Volume { get; private set; }
-       
-        [Precision(18, 6)]
         public decimal Length { get; private set; }
-        [Precision(18, 6)]
         public decimal Width { get; private set; }
-        [Precision(18, 6)]
         public decimal Height { get; private set; }
+        public decimal Diameter { get; private set; }
+        public decimal Area { get; private set; }
+        public decimal Volume { get; private set; }
 
-        [Precision(18, 6)]
-        public decimal Square { get; private set; }
-        [Precision(18, 6)]
-        public decimal Cube { get; private set; }
+        public WeightUnit WeightUnit { get; private set; }
+        public LengthUnit LengthUnit { get; private set; }
+        public AreaUnit AreaUnit { get; private set; }
+        public VolumeUnit VolumeUnit { get; private set; }
 
         public bool TrackSerial { get; private set; }
         public bool TrackExpired { get; private set; }
-        public bool TrackStatus { get; private set; }
+        public bool TrackBatchNo { get; private set; }
+        public bool TrackInventoryStatus { get; private set; }
+
+        public decimal ReorderStock { get; private set; }
+        public decimal MinStock { get; private set; }
+        public decimal MaxStock { get; private set; }
 
         public Guid? ItemGroupId { get; private set; }
         public ItemGroup ItemGroup { get; private set; }
@@ -160,12 +103,6 @@ namespace BiiSoft.Items
         public Guid? InventoryAccountId { get; private set; }
         public ChartOfAccount InventoryAccount { get; private set; }
 
-        [Precision(18, 6)]
-        public decimal StockAlert { get; private set; }
-        [Precision(18, 6)]
-        public decimal MinStock { get; private set; }
-        [Precision(18, 6)]
-        public decimal MaxStock { get; private set; }
 
         [MaxLength(BiiSoftConsts.MaxLengthLongDescription)]
         [StringLength(BiiSoftConsts.MaxLengthLongDescription, ErrorMessage = BiiSoftConsts.MaxLengthLongDescriptionErrorMessage)]
@@ -180,84 +117,25 @@ namespace BiiSoft.Items
             string name,
             string displayName,
             string description,
-            Guid? itemGroupId,
-            Guid? unitId,
-            Guid? purchaseAccountId,
-            Guid? saleAccountId,
-            Guid? purchaseTaxId,
-            Guid saleTaxId)
-        {
-            return new Item
-            {
-                TenantId = tenantId,
-                CreatorUserId = userId,
-                CreationTime = Clock.Now,
-                ItemType = itemType,
-                Code = code,
-                Name = name,
-                DisplayName = displayName,
-                Description = description,
-                ItemCategory = itemCategory,
-                ItemGroupId = itemGroupId,
-                UnitId = unitId,
-                PurchaseAccountId = purchaseAccountId,
-                SaleAccountId = saleAccountId,
-                PurchaseTaxId = purchaseTaxId,
-                SaleTaxId = saleTaxId,
-                IsActive = true
-            };
-        }
-
-        public void Update(
-            long userId,
-            ItemType itemType,
-            ItemCategory? itemCategory,
-            string code,
-            string name,
-            string displayName,
-            string description,
-            Guid? itemGroupId,
-            Guid? unitId,
-            Guid? purchaseAccountId,
-            Guid? saleAccountId,
-            Guid? purchaseTaxId,
-            Guid saleTaxId)
-        {
-
-            LastModifierUserId = userId;
-            LastModificationTime = Clock.Now;
-            ItemType = itemType;
-            Code = code;
-            Name = name;
-            DisplayName = displayName;
-            Description = description;
-            ItemCategory = ItemCategory;
-            ItemGroupId = itemGroupId;
-            UnitId = unitId;
-            PurchaseAccountId = purchaseAccountId;
-            SaleAccountId = saleAccountId;
-            PurchaseTaxId = purchaseTaxId;
-            SaleTaxId = saleTaxId;
-            IsActive = true;
-        }
-
-        public static Item Create(
-            int tenantId,
-            long userId,
-            ItemType itemType,
-            ItemCategory? itemCategory,
-            string code,
-            string name,
-            string displayName,
-            string description,
-            decimal stockAlert,
+            decimal reorderStock,
             decimal minStock,
             decimal maxStock,
             decimal netWeight,
             decimal grossWeight,
+            decimal width,
+            decimal height,
+            decimal length,
+            decimal diameter,
+            decimal area,
+            decimal volume,
+            WeightUnit weightUnit,
+            LengthUnit lengthUnit,
+            AreaUnit areaUnit,
+            VolumeUnit volumeUnit,
             bool trackSerial,
             bool trackExpired,
-            bool trackStatus,
+            bool trackBatchNo,
+            bool trackInventoryStatus,
             Guid? itemGroupId,
             Guid? itemBrandId,
             Guid? itemGradeId,
@@ -288,19 +166,30 @@ namespace BiiSoft.Items
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
                 ItemType = itemType,
+                ItemCategory = itemCategory,
                 Code = code,
                 Name = name,
                 DisplayName = displayName,
                 Description = description,
-                StockAlert = stockAlert,
+                ReorderStock = reorderStock,
                 MinStock = minStock,
                 MaxStock = maxStock,
                 NetWeight = netWeight,
                 GrossWeight = grossWeight,
+                Width = width,
+                Height = height,
+                Length = length,
+                Diameter = diameter,
+                Area = area,
+                Volume = volume,
+                WeightUnit = weightUnit,
+                LengthUnit = lengthUnit,
+                AreaUnit = areaUnit,
+                VolumeUnit = volumeUnit,
                 TrackSerial = trackSerial,
                 TrackExpired = trackExpired,
-                TrackStatus = trackStatus,
-                ItemCategory = itemCategory,
+                TrackBatchNo = trackBatchNo,
+                TrackInventoryStatus = trackInventoryStatus,
                 ItemGroupId = itemGroupId,
                 ItemBrandId = itemBrandId,
                 ItemGradeId = itemGradeId,
@@ -335,14 +224,25 @@ namespace BiiSoft.Items
             string name,
             string displayName,
             string description,
-            decimal stockAlert,
+            decimal reorderStock,
             decimal minStock,
             decimal maxStock,
             decimal netWeight,
             decimal grossWeight,
+            decimal width,
+            decimal height,
+            decimal length,
+            decimal diameter,
+            decimal area,
+            decimal volume,
+            WeightUnit weightUnit,
+            LengthUnit lengthUnit,
+            AreaUnit areaUnit,
+            VolumeUnit volumeUnit,
             bool trackSerial,
             bool trackExpired,
-            bool trackStatus,
+            bool trackBatchNo,
+            bool trackInventoryStatus,
             ItemCategory? itemCategory,
             Guid? itemGroupId,
             Guid? itemBrandId,
@@ -375,14 +275,25 @@ namespace BiiSoft.Items
             Name = name;
             DisplayName = displayName;
             Description = description;
-            StockAlert = stockAlert;
+            ReorderStock = reorderStock;
             MinStock = minStock;
             MaxStock = maxStock;
             NetWeight = netWeight;
             GrossWeight = grossWeight;
+            Width = width;
+            Height = height;
+            Length = length;
+            Diameter = diameter;
+            Area = area;
+            Volume = volume;
+            WeightUnit = weightUnit;
+            LengthUnit = lengthUnit;
+            AreaUnit = areaUnit;
+            VolumeUnit = volumeUnit;
             TrackSerial = trackSerial;
             TrackExpired = trackExpired;
-            TrackStatus = trackStatus;
+            TrackBatchNo = trackBatchNo;
+            TrackInventoryStatus = trackInventoryStatus;
             ItemCategory = itemCategory;
             ItemGroupId = itemGroupId;
             ItemBrandId = itemBrandId;

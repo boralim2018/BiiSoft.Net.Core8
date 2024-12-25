@@ -11,6 +11,7 @@ using BiiSoft.Locations;
 using BiiSoft.Currencies;
 using BiiSoft.ContactInfo;
 using BiiSoft.ChartOfAccounts;
+using BiiSoft.Taxes;
 
 namespace BiiSoft.EntityFrameworkCore
 {
@@ -37,10 +38,10 @@ namespace BiiSoft.EntityFrameworkCore
       
         public DbSet<Currency> Currencies { get; set; }
 
-        //public DbSet<CompanySetting> CompanySettings { get; set; }
-        //public DbSet<Tax> Taxes { get; set; }
+       
         public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
         public DbSet<CompanyAccountSetting> CompanyAccountSettings { get; set; }
+        public DbSet<Tax> Taxes { get; set; }
 
 
         //public DbSet<Unit> Units { get; set; }
@@ -209,6 +210,14 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.DefaultItemExchangeAccount).WithMany().HasForeignKey(i => i.DefaultItemExchangeAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.DefaultCashTransferAccount).WithMany().HasForeignKey(i => i.DefaultCashTransferAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.DefaultCashExchangeAccount).WithMany().HasForeignKey(i => i.DefaultCashExchangeAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Tax>(e =>
+            {
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+                e.HasOne(i => i.PurchaseAccount).WithMany().HasForeignKey(i => i.PurchaseAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.SaleAccount).WithMany().HasForeignKey(i => i.SaleAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             });
 
         }

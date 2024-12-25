@@ -15,11 +15,6 @@
     <EmbeddedResource Include="Localization\SourceFiles\*.xml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Taxes\**" />
-    <EmbeddedResource Remove="Taxes\**" />
-    <None Remove="Taxes\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Extensions\CollectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
