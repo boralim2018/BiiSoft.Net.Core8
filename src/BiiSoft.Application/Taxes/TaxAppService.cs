@@ -41,7 +41,7 @@ namespace BiiSoft.Taxes
             _unitOfWorkManager=unitOfWorkManager;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_Create)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_Create)]
         public async Task<Guid> Create(CreateUpdateTaxInputDto input)
         {
             var entity = MapEntity<Tax, Guid>(input);
@@ -50,13 +50,13 @@ namespace BiiSoft.Taxes
             return entity.Id;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_Delete)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
             CheckErrors(await _taxManager.DeleteAsync(input.Id));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_Disable)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
@@ -64,7 +64,7 @@ namespace BiiSoft.Taxes
             CheckErrors(await _taxManager.DisableAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_Enable)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
@@ -72,7 +72,15 @@ namespace BiiSoft.Taxes
             CheckErrors(await _taxManager.EnableAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Find_Taxs)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_SetAsDefault)]
+        public async Task SetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _taxManager.SetAsDefaultAsync(entity));
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Find_Taxes)]
         public async Task<PagedResultDto<FindTaxDto>> Find(PageTaxInputDto input)
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
@@ -80,12 +88,6 @@ namespace BiiSoft.Taxes
             var query = _taxRepository.GetAll()
                         .AsNoTracking()
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                        .WhereIf(input.Countries != null && input.Countries.Ids != null && input.Countries.Ids.Any(), s =>
-                            (input.Countries.Exclude && (!s.CountryId.HasValue || !input.Countries.Ids.Contains(s.CountryId.Value))) ||
-                            (!input.Countries.Exclude && input.Countries.Ids.Contains(s.CountryId.Value)))
-                        .WhereIf(input.CityProvinces != null && input.CityProvinces.Ids != null && input.CityProvinces.Ids.Any(), s =>
-                            (input.CityProvinces.Exclude && (!s.CityProvinceId.HasValue || !input.CityProvinces.Ids.Contains(s.CityProvinceId.Value))) ||
-                            (!input.CityProvinces.Exclude && input.CityProvinces.Ids.Contains(s.CityProvinceId.Value)))
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
                             (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
                             (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
@@ -93,7 +95,6 @@ namespace BiiSoft.Taxes
                             (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                         
@@ -106,11 +107,9 @@ namespace BiiSoft.Taxes
                 .Select(l => new FindTaxDto
                 {
                     Id = l.Id,
-                    Code = l.Code,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
-                    CountryName = !l.CountryId.HasValue ? "" : isDefaultLanguage ? l.Country.Name : l.Country.DisplayName,
-                    CityProvinceName = !l.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.CityProvince.Name : l.CityProvince.DisplayName,
+                    Rate = l.Rate,
                     IsActive = l.IsActive,
                 });
 
@@ -122,7 +121,7 @@ namespace BiiSoft.Taxes
             return new PagedResultDto<FindTaxDto> { TotalCount = totalCount, Items = items };
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_View, PermissionNames.Pages_Setup_Locations_Taxs_Edit)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_View, PermissionNames.Pages_Setup_Taxes_Edit)]
         public async Task<TaxDetailDto> GetDetail(EntityDto<Guid> input)
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
@@ -135,10 +134,11 @@ namespace BiiSoft.Taxes
                             Id = l.Id,
                             No = l.No,
                             Name = l.Name,
+                            Rate = l.Rate,
                             DisplayName = l.DisplayName,
+                            IsDefault = l.IsDefault,
                             CannotDelete = l.CannotDelete,
                             CannotEdit = l.CannotEdit,
-                            Code = l.Code,
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
                             CreatorUserId = l.CreatorUserId,
@@ -146,10 +146,10 @@ namespace BiiSoft.Taxes
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserId = l.LastModifierUserId,
                             LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
-                            CountryId = l.CountryId,
-                            CityProvinceId = l.CityProvinceId,
-                            CountryName = !l.CountryId.HasValue ? "" : isDefaultLanguage ? l.Country.Name : l.Country.DisplayName,                          
-                            CityProvinceName = !l.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.CityProvince.Name : l.CityProvince.DisplayName
+                            PurchaseAccountId = l.PurchaseAccountId,
+                            SaleAccountId = l.SaleAccountId,
+                            PurchaseAccountName = !l.PurchaseAccountId.HasValue ? "" : isDefaultLanguage ? l.PurchaseAccount.Name : l.PurchaseAccount.DisplayName,                          
+                            SaleAccountName = !l.SaleAccountId.HasValue ? "" : isDefaultLanguage ? l.SaleAccount.Name : l.SaleAccount.DisplayName
                         });
 
             var result = await query.FirstOrDefaultAsync();
@@ -161,7 +161,7 @@ namespace BiiSoft.Taxes
         }
 
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes)]
         public async Task<PagedResultDto<TaxListDto>> GetList(PageTaxInputDto input)
         {
             return await GetListHelper(input);
@@ -174,12 +174,6 @@ namespace BiiSoft.Taxes
             var query = _taxRepository.GetAll()
                         .AsNoTracking()
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                        .WhereIf(input.Countries != null && input.Countries.Ids != null && input.Countries.Ids.Any(), s =>
-                            (input.Countries.Exclude && (!s.CountryId.HasValue || !input.Countries.Ids.Contains(s.CountryId.Value))) ||
-                            (!input.Countries.Exclude && input.Countries.Ids.Contains(s.CountryId.Value)))
-                        .WhereIf(input.CityProvinces != null && input.CityProvinces.Ids != null && input.CityProvinces.Ids.Any(), s =>
-                            (input.CityProvinces.Exclude && (!s.CityProvinceId.HasValue || !input.CityProvinces.Ids.Contains(s.CityProvinceId.Value))) ||
-                            (!input.CityProvinces.Exclude && input.CityProvinces.Ids.Contains(s.CityProvinceId.Value)))
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
                             (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
                             (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
@@ -187,7 +181,6 @@ namespace BiiSoft.Taxes
                             (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                         
@@ -201,9 +194,10 @@ namespace BiiSoft.Taxes
                 {
                     Id = l.Id,
                     No = l.No,
-                    Code = l.Code,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
+                    Rate = l.Rate,
+                    IsDefault = l.IsDefault,
                     CannotDelete = l.CannotDelete,
                     CannotEdit = l.CannotEdit,
                     IsActive = l.IsActive,
@@ -213,8 +207,8 @@ namespace BiiSoft.Taxes
                     LastModificationTime = l.LastModificationTime,
                     LastModifierUserId = l.LastModifierUserId,
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
-                    CountryName = !l.CountryId.HasValue ? "" : isDefaultLanguage ? l.Country.Name : l.Country.DisplayName,
-                    CityProvinceName = !l.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.CityProvince.Name : l.CityProvince.DisplayName
+                    PurchaseAccountName = !l.PurchaseAccountId.HasValue ? "" : isDefaultLanguage ? l.PurchaseAccount.Name : l.PurchaseAccount.DisplayName,
+                    SaleAccountName = !l.SaleAccountId.HasValue ? "" : isDefaultLanguage ? l.SaleAccount.Name : l.SaleAccount.DisplayName
                 });
 
                 if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
@@ -226,7 +220,7 @@ namespace BiiSoft.Taxes
         }
 
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_ExportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_ExportExcel)]
         [UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcel(ExportExcelTaxInputDto input)
         {
@@ -254,14 +248,14 @@ namespace BiiSoft.Taxes
 
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_ImportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_ImportExcel)]
         [UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
             return await _taxManager.ExportExcelTemplateAsync();
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_ImportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_ImportExcel)]
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
@@ -270,7 +264,7 @@ namespace BiiSoft.Taxes
             CheckErrors(await _taxManager.ImportExcelAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Taxs_Edit)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_Edit)]
         public async Task Update(CreateUpdateTaxInputDto input)
         {
             var entity = MapEntity<Tax, Guid>(input);

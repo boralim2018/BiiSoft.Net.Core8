@@ -257,6 +257,7 @@
 		<text name="Setup">Setup</text>
 		<text name="Taxes">Taxes</text>
 		<text name="Tax">Tax</text>
+		<text name="FindTaxes">Find Taxes</text>
 		<text name="Warehouses">Warehouses</text>
 		<text name="Warehouse">Warehouse</text>
 		<text name="Locations">Locations</text>
@@ -703,5 +704,7 @@
 		<text name="FindChartOfAccounts">Find Chart Of Accounts</text>
 		<text name="CustomAccountCodeEnable">Custom Account Code Enable</text>
 		<text name="SubAccountCannotUseAsParent">Sub Account cannot use as Parent Account</text>
+		<text name="PurchaseAccount">Purchase Account</text>
+		<text name="SaleAccount">Sale Account</text>
 	</texts>
 </localizationDictionary>

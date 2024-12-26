@@ -31,6 +31,7 @@ namespace BiiSoft.Authorization
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Villages, L("FindVillages"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Currencies, L("FindCurrencies"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_ChartOfAccounts, L("FindChartOfAccounts"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_Taxes, L("FindTaxes"));
             #endregion
 
             #region Host
@@ -355,6 +356,7 @@ namespace BiiSoft.Authorization
             taxPage.CreateChildPermission(PermissionNames.Pages_Setup_Taxes_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Taxes));
             taxPage.CreateChildPermission(PermissionNames.Pages_Setup_Taxes_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Taxes));
             taxPage.CreateChildPermission(PermissionNames.Pages_Setup_Taxes_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Taxes));
+            taxPage.CreateChildPermission(PermissionNames.Pages_Setup_Taxes_SetAsDefault, L("SetAsDefault"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Taxes));
 
             #endregion
 

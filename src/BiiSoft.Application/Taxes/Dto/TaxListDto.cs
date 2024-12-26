@@ -7,7 +7,8 @@ namespace BiiSoft.Taxes.Dto
     public class TaxListDto : CanModifyDefaultNameActiveAuditedDto<Guid>
     {      
         public long No { get; set; }
-        public string PurchaseAccount { get; set; }
-        public string SaleAccount { get; set; }
+        public decimal Rate { get; set; }
+        public string PurchaseAccountName { get; set; }
+        public string SaleAccountName { get; set; }
     }
 }

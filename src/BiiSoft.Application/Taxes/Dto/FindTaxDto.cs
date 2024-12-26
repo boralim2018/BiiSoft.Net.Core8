@@ -5,7 +5,7 @@ using System;
 namespace BiiSoft.Taxes.Dto
 {
     public class FindTaxDto : NameActiveDto<Guid>
-    {      
-      
+    {
+        public decimal Rate { get; set; }
     }
 }

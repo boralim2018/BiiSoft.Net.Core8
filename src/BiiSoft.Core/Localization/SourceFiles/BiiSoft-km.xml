@@ -257,6 +257,7 @@
 		<text name="Setup">ដំឡើង</text>
 		<text name="Taxes">ពន្ធ</text>
 		<text name="Tax">ពន្ធ</text>
+		<text name="FindTaxes">ស្វែងរកពន្ធ</text>
 		<text name="Warehouses">ឃ្លាំងទំនិញ</text>
 		<text name="Warehouse">ឃ្លាំងទំនិញ</text>
 		<text name="Locations">ទីតាំង</text>
@@ -703,6 +704,8 @@
 		<text name="FindChartOfAccounts">ស្វែងរកគណនី</text>
 		<text name="CustomAccountCodeEnable">ដាក់កូដគណនីខ្លួនឯង</text>
 		<text name="SubAccountCannotUseAsParent">គណនីរងមិនអាចប្រើជាគណនីមេបានទេ</text>
+		<text name="PurchaseAccount">គណនីទិញចូល</text>
+		<text name="SaleAccount">គណនីលក់ចេញ</text>
 		
 	</texts>
 </localizationDictionary>

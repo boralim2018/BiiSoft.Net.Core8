@@ -21,6 +21,7 @@ namespace BiiSoft.Taxes
         Task Delete(EntityDto<Guid> input);
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
+        Task SetAsDefault(EntityDto<Guid> input);
         Task<PagedResultDto<FindTaxDto>> Find(PageTaxInputDto input);
         Task ImportExcel(FileTokenInput input);
         Task<ExportFileOutput> ExportExcelTemplate();

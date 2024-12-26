@@ -21,6 +21,7 @@
         public const string Pages_Find_Villages = "Pages.Find.Villages";
         public const string Pages_Find_Currencies = "Pages.Find.Currencies";
         public const string Pages_Find_ChartOfAccounts = "Pages.Find.ChartOfAccounts";
+        public const string Pages_Find_Taxes = "Pages.Find.Taxes";
 
         #region Tenants
         public const string Pages_Tenants = "Pages.Tenants";
@@ -357,6 +358,7 @@
         public const string Pages_Setup_Taxes_ExportExcel = "Pages.Setup.Taxes.ExportExcel";
         public const string Pages_Setup_Taxes_Enable = "Pages.Setup.Taxes.Enable";
         public const string Pages_Setup_Taxes_Disable = "Pages.Setup.Taxes.Disable";
+        public const string Pages_Setup_Taxes_SetAsDefault = "Pages.Setup.Taxes.SetAsDefault";
         #endregion
 
         #endregion

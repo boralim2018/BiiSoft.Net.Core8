@@ -15,8 +15,8 @@ namespace BiiSoft.Taxes.Dto
         {
             return SortField switch
             {
-                "PurchaseAccount" => "PurchaseAccount.Name",
-                "SaleAccount" => "SaleAccount.Name",
+                "PurchaseAccountName" => "PurchaseAccount.Name",
+                "SaleAccountName" => "SaleAccount.Name",
                 _ => base.MapSortField()
             };
         }

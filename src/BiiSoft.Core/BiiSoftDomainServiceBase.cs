@@ -458,7 +458,7 @@ namespace BiiSoft
 
         public async Task<IdentityResult> SetAsDefaultAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             var modificationTime = Clock.Now;
