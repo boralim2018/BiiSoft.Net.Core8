@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20241225080658_AddTax")]
-    partial class AddTax
+    [Migration("20241226092904_AddItem")]
+    partial class AddItem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2153,6 +2153,8 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("Name");
 
+                    b.HasIndex("No");
+
                     b.HasIndex("ParentId");
 
                     b.HasIndex("SubAccountType");
@@ -2288,6 +2290,1442 @@ namespace BiiSoft.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Currencies");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Battery", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiBatteries");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.CPU", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiCPUs");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Camera", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiCameras");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ColorPattern", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("CannotDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("CannotEdit")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiColorPatterns");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.FieldA", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemFieldAs");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.FieldB", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemFieldBs");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.FieldC", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemFieldCs");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.HDD", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiHDDs");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Item", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Area")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("AreaUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("BatteryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CPUId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CameraId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid?>("ColorPatternId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<decimal>("Diameter")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<Guid?>("FieldAId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("FieldBId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("FieldCId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("GrossWeight")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid?>("HDDId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Height")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid?>("ImageId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("InventoryAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("ItemBrandId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("ItemCategory")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("ItemGradeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ItemGroupId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ItemModelId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ItemSeriesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ItemSizeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ItemType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("Length")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("LengthUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("MaxStock")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("MinStock")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<decimal>("NetWeight")
+                        .HasColumnType("numeric");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<Guid?>("PurchaseAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PurchaseTaxId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("RAMId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ReorderStock")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid?>("SaleAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("SaleTaxId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ScreenId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("TrackBatchNo")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("TrackExpired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("TrackInventoryStatus")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("TrackSerial")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("UnitId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("VGAId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Volume")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("VolumeUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WeightUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Width")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BatteryId");
+
+                    b.HasIndex("CPUId");
+
+                    b.HasIndex("CameraId");
+
+                    b.HasIndex("ColorPatternId");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("FieldAId");
+
+                    b.HasIndex("FieldBId");
+
+                    b.HasIndex("FieldCId");
+
+                    b.HasIndex("HDDId");
+
+                    b.HasIndex("InventoryAccountId");
+
+                    b.HasIndex("ItemBrandId");
+
+                    b.HasIndex("ItemCategory");
+
+                    b.HasIndex("ItemGradeId");
+
+                    b.HasIndex("ItemGroupId");
+
+                    b.HasIndex("ItemModelId");
+
+                    b.HasIndex("ItemSeriesId");
+
+                    b.HasIndex("ItemSizeId");
+
+                    b.HasIndex("ItemType");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.HasIndex("PurchaseAccountId");
+
+                    b.HasIndex("PurchaseTaxId");
+
+                    b.HasIndex("RAMId");
+
+                    b.HasIndex("SaleAccountId");
+
+                    b.HasIndex("SaleTaxId");
+
+                    b.HasIndex("ScreenId");
+
+                    b.HasIndex("UnitId");
+
+                    b.HasIndex("VGAId");
+
+                    b.ToTable("BiiItems");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemBrand", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemBrands");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("FieldALabel")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FieldBLabel")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FieldCLabel")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("UseBattery")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseBrand")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseCPU")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseCamera")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseColorPattern")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseFieldA")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseFieldB")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseFieldC")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseGrade")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseModel")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseOS")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseRAM")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseScreen")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseSeries")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseSize")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseStorage")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseVGA")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.ToTable("BiiItemFieldSettings");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemGallery", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("GalleryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GalleryId");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemGalleries");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemGrade", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemGrades");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemGroups");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemModels");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemSeries", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemSeries");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemSize", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiItemSizes");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.RAM", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiRAMs");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Screen", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiScreens");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Unit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiUnits");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.VGA", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.ToTable("BiiVGAs");
                 });
 
             modelBuilder.Entity("BiiSoft.Locations.CityProvince", b =>
@@ -2909,6 +4347,8 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("Name");
 
+                    b.HasIndex("No");
+
                     b.HasIndex("PurchaseAccountId");
 
                     b.HasIndex("SaleAccountId");
@@ -3418,6 +4858,478 @@ namespace BiiSoft.Migrations
                 });
 
             modelBuilder.Entity("BiiSoft.Currencies.Currency", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Battery", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.CPU", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Camera", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ColorPattern", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.FieldA", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.FieldB", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.FieldC", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.HDD", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Item", b =>
+                {
+                    b.HasOne("BiiSoft.Items.Battery", "Battery")
+                        .WithMany()
+                        .HasForeignKey("BatteryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.CPU", "CPU")
+                        .WithMany()
+                        .HasForeignKey("CPUId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.Camera", "Camera")
+                        .WithMany()
+                        .HasForeignKey("CameraId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.ColorPattern", "ColorPattern")
+                        .WithMany()
+                        .HasForeignKey("ColorPatternId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Items.FieldA", "FieldA")
+                        .WithMany()
+                        .HasForeignKey("FieldAId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.FieldB", "FieldB")
+                        .WithMany()
+                        .HasForeignKey("FieldBId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.FieldC", "FieldC")
+                        .WithMany()
+                        .HasForeignKey("FieldCId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.HDD", "HDD")
+                        .WithMany()
+                        .HasForeignKey("HDDId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "InventoryAccount")
+                        .WithMany()
+                        .HasForeignKey("InventoryAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.ItemBrand", "ItemBrand")
+                        .WithMany()
+                        .HasForeignKey("ItemBrandId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.ItemGrade", "ItemGrade")
+                        .WithMany()
+                        .HasForeignKey("ItemGradeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.ItemGroup", "ItemGroup")
+                        .WithMany()
+                        .HasForeignKey("ItemGroupId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.ItemModel", "ItemModel")
+                        .WithMany()
+                        .HasForeignKey("ItemModelId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.ItemSeries", "ItemSeries")
+                        .WithMany()
+                        .HasForeignKey("ItemSeriesId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.ItemSize", "ItemSize")
+                        .WithMany()
+                        .HasForeignKey("ItemSizeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "PurchaseAccount")
+                        .WithMany()
+                        .HasForeignKey("PurchaseAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Taxes.Tax", "PurchaseTax")
+                        .WithMany()
+                        .HasForeignKey("PurchaseTaxId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.RAM", "RAM")
+                        .WithMany()
+                        .HasForeignKey("RAMId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "SaleAccount")
+                        .WithMany()
+                        .HasForeignKey("SaleAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Taxes.Tax", "SaleTax")
+                        .WithMany()
+                        .HasForeignKey("SaleTaxId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.Screen", "Screen")
+                        .WithMany()
+                        .HasForeignKey("ScreenId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.Unit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.Items.VGA", "VGA")
+                        .WithMany()
+                        .HasForeignKey("VGAId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Battery");
+
+                    b.Navigation("CPU");
+
+                    b.Navigation("Camera");
+
+                    b.Navigation("ColorPattern");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("FieldA");
+
+                    b.Navigation("FieldB");
+
+                    b.Navigation("FieldC");
+
+                    b.Navigation("HDD");
+
+                    b.Navigation("InventoryAccount");
+
+                    b.Navigation("ItemBrand");
+
+                    b.Navigation("ItemGrade");
+
+                    b.Navigation("ItemGroup");
+
+                    b.Navigation("ItemModel");
+
+                    b.Navigation("ItemSeries");
+
+                    b.Navigation("ItemSize");
+
+                    b.Navigation("LastModifierUser");
+
+                    b.Navigation("PurchaseAccount");
+
+                    b.Navigation("PurchaseTax");
+
+                    b.Navigation("RAM");
+
+                    b.Navigation("SaleAccount");
+
+                    b.Navigation("SaleTax");
+
+                    b.Navigation("Screen");
+
+                    b.Navigation("Unit");
+
+                    b.Navigation("VGA");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemBrand", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemGallery", b =>
+                {
+                    b.HasOne("BiiSoft.Items.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemGrade", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemGroup", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemModel", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemSeries", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemSize", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.RAM", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Screen", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Unit", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.VGA", b =>
                 {
                     b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
                         .WithMany()

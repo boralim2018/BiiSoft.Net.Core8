@@ -12,10 +12,12 @@ using BiiSoft.Entities;
 namespace BiiSoft.Items
 {
     [Table("BiiItemSizes")]
-    public class ItemSize : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    public class ItemSize : DefaultNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
+        
         public static ItemSize Create(int tenantId, long userId, string name, string displayName)
         {
             return new ItemSize

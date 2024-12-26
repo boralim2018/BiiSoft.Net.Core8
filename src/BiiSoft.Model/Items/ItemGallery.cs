@@ -3,14 +3,16 @@ using Abp.Domain.Entities;
 using Abp.Timing;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using BiiSoft.Entities;
 
 namespace BiiSoft.Items
 {
     [Table("BiiItemGalleries")]
-    public class ItemGallery : AuditedEntity<Guid>, IMustHaveTenant
+    public class ItemGallery : AuditedEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
         public Guid ItemId { get; private set; }
         public Item Item { get; private set; }
         public Guid GalleryId { get; private set; }

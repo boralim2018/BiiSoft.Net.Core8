@@ -13,10 +13,12 @@ namespace BiiSoft.Items
 {
    
     [Table("BiiItems")]
-    public class Item : NameActiveEntity<Guid>, IMustHaveTenant
+    public class Item : NameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
+       
         [Required]
         public ItemType ItemType { get; private set; }
         public ItemCategory? ItemCategory { get; private set; }
@@ -70,8 +72,8 @@ namespace BiiSoft.Items
         public RAM RAM { get; private set; }
         public Guid? VGAId { get; private set; }
         public VGA VGA { get; private set; }
-        public Guid? StorageId { get; private set; }
-        public Storage Storage { get; private set; }
+        public Guid? HDDId { get; private set; }
+        public HDD HDD { get; private set; }
         public Guid? BatteryId { get; private set; }
         public Battery Battery { get; private set; }
         public Guid? CameraId { get; private set; }
@@ -150,7 +152,7 @@ namespace BiiSoft.Items
             Guid? screenId,
             Guid? batteryId,
             Guid? cameraId,
-            Guid? storageId,
+            Guid? hddId,
             Guid? fieldAId,
             Guid? fieldBId,
             Guid? fieldCId,
@@ -204,7 +206,7 @@ namespace BiiSoft.Items
                 ScreenId = screenId,
                 BatteryId = batteryId,
                 CameraId = cameraId,
-                StorageId = storageId,
+                HDDId = hddId,
                 FieldAId = fieldAId,
                 FieldBId = fieldBId,
                 FieldCId = fieldCId,
@@ -258,7 +260,7 @@ namespace BiiSoft.Items
             Guid? screenId,
             Guid? batteryId,
             Guid? cameraId,
-            Guid? storageId,
+            Guid? hddId,
             Guid? fieldAId,
             Guid? fieldBId,
             Guid? fieldCId,
@@ -309,7 +311,7 @@ namespace BiiSoft.Items
             ScreenId = screenId;
             BatteryId = batteryId;
             CameraId = cameraId;
-            StorageId = storageId;
+            HDDId = hddId;
             FieldAId = fieldAId;
             FieldBId = fieldBId;
             FieldCId = fieldCId;

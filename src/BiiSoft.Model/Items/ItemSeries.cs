@@ -9,10 +9,12 @@ using BiiSoft.Entities;
 namespace BiiSoft.Items
 {
     [Table("BiiItemSeries")]
-    public class ItemSeries : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    public class ItemSeries : DefaultNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
+       
         public static ItemSeries Create(int tenantId, long userId, string name, string displayName)
         {
             return new ItemSeries

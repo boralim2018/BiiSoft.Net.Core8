@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20241107034755_BiiSoft-Zero")]
+    [Migration("20241226090700_BiiSoft-Zero")]
     partial class BiiSoftZero
     {
         /// <inheritdoc />
@@ -2153,6 +2153,8 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("Name");
 
+                    b.HasIndex("No");
+
                     b.HasIndex("ParentId");
 
                     b.HasIndex("SubAccountType");
@@ -2839,6 +2841,83 @@ namespace BiiSoft.Migrations
                     b.HasIndex("TenancyName");
 
                     b.ToTable("AbpTenants");
+                });
+
+            modelBuilder.Entity("BiiSoft.Taxes.Tax", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("CannotDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("CannotEdit")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<Guid?>("PurchaseAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Rate")
+                        .HasColumnType("numeric");
+
+                    b.Property<Guid?>("SaleAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("DisplayName");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("No");
+
+                    b.HasIndex("PurchaseAccountId");
+
+                    b.HasIndex("SaleAccountId");
+
+                    b.ToTable("BiiTaxes");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
@@ -3549,6 +3628,35 @@ namespace BiiSoft.Migrations
                     b.Navigation("Edition");
 
                     b.Navigation("LastModifierUser");
+                });
+
+            modelBuilder.Entity("BiiSoft.Taxes.Tax", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "PurchaseAccount")
+                        .WithMany()
+                        .HasForeignKey("PurchaseAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "SaleAccount")
+                        .WithMany()
+                        .HasForeignKey("SaleAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("LastModifierUser");
+
+                    b.Navigation("PurchaseAccount");
+
+                    b.Navigation("SaleAccount");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>

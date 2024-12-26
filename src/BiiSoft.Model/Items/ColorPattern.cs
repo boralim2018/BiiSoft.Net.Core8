@@ -9,9 +9,11 @@ using BiiSoft.Entities;
 namespace BiiSoft.Items
 {
     [Table("BiiColorPatterns")]
-    public class ColorPattern : CanModifyDefaultNameActiveEntity<Guid>, IMayHaveTenant
+    public class ColorPattern : CanModifyDefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
     {
         public int? TenantId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
 
         public static ColorPattern Create(int? tenantId, long userId, string name, string displayName)
         {

@@ -12,6 +12,7 @@ using BiiSoft.Currencies;
 using BiiSoft.ContactInfo;
 using BiiSoft.ChartOfAccounts;
 using BiiSoft.Taxes;
+using BiiSoft.Items;
 
 namespace BiiSoft.EntityFrameworkCore
 {
@@ -40,11 +41,31 @@ namespace BiiSoft.EntityFrameworkCore
 
        
         public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
-        public DbSet<CompanyAccountSetting> CompanyAccountSettings { get; set; }
+        public DbSet<CompanyAccountSetting> CompanyAccountSettings { get; set; }        
         public DbSet<Tax> Taxes { get; set; }
 
+        public DbSet<ItemGroup> ItemGroups { get; set; }
+        public DbSet<ItemBrand> ItemBrands { get; set; }
+        public DbSet<ItemGrade> ItemGrades { get; set; }
+        public DbSet<ItemModel> ItemModels { get; set; }
+        public DbSet<ItemSeries> ItemSeries { get; set; }
+        public DbSet<ItemSize> ItemSizes { get; set; }
+        public DbSet<Unit> Units { get; set; }
+        public DbSet<ColorPattern> ColorPatterns { get; set; }
+        public DbSet<CPU> CPUs { get; set; }
+        public DbSet<RAM> RAMs { get; set; }
+        public DbSet<VGA> VGAs { get; set; }
+        public DbSet<Screen> Screens { get; set; }
+        public DbSet<HDD> HDDs { get; set; }
+        public DbSet<Camera> Cameras { get; set; }
+        public DbSet<Battery> Batteries { get; set; }
+        public DbSet<FieldA> FieldAs { get; set; }
+        public DbSet<FieldB> FieldBs { get; set; }
+        public DbSet<FieldC> FieldCs { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<ItemGallery> ItemGalleries { get; set; }
+        public DbSet<ItemFieldSetting> ItemFieldSettings { get; set; }
 
-        //public DbSet<Unit> Units { get; set; }
 
         public BiiSoftDbContext(DbContextOptions<BiiSoftDbContext> options)
             : base(options)
@@ -183,6 +204,7 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<ChartOfAccount>(e =>
             {
+                e.HasIndex(i => i.No);
                 e.HasIndex(i => new { i.Code, i.TenantId }).IsUnique(true);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
@@ -214,10 +236,180 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<Tax>(e =>
             {
+                e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
                 e.HasOne(i => i.PurchaseAccount).WithMany().HasForeignKey(i => i.PurchaseAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.SaleAccount).WithMany().HasForeignKey(i => i.SaleAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ItemGroup>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<ItemGrade>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<ItemBrand>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<ItemModel>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<ItemSeries>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<ItemSize>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<Unit>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<ColorPattern>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<CPU>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<RAM>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<VGA>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<Screen>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<HDD>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<Camera>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<Battery>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<FieldA>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<FieldB>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<FieldC>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+            });
+
+            modelBuilder.Entity<Item>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.ItemType);
+                e.HasIndex(i => i.ItemCategory);
+                e.HasOne(i => i.ItemGroup).WithMany().HasForeignKey(i => i.ItemGroupId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.ItemBrand).WithMany().HasForeignKey(i => i.ItemBrandId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.ItemGrade).WithMany().HasForeignKey(i => i.ItemGradeId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.ItemSize).WithMany().HasForeignKey(i => i.ItemSizeId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.ItemModel).WithMany().HasForeignKey(i => i.ItemModelId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.ItemSeries).WithMany().HasForeignKey(i => i.ItemSeriesId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Unit).WithMany().HasForeignKey(i => i.UnitId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.ColorPattern).WithMany().HasForeignKey(i => i.ColorPatternId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.CPU).WithMany().HasForeignKey(i => i.CPUId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.RAM).WithMany().HasForeignKey(i => i.RAMId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.VGA).WithMany().HasForeignKey(i => i.VGAId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Screen).WithMany().HasForeignKey(i => i.ScreenId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.HDD).WithMany().HasForeignKey(i => i.HDDId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Camera).WithMany().HasForeignKey(i => i.CameraId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Battery).WithMany().HasForeignKey(i => i.BatteryId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.FieldA).WithMany().HasForeignKey(i => i.FieldAId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.FieldB).WithMany().HasForeignKey(i => i.FieldBId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.FieldC).WithMany().HasForeignKey(i => i.FieldCId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.PurchaseAccount).WithMany().HasForeignKey(i => i.PurchaseAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.SaleAccount).WithMany().HasForeignKey(i => i.SaleAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.InventoryAccount).WithMany().HasForeignKey(i => i.InventoryAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.SaleTax).WithMany().HasForeignKey(i => i.SaleTaxId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.PurchaseTax).WithMany().HasForeignKey(i => i.PurchaseTaxId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ItemGallery>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.GalleryId);
+                e.HasOne(i => i.Item).WithMany().HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ItemFieldSetting>(e =>
+            {  
             });
 
         }

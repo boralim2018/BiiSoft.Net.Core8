@@ -12,10 +12,12 @@ using BiiSoft.Entities;
 namespace BiiSoft.Items
 {
     [Table("BiiItemBrands")]
-    public class ItemBrand : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    public class ItemBrand : DefaultNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
+       
         public static ItemBrand Create(int tenantId, long userId, string name, string displayName)
         {
             return new ItemBrand

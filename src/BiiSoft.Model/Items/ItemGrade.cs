@@ -12,15 +12,13 @@ using BiiSoft.Entities;
 namespace BiiSoft.Items
 {
     [Table("BiiItemGrades")]
-    public class ItemGrade : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    public class ItemGrade : DefaultNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
     {
         public int TenantId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long No { get; private set; }
 
-        [MaxLength(BiiSoftConsts.MaxLengthName)]
-        [StringLength(BiiSoftConsts.MaxLengthName, ErrorMessage = BiiSoftConsts.MaxLengthNameErrorMessage)]
-        public string Description { get; private set; }
-
-        public static ItemGrade Create(int tenantId, long userId, string name, string displayNmae, string description)
+        public static ItemGrade Create(int tenantId, long userId, string name, string displayNmae)
         {
             return new ItemGrade
             {
@@ -30,18 +28,16 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayNmae,
-                Description = description,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayNmae, string description)
+        public void Update(long userId, string name, string displayNmae)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
             Name = name;
             DisplayName = displayNmae;
-            Description = description;
         }
 
     }
