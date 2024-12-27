@@ -706,5 +706,6 @@
 		<text name="SubAccountCannotUseAsParent">Sub Account cannot use as Parent Account</text>
 		<text name="PurchaseAccount">Purchase Account</text>
 		<text name="SaleAccount">Sale Account</text>
+		<text name="FindUnits">Find Units</text>
 	</texts>
 </localizationDictionary>

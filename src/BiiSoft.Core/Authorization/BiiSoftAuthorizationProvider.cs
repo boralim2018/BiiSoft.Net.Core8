@@ -32,6 +32,25 @@ namespace BiiSoft.Authorization
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Currencies, L("FindCurrencies"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_ChartOfAccounts, L("FindChartOfAccounts"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Taxes, L("FindTaxes"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_Units, L("FindUnits"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemGroups, L("FindItemGroups"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemGrads, L("FindItemGrads"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemBrands, L("FindItemBrands"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemModels, L("FindItemModels"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemSeries, L("FindItemSeries"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemSizes, L("FindItemSizes"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ColorPatterns, L("FindColorPatterns"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_CPUs, L("FindCPUs"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_RAMs, L("FindRAMs"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_VGAs, L("FindVGAs"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_HDDs, L("FindHDDs"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_Screens, L("FindScreens"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_Cameras, L("FindCameras"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_Batteries, L("FindBatteries"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_FieldAs, L("FindFieldAs"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_FieldBs, L("FindFieldBs"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_FieldCs, L("FindFieldCs"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_Items, L("FindItems"));
             #endregion
 
             #region Host

@@ -14,85 +14,85 @@ using Abp.Extensions;
 using BiiSoft.Authorization.Users;
 using Abp.Domain.Uow;
 using System.Transactions;
-using BiiSoft.Units.Dto;
+using BiiSoft.ItemGroups.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
 
-namespace BiiSoft.Units
+namespace BiiSoft.ItemGroups
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class UnitAppService : BiiSoftExcelAppServiceBase, IUnitAppService
+    public class ItemGroupAppService : BiiSoftExcelAppServiceBase, IItemGroupAppService
     {
-        private readonly IUnitManager _unitManager;
-        private readonly IBiiSoftRepository<Unit, Guid> _unitRepository;
+        private readonly IItemGroupManager _itemGroupManager;
+        private readonly IBiiSoftRepository<ItemGroup, Guid> _itemGroupRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
-        public UnitAppService(
+        public ItemGroupAppService(
             IUnitOfWorkManager unitOfWorkManager,
-            IUnitManager unitManager,
-            IBiiSoftRepository<Unit, Guid> unitRepository,
+            IItemGroupManager itemGroupManager,
+            IBiiSoftRepository<ItemGroup, Guid> itemGroupRepository,
             IBiiSoftRepository<User, long> userRepository)
         {
-            _unitManager=unitManager;
-            _unitRepository=unitRepository;
+            _itemGroupManager=itemGroupManager;
+            _itemGroupRepository=itemGroupRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_Create)]
-        public async Task<Guid> Create(CreateUpdateUnitInputDto input)
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_Create)]
+        public async Task<Guid> Create(CreateUpdateItemGroupInputDto input)
         {
-            var entity = MapEntity<Unit, Guid>(input);
+            var entity = MapEntity<ItemGroup, Guid>(input);
             
-            CheckErrors(await _unitManager.InsertAsync(entity));
+            CheckErrors(await _itemGroupManager.InsertAsync(entity));
             return entity.Id;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_Delete)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
-            CheckErrors(await _unitManager.DeleteAsync(input.Id));
+            CheckErrors(await _itemGroupManager.DeleteAsync(input.Id));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_Disable)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _unitManager.DisableAsync(entity));
+            CheckErrors(await _itemGroupManager.DisableAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_Enable)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _unitManager.EnableAsync(entity));
+            CheckErrors(await _itemGroupManager.EnableAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_SetAsDefault)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_SetAsDefault)]
         public async Task SetAsDefault(EntityDto<Guid> input)
         {
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _unitManager.SetAsDefaultAsync(entity));
+            CheckErrors(await _itemGroupManager.SetAsDefaultAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Find_Units)]
-        public async Task<FindUnitDto> GetDefaultValue()
+        [AbpAuthorize(PermissionNames.Pages_Find_ItemGroups)]
+        public async Task<FindItemGroupDto> GetDefaultValue()
         {
-            var find = await _unitManager.GetDefaultValueAsync();
-            return ObjectMapper.Map<FindUnitDto>(find);
+            var find = await _itemGroupManager.GetDefaultValueAsync();
+            return ObjectMapper.Map<FindItemGroupDto>(find);
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Find_Units)]
-        public async Task<PagedResultDto<FindUnitDto>> Find(PageUnitInputDto input)
+        [AbpAuthorize(PermissionNames.Pages_Find_ItemGroups)]
+        public async Task<PagedResultDto<FindItemGroupDto>> Find(PageItemGroupInputDto input)
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
 
-            var query = _unitRepository.GetAll()
+            var query = _itemGroupRepository.GetAll()
                         .AsNoTracking()
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
@@ -107,11 +107,11 @@ namespace BiiSoft.Units
                         
 
             var totalCount = await query.CountAsync();
-            var items = new List<FindUnitDto>();
+            var items = new List<FindItemGroupDto>();
             if (totalCount > 0)
             {
                 var selectQuery = query.OrderBy(input.GetOrdering())
-                .Select(l => new FindUnitDto
+                .Select(l => new FindItemGroupDto
                 {
                     Id = l.Id,
                     Name = l.Name,
@@ -124,16 +124,16 @@ namespace BiiSoft.Units
                 items = await selectQuery.ToListAsync();
             }
 
-            return new PagedResultDto<FindUnitDto> { TotalCount = totalCount, Items = items };
+            return new PagedResultDto<FindItemGroupDto> { TotalCount = totalCount, Items = items };
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_View, PermissionNames.Pages_Setup_Items_Units_Edit)]
-        public async Task<UnitDetailDto> GetDetail(EntityDto<Guid> input)
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_View, PermissionNames.Pages_Setup_Items_ItemGroups_Edit)]
+        public async Task<ItemGroupDetailDto> GetDetail(EntityDto<Guid> input)
         {
-            var query = _unitRepository.GetAll()
+            var query = _itemGroupRepository.GetAll()
                         .AsNoTracking()
                         .Where(s => s.Id == input.Id)
-                        .Select(l => new UnitDetailDto
+                        .Select(l => new ItemGroupDetailDto
                         {
                             Id = l.Id,
                             No = l.No,
@@ -152,21 +152,21 @@ namespace BiiSoft.Units
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
-            await _unitManager.MapNavigation(result);
+            await _itemGroupManager.MapNavigation(result);
 
             return result;
         }
 
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units)]
-        public async Task<PagedResultDto<UnitListDto>> GetList(PageUnitInputDto input)
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups)]
+        public async Task<PagedResultDto<ItemGroupListDto>> GetList(PageItemGroupInputDto input)
         {
             return await GetListHelper(input);
         }
 
-        private async Task<PagedResultDto<UnitListDto>> GetListHelper(PageUnitInputDto input)
+        private async Task<PagedResultDto<ItemGroupListDto>> GetListHelper(PageItemGroupInputDto input)
         {   
-            var query = _unitRepository.GetAll()
+            var query = _itemGroupRepository.GetAll()
                         .AsNoTracking()
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
@@ -181,11 +181,11 @@ namespace BiiSoft.Units
                         
 
             var totalCount = await query.CountAsync();
-            var items = new List<UnitListDto>();
+            var items = new List<ItemGroupListDto>();
             if (totalCount > 0)
             {
                 var selectQuery = query.OrderBy(input.GetOrdering())
-                .Select(l => new UnitListDto
+                .Select(l => new ItemGroupListDto
                 {
                     Id = l.Id,
                     No = l.No,
@@ -206,19 +206,19 @@ namespace BiiSoft.Units
                 items = await selectQuery.ToListAsync();
             }
 
-            return new PagedResultDto<UnitListDto> { TotalCount = totalCount, Items = items };
+            return new PagedResultDto<ItemGroupListDto> { TotalCount = totalCount, Items = items };
         }
 
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_ExportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_ExportExcel)]
         [UnitOfWork(IsDisabled = true)]
-        public async Task<ExportFileOutput> ExportExcel(ExportExcelUnitInputDto input)
+        public async Task<ExportFileOutput> ExportExcel(ExportExcelItemGroupInputDto input)
         {
             if (input.Columns == null || !input.Columns.Any(s => s.Visible)) throw new UserFriendlyException(L("ColumnsIsRequired", L("ExportExcel")));
 
             input.UsePagination = false;
          
-            PagedResultDto<UnitListDto> listResult;
+            PagedResultDto<ItemGroupListDto> listResult;
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
                 using (_unitOfWorkManager.Current.SetTenantId(AbpSession.TenantId))
@@ -229,7 +229,7 @@ namespace BiiSoft.Units
 
             var excelInput = new ExportFileInput
             {
-                FileName = "Unit.xlsx",
+                FileName = "ItemGroup.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
@@ -238,28 +238,28 @@ namespace BiiSoft.Units
 
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_ImportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_ImportExcel)]
         [UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
-            return await _unitManager.ExportExcelTemplateAsync();
+            return await _itemGroupManager.ExportExcelTemplateAsync();
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_ImportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_ImportExcel)]
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
             var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _unitManager.ImportExcelAsync(entity));
+            CheckErrors(await _itemGroupManager.ImportExcelAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_Edit)]
-        public async Task Update(CreateUpdateUnitInputDto input)
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_Edit)]
+        public async Task Update(CreateUpdateItemGroupInputDto input)
         {
-            var entity = MapEntity<Unit, Guid>(input);
+            var entity = MapEntity<ItemGroup, Guid>(input);
 
-            CheckErrors(await _unitManager.UpdateAsync(entity));
+            CheckErrors(await _itemGroupManager.UpdateAsync(entity));
         }
     }
 }

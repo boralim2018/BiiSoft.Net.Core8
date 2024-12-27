@@ -706,6 +706,6 @@
 		<text name="SubAccountCannotUseAsParent">គណនីរងមិនអាចប្រើជាគណនីមេបានទេ</text>
 		<text name="PurchaseAccount">គណនីទិញចូល</text>
 		<text name="SaleAccount">គណនីលក់ចេញ</text>
-		
+		<text name="FindUnits">ស្វែងរកខ្នាត</text>
 	</texts>
 </localizationDictionary>

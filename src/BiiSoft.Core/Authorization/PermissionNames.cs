@@ -22,6 +22,25 @@
         public const string Pages_Find_Currencies = "Pages.Find.Currencies";
         public const string Pages_Find_ChartOfAccounts = "Pages.Find.ChartOfAccounts";
         public const string Pages_Find_Taxes = "Pages.Find.Taxes";
+        public const string Pages_Find_Units = "Pages.Find.Units";
+        public const string Pages_Find_ItemGroups = "Pages.Find.ItemGroups";
+        public const string Pages_Find_ItemGrads = "Pages.Find.ItemGrads";
+        public const string Pages_Find_ItemBrands = "Pages.Find.ItemBrands";
+        public const string Pages_Find_ItemModels = "Pages.Find.ItemModels";
+        public const string Pages_Find_ItemSeries = "Pages.Find.ItemSeries";
+        public const string Pages_Find_ItemSizes = "Pages.Find.ItemSizes";
+        public const string Pages_Find_ColorPatterns = "Pages.Find.ColorPatterns";
+        public const string Pages_Find_CPUs = "Pages.Find.CPUs";
+        public const string Pages_Find_RAMs = "Pages.Find.RAMs";
+        public const string Pages_Find_VGAs = "Pages.Find.VGAs";
+        public const string Pages_Find_HDDs = "Pages.Find.HDDs";
+        public const string Pages_Find_Screens = "Pages.Find.Screens";
+        public const string Pages_Find_Cameras = "Pages.Find.Cameras";
+        public const string Pages_Find_Batteries = "Pages.Find.Batteries";
+        public const string Pages_Find_FieldAs = "Pages.Find.FieldAs";
+        public const string Pages_Find_FieldBs = "Pages.Find.FieldBs";
+        public const string Pages_Find_FieldCs = "Pages.Find.FieldCs";
+        public const string Pages_Find_Items = "Pages.Find.Items";
 
         #region Tenants
         public const string Pages_Tenants = "Pages.Tenants";
@@ -182,7 +201,7 @@
         public const string Pages_Setup_Items_Units_Disable = "Pages.Setup.Items.Units.Disable";
         public const string Pages_Setup_Items_Units_SetAsDefault = "Pages.Setup.Items.Units.SetAsDefault";
 
-        public const string Pages_Setup_Items_Models = "Pages.Setup.Models";
+        public const string Pages_Setup_Items_Models = "Pages.Setup.Items.Models";
         public const string Pages_Setup_Items_Models_Create = "Pages.Setup.Items.Models.Create";
         public const string Pages_Setup_Items_Models_View = "Pages.Setup.Items.Models.View";
         public const string Pages_Setup_Items_Models_Edit = "Pages.Setup.Items.Models.Edit";
