@@ -151,13 +151,12 @@
         public const string Pages_Setup_Items_ItemGroups_Create = "Pages.Setup.Items.ItemGroups.Create";
         public const string Pages_Setup_Items_ItemGroups_View = "Pages.Setup.Items.ItemGroups.View";
         public const string Pages_Setup_Items_ItemGroups_Edit = "Pages.Setup.Items.ItemGroups.Edit";
-        public const string Pages_Setup_Items_ItemGroups_EditAccount = "Pages.Setup.Items.ItemGroups.EditAccount";
-        public const string Pages_Setup_Items_ItemGroups_SeeAccount = "Pages.Setup.Items.ItemGroups.SeeAccount";
         public const string Pages_Setup_Items_ItemGroups_Delete = "Pages.Setup.Items.ItemGroups.Delete";
         public const string Pages_Setup_Items_ItemGroups_ImportExcel = "Pages.Setup.Items.ItemGroups.ImportExcel";
         public const string Pages_Setup_Items_ItemGroups_ExportExcel = "Pages.Setup.Items.ItemGroups.ExportExcel";
         public const string Pages_Setup_Items_ItemGroups_Enable = "Pages.Setup.Items.ItemGroups.Enable";
         public const string Pages_Setup_Items_ItemGroups_Disable = "Pages.Setup.Items.ItemGroups.Disable";
+        public const string Pages_Setup_Items_ItemGroups_SetAsDefault = "Pages.Setup.Items.ItemGroups.SetAsDefault";
        
         public const string Pages_Setup_Items_List = "Pages.Setup.Items.List";
         public const string Pages_Setup_Items_List_Create = "Pages.Setup.Items.List.Create";
@@ -181,6 +180,7 @@
         public const string Pages_Setup_Items_Units_ExportExcel = "Pages.Setup.Items.Units.ExportExcel";
         public const string Pages_Setup_Items_Units_Enable = "Pages.Setup.Items.Units.Enable";
         public const string Pages_Setup_Items_Units_Disable = "Pages.Setup.Items.Units.Disable";
+        public const string Pages_Setup_Items_Units_SetAsDefault = "Pages.Setup.Items.Units.SetAsDefault";
 
         public const string Pages_Setup_Items_Models = "Pages.Setup.Models";
         public const string Pages_Setup_Items_Models_Create = "Pages.Setup.Items.Models.Create";
@@ -191,6 +191,7 @@
         public const string Pages_Setup_Items_Models_ExportExcel = "Pages.Setup.Items.Models.ExportExcel";
         public const string Pages_Setup_Items_Models_Enable = "Pages.Setup.Items.Models.Enable";
         public const string Pages_Setup_Items_Models_Disable = "Pages.Setup.Items.Models.Disable";
+        public const string Pages_Setup_Items_Models_SetAsDefault = "Pages.Setup.Items.Models.SetAsDefault";
 
         public const string Pages_Setup_Items_Grades = "Pages.Setup.Items.Grades";
         public const string Pages_Setup_Items_Grades_Create = "Pages.Setup.Items.Grades.Create";
@@ -201,6 +202,7 @@
         public const string Pages_Setup_Items_Grades_ExportExcel = "Pages.Setup.Items.Grades.ExportExcel";
         public const string Pages_Setup_Items_Grades_Enable = "Pages.Setup.Items.Grades.Enable";
         public const string Pages_Setup_Items_Grades_Disable = "Pages.Setup.Items.Grades.Disable";
+        public const string Pages_Setup_Items_Grades_SetAsDefault = "Pages.Setup.Items.Grades.SetAsDefault";
 
         public const string Pages_Setup_Items_Sizes = "Pages.Setup.Items.Sizes";
         public const string Pages_Setup_Items_Sizes_Create = "Pages.Setup.Items.Sizes.Create";
@@ -211,6 +213,7 @@
         public const string Pages_Setup_Items_Sizes_ExportExcel = "Pages.Setup.Items.Sizes.ExportExcel";
         public const string Pages_Setup_Items_Sizes_Enable = "Pages.Setup.Items.Sizes.Enable";
         public const string Pages_Setup_Items_Sizes_Disable = "Pages.Setup.Items.Sizes.Disable";
+        public const string Pages_Setup_Items_Sizes_SetAsDefault = "Pages.Setup.Items.Sizes.SetAsDefault";
 
         public const string Pages_Setup_Items_ColorPatterns = "Pages.Setup.Items.ColorPatterns";
         public const string Pages_Setup_Items_ColorPatterns_Create = "Pages.Setup.Items.ColorPatterns.Create";
@@ -221,6 +224,7 @@
         public const string Pages_Setup_Items_ColorPatterns_ExportExcel = "Pages.Setup.Items.ColorPatterns.ExportExcel";
         public const string Pages_Setup_Items_ColorPatterns_Enable = "Pages.Setup.Items.ColorPatterns.Enable";
         public const string Pages_Setup_Items_ColorPatterns_Disable = "Pages.Setup.Items.ColorPatterns.Disable";
+        public const string Pages_Setup_Items_ColorPatterns_SetAsDefault = "Pages.Setup.Items.ColorPatterns.SetAsDefault";
 
         public const string Pages_Setup_Items_Brands = "Pages.Setup.Items.Brands";
         public const string Pages_Setup_Items_Brands_Create = "Pages.Setup.Items.Brands.Create";
@@ -231,6 +235,95 @@
         public const string Pages_Setup_Items_Brands_ExportExcel = "Pages.Setup.Items.Brands.ExportExcel";
         public const string Pages_Setup_Items_Brands_Enable = "Pages.Setup.Items.Brands.Enable";
         public const string Pages_Setup_Items_Brands_Disable = "Pages.Setup.Items.Brands.Disable";
+        public const string Pages_Setup_Items_Brands_SetAsDefault = "Pages.Setup.Items.Brands.SetAsDefault";
+
+        public const string Pages_Setup_Items_Series = "Pages.Setup.Items.Series";
+        public const string Pages_Setup_Items_Series_Create = "Pages.Setup.Items.Series.Create";
+        public const string Pages_Setup_Items_Series_View = "Pages.Setup.Items.Series.View";
+        public const string Pages_Setup_Items_Series_Edit = "Pages.Setup.Items.Series.Edit";
+        public const string Pages_Setup_Items_Series_Delete = "Pages.Setup.Items.Series.Delete";
+        public const string Pages_Setup_Items_Series_ImportExcel = "Pages.Setup.Items.Series.ImportExcel";
+        public const string Pages_Setup_Items_Series_ExportExcel = "Pages.Setup.Items.Series.ExportExcel";
+        public const string Pages_Setup_Items_Series_Enable = "Pages.Setup.Items.Series.Enable";
+        public const string Pages_Setup_Items_Series_Disable = "Pages.Setup.Items.Series.Disable";
+        public const string Pages_Setup_Items_Series_SetAsDefault = "Pages.Setup.Items.Series.SetAsDefault";
+
+        public const string Pages_Setup_Items_CPUs = "Pages.Setup.Items.CPUs";
+        public const string Pages_Setup_Items_CPUs_Create = "Pages.Setup.Items.CPUs.Create";
+        public const string Pages_Setup_Items_CPUs_View = "Pages.Setup.Items.CPUs.View";
+        public const string Pages_Setup_Items_CPUs_Edit = "Pages.Setup.Items.CPUs.Edit";
+        public const string Pages_Setup_Items_CPUs_Delete = "Pages.Setup.Items.CPUs.Delete";
+        public const string Pages_Setup_Items_CPUs_ImportExcel = "Pages.Setup.Items.CPUs.ImportExcel";
+        public const string Pages_Setup_Items_CPUs_ExportExcel = "Pages.Setup.Items.CPUs.ExportExcel";
+        public const string Pages_Setup_Items_CPUs_Enable = "Pages.Setup.Items.CPUs.Enable";
+        public const string Pages_Setup_Items_CPUs_Disable = "Pages.Setup.Items.CPUs.Disable";
+        public const string Pages_Setup_Items_CPUs_SetAsDefault = "Pages.Setup.Items.CPUs.SetAsDefault";
+
+        public const string Pages_Setup_Items_RAMs = "Pages.Setup.Items.RAMs";
+        public const string Pages_Setup_Items_RAMs_Create = "Pages.Setup.Items.RAMs.Create";
+        public const string Pages_Setup_Items_RAMs_View = "Pages.Setup.Items.RAMs.View";
+        public const string Pages_Setup_Items_RAMs_Edit = "Pages.Setup.Items.RAMs.Edit";
+        public const string Pages_Setup_Items_RAMs_Delete = "Pages.Setup.Items.RAMs.Delete";
+        public const string Pages_Setup_Items_RAMs_ImportExcel = "Pages.Setup.Items.RAMs.ImportExcel";
+        public const string Pages_Setup_Items_RAMs_ExportExcel = "Pages.Setup.Items.RAMs.ExportExcel";
+        public const string Pages_Setup_Items_RAMs_Enable = "Pages.Setup.Items.RAMs.Enable";
+        public const string Pages_Setup_Items_RAMs_Disable = "Pages.Setup.Items.RAMs.Disable";
+        public const string Pages_Setup_Items_RAMs_SetAsDefault = "Pages.Setup.Items.RAMs.SetAsDefault";
+
+        public const string Pages_Setup_Items_VGAs = "Pages.Setup.Items.VGAs";
+        public const string Pages_Setup_Items_VGAs_Create = "Pages.Setup.Items.VGAs.Create";
+        public const string Pages_Setup_Items_VGAs_View = "Pages.Setup.Items.VGAs.View";
+        public const string Pages_Setup_Items_VGAs_Edit = "Pages.Setup.Items.VGAs.Edit";
+        public const string Pages_Setup_Items_VGAs_Delete = "Pages.Setup.Items.VGAs.Delete";
+        public const string Pages_Setup_Items_VGAs_ImportExcel = "Pages.Setup.Items.VGAs.ImportExcel";
+        public const string Pages_Setup_Items_VGAs_ExportExcel = "Pages.Setup.Items.VGAs.ExportExcel";
+        public const string Pages_Setup_Items_VGAs_Enable = "Pages.Setup.Items.VGAs.Enable";
+        public const string Pages_Setup_Items_VGAs_Disable = "Pages.Setup.Items.VGAs.Disable";
+        public const string Pages_Setup_Items_VGAs_SetAsDefault = "Pages.Setup.Items.VGAs.SetAsDefault";
+
+        public const string Pages_Setup_Items_HDDs = "Pages.Setup.Items.HDDs";
+        public const string Pages_Setup_Items_HDDs_Create = "Pages.Setup.Items.HDDs.Create";
+        public const string Pages_Setup_Items_HDDs_View = "Pages.Setup.Items.HDDs.View";
+        public const string Pages_Setup_Items_HDDs_Edit = "Pages.Setup.Items.HDDs.Edit";
+        public const string Pages_Setup_Items_HDDs_Delete = "Pages.Setup.Items.HDDs.Delete";
+        public const string Pages_Setup_Items_HDDs_ImportExcel = "Pages.Setup.Items.HDDs.ImportExcel";
+        public const string Pages_Setup_Items_HDDs_ExportExcel = "Pages.Setup.Items.HDDs.ExportExcel";
+        public const string Pages_Setup_Items_HDDs_Enable = "Pages.Setup.Items.HDDs.Enable";
+        public const string Pages_Setup_Items_HDDs_Disable = "Pages.Setup.Items.HDDs.Disable";
+        public const string Pages_Setup_Items_HDDs_SetAsDefault = "Pages.Setup.Items.HDDs.SetAsDefault";
+
+        public const string Pages_Setup_Items_Screens = "Pages.Setup.Items.Screens";
+        public const string Pages_Setup_Items_Screens_Create = "Pages.Setup.Items.Screens.Create";
+        public const string Pages_Setup_Items_Screens_View = "Pages.Setup.Items.Screens.View";
+        public const string Pages_Setup_Items_Screens_Edit = "Pages.Setup.Items.Screens.Edit";
+        public const string Pages_Setup_Items_Screens_Delete = "Pages.Setup.Items.Screens.Delete";
+        public const string Pages_Setup_Items_Screens_ImportExcel = "Pages.Setup.Items.Screens.ImportExcel";
+        public const string Pages_Setup_Items_Screens_ExportExcel = "Pages.Setup.Items.Screens.ExportExcel";
+        public const string Pages_Setup_Items_Screens_Enable = "Pages.Setup.Items.Screens.Enable";
+        public const string Pages_Setup_Items_Screens_Disable = "Pages.Setup.Items.Screens.Disable";
+        public const string Pages_Setup_Items_Screens_SetAsDefault = "Pages.Setup.Items.Screens.SetAsDefault";
+
+        public const string Pages_Setup_Items_Cameras = "Pages.Setup.Items.Cameras";
+        public const string Pages_Setup_Items_Cameras_Create = "Pages.Setup.Items.Cameras.Create";
+        public const string Pages_Setup_Items_Cameras_View = "Pages.Setup.Items.Cameras.View";
+        public const string Pages_Setup_Items_Cameras_Edit = "Pages.Setup.Items.Cameras.Edit";
+        public const string Pages_Setup_Items_Cameras_Delete = "Pages.Setup.Items.Cameras.Delete";
+        public const string Pages_Setup_Items_Cameras_ImportExcel = "Pages.Setup.Items.Cameras.ImportExcel";
+        public const string Pages_Setup_Items_Cameras_ExportExcel = "Pages.Setup.Items.Cameras.ExportExcel";
+        public const string Pages_Setup_Items_Cameras_Enable = "Pages.Setup.Items.Cameras.Enable";
+        public const string Pages_Setup_Items_Cameras_Disable = "Pages.Setup.Items.Cameras.Disable";
+        public const string Pages_Setup_Items_Cameras_SetAsDefault = "Pages.Setup.Items.Cameras.SetAsDefault";
+
+        public const string Pages_Setup_Items_Batteries = "Pages.Setup.Items.Batteries";
+        public const string Pages_Setup_Items_Batteries_Create = "Pages.Setup.Items.Batteries.Create";
+        public const string Pages_Setup_Items_Batteries_View = "Pages.Setup.Items.Batteries.View";
+        public const string Pages_Setup_Items_Batteries_Edit = "Pages.Setup.Items.Batteries.Edit";
+        public const string Pages_Setup_Items_Batteries_Delete = "Pages.Setup.Items.Batteries.Delete";
+        public const string Pages_Setup_Items_Batteries_ImportExcel = "Pages.Setup.Items.Batteries.ImportExcel";
+        public const string Pages_Setup_Items_Batteries_ExportExcel = "Pages.Setup.Items.Batteries.ExportExcel";
+        public const string Pages_Setup_Items_Batteries_Enable = "Pages.Setup.Items.Batteries.Enable";
+        public const string Pages_Setup_Items_Batteries_Disable = "Pages.Setup.Items.Batteries.Disable";
+        public const string Pages_Setup_Items_Batteries_SetAsDefault = "Pages.Setup.Items.Batteries.SetAsDefault";
 
         public const string Pages_Setup_Items_FieldAs = "Pages.Setup.Items.FieldAs";
         public const string Pages_Setup_Items_FieldAs_Create = "Pages.Setup.Items.FieldAs.Create";
@@ -241,6 +334,7 @@
         public const string Pages_Setup_Items_FieldAs_ExportExcel = "Pages.Setup.Items.FieldAs.ExportExcel";
         public const string Pages_Setup_Items_FieldAs_Enable = "Pages.Setup.Items.FieldAs.Enable";
         public const string Pages_Setup_Items_FieldAs_Disable = "Pages.Setup.Items.FieldAs.Disable";
+        public const string Pages_Setup_Items_FieldAs_SetAsDefault = "Pages.Setup.Items.FieldAs.SetAsDefault";
 
         public const string Pages_Setup_Items_FieldBs = "Pages.Setup.Items.FieldBs";
         public const string Pages_Setup_Items_FieldBs_Create = "Pages.Setup.Items.FieldBs.Create";
@@ -251,6 +345,7 @@
         public const string Pages_Setup_Items_FieldBs_ExportExcel = "Pages.Setup.Items.FieldBs.ExportExcel";
         public const string Pages_Setup_Items_FieldBs_Enable = "Pages.Setup.Items.FieldBs.Enable";
         public const string Pages_Setup_Items_FieldBs_Disable = "Pages.Setup.Items.FieldBs.Disable";
+        public const string Pages_Setup_Items_FieldBs_SetAsDefault = "Pages.Setup.Items.FieldBs.SetAsDefault";
 
         public const string Pages_Setup_Items_FieldCs = "Pages.Setup.Items.FieldCs";
         public const string Pages_Setup_Items_FieldCs_Create = "Pages.Setup.Items.FieldCs.Create";
@@ -261,6 +356,7 @@
         public const string Pages_Setup_Items_FieldCs_ExportExcel = "Pages.Setup.Items.FieldCs.ExportExcel";
         public const string Pages_Setup_Items_FieldCs_Enable = "Pages.Setup.Items.FieldCs.Enable";
         public const string Pages_Setup_Items_FieldCs_Disable = "Pages.Setup.Items.FieldCs.Disable";
+        public const string Pages_Setup_Items_FieldCs_SetAsDefault = "Pages.Setup.Items.FieldCs.SetAsDefault";
 
         public const string Pages_Setup_Items_PriceLevels = "Pages.Setup.Items.PriceLevels";
         public const string Pages_Setup_Items_PriceLevels_Create = "Pages.Setup.Items.PriceLevels.Create";

@@ -157,29 +157,31 @@ namespace BiiSoft
                     {
                         var value = row.GetType().GetProperty(col.ColumnName.ToPascalCase()).GetValue(row);
 
-                        if (col.ColumnName == "CreatorUserName")
-                        {
-                            var newValue = value;
+                        //if (col.ColumnName == "CreatorUserName")
+                        //{
+                        //    var newValue = value;
 
-                            var creationTime = row.GetType().GetProperty("CreationTime")?.GetValue(row);
+                        //    var creationTime = row.GetType().GetProperty("CreationTime")?.GetValue(row);
 
-                            if (creationTime != null) newValue += $"\r\n{Convert.ToDateTime(creationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
+                        //    if (creationTime != null) newValue += $"\r\n{Convert.ToDateTime(creationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
 
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else if (col.ColumnName == "LastModifierUserName")
-                        {
-                            var newValue = value;
+                        //    col.WriteCell(ws, rowIndex, colIndex, newValue);
+                        //}
+                        //else if (col.ColumnName == "LastModifierUserName")
+                        //{
+                        //    var newValue = value;
 
-                            var modificationTime = row.GetType().GetProperty("LastModificationTime").GetValue(row);
-                            if (modificationTime != null) newValue += $"\r\n{Convert.ToDateTime(modificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
+                        //    var modificationTime = row.GetType().GetProperty("LastModificationTime").GetValue(row);
+                        //    if (modificationTime != null) newValue += $"\r\n{Convert.ToDateTime(modificationTime).ToString("yyyy-MM-dd HH:mm:ss")}";
 
-                            col.WriteCell(ws, rowIndex, colIndex, newValue);
-                        }
-                        else
-                        {
-                            col.WriteCell(ws, rowIndex, colIndex, value);
-                        }
+                        //    col.WriteCell(ws, rowIndex, colIndex, newValue);
+                        //}
+                        //else
+                        //{
+                        //    col.WriteCell(ws, rowIndex, colIndex, value);
+                        //}
+
+                        col.WriteCell(ws, rowIndex, colIndex, value);
 
                         colIndex++;
                     }
