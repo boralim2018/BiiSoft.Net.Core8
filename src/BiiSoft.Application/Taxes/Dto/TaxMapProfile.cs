@@ -9,6 +9,7 @@ namespace BiiSoft.Taxes.Dto
         {
             CreateMap<CreateUpdateTaxInputDto, Tax>().ReverseMap();
             CreateMap<TaxDetailDto, Tax>().ReverseMap();
+            CreateMap<FindTaxDto, Tax>().ReverseMap();
         }
     }
 }

@@ -58,18 +58,26 @@ namespace BiiSoft.Features
 
             var itemFeature = setupFeature.CreateChildFeature(AppFeatures.Setup_Items, defaultValue: "false", displayName: L("Items"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Groups, defaultValue: "false", displayName: L("Groups"), inputType: new CheckboxInputType());
-            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_WeightUnits, defaultValue: "false", displayName: L("WeightUnits"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Models, defaultValue: "false", displayName: L("Models"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Units, defaultValue: "false", displayName: L("Units"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Grades, defaultValue: "false", displayName: L("Grades"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Sizes, defaultValue: "false", displayName: L("Sizes"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_ColorPatterns, defaultValue: "false", displayName: L("ColorPatterns"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Brands, defaultValue: "false", displayName: L("Brands"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Series, defaultValue: "false", displayName: L("Series"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_CPUs, defaultValue: "false", displayName: L("CPUs"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_RAMs, defaultValue: "false", displayName: L("RAMs"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_VGAs, defaultValue: "false", displayName: L("VGAs"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_HDDs, defaultValue: "false", displayName: L("HDDs"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Screens, defaultValue: "false", displayName: L("Screens"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Cameras, defaultValue: "false", displayName: L("Cameras"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Batteries, defaultValue: "false", displayName: L("Batteries"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_FieldAs, defaultValue: "false", displayName: L("FieldAs"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_FieldBs, defaultValue: "false", displayName: L("FieldBs"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_FieldCs, defaultValue: "false", displayName: L("FieldCs"), inputType: new CheckboxInputType());
+            
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_PriceLevels, defaultValue: "false", displayName: L("PriceLevels"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Promotions, defaultValue: "false", displayName: L("Promotions"), inputType: new CheckboxInputType());
-            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Scores, defaultValue: "false", displayName: L("Scores"), inputType: new CheckboxInputType());
             setupFeature.CreateChildFeature(AppFeatures.Setup_PaymentMethods, defaultValue: "false", displayName: L("PaymentMethods"), inputType: new CheckboxInputType());
             setupFeature.CreateChildFeature(AppFeatures.Setup_Classes, defaultValue: "false", displayName: L("Classes"), inputType: new CheckboxInputType());
             setupFeature.CreateChildFeature(AppFeatures.Setup_Taxes, defaultValue: "false", displayName: L("Taxes"), inputType: new CheckboxInputType());

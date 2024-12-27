@@ -24,17 +24,25 @@
         public const string Setup_Items = "App.Setup.Items";
         public const string Setup_Items_Groups = "App.Setup.Items.Groups";
         public const string Setup_Items_Units = "App.Setup.Items.Units";
-        public const string Setup_Items_WeightUnits = "App.Setup.Items.WeightUnits";
+        public const string Setup_Items_Models = "App.Setup.Items.Models";
         public const string Setup_Items_Grades = "App.Setup.Items.Grades";
         public const string Setup_Items_Sizes = "App.Setup.Items.Sizes";
         public const string Setup_Items_ColorPatterns = "App.Setup.Items.ColorPatterns";
         public const string Setup_Items_Brands = "App.Setup.Items.Brands";
+        public const string Setup_Items_Series = "App.Setup.Items.Series";
+        public const string Setup_Items_CPUs = "App.Setup.Items.CPUs";
+        public const string Setup_Items_RAMs = "App.Setup.Items.RAMs";
+        public const string Setup_Items_VGAs = "App.Setup.Items.VGAs";
+        public const string Setup_Items_HDDs = "App.Setup.Items.HDDs";
+        public const string Setup_Items_Screens = "App.Setup.Items.Screens";
+        public const string Setup_Items_Cameras = "App.Setup.Items.Cameras";
+        public const string Setup_Items_Batteries = "App.Setup.Items.Batteries";
         public const string Setup_Items_FieldAs = "App.Setup.Items.FieldAs";
         public const string Setup_Items_FieldBs = "App.Setup.Items.FieldBs";
         public const string Setup_Items_FieldCs = "App.Setup.Items.FieldCs";
+
         public const string Setup_Items_PriceLevels = "App.Setup.Items.PriceLevels";
         public const string Setup_Items_Promotions = "App.Setup.Items.Promotions";
-        public const string Setup_Items_Scores = "App.Setup.Items.Scores";
 
         public const string Setup_PaymentMethods = "App.Setup.PaymentMethods";
         public const string Setup_Classes = "App.Setup.Classes";

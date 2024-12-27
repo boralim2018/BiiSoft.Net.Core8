@@ -81,6 +81,13 @@ namespace BiiSoft.Currencies
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Currencies)]
+        public async Task<FindCurrencyDto> GetDefaultValue()
+        {
+            var find = await _currencyManager.GetDefaultValueAsync();
+            return ObjectMapper.Map<FindCurrencyDto>(find);
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Find_Currencies)]
         public async Task<PagedResultDto<FindCurrencyDto>> Find(PageCurrencyInputDto input)
         {
             var query = _currencyRepository.GetAll()

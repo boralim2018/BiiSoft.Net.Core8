@@ -2469,12 +2469,6 @@ namespace BiiSoft.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("CannotDelete")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("CannotEdit")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp without time zone");
 

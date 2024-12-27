@@ -91,9 +91,7 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
-                    CannotEdit = table.Column<bool>(type: "boolean", nullable: false),
-                    CannotDelete = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

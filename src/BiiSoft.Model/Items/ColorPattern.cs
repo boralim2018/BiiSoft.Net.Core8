@@ -9,7 +9,7 @@ using BiiSoft.Entities;
 namespace BiiSoft.Items
 {
     [Table("BiiColorPatterns")]
-    public class ColorPattern : CanModifyDefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
+    public class ColorPattern : DefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
     {
         public int? TenantId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

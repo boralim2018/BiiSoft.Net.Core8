@@ -482,6 +482,11 @@ namespace BiiSoft
             return IdentityResult.Success;
         }
 
+        public async Task<TEntity> GetDefaultValueAsync()
+        {
+            return await _repository.GetAll().AsNoTracking().FirstAsync(s => s.IsActive && s.IsDefault);
+        }
+
     }
 
 

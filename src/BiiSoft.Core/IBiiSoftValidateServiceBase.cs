@@ -32,6 +32,7 @@ namespace BiiSoft
     public interface IDefaultActiveValidateServiceBase<TEntity, TPrimaryKey> : IActiveValidateServiceBase<TEntity, TPrimaryKey> where TPrimaryKey : struct
     {
         Task<IdentityResult> SetAsDefaultAsync(IUserEntity<TPrimaryKey> input);
+        Task<TEntity> GetDefaultValueAsync();
     }
 
 

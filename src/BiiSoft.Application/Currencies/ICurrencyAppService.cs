@@ -22,6 +22,7 @@ namespace BiiSoft.Currencies
         Task Enable(EntityDto<long> input);
         Task Disable(EntityDto<long> input);
         Task SetAsDefault(EntityDto<long> input);
+        Task<FindCurrencyDto> GetDefaultValue();
         Task<PagedResultDto<FindCurrencyDto>> Find(PageCurrencyInputDto input);
         Task ImportExcel(FileTokenInput input);
         Task<ExportFileOutput> ExportExcelTemplate();

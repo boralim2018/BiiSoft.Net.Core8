@@ -8,6 +8,7 @@ namespace BiiSoft.Currencies.Dto
         {
             CreateMap<CreateUpdateCurrencyInputDto, Currency>().ReverseMap();
             CreateMap<CurrencyDetailDto, Currency>().ReverseMap();
+            CreateMap<FindCurrencyDto, Currency>().ReverseMap();
         }
     }
 }

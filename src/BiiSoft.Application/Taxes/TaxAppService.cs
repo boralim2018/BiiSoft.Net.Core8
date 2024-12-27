@@ -18,6 +18,7 @@ using System.Transactions;
 using BiiSoft.Taxes.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Currencies.Dto;
 
 namespace BiiSoft.Taxes
 {
@@ -78,6 +79,13 @@ namespace BiiSoft.Taxes
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
             CheckErrors(await _taxManager.SetAsDefaultAsync(entity));
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Find_Taxes)]
+        public async Task<FindTaxDto> GetDefaultValue()
+        {
+            var find = await _taxManager.GetDefaultValueAsync();
+            return ObjectMapper.Map<FindTaxDto>(find);
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Taxes)]

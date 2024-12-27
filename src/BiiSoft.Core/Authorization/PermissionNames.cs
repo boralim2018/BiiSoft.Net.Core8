@@ -182,15 +182,15 @@
         public const string Pages_Setup_Items_Units_Enable = "Pages.Setup.Items.Units.Enable";
         public const string Pages_Setup_Items_Units_Disable = "Pages.Setup.Items.Units.Disable";
 
-        public const string Pages_Setup_Items_WeightUnits = "Pages.Setup.WeightUnits";
-        public const string Pages_Setup_Items_WeightUnits_Create = "Pages.Setup.Items.WeightUnits.Create";
-        public const string Pages_Setup_Items_WeightUnits_View = "Pages.Setup.Items.WeightUnits.View";
-        public const string Pages_Setup_Items_WeightUnits_Edit = "Pages.Setup.Items.WeightUnits.Edit";
-        public const string Pages_Setup_Items_WeightUnits_Delete = "Pages.Setup.Items.WeightUnits.Delete";
-        public const string Pages_Setup_Items_WeightUnits_ImportExcel = "Pages.Setup.Items.WeightUnits.ImportExcel";
-        public const string Pages_Setup_Items_WeightUnits_ExportExcel = "Pages.Setup.Items.WeightUnits.ExportExcel";
-        public const string Pages_Setup_Items_WeightUnits_Enable = "Pages.Setup.Items.WeightUnits.Enable";
-        public const string Pages_Setup_Items_WeightUnits_Disable = "Pages.Setup.Items.WeightUnits.Disable";
+        public const string Pages_Setup_Items_Models = "Pages.Setup.Models";
+        public const string Pages_Setup_Items_Models_Create = "Pages.Setup.Items.Models.Create";
+        public const string Pages_Setup_Items_Models_View = "Pages.Setup.Items.Models.View";
+        public const string Pages_Setup_Items_Models_Edit = "Pages.Setup.Items.Models.Edit";
+        public const string Pages_Setup_Items_Models_Delete = "Pages.Setup.Items.Models.Delete";
+        public const string Pages_Setup_Items_Models_ImportExcel = "Pages.Setup.Items.Models.ImportExcel";
+        public const string Pages_Setup_Items_Models_ExportExcel = "Pages.Setup.Items.Models.ExportExcel";
+        public const string Pages_Setup_Items_Models_Enable = "Pages.Setup.Items.Models.Enable";
+        public const string Pages_Setup_Items_Models_Disable = "Pages.Setup.Items.Models.Disable";
 
         public const string Pages_Setup_Items_Grades = "Pages.Setup.Items.Grades";
         public const string Pages_Setup_Items_Grades_Create = "Pages.Setup.Items.Grades.Create";
@@ -281,16 +281,6 @@
         public const string Pages_Setup_Items_Promotions_ExportExcel = "Pages.Setup.Items.Promotions.ExportExcel";
         public const string Pages_Setup_Items_Promotions_Enable = "Pages.Setup.Items.Promotions.Enable";
         public const string Pages_Setup_Items_Promotions_Disable = "Pages.Setup.Items.Promotions.Disable";
-
-        public const string Pages_Setup_Items_Scores = "Pages.Setup.Items.Scores";
-        public const string Pages_Setup_Items_Scores_Create = "Pages.Setup.Items.Scores.Create";
-        public const string Pages_Setup_Items_Scores_View = "Pages.Setup.Items.Scores.View";
-        public const string Pages_Setup_Items_Scores_Edit = "Pages.Setup.Items.Scores.Edit";
-        public const string Pages_Setup_Items_Scores_Delete = "Pages.Setup.Items.Scores.Delete";
-        public const string Pages_Setup_Items_Scores_ImportExcel = "Pages.Setup.Items.Scores.ImportExcel";
-        public const string Pages_Setup_Items_Scores_ExportExcel = "Pages.Setup.Items.Scores.ExportExcel";
-        public const string Pages_Setup_Items_Scores_Enable = "Pages.Setup.Items.Scores.Enable";
-        public const string Pages_Setup_Items_Scores_Disable = "Pages.Setup.Items.Scores.Disable";
 
         #endregion
 

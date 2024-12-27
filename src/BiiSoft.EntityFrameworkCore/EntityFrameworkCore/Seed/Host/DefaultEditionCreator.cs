@@ -39,17 +39,17 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Groups, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Units, true);
-            CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_WeightUnits, true);
+            CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Models, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Grades, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Sizes, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_ColorPatterns, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Brands, true);
+            CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Series, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_FieldAs, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_FieldBs, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_FieldCs, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_PriceLevels, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Promotions, true);
-            CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Scores, true);
 
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_PaymentMethods, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Classes, true);
@@ -148,17 +148,17 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Groups, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Units, true);
-            CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_WeightUnits, true);
+            CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Models, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Grades, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Sizes, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_ColorPatterns, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Brands, true);
+            CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Series, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_FieldAs, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_FieldBs, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_FieldCs, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_PriceLevels, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Promotions, true);
-            CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Scores, true);
 
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_PaymentMethods, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Classes, true);
@@ -266,17 +266,17 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Groups, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Units, true);
-            CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_WeightUnits, true);
+            CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Models, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Grades, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Sizes, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_ColorPatterns, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Brands, true);
+            CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Series, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_FieldAs, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_FieldBs, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_FieldCs, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_PriceLevels, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Promotions, true);
-            CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Scores, true);
 
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_PaymentMethods, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Classes, true);
