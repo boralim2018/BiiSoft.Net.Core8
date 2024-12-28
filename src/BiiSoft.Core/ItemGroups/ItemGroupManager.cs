@@ -26,7 +26,6 @@ namespace BiiSoft.ItemGroups
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IBiiSoftRepository<ChartOfAccount, Guid> _chartOfAccountRepository;
         private readonly IAppFolders _appFolders;
         public ItemGroupManager(
             IAppFolders appFolders,
@@ -37,7 +36,6 @@ namespace BiiSoft.ItemGroups
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
-            _chartOfAccountRepository = chartOfAccountRepository;
             _appFolders = appFolders;
         }
 
@@ -103,13 +101,7 @@ namespace BiiSoft.ItemGroups
         {
             var itemGroups = new List<ItemGroup>();
             var itemGroupHash = new HashSet<string>();
-            var accountDic = new Dictionary<string, Guid>();
-
-            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
-            {
-                accountDic = await _chartOfAccountRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
-            }
-
+           
             //var excelPackage = Read(input, _appFolders);
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
