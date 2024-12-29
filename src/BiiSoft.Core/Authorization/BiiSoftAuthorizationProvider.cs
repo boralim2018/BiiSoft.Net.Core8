@@ -34,7 +34,7 @@ namespace BiiSoft.Authorization
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Taxes, L("FindTaxes"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Units, L("FindUnits"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemGroups, L("FindItemGroups"));
-            findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemGrads, L("FindItemGrads"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemGrades, L("FindItemGrades"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemBrands, L("FindItemBrands"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemModels, L("FindItemModels"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_ItemSeries, L("FindItemSeries"));
@@ -208,16 +208,16 @@ namespace BiiSoft.Authorization
             unitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Units_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Units));
             unitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Units_SetAsDefault, L("SetAsDefault"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Units));
 
-            var weightUnitPage = itemPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models, L("Models"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
-            weightUnitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_SetAsDefault, L("SetAsDefault"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            var modelPage = itemPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models, L("Models"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
+            modelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Models_SetAsDefault, L("SetAsDefault"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Models));
 
             var gradePage = itemPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Grades, L("Grades"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Grades));
             gradePage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Grades_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Grades));

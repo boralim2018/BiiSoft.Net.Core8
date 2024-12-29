@@ -1,6 +1,5 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using BiiSoft.Dtos;
 using BiiSoft.MultiTenancy.Dto;
 using System.Threading.Tasks;
 

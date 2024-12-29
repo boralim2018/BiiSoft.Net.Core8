@@ -24,7 +24,7 @@
         public const string Pages_Find_Taxes = "Pages.Find.Taxes";
         public const string Pages_Find_Units = "Pages.Find.Units";
         public const string Pages_Find_ItemGroups = "Pages.Find.ItemGroups";
-        public const string Pages_Find_ItemGrads = "Pages.Find.ItemGrads";
+        public const string Pages_Find_ItemGrades = "Pages.Find.ItemGrades";
         public const string Pages_Find_ItemBrands = "Pages.Find.ItemBrands";
         public const string Pages_Find_ItemModels = "Pages.Find.ItemModels";
         public const string Pages_Find_ItemSeries = "Pages.Find.ItemSeries";
