@@ -746,5 +746,10 @@
 		<text name="Batteries">Batteries</text>
 		<text name="Battery">Battery</text>
 		<text name="FindBatteries">Find Batteries</text>
+		<text name="FindFieldAs">Find Field A</text>
+		<text name="FindFieldBs">Find Field B</text>
+		<text name="FindFieldCs">Find Field C</text>
+		<text name="FindItems">Find Items</text>
+		<text name="FindItemGroups">Find Item Groups</text>
 	</texts>
 </localizationDictionary>

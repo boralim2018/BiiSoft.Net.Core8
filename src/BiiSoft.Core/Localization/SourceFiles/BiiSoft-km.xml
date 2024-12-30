@@ -746,5 +746,10 @@
 		<text name="Batteries">ថ្ម</text>
 		<text name="Battery">ថ្ម</text>
 		<text name="FindBatteries">ស្វែងរកថ្ម</text>
+		<text name="FindFieldAs">ស្វែងរកជួរ A</text>
+		<text name="FindFieldBs">ស្វែងរកជួរ B</text>
+		<text name="FindFieldCs">ស្វែងរកជួរ C</text>
+		<text name="FindItems">ស្វែងរកទំនិញ</text>
+		<text name="FindItemGroups">ស្វែងរកក្រុមទំនិញ</text>
 	</texts>
 </localizationDictionary>
