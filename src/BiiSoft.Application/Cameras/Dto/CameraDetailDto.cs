@@ -7,5 +7,6 @@ namespace BiiSoft.Cameras.Dto
     public class CameraDetailDto : DefaultNameActiveAuditedNavigationDto<Guid>, INoDto
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

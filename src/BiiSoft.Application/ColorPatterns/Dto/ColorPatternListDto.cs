@@ -7,5 +7,6 @@ namespace BiiSoft.ColorPatterns.Dto
     public class ColorPatternListDto : DefaultNameActiveAuditedDto<Guid>
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

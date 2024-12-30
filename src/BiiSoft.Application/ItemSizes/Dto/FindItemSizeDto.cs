@@ -6,6 +6,6 @@ namespace BiiSoft.ItemSizes.Dto
 {
     public class FindItemSizeDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

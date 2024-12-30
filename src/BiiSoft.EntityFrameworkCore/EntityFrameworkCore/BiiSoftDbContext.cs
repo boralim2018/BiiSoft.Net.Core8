@@ -248,6 +248,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<ItemGrade>(e =>
@@ -255,6 +256,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<ItemBrand>(e =>
@@ -262,6 +264,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<ItemModel>(e =>
@@ -269,6 +272,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<ItemSeries>(e =>
@@ -276,6 +280,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<ItemSize>(e =>
@@ -283,6 +288,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<Unit>(e =>
@@ -290,6 +296,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<ColorPattern>(e =>
@@ -297,6 +304,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<CPU>(e =>
@@ -304,6 +312,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<RAM>(e =>
@@ -311,6 +320,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<VGA>(e =>
@@ -318,6 +328,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<Screen>(e =>
@@ -325,6 +336,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<HDD>(e =>
@@ -332,6 +344,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<Camera>(e =>
@@ -339,6 +352,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<Battery>(e =>
@@ -346,6 +360,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<FieldA>(e =>
@@ -353,6 +368,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<FieldB>(e =>
@@ -360,6 +376,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<FieldC>(e =>
@@ -367,6 +384,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
             });
 
             modelBuilder.Entity<Item>(e =>
@@ -374,6 +392,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
                 e.HasIndex(i => i.ItemType);
                 e.HasIndex(i => i.ItemCategory);
                 e.HasOne(i => i.ItemGroup).WithMany().HasForeignKey(i => i.ItemGroupId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);

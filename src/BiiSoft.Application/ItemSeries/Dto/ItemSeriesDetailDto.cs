@@ -7,5 +7,6 @@ namespace BiiSoft.Items.Series.Dto
     public class ItemSeriesDetailDto : DefaultNameActiveAuditedNavigationDto<Guid>, INoDto
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

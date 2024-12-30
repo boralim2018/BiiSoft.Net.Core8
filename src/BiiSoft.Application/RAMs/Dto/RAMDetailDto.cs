@@ -7,5 +7,6 @@ namespace BiiSoft.RAMs.Dto
     public class RAMDetailDto : DefaultNameActiveAuditedNavigationDto<Guid>, INoDto
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

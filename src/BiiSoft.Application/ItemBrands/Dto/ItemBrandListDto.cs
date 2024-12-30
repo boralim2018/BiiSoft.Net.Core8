@@ -7,5 +7,6 @@ namespace BiiSoft.ItemBrands.Dto
     public class ItemBrandListDto : DefaultNameActiveAuditedDto<Guid>
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

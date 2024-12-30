@@ -6,6 +6,6 @@ namespace BiiSoft.Screens.Dto
 {
     public class FindScreenDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

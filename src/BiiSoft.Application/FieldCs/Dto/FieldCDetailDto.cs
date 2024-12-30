@@ -7,5 +7,6 @@ namespace BiiSoft.FieldCs.Dto
     public class FieldCDetailDto : DefaultNameActiveAuditedNavigationDto<Guid>, INoDto
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

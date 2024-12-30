@@ -7,5 +7,6 @@ namespace BiiSoft.CPUs.Dto
     public class CPUDetailDto : DefaultNameActiveAuditedNavigationDto<Guid>, INoDto
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

@@ -101,6 +101,7 @@ namespace BiiSoft.Items.Series
                             (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                         
@@ -115,6 +116,7 @@ namespace BiiSoft.Items.Series
                     Id = l.Id,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
+                    Code = l.Code,
                     IsActive = l.IsActive,
                 });
 
@@ -138,6 +140,7 @@ namespace BiiSoft.Items.Series
                             No = l.No,
                             Name = l.Name,
                             DisplayName = l.DisplayName,
+                            Code = l.Code,
                             IsDefault = l.IsDefault,
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
@@ -175,6 +178,7 @@ namespace BiiSoft.Items.Series
                             (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
+                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                         
@@ -190,6 +194,7 @@ namespace BiiSoft.Items.Series
                     No = l.No,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
+                    Code = l.Code,
                     IsDefault = l.IsDefault,
                     IsActive = l.IsActive,
                     CreationTime = l.CreationTime,

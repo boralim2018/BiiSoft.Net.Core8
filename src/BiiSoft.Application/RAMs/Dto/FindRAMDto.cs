@@ -6,6 +6,6 @@ namespace BiiSoft.RAMs.Dto
 {
     public class FindRAMDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace BiiSoft.Cameras.Dto
 {
     public class FindCameraDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

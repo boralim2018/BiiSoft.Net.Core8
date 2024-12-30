@@ -7,5 +7,6 @@ namespace BiiSoft.ItemModels.Dto
     public class ItemModelListDto : DefaultNameActiveAuditedDto<Guid>
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

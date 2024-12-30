@@ -6,6 +6,6 @@ namespace BiiSoft.Units.Dto
 {
     public class FindUnitDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

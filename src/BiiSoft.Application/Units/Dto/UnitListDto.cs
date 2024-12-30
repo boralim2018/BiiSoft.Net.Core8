@@ -7,5 +7,6 @@ namespace BiiSoft.Units.Dto
     public class UnitListDto : DefaultNameActiveAuditedDto<Guid>
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

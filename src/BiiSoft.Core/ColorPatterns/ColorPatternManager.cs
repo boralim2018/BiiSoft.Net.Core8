@@ -24,5 +24,7 @@ namespace BiiSoft.ColorPatterns
         {
             return ColorPattern.Create(tenantId, userId, name, displayName, code);
         }
+
+        #endregion
     }
 }

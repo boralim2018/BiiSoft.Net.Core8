@@ -7,5 +7,6 @@ namespace BiiSoft.Batteries.Dto
     public class BatteryListDto : DefaultNameActiveAuditedDto<Guid>
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace BiiSoft.ColorPatterns.Dto
 {
     public class FindColorPatternDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

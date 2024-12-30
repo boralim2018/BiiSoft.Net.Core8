@@ -6,6 +6,6 @@ namespace BiiSoft.Items.Series.Dto
 {
     public class FindItemSeriesDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace BiiSoft.ItemGrades.Dto
 {
     public class FindItemGradeDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

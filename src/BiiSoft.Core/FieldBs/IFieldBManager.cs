@@ -1,13 +1,8 @@
-﻿using Abp.Domain.Entities;
-using Abp.Domain.Services;
-using BiiSoft.Items;
-using System;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BiiSoft.Items;
 
 namespace BiiSoft.FieldBs
 {
-    public interface IFieldBManager : IDefaultActiveValidateServiceBase<FieldB, Guid>, IImporxExcelValidateSerivceBase<Guid>
+    public interface IFieldBManager : IItemFieldManagerBase<FieldB>
     {
  
     }

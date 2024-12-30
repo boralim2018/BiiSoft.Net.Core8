@@ -7,5 +7,6 @@ namespace BiiSoft.FieldAs.Dto
     public class FieldAListDto : DefaultNameActiveAuditedDto<Guid>
     {      
         public long No { get; set; }
+        public string Code { get; set; }
     }
 }

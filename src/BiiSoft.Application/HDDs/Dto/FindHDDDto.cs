@@ -6,6 +6,6 @@ namespace BiiSoft.HDDs.Dto
 {
     public class FindHDDDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

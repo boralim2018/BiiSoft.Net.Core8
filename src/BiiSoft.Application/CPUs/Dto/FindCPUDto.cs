@@ -6,6 +6,6 @@ namespace BiiSoft.CPUs.Dto
 {
     public class FindCPUDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

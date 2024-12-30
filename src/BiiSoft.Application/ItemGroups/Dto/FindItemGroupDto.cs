@@ -6,6 +6,6 @@ namespace BiiSoft.ItemGroups.Dto
 {
     public class FindItemGroupDto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

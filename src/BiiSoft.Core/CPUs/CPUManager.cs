@@ -1,25 +1,8 @@
 ﻿using Abp.Domain.Uow;
-using Abp.Extensions;
-using Abp.Timing;
-using Abp.UI;
 using BiiSoft.FileStorages;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
-using BiiSoft.Extensions;
-using BiiSoft.Entities;
-using BiiSoft.Columns;
-using OfficeOpenXml;
 using BiiSoft.Folders;
-using BiiSoft.BFiles.Dto;
-using BiiSoft.ChartOfAccounts;
 using BiiSoft.Items;
-using BiiSoft.ColorPatterns;
 
 namespace BiiSoft.CPUs
 {
@@ -41,5 +24,6 @@ namespace BiiSoft.CPUs
         {
             return CPU.Create(tenantId, userId, name, displayName, code);
         }
+        #endregion
     }
 }

@@ -6,6 +6,6 @@ namespace BiiSoft.FieldAs.Dto
 {
     public class FindFieldADto : NameActiveDto<Guid>
     {
-
+        public string Code { get; set; }
     }
 }

@@ -17,9 +17,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -27,7 +24,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -49,9 +50,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -59,7 +57,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,9 +83,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -91,7 +90,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -113,9 +116,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -123,7 +123,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -145,9 +149,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -155,7 +156,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -177,9 +182,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -187,7 +189,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -209,9 +215,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -219,7 +222,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -241,9 +248,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -251,7 +255,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -273,9 +281,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -283,7 +288,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -306,20 +315,20 @@ namespace BiiSoft.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TenantId = table.Column<int>(type: "integer", nullable: false),
+                    UseItemGroup = table.Column<bool>(type: "boolean", nullable: false),
                     UseBrand = table.Column<bool>(type: "boolean", nullable: false),
                     UseModel = table.Column<bool>(type: "boolean", nullable: false),
                     UseSeries = table.Column<bool>(type: "boolean", nullable: false),
-                    UseColorPattern = table.Column<bool>(type: "boolean", nullable: false),
                     UseSize = table.Column<bool>(type: "boolean", nullable: false),
                     UseGrade = table.Column<bool>(type: "boolean", nullable: false),
+                    UseColorPattern = table.Column<bool>(type: "boolean", nullable: false),
                     UseCPU = table.Column<bool>(type: "boolean", nullable: false),
                     UseRAM = table.Column<bool>(type: "boolean", nullable: false),
                     UseVGA = table.Column<bool>(type: "boolean", nullable: false),
                     UseCamera = table.Column<bool>(type: "boolean", nullable: false),
                     UseScreen = table.Column<bool>(type: "boolean", nullable: false),
-                    UseStorage = table.Column<bool>(type: "boolean", nullable: false),
+                    UseHDD = table.Column<bool>(type: "boolean", nullable: false),
                     UseBattery = table.Column<bool>(type: "boolean", nullable: false),
-                    UseOS = table.Column<bool>(type: "boolean", nullable: false),
                     UseFieldA = table.Column<bool>(type: "boolean", nullable: false),
                     UseFieldB = table.Column<bool>(type: "boolean", nullable: false),
                     UseFieldC = table.Column<bool>(type: "boolean", nullable: false),
@@ -352,9 +361,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -362,7 +368,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -384,9 +394,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -394,7 +401,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -416,9 +427,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -426,7 +434,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -448,9 +460,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -458,7 +467,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -480,9 +493,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -490,7 +500,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -512,9 +526,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -522,7 +533,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -544,9 +559,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -554,7 +566,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -576,9 +592,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -586,7 +599,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -608,9 +625,6 @@ namespace BiiSoft.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: true),
-                    No = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -618,7 +632,11 @@ namespace BiiSoft.Migrations
                     Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -644,7 +662,7 @@ namespace BiiSoft.Migrations
                     No = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ItemType = table.Column<int>(type: "integer", nullable: false),
-                    ItemCategory = table.Column<int>(type: "integer", nullable: true),
+                    ItemCategory = table.Column<int>(type: "integer", nullable: false),
                     Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     NetWeight = table.Column<decimal>(type: "numeric", nullable: false),
                     GrossWeight = table.Column<decimal>(type: "numeric", nullable: false),
@@ -878,6 +896,11 @@ namespace BiiSoft.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiBatteries_Code",
+                table: "BiiBatteries",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiBatteries_CreatorUserId",
                 table: "BiiBatteries",
                 column: "CreatorUserId");
@@ -901,6 +924,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiBatteries_No",
                 table: "BiiBatteries",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCameras_Code",
+                table: "BiiCameras",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCameras_CreatorUserId",
@@ -928,6 +956,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiColorPatterns_Code",
+                table: "BiiColorPatterns",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiColorPatterns_CreatorUserId",
                 table: "BiiColorPatterns",
                 column: "CreatorUserId");
@@ -951,6 +984,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiColorPatterns_No",
                 table: "BiiColorPatterns",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiCPUs_Code",
+                table: "BiiCPUs",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCPUs_CreatorUserId",
@@ -978,6 +1016,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiHDDs_Code",
+                table: "BiiHDDs",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiHDDs_CreatorUserId",
                 table: "BiiHDDs",
                 column: "CreatorUserId");
@@ -1001,6 +1044,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiHDDs_No",
                 table: "BiiHDDs",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemBrands_Code",
+                table: "BiiItemBrands",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemBrands_CreatorUserId",
@@ -1028,6 +1076,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItemFieldAs_Code",
+                table: "BiiItemFieldAs",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldAs_CreatorUserId",
                 table: "BiiItemFieldAs",
                 column: "CreatorUserId");
@@ -1053,6 +1106,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItemFieldBs_Code",
+                table: "BiiItemFieldBs",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldBs_CreatorUserId",
                 table: "BiiItemFieldBs",
                 column: "CreatorUserId");
@@ -1076,6 +1134,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiItemFieldBs_No",
                 table: "BiiItemFieldBs",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemFieldCs_Code",
+                table: "BiiItemFieldCs",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldCs_CreatorUserId",
@@ -1128,6 +1191,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItemGrades_Code",
+                table: "BiiItemGrades",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemGrades_CreatorUserId",
                 table: "BiiItemGrades",
                 column: "CreatorUserId");
@@ -1153,6 +1221,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItemGroups_Code",
+                table: "BiiItemGroups",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemGroups_CreatorUserId",
                 table: "BiiItemGroups",
                 column: "CreatorUserId");
@@ -1176,6 +1249,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiItemGroups_No",
                 table: "BiiItemGroups",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemModels_Code",
+                table: "BiiItemModels",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemModels_CreatorUserId",
@@ -1211,6 +1289,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiItems_CameraId",
                 table: "BiiItems",
                 column: "CameraId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_Code",
+                table: "BiiItems",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_ColorPatternId",
@@ -1353,6 +1436,11 @@ namespace BiiSoft.Migrations
                 column: "VGAId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSeries_Code",
+                table: "BiiItemSeries",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemSeries_CreatorUserId",
                 table: "BiiItemSeries",
                 column: "CreatorUserId");
@@ -1376,6 +1464,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiItemSeries_No",
                 table: "BiiItemSeries",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSizes_Code",
+                table: "BiiItemSizes",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemSizes_CreatorUserId",
@@ -1403,6 +1496,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiRAMs_Code",
+                table: "BiiRAMs",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiRAMs_CreatorUserId",
                 table: "BiiRAMs",
                 column: "CreatorUserId");
@@ -1426,6 +1524,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiRAMs_No",
                 table: "BiiRAMs",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiScreens_Code",
+                table: "BiiScreens",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiScreens_CreatorUserId",
@@ -1453,6 +1556,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiUnits_Code",
+                table: "BiiUnits",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiUnits_CreatorUserId",
                 table: "BiiUnits",
                 column: "CreatorUserId");
@@ -1476,6 +1584,11 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiUnits_No",
                 table: "BiiUnits",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiVGAs_Code",
+                table: "BiiVGAs",
+                column: "Code");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiVGAs_CreatorUserId",

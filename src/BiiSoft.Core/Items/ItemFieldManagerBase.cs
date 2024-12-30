@@ -15,9 +15,8 @@ using BiiSoft.Columns;
 using OfficeOpenXml;
 using BiiSoft.Folders;
 using BiiSoft.BFiles.Dto;
-using BiiSoft.Items;
 
-namespace BiiSoft.ColorPatterns
+namespace BiiSoft.Items
 {
     public abstract class ItemFieldManagerBase<TEntity> : BiiSoftDefaultNameActiveValidateServiceBase<TEntity, Guid>, IItemFieldManagerBase<TEntity> where TEntity : ItemFieldBase
     {
