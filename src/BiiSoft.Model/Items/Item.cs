@@ -13,7 +13,7 @@ namespace BiiSoft.Items
 {
    
     [Table("BiiItems")]
-    public class Item : NameActiveEntity<Guid>, IMustHaveTenant, INoEntity
+    public class Item : NameActiveEntity<Guid>, IMustHaveTenant, INoEntity, ICodeEntity
     {
         public int TenantId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -21,11 +21,12 @@ namespace BiiSoft.Items
        
         [Required]
         public ItemType ItemType { get; private set; }
-        public ItemCategory? ItemCategory { get; private set; }
+        public ItemCategory ItemCategory { get; private set; }
         [Required]
         [MaxLength(BiiSoftConsts.MaxLengthLongCode)]
         [StringLength(BiiSoftConsts.MaxLengthLongCode, ErrorMessage = BiiSoftConsts.MaxLengthLongCodeErrorMessage)]
         public string Code { get; private set; }
+        public void SetCode(string code) => Code = code;
 
         public decimal NetWeight { get; private set; }
         public decimal GrossWeight { get; private set; }
@@ -114,7 +115,7 @@ namespace BiiSoft.Items
             int tenantId,
             long userId,
             ItemType itemType,
-            ItemCategory? itemCategory,
+            ItemCategory itemCategory,
             string code,
             string name,
             string displayName,
@@ -160,7 +161,7 @@ namespace BiiSoft.Items
             Guid? purchaseAccountId,
             Guid? saleAccountId,
             Guid? purchaseTaxId,
-            Guid saleTaxId)
+            Guid? saleTaxId)
         {
             return new Item
             {
@@ -222,6 +223,7 @@ namespace BiiSoft.Items
         public void Update(
             long userId,
             ItemType itemType,
+            ItemCategory itemCategory,
             string code,
             string name,
             string displayName,
@@ -245,7 +247,6 @@ namespace BiiSoft.Items
             bool trackExpired,
             bool trackBatchNo,
             bool trackInventoryStatus,
-            ItemCategory? itemCategory,
             Guid? itemGroupId,
             Guid? itemBrandId,
             Guid? itemGradeId,
@@ -268,11 +269,12 @@ namespace BiiSoft.Items
             Guid? purchaseAccountId,
             Guid? saleAccountId,
             Guid? purchaseTaxId,
-            Guid saleTaxId)
+            Guid? saleTaxId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
             ItemType = itemType;
+            ItemCategory = itemCategory;
             Code = code;
             Name = name;
             DisplayName = displayName;
@@ -296,7 +298,6 @@ namespace BiiSoft.Items
             TrackExpired = trackExpired;
             TrackBatchNo = trackBatchNo;
             TrackInventoryStatus = trackInventoryStatus;
-            ItemCategory = itemCategory;
             ItemGroupId = itemGroupId;
             ItemBrandId = itemBrandId;
             ItemGradeId = itemGradeId;

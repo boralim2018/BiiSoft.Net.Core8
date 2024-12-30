@@ -15,20 +15,20 @@ namespace BiiSoft.Items
     public class ItemFieldSetting : ActiveEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
+        public bool UseItemGroup { get; private set; }
         public bool UseBrand { get; private set; }
         public bool UseModel { get; private set; }
         public bool UseSeries { get; private set; }
-        public bool UseColorPattern { get; private set; }
         public bool UseSize { get; private set; }
         public bool UseGrade { get; private set; }
+        public bool UseColorPattern { get; private set; }
         public bool UseCPU { get; private set; }
         public bool UseRAM { get; private set; }
         public bool UseVGA { get; private set; }
         public bool UseCamera { get; private set; }
         public bool UseScreen { get; private set; }
-        public bool UseStorage { get; private set; }
+        public bool UseHDD { get; private set; }
         public bool UseBattery { get; private set; }
-        public bool UseOS { get; private set; }
         public bool UseFieldA { get; private set; }
         public bool UseFieldB { get; private set; }
         public bool UseFieldC { get; private set; }
@@ -39,20 +39,20 @@ namespace BiiSoft.Items
         public static ItemFieldSetting Create(
             int tenantId,
             long userId,
+            bool useItemGroup,
             bool useBrand,
             bool useModel,
             bool useSeries,
-            bool useColorPattern,
             bool useSize,
             bool useGrade,
+            bool useColorPattern,
             bool useCPU,
             bool useRAM,
             bool useVGA,
-            bool useStorage,
+            bool useHDD,
             bool useScreen,
             bool useCamera,
             bool useBattery,
-            bool useOS,
             bool useFieldA,
             bool useFieldB,
             bool useFieldC,
@@ -65,20 +65,20 @@ namespace BiiSoft.Items
                 TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
+                UseItemGroup = useItemGroup,
                 UseBrand = useBrand,
                 UseModel = useModel,
                 UseSeries = useSeries,
-                UseColorPattern = useColorPattern,
                 UseSize = useSize,
                 UseGrade = useGrade,
+                UseColorPattern = useColorPattern,
                 UseCPU = useCPU,
                 UseRAM = useRAM,
                 UseVGA = useVGA,
-                UseStorage = useStorage,
+                UseHDD = useHDD,
                 UseScreen = useScreen,
                 UseCamera = useCamera,
                 UseBattery = useBattery,
-                UseOS = useOS,
                 UseFieldA = useFieldA,
                 UseFieldB = useFieldB,
                 UseFieldC = useFieldC,
@@ -91,20 +91,20 @@ namespace BiiSoft.Items
 
         public void Update(
             long userId,
+            bool useItemGroup,
             bool useBrand,
             bool useModel,
             bool useSeries,
-            bool useColorPattern,
             bool useSize,
             bool useGrade,
+            bool useColorPattern,
             bool useCPU,
             bool useRAM,
             bool useVGA,
-            bool useStorage,
+            bool useHDD,
             bool useScreen,
             bool useCamera,
             bool useBattery,
-            bool useOS,
             bool useFieldA,
             bool useFieldB,
             bool useFieldC,
@@ -114,20 +114,20 @@ namespace BiiSoft.Items
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
+            UseItemGroup = useItemGroup;
             UseBrand = useBrand;
             UseModel = useModel;
             UseSeries = useSeries;
-            UseColorPattern = useColorPattern;
             UseSize = useSize;
             UseGrade = useGrade;
+            UseColorPattern = useColorPattern;
             UseCPU = useCPU;
             UseRAM = useRAM;
             UseVGA = useVGA;
-            UseStorage = useStorage;
+            UseHDD = useHDD;
             UseScreen = useScreen;
             UseCamera = useCamera;
             UseBattery = useBattery;
-            UseOS = useOS;
             UseFieldA = useFieldA;
             UseFieldB = useFieldB;
             UseFieldC = useFieldC;

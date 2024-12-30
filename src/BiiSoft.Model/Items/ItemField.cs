@@ -1,23 +1,150 @@
-﻿using Abp.Domain.Entities;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
-using BiiSoft.Entities;
-using System.ComponentModel;
 
 namespace BiiSoft.Items
 {
+    [Table("BiiItemGroups")]
+    public class ItemGroup : ItemFieldBase
+    {
+        public static ItemGroup Create(int tenantId, long userId, string name, string displayName, string code)
+        {
+            return new ItemGroup
+            {
+                TenantId = tenantId,
+                CreatorUserId = userId,
+                CreationTime = Clock.Now,
+                Name = name,
+                DisplayName = displayName,
+                Code = code,
+                IsActive = true
+            };
+        }
+    }
+
+    [Table("BiiItemBrands")]
+    public class ItemBrand : ItemFieldBase
+    {
+        public static ItemBrand Create(int tenantId, long userId, string name, string displayName, string code)
+        {
+            return new ItemBrand
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenantId,
+                CreatorUserId = userId,
+                CreationTime = Clock.Now,
+                Name = name,
+                DisplayName = displayName,
+                Code = code,
+                IsActive = true
+            };
+        }
+    }
+
+    [Table("BiiItemGrades")]
+    public class ItemGrade : ItemFieldBase
+    {
+        public static ItemGrade Create(int tenantId, long userId, string name, string displayNmae, string code)
+        {
+            return new ItemGrade
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenantId,
+                CreatorUserId = userId,
+                CreationTime = Clock.Now,
+                Name = name,
+                DisplayName = displayNmae,
+                Code = code,
+                IsActive = true
+            };
+        }
+
+    }
+
+    [Table("BiiItemModels")]
+    public class ItemModel : ItemFieldBase
+    {
+        public static ItemModel Create(int tenantId, long userId, string name, string displayName, string code)
+        {
+            return new ItemModel
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenantId,
+                CreatorUserId = userId,
+                CreationTime = Clock.Now,
+                Name = name,
+                DisplayName = displayName,
+                Code = code,
+                IsActive = true
+            };
+        }
+
+    }
+
+    [Table("BiiItemSizes")]
+    public class ItemSize : ItemFieldBase
+    {
+        public static ItemSize Create(int tenantId, long userId, string name, string displayName, string code)
+        {
+            return new ItemSize
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenantId,
+                CreatorUserId = userId,
+                CreationTime = Clock.Now,
+                Name = name,
+                DisplayName = displayName,
+                Code = code,
+                IsActive = true
+            };
+        }
+
+    }
+
+    [Table("BiiItemSeries")]
+    public class ItemSeries : ItemFieldBase
+    {
+        public static ItemSeries Create(int tenantId, long userId, string name, string displayName, string code)
+        {
+            return new ItemSeries
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenantId,
+                CreatorUserId = userId,
+                CreationTime = Clock.Now,
+                Name = name,
+                DisplayName = displayName,
+                Code = code,
+                IsActive = true
+            };
+        }
+
+    }
+
+    [Table("BiiColorPatterns")]
+    public class ColorPattern : ItemFieldBase
+    {
+        public static ColorPattern Create(int? tenantId, long userId, string name, string displayName, string code)
+        {
+            return new ColorPattern
+            {
+                Id = Guid.NewGuid(),
+                TenantId = tenantId,
+                CreatorUserId = userId,
+                CreationTime = Clock.Now,
+                Name = name,
+                DisplayName = displayName,
+                Code = code,
+                IsActive = true
+            };
+        }
+
+    }
 
     [Table("BiiCPUs")]
-    public class CPU : DefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
-    {
-        public int? TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-      
-        public static CPU Create(int? tenantId, long userId, string name, string displayName)
+    public class CPU : ItemFieldBase
+    { 
+        public static CPU Create(int? tenantId, long userId, string name, string displayName, string code)
         {
             return new CPU
             {
@@ -27,27 +154,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayName,
+                Code = code,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
-        }
     }
 
     [Table("BiiRAMs")]
-    public class RAM : DefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
+    public class RAM : ItemFieldBase
     {
-        public int? TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-       
-        public static RAM Create(int? tenantId, long userId, string name, string displayName)
+        public static RAM Create(int? tenantId, long userId, string name, string displayName, string code)
         {
             return new RAM
             {
@@ -57,27 +174,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayName,
+                Code = code,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
-        }
     }
 
     [Table("BiiVGAs")]
-    public class VGA : DefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
+    public class VGA : ItemFieldBase
     {
-        public int? TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-        
-        public static VGA Create(int? tenantId, long userId, string name, string displayname)
+        public static VGA Create(int? tenantId, long userId, string name, string displayname, string code)
         {
             return new VGA
             {
@@ -87,27 +194,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayname,
+                Code = code,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
-        }
     }
 
     [Table("BiiScreens")]
-    public class Screen : DefaultNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
+    public class Screen : ItemFieldBase
     {
-        public int TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-       
-        public static Screen Create(int tenantId, long userId, string name, string displayName)
+        public static Screen Create(int tenantId, long userId, string name, string displayName, string code)
         {
             return new Screen
             {
@@ -117,28 +214,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayName,
+                Code = code,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
-        }
     }
 
     [Table("BiiHDDs")]
-    public class HDD : DefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
+    public class HDD : ItemFieldBase
     {
-        public int? TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-       
-
-        public static HDD Create(int? tenantId, long userId, string name, string displayName)
+        public static HDD Create(int? tenantId, long userId, string name, string displayName, string code)
         {
             return new HDD
             {
@@ -148,27 +234,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayName,
+                Code = code,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
-        }
     }
 
     [Table("BiiCameras")]
-    public class Camera : DefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
+    public class Camera : ItemFieldBase
     {
-        public int? TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-       
-        public static Camera Create(int? tenantId, long userId, string name, string displayName)
+        public static Camera Create(int? tenantId, long userId, string name, string displayName, string code)
         {
             return new Camera
             {
@@ -178,28 +254,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayName,
+                Code = code,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
-        }
     }
 
     [Table("BiiBatteries")]
-    public class Battery : DefaultNameActiveEntity<Guid>, IMayHaveTenant, INoEntity
+    public class Battery : ItemFieldBase
     {
-        public int? TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-       
-
-        public static Battery Create(int? tenantId, long userId, string name, string displayName)
+        public static Battery Create(int? tenantId, long userId, string name, string displayName, string code)
         {
             return new Battery
             {
@@ -209,27 +274,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayName,
+                Code = code,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
-        }
     }
 
     [Table("BiiItemFieldAs")]
-    public class FieldA : DefaultNameActiveEntity<Guid>, IMustHaveTenant, INoEntity
+    public class FieldA : ItemFieldBase
     {
-        public int TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-       
-        public static FieldA Create(int tenantId, long userId, string name, string dispalyName)
+        public static FieldA Create(int tenantId, long userId, string name, string dispalyName, string code)
         {
             return new FieldA
             {
@@ -239,29 +294,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = dispalyName,
+                Code = code,
                 IsActive = true
             };
-        }
-
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
         }
 
     }
 
     [Table("BiiItemFieldBs")]
-    public class FieldB : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    public class FieldB : ItemFieldBase
     {
-        public int TenantId { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-       
-        public static FieldB Create(int tenantId, long userId, string name, string displayName)
+        public static FieldB Create(int tenantId, long userId, string name, string displayName, string code)
         {
             return new FieldB
             {
@@ -271,28 +314,17 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayName,
+                Code = code,
                 IsActive = true
             };
-        }
-
-        public void Update(long userId, string name, string displayName)
-        {
-            this.LastModifierUserId = userId;
-            this.LastModificationTime = Clock.Now;
-            this.Name = name;
-            this.DisplayName = displayName;
         }
 
     }
 
     [Table("BiiItemFieldCs")]
-    public class FieldC : DefaultNameActiveEntity<Guid>, IMustHaveTenant
+    public class FieldC : ItemFieldBase
     {
-        public int TenantId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long No { get; private set; }
-       
-        public static FieldC Create(int tenantId, long userId, string name, string displayName)
+        public static FieldC Create(int tenantId, long userId, string name, string displayName, string code)
         {
             return new FieldC
             {
@@ -302,16 +334,10 @@ namespace BiiSoft.Items
                 CreationTime = Clock.Now,
                 Name = name,
                 DisplayName = displayName,
+                Code = code,
                 IsActive = true
             };
         }
 
-        public void Update(long userId, string name, string displayName)
-        {
-            LastModifierUserId = userId;
-            LastModificationTime = Clock.Now;
-            Name = name;
-            DisplayName = displayName;
-        }
     }
 }

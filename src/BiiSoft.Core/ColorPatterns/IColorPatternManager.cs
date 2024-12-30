@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BiiSoft.ColorPatterns
 {
-    public interface IColorPatternManager : IDefaultActiveValidateServiceBase<ColorPattern, Guid>, IImporxExcelValidateSerivceBase<Guid>
+    public interface IColorPatternManager : IItemFieldManagerBase<ColorPattern>
     {
  
     }

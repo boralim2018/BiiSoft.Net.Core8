@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BiiSoft.CPUs
 {
-    public interface ICPUManager : IDefaultActiveValidateServiceBase<CPU, Guid>, IImporxExcelValidateSerivceBase<Guid>
+    public interface ICPUManager : IItemFieldManagerBase<CPU>
     {
  
     }

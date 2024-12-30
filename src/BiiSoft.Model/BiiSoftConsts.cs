@@ -59,6 +59,9 @@ namespace BiiSoft
         public const int VillageCodeLength = 15;
         public const int ChartOfAccountCodeLength = 6;
 
+        public const int MaxLengthItemFieldCode = 4;
+        public const string MaxLengthItemFieldCodeErrorMessage = "Cannot enter more than 4 characters!";
+
         #region Theme Setting
 
         public const bool UISettingEnable = false;

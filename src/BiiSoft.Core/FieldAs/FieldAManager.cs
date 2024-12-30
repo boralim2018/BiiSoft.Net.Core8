@@ -45,12 +45,12 @@ namespace BiiSoft.FieldAs
 
         protected override FieldA CreateInstance(FieldA input)
         {
-            return FieldA.Create(input.TenantId, input.CreatorUserId.Value, input.Name, input.DisplayName);
+            return FieldA.Create(input.TenantId.Value, input.CreatorUserId.Value, input.Name, input.DisplayName, input.Code);
         }
 
         protected override void UpdateInstance(FieldA input, FieldA entity)
         {
-            entity.Update(input.LastModifierUserId.Value, input.Name, input.DisplayName);
+            entity.Update(input.LastModifierUserId.Value, input.Name, input.DisplayName, input.Code);
         }
 
         #endregion
@@ -75,6 +75,7 @@ namespace BiiSoft.FieldAs
                 var displayColumns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Name_",L("FieldA")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 250 },
                     new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
                 };
 
@@ -121,9 +122,10 @@ namespace BiiSoft.FieldAs
                         var displayName = worksheet.GetString(i, 2);
                         ValidateDisplayName(displayName, $", Row = {i}");
 
-                        var isDefault = worksheet.GetBool(i, 3);
+                        var code = worksheet.GetString(i, 3);
+                        var isDefault = worksheet.GetBool(i, 4);
 
-                        var entity = FieldA.Create(input.TenantId.Value, input.UserId.Value, name, displayName);
+                        var entity = FieldA.Create(input.TenantId.Value, input.UserId.Value, name, displayName, code);
                         entity.SetDefault(isDefault);
 
                         fieldAs.Add(entity);
@@ -149,7 +151,7 @@ namespace BiiSoft.FieldAs
             {
                 if (updateFieldADic.ContainsKey(l.Name))
                 {
-                    updateFieldADic[l.Name].Update(input.UserId.Value, l.Name, l.DisplayName);
+                    updateFieldADic[l.Name].Update(input.UserId.Value, l.Name, l.DisplayName, l.Code);
                     updateFieldADic[l.Name].SetDefault(l.IsDefault);
                 }
                 else

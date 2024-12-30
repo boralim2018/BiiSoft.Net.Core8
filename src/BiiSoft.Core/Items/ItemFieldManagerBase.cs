@@ -1,6 +1,4 @@
 ﻿using Abp.Domain.Uow;
-using Abp.Extensions;
-using Abp.Timing;
 using Abp.UI;
 using BiiSoft.FileStorages;
 using Microsoft.AspNetCore.Identity;
@@ -17,22 +15,20 @@ using BiiSoft.Columns;
 using OfficeOpenXml;
 using BiiSoft.Folders;
 using BiiSoft.BFiles.Dto;
-using BiiSoft.ChartOfAccounts;
 using BiiSoft.Items;
 
-namespace BiiSoft.Batteries
+namespace BiiSoft.ColorPatterns
 {
-    public class BatteryManager : BiiSoftDefaultNameActiveValidateServiceBase<Battery, Guid>, IBatteryManager
+    public abstract class ItemFieldManagerBase<TEntity> : BiiSoftDefaultNameActiveValidateServiceBase<TEntity, Guid>, IItemFieldManagerBase<TEntity> where TEntity : ItemFieldBase
     {
-        private readonly IFileStorageManager _fileStorageManager;
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IAppFolders _appFolders;
-        public BatteryManager(
+        protected readonly IFileStorageManager _fileStorageManager;
+        protected readonly IUnitOfWorkManager _unitOfWorkManager;
+        protected readonly IAppFolders _appFolders;
+        public ItemFieldManagerBase(
             IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<ChartOfAccount, Guid> chartOfAccountRepository,
-            IBiiSoftRepository<Battery, Guid> repository) : base(repository) 
+            IBiiSoftRepository<TEntity, Guid> repository) : base(repository) 
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
@@ -40,15 +36,17 @@ namespace BiiSoft.Batteries
         }
 
         #region override
-        protected override string InstanceName => L("Battery");
+        protected abstract string InstanceKeyName { get; }
+        protected override string InstanceName => L(InstanceKeyName);
         protected override bool IsUniqueName => true;
 
-        protected override Battery CreateInstance(Battery input)
-        {
-            return Battery.Create(input.TenantId, input.CreatorUserId.Value, input.Name, input.DisplayName, input.Code);
-        }
+        protected abstract TEntity CreateInstance(int tenantId, long userId, string name, string displayName, string code);
 
-        protected override void UpdateInstance(Battery input, Battery entity)
+        protected override TEntity CreateInstance(TEntity input)
+        {
+            return CreateInstance(input.TenantId.Value, input.CreatorUserId.Value, input.Name, input.DisplayName, input.Code);
+        }
+        protected override void UpdateInstance(TEntity input, TEntity entity)
         {
             entity.Update(input.LastModifierUserId.Value, input.Name, input.DisplayName, input.Code);
         }
@@ -59,7 +57,7 @@ namespace BiiSoft.Batteries
         {
             var result = new ExportFileOutput
             {
-                FileName = $"Battery.xlsx",
+                FileName = $"{InstanceKeyName}.xlsx",
                 FileToken = $"{Guid.NewGuid()}.xlsx"
             };
 
@@ -73,7 +71,7 @@ namespace BiiSoft.Batteries
 
                 // write header collumn table
                 var displayColumns = new List<ColumnOutput> {
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("Battery")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Name_",L(InstanceKeyName)), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Code"), Width = 250 },
                     new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
@@ -100,8 +98,8 @@ namespace BiiSoft.Batteries
         /// <exception cref="UserFriendlyException"></exception>
         public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
-            var batteries = new List<Battery>();
-            var batteryHash = new HashSet<string>();
+            var entities = new List<TEntity>();
+            var entityHash = new HashSet<string>();
            
             //var excelPackage = Read(input, _appFolders);
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
@@ -117,7 +115,7 @@ namespace BiiSoft.Batteries
                     {
                         var name = worksheet.GetString(i, 1);
                         ValidateName(name, $", Row = {i}");
-                        if (batteryHash.Contains(name)) DuplicateCodeException(name, $", Row = {i}");
+                        if (entityHash.Contains(name)) DuplicateCodeException(name, $", Row = {i}");
 
                         var displayName = worksheet.GetString(i, 2);
                         ValidateDisplayName(displayName, $", Row = {i}");
@@ -125,45 +123,45 @@ namespace BiiSoft.Batteries
                         var code = worksheet.GetString(i, 3);
                         var isDefault = worksheet.GetBool(i, 4);
 
-                        var entity = Battery.Create(input.TenantId.Value, input.UserId.Value, name, displayName, code);
+                        var entity = CreateInstance(input.TenantId.Value, input.UserId.Value, name, displayName, code);
                         entity.SetDefault(isDefault);
 
-                        batteries.Add(entity);
-                        batteryHash.Add(name);
+                        entities.Add(entity);
+                        entityHash.Add(name);
                     }
                 }
             }
 
-            if (!batteries.Any()) return IdentityResult.Success;
+            if (!entities.Any()) return IdentityResult.Success;
 
-            var updateBatteryDic = new Dictionary<string, Battery>();
+            var updateColorPatternDic = new Dictionary<string, TEntity>();
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                updateBatteryDic = await _repository.GetAll().AsNoTracking()
-                                              .Where(s => batteryHash.Contains(s.Name))
+                updateColorPatternDic = await _repository.GetAll().AsNoTracking()
+                                              .Where(s => entityHash.Contains(s.Name))
                                               .ToDictionaryAsync(k => k.Name, v => v);
             }
 
-            var addBatteries = new List<Battery>();
+            var addColorPatterns = new List<TEntity>();
 
-            foreach (var l in batteries)
+            foreach (var l in entities)
             {
-                if (updateBatteryDic.ContainsKey(l.Name))
+                if (updateColorPatternDic.ContainsKey(l.Name))
                 {
-                    updateBatteryDic[l.Name].Update(input.UserId.Value, l.Name, l.DisplayName, l.Code);
-                    updateBatteryDic[l.Name].SetDefault(l.IsDefault);
+                    updateColorPatternDic[l.Name].Update(input.UserId.Value, l.Name, l.DisplayName, l.Code);
+                    updateColorPatternDic[l.Name].SetDefault(l.IsDefault);
                 }
                 else
                 {
-                    addBatteries.Add(l);
+                    addColorPatterns.Add(l);
                 }
             }
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                if (updateBatteryDic.Any()) await _repository.BulkUpdateAsync(updateBatteryDic.Values.ToList());
-                if (addBatteries.Any()) await _repository.BulkInsertAsync(addBatteries);
+                if (updateColorPatternDic.Any()) await _repository.BulkUpdateAsync(updateColorPatternDic.Values.ToList());
+                if (addColorPatterns.Any()) await _repository.BulkInsertAsync(addColorPatterns);
 
                 await uow.CompleteAsync();
             }
