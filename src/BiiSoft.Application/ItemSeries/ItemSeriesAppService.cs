@@ -17,18 +17,20 @@ using System.Transactions;
 using BiiSoft.Items.Series.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Items.Series
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class ItemSeriesAppService : BiiSoftExcelAppServiceBase, IItemSeriesAppService
+    public class ItemSeriesAppService : BiiSoftAppServiceBase, IItemSeriesAppService
     {
         private readonly IItemSeriesManager _itemSeriesManager;
         private readonly IBiiSoftRepository<ItemSeries, Guid> _itemSeriesRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public ItemSeriesAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IItemSeriesManager itemSeriesManager,
             IBiiSoftRepository<ItemSeries, Guid> itemSeriesRepository,
@@ -38,6 +40,7 @@ namespace BiiSoft.Items.Series
             _itemSeriesRepository=itemSeriesRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_Series_Create)]
@@ -231,14 +234,14 @@ namespace BiiSoft.Items.Series
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "ItemSeries.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

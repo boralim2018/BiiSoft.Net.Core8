@@ -18,18 +18,20 @@ using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Locations
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class LocationAppService : BiiSoftExcelAppServiceBase, ILocationAppService
+    public class LocationAppService : BiiSoftAppServiceBase, ILocationAppService
     {
         private readonly ILocationManager _locationManager;
         private readonly IBiiSoftRepository<Location, Guid> _locationRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public LocationAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             ILocationManager locationManager,
             IBiiSoftRepository<Location, Guid> locationRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.Locations
             _locationRepository=locationRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Create)]
@@ -216,14 +219,14 @@ namespace BiiSoft.Locations
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Location.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

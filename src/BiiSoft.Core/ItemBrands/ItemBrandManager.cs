@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.ItemBrands
@@ -9,10 +6,7 @@ namespace BiiSoft.ItemBrands
     public class ItemBrandManager : ItemFieldManagerBase<ItemBrand>, IItemBrandManager
     {
         public ItemBrandManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<ItemBrand, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<ItemBrand, Guid> repository) : base(repository)
         {
 
         }

@@ -18,18 +18,20 @@ using BiiSoft.ItemBrands.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.ItemBrands
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class ItemBrandAppService : BiiSoftExcelAppServiceBase, IItemBrandAppService
+    public class ItemBrandAppService : BiiSoftAppServiceBase, IItemBrandAppService
     {
         private readonly IItemBrandManager _itemBrandManager;
         private readonly IBiiSoftRepository<ItemBrand, Guid> _itemBrandRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public ItemBrandAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IItemBrandManager itemBrandManager,
             IBiiSoftRepository<ItemBrand, Guid> itemBrandRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.ItemBrands
             _itemBrandRepository=itemBrandRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_Brands_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.ItemBrands
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "ItemBrand.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

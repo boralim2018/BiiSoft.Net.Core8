@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.HDDs
@@ -9,10 +6,7 @@ namespace BiiSoft.HDDs
     public class HDDManager : ItemFieldManagerBase<HDD>, IHDDManager
     {
         public HDDManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<HDD, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<HDD, Guid> repository) : base(repository)
         {
 
         }

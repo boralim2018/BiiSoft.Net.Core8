@@ -18,18 +18,20 @@ using BiiSoft.ItemGrades.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.ItemGrades
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class ItemGradeAppService : BiiSoftExcelAppServiceBase, IItemGradeAppService
+    public class ItemGradeAppService : BiiSoftAppServiceBase, IItemGradeAppService
     {
         private readonly IItemGradeManager _itemGradeManager;
         private readonly IBiiSoftRepository<ItemGrade, Guid> _itemGradeRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public ItemGradeAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IItemGradeManager itemGradeManager,
             IBiiSoftRepository<ItemGrade, Guid> itemGradeRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.ItemGrades
             _itemGradeRepository=itemGradeRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_Grades_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.ItemGrades
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "ItemGrade.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

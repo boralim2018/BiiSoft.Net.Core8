@@ -5,7 +5,6 @@ using BiiSoft.BFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
@@ -19,18 +18,21 @@ using BiiSoft.Locations;
 using BiiSoft.CityProvinces.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.CityProvinces
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class CityProvinceAppService : BiiSoftExcelAppServiceBase, ICityProvinceAppService
+    public class CityProvinceAppService : BiiSoftAppServiceBase, ICityProvinceAppService
     {
         private readonly ICityProvinceManager _cityProvinceManager;
         private readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IExcelManager _excelManager;
 
         public CityProvinceAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             ICityProvinceManager cityProvinceManager,
             IBiiSoftRepository<CityProvince, Guid> cityProvinceRepository,
@@ -40,6 +42,7 @@ namespace BiiSoft.CityProvinces
             _cityProvinceRepository=cityProvinceRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_CityProvinces_Create)]
@@ -238,14 +241,14 @@ namespace BiiSoft.CityProvinces
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "CityProvince.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

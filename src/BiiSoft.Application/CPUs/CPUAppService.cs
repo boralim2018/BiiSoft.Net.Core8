@@ -18,18 +18,20 @@ using BiiSoft.CPUs.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.CPUs
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class CPUAppService : BiiSoftExcelAppServiceBase, ICPUAppService
+    public class CPUAppService : BiiSoftAppServiceBase, ICPUAppService
     {
         private readonly ICPUManager _cpuManager;
         private readonly IBiiSoftRepository<CPU, Guid> _cpuRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public CPUAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             ICPUManager cpuManager,
             IBiiSoftRepository<CPU, Guid> cpuRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.CPUs
             _cpuRepository=cpuRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_CPUs_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.CPUs
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "CPU.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

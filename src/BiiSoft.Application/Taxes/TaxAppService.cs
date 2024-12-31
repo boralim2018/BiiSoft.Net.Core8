@@ -19,18 +19,20 @@ using BiiSoft.Taxes.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Currencies.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Taxes
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class TaxAppService : BiiSoftExcelAppServiceBase, ITaxAppService
+    public class TaxAppService : BiiSoftAppServiceBase, ITaxAppService
     {
         private readonly ITaxManager _taxManager;
         private readonly IBiiSoftRepository<Tax, Guid> _taxRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public TaxAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             ITaxManager taxManager,
             IBiiSoftRepository<Tax, Guid> taxRepository,
@@ -40,6 +42,7 @@ namespace BiiSoft.Taxes
             _taxRepository=taxRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_Create)]
@@ -245,14 +248,14 @@ namespace BiiSoft.Taxes
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Tax.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

@@ -1,6 +1,16 @@
 ﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
+using Abp.Extensions;
+using BiiSoft.Authorization.Users;
+using BiiSoft.BFiles.Dto;
+using BiiSoft.Columns;
+using BiiSoft.ContactInfo;
+using BiiSoft.Entities;
+using BiiSoft.Excels;
 using BiiSoft.Extensions;
+using BiiSoft.FileStorages;
+using BiiSoft.Folders;
+using BiiSoft.Locations;
+using BiiSoft.MultiTenancy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,16 +19,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
-using BiiSoft.Authorization.Users;
-using BiiSoft.Locations;
-using Abp.Extensions;
-using BiiSoft.ContactInfo;
-using BiiSoft.Entities;
-using BiiSoft.Folders;
-using OfficeOpenXml;
-using BiiSoft.Columns;
-using BiiSoft.MultiTenancy;
-using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Branches
 {
@@ -38,7 +38,9 @@ namespace BiiSoft.Branches
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<UserBranch, Guid> _userBranchRepository;
         private readonly IAppFolders _appFolders;
+        private readonly IExcelManager _excelManager;
         public BranchManager(
+            IExcelManager excelManager,
             IAppFolders appFolders,
             IBiiSoftRepository<Tenant, int> tenantRepository,
             IBiiSoftRepository<Country, Guid> countryRepository,
@@ -67,6 +69,7 @@ namespace BiiSoft.Branches
             _locationRepository = locationRepository;
             _tenantRepository = tenantRepository;           
             _appFolders = appFolders;
+            _excelManager = excelManager;
         }
 
         #region override base class
@@ -175,22 +178,10 @@ namespace BiiSoft.Branches
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
-            var result = new ExportFileOutput
+            var fileInput = new ExportFileInput
             {
                 FileName = "Branch.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> {
+                Columns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Name_",L("Branch")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("BusinessId"), Width = 150, IsRequired = true },
@@ -222,18 +213,10 @@ namespace BiiSoft.Branches
                     new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
-                };
+                }
+            };
 
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _excelManager.ExportExcelTemplateAsync(fileInput);
         }
 
         /// <summary>

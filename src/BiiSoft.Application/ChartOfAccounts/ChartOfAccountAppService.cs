@@ -20,18 +20,21 @@ using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using Abp.Collections.Extensions;
 using BiiSoft.Enums;
+using BiiSoft.Excels;
 
 namespace BiiSoft.ChartOfAccounts
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class ChartOfAccountAppService : BiiSoftExcelAppServiceBase, IChartOfAccountAppService
+    public class ChartOfAccountAppService : BiiSoftAppServiceBase, IChartOfAccountAppService
     {
         private readonly IChartOfAccountManager _chartOfAccountManager;
         private readonly IBiiSoftRepository<ChartOfAccount, Guid> _chartOfAccountRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IExcelManager _excelManager;
 
         public ChartOfAccountAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IChartOfAccountManager chartOfAccountManager,
             IBiiSoftRepository<ChartOfAccount, Guid> chartOfAccountRepository,
@@ -41,6 +44,7 @@ namespace BiiSoft.ChartOfAccounts
             _chartOfAccountRepository=chartOfAccountRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Accounting_ChartOfAccounts_Create)]
@@ -255,14 +259,14 @@ namespace BiiSoft.ChartOfAccounts
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "ChartOfAccount.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

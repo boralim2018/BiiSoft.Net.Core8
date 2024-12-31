@@ -16,6 +16,7 @@ using BiiSoft.Columns;
 using OfficeOpenXml;
 using BiiSoft.Folders;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Locations
 {
@@ -24,7 +25,9 @@ namespace BiiSoft.Locations
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IAppFolders _appFolders;
+        private readonly IExcelManager _excelManager;
         public LocationManager(
+            IExcelManager excelManager,
             IAppFolders appFolders,
             IBiiSoftRepository<Location, Guid> repository,
             IFileStorageManager fileStorageManager,
@@ -33,6 +36,7 @@ namespace BiiSoft.Locations
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _appFolders = appFolders;
+            _excelManager = excelManager;
         }
 
         #region override base class
@@ -53,40 +57,20 @@ namespace BiiSoft.Locations
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
-            var result = new ExportFileOutput
+            var fileInput = new ExportFileInput
             {
                 FileName = $"Location.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> {
+                Columns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Name_",L("Location")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Latitude"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("Longitude"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
-                };
+                }
+            };
 
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _excelManager.ExportExcelTemplateAsync(fileInput);
         }
 
         /// <summary>

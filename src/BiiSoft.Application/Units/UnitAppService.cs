@@ -18,18 +18,20 @@ using BiiSoft.Units.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Units
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class UnitAppService : BiiSoftExcelAppServiceBase, IUnitAppService
+    public class UnitAppService : BiiSoftAppServiceBase, IUnitAppService
     {
         private readonly IUnitManager _unitManager;
         private readonly IBiiSoftRepository<Unit, Guid> _unitRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public UnitAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IUnitManager unitManager,
             IBiiSoftRepository<Unit, Guid> unitRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.Units
             _unitRepository=unitRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_Units_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.Units
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Unit.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

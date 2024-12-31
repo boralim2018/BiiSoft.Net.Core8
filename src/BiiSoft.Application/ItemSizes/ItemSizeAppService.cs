@@ -18,18 +18,20 @@ using BiiSoft.ItemSizes.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.ItemSizes
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class ItemSizeAppService : BiiSoftExcelAppServiceBase, IItemSizeAppService
+    public class ItemSizeAppService : BiiSoftAppServiceBase, IItemSizeAppService
     {
         private readonly IItemSizeManager _itemSizeManager;
         private readonly IBiiSoftRepository<ItemSize, Guid> _itemSizeRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public ItemSizeAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IItemSizeManager itemSizeManager,
             IBiiSoftRepository<ItemSize, Guid> itemSizeRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.ItemSizes
             _itemSizeRepository=itemSizeRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_Sizes_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.ItemSizes
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "ItemSize.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

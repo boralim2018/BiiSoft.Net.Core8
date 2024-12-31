@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.Screens
@@ -9,10 +6,7 @@ namespace BiiSoft.Screens
     public class ScreenManager : ItemFieldManagerBase<Screen>, IScreenManager
     {
         public ScreenManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<Screen, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<Screen, Guid> repository) : base(repository)
         {
 
         }

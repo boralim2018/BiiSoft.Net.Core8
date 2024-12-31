@@ -12,9 +12,10 @@ using System.Transactions;
 using BiiSoft.Extensions;
 using BiiSoft.Entities;
 using BiiSoft.Columns;
-using OfficeOpenXml;
 using BiiSoft.Folders;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
+using Abp.Dependency;
 
 namespace BiiSoft.Items
 {
@@ -23,15 +24,14 @@ namespace BiiSoft.Items
         protected readonly IFileStorageManager _fileStorageManager;
         protected readonly IUnitOfWorkManager _unitOfWorkManager;
         protected readonly IAppFolders _appFolders;
+        protected readonly IExcelManager _excelManager;
         public ItemFieldManagerBase(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<TEntity, Guid> repository) : base(repository) 
         {
-            _fileStorageManager = fileStorageManager;
-            _unitOfWorkManager = unitOfWorkManager;
-            _appFolders = appFolders;
+            _fileStorageManager = IocManager.Instance.Resolve<IFileStorageManager>();
+            _unitOfWorkManager = IocManager.Instance.Resolve<IUnitOfWorkManager>();
+            _appFolders = IocManager.Instance.Resolve<IAppFolders>();
+            _excelManager = IocManager.Instance.Resolve<IExcelManager>();
         }
 
         #region override
@@ -54,38 +54,18 @@ namespace BiiSoft.Items
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
-            var result = new ExportFileOutput
+            var inputFile = new ExportFileInput
             {
                 FileName = $"{InstanceKeyName}.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> {
+                Columns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Name_",L(InstanceKeyName)), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Code"), Width = 250 },
                     new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
-                };
+                }
+            };
 
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _excelManager.ExportExcelTemplateAsync(inputFile);
         }
 
         /// <summary>

@@ -18,18 +18,21 @@ using BiiSoft.Batteries.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Batteries
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class BatteryAppService : BiiSoftExcelAppServiceBase, IBatteryAppService
+    public class BatteryAppService : BiiSoftAppServiceBase, IBatteryAppService
     {
         private readonly IBatteryManager _batteryManager;
         private readonly IBiiSoftRepository<Battery, Guid> _batteryRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IExcelManager _excelManager;
 
         public BatteryAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBatteryManager batteryManager,
             IBiiSoftRepository<Battery, Guid> batteryRepository,
@@ -39,6 +42,7 @@ namespace BiiSoft.Batteries
             _batteryRepository=batteryRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_Batteries_Create)]
@@ -232,14 +236,14 @@ namespace BiiSoft.Batteries
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Battery.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

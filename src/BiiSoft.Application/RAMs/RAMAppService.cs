@@ -18,18 +18,20 @@ using BiiSoft.RAMs.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.RAMs
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class RAMAppService : BiiSoftExcelAppServiceBase, IRAMAppService
+    public class RAMAppService : BiiSoftAppServiceBase, IRAMAppService
     {
         private readonly IRAMManager _RAMManager;
         private readonly IBiiSoftRepository<RAM, Guid> _RAMRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public RAMAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IRAMManager RAMManager,
             IBiiSoftRepository<RAM, Guid> RAMRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.RAMs
             _RAMRepository=RAMRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_RAMs_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.RAMs
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "RAM.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

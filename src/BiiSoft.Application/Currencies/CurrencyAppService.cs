@@ -18,18 +18,20 @@ using Abp.Domain.Uow;
 using System.Transactions;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Currencies
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class CurrencyAppService : BiiSoftExcelAppServiceBase, ICurrencyAppService
+    public class CurrencyAppService : BiiSoftAppServiceBase, ICurrencyAppService
     {
         private readonly ICurrencyManager _currencyManager;
         private readonly IBiiSoftRepository<Currency, long> _currencyRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public CurrencyAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             ICurrencyManager currencyManager,
             IBiiSoftRepository<Currency, long> currencyRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.Currencies
             _currencyRepository=currencyRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_Create)]
@@ -233,14 +236,14 @@ namespace BiiSoft.Currencies
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Currency.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.VGAs
@@ -9,10 +6,7 @@ namespace BiiSoft.VGAs
     public class VGAManager : ItemFieldManagerBase<VGA>, IVGAManager
     {
         public VGAManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<VGA, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<VGA, Guid> repository) : base(repository)
         {
 
         }

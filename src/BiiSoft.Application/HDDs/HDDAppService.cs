@@ -18,18 +18,20 @@ using BiiSoft.HDDs.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.HDDs
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class HDDAppService : BiiSoftExcelAppServiceBase, IHDDAppService
+    public class HDDAppService : BiiSoftAppServiceBase, IHDDAppService
     {
         private readonly IHDDManager _hddManager;
         private readonly IBiiSoftRepository<HDD, Guid> _hddRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public HDDAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IHDDManager hddManager,
             IBiiSoftRepository<HDD, Guid> hddRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.HDDs
             _hddRepository=hddRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_HDDs_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.HDDs
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "HDD.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

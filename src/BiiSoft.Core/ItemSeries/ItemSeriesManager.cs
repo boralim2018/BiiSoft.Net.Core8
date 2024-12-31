@@ -1,17 +1,11 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 
 namespace BiiSoft.Items.Series
 {
     public class ItemSeriesManager : ItemFieldManagerBase<ItemSeries>, IItemSeriesManager
     {
         public ItemSeriesManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<ItemSeries, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<ItemSeries, Guid> repository) : base(repository)
         {
 
         }

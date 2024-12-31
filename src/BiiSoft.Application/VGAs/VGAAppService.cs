@@ -18,18 +18,20 @@ using BiiSoft.VGAs.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.VGAs
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class VGAAppService : BiiSoftExcelAppServiceBase, IVGAAppService
+    public class VGAAppService : BiiSoftAppServiceBase, IVGAAppService
     {
         private readonly IVGAManager _vgaManager;
         private readonly IBiiSoftRepository<VGA, Guid> _vgaRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public VGAAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IVGAManager vgaManager,
             IBiiSoftRepository<VGA, Guid> vgaRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.VGAs
             _vgaRepository=vgaRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_VGAs_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.VGAs
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "VGA.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

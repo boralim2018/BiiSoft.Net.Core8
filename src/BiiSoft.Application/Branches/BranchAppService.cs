@@ -20,11 +20,12 @@ using BiiSoft.ContactInfo;
 using BiiSoft.ContactInfo.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Branches
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class BranchAppService : BiiSoftExcelAppServiceBase, IBranchAppService
+    public class BranchAppService : BiiSoftAppServiceBase, IBranchAppService
     {
         private readonly IBranchManager _branchManager;
         private readonly IBiiSoftRepository<Branch, Guid> _branchRepository;
@@ -32,8 +33,10 @@ namespace BiiSoft.Branches
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IExcelManager _excelManager;
 
         public BranchAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBranchManager branchManager,
             IBiiSoftRepository<Branch, Guid> branchRepository,
@@ -47,6 +50,7 @@ namespace BiiSoft.Branches
             _contactAddressRepository=contactAddressRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Company_Branches_Create)]
@@ -285,14 +289,14 @@ namespace BiiSoft.Branches
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Branch.xlsx",
                 Items = listResult.Items,
-                Columns = input.Columns
+                Columns = input.Columns,
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

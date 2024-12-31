@@ -18,18 +18,20 @@ using BiiSoft.ItemGroups.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.ItemGroups
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class ItemGroupAppService : BiiSoftExcelAppServiceBase, IItemGroupAppService
+    public class ItemGroupAppService : BiiSoftAppServiceBase, IItemGroupAppService
     {
         private readonly IItemGroupManager _itemGroupManager;
         private readonly IBiiSoftRepository<ItemGroup, Guid> _itemGroupRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public ItemGroupAppService(
+            ExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IItemGroupManager itemGroupManager,
             IBiiSoftRepository<ItemGroup, Guid> itemGroupRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.ItemGroups
             _itemGroupRepository=itemGroupRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.ItemGroups
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "ItemGroup.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

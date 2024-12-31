@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.ItemSizes
@@ -9,10 +6,7 @@ namespace BiiSoft.ItemSizes
     public class ItemSizeManager : ItemFieldManagerBase<ItemSize>, IItemSizeManager
     {
         public ItemSizeManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<ItemSize, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<ItemSize, Guid> repository) : base(repository)
         {
 
         }

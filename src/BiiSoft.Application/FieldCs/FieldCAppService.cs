@@ -18,18 +18,20 @@ using BiiSoft.FieldCs.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.FieldCs
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class FieldCAppService : BiiSoftExcelAppServiceBase, IFieldCAppService
+    public class FieldCAppService : BiiSoftAppServiceBase, IFieldCAppService
     {
         private readonly IFieldCManager _fieldCManager;
         private readonly IBiiSoftRepository<FieldC, Guid> _fieldCRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public FieldCAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IFieldCManager fieldCManager,
             IBiiSoftRepository<FieldC, Guid> fieldCRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.FieldCs
             _fieldCRepository=fieldCRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_FieldCs_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.FieldCs
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "FieldC.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

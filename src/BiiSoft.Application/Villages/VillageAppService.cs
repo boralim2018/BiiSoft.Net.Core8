@@ -19,18 +19,20 @@ using BiiSoft.Locations;
 using BiiSoft.Villages.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Villages
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class VillageAppService : BiiSoftExcelAppServiceBase, IVillageAppService
+    public class VillageAppService : BiiSoftAppServiceBase, IVillageAppService
     {
         private readonly IVillageManager _villageManager;
         private readonly IBiiSoftRepository<Village, Guid> _villageRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public VillageAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IVillageManager villageManager,
             IBiiSoftRepository<Village, Guid> villageRepository,
@@ -40,6 +42,7 @@ namespace BiiSoft.Villages
             _villageRepository=villageRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Villages_Create)]
@@ -264,14 +267,14 @@ namespace BiiSoft.Villages
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Village.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

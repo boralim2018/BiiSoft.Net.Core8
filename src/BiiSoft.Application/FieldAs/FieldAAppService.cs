@@ -18,18 +18,20 @@ using BiiSoft.FieldAs.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.FieldAs
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class FieldAAppService : BiiSoftExcelAppServiceBase, IFieldAAppService
+    public class FieldAAppService : BiiSoftAppServiceBase, IFieldAAppService
     {
         private readonly IFieldAManager _fieldAManager;
         private readonly IBiiSoftRepository<FieldA, Guid> _fieldARepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public FieldAAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IFieldAManager fieldAManager,
             IBiiSoftRepository<FieldA, Guid> fieldARepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.FieldAs
             _fieldARepository=fieldARepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_FieldAs_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.FieldAs
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "FieldA.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

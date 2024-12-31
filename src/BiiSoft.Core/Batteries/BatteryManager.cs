@@ -1,18 +1,12 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
+﻿using BiiSoft.Items;
 using System;
-using BiiSoft.Folders;
-using BiiSoft.Items;
 
 namespace BiiSoft.Batteries
 {
     public class BatteryManager : ItemFieldManagerBase<Battery>, IBatteryManager
     {
         public BatteryManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<Battery, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<Battery, Guid> repository) : base(repository)
         {
 
         }

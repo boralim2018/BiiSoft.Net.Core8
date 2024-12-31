@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.ItemModels
@@ -9,10 +6,7 @@ namespace BiiSoft.ItemModels
     public class ItemModelManager : ItemFieldManagerBase<ItemModel>, IItemModelManager
     {
         public ItemModelManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<ItemModel, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<ItemModel, Guid> repository) : base(repository)
         {
 
         }

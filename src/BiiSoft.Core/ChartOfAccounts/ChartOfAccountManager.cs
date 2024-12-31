@@ -17,6 +17,7 @@ using OfficeOpenXml;
 using BiiSoft.Folders;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Branches;
+using BiiSoft.Excels;
 
 namespace BiiSoft.ChartOfAccounts
 {
@@ -26,8 +27,10 @@ namespace BiiSoft.ChartOfAccounts
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IAppFolders _appFolders;
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
-        
+        private readonly IExcelManager _excelManager;
+
         public ChartOfAccountManager(
+            IExcelManager excelManager,
             IAppFolders appFolders,
             IBiiSoftRepository<ChartOfAccount, Guid> repository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
@@ -38,6 +41,7 @@ namespace BiiSoft.ChartOfAccounts
             _unitOfWorkManager = unitOfWorkManager;
             _appFolders = appFolders;
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
+            _excelManager = excelManager;
         }
 
         #region override base class
@@ -133,22 +137,9 @@ namespace BiiSoft.ChartOfAccounts
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
-            var result = new ExportFileOutput
-            {
+            var inputFile = new ExportFileInput{
                 FileName = $"ChartOfAccount.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> {
+                Columns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Code"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
@@ -156,18 +147,10 @@ namespace BiiSoft.ChartOfAccounts
                     new ColumnOutput{ ColumnTitle = L("ParentAccount"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
-                };
+                }
+            };
 
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _excelManager.ExportExcelTemplateAsync(inputFile);
         }
 
         /// <summary>

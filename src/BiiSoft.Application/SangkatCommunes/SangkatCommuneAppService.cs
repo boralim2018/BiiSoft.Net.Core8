@@ -19,18 +19,20 @@ using BiiSoft.Locations;
 using BiiSoft.SangkatCommunes.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.SangkatCommunes
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class SangkatCommuneAppService : BiiSoftExcelAppServiceBase, ISangkatCommuneAppService
+    public class SangkatCommuneAppService : BiiSoftAppServiceBase, ISangkatCommuneAppService
     {
         private readonly ISangkatCommuneManager _sangkatCommuneManager;
         private readonly IBiiSoftRepository<SangkatCommune, Guid> _sangkatCommuneRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public SangkatCommuneAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             ISangkatCommuneManager sangkatCommuneManager,
             IBiiSoftRepository<SangkatCommune, Guid> sangkatCommuneRepository,
@@ -40,6 +42,7 @@ namespace BiiSoft.SangkatCommunes
             _sangkatCommuneRepository = sangkatCommuneRepository;
             _userRepository = userRepository;
             _unitOfWorkManager = unitOfWorkManager;
+            _excelManager = excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_SangkatCommunes_Create)]
@@ -254,14 +257,14 @@ namespace BiiSoft.SangkatCommunes
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "SangkatCommune.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

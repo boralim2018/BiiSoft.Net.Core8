@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.FieldCs
@@ -9,10 +6,7 @@ namespace BiiSoft.FieldCs
     public class FieldCManager : ItemFieldManagerBase<FieldC>, IFieldCManager
     {
         public FieldCManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<FieldC, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<FieldC, Guid> repository) : base(repository)
         {
 
         }

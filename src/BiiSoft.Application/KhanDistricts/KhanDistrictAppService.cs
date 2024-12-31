@@ -19,18 +19,20 @@ using BiiSoft.Locations;
 using BiiSoft.KhanDistricts.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.KhanDistricts
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class KhanDistrictAppService : BiiSoftExcelAppServiceBase, IKhanDistrictAppService
+    public class KhanDistrictAppService : BiiSoftAppServiceBase, IKhanDistrictAppService
     {
         private readonly IKhanDistrictManager _khanDistrictManager;
         private readonly IBiiSoftRepository<KhanDistrict, Guid> _khanDistrictRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public KhanDistrictAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IKhanDistrictManager khanDistrictManager,
             IBiiSoftRepository<KhanDistrict, Guid> khanDistrictRepository,
@@ -40,6 +42,7 @@ namespace BiiSoft.KhanDistricts
             _khanDistrictRepository=khanDistrictRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_KhanDistricts_Create)]
@@ -244,14 +247,14 @@ namespace BiiSoft.KhanDistricts
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "KhanDistrict.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

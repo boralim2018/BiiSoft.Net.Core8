@@ -1,18 +1,12 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
+﻿using BiiSoft.Items;
 using System;
-using BiiSoft.Folders;
-using BiiSoft.Items;
 
 namespace BiiSoft.CPUs
 {
     public class CPUManager : ItemFieldManagerBase<CPU>, ICPUManager
     {
         public CPUManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<CPU, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<CPU, Guid> repository) : base(repository)
         {
 
         }

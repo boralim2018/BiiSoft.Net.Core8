@@ -18,18 +18,20 @@ using BiiSoft.Screens.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Screens
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class ScreenAppService : BiiSoftExcelAppServiceBase, IScreenAppService
+    public class ScreenAppService : BiiSoftAppServiceBase, IScreenAppService
     {
         private readonly IScreenManager _screenManager;
         private readonly IBiiSoftRepository<Screen, Guid> _screenRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IExcelManager _excelManager;
         public ScreenAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IScreenManager screenManager,
             IBiiSoftRepository<Screen, Guid> screenRepository,
@@ -39,6 +41,7 @@ namespace BiiSoft.Screens
             _screenRepository=screenRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_Screens_Create)]
@@ -232,14 +235,14 @@ namespace BiiSoft.Screens
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Screen.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

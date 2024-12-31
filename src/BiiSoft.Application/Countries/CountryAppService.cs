@@ -19,18 +19,20 @@ using BiiSoft.Locations;
 using BiiSoft.Countries.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Countries
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class CountryAppService : BiiSoftExcelAppServiceBase, ICountryAppService
+    public class CountryAppService : BiiSoftAppServiceBase, ICountryAppService
     {
         private readonly ICountryManager _countryManager;
         private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        
+        private readonly IExcelManager _excelManager;
         public CountryAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             ICountryManager countryManager,
             IBiiSoftRepository<Country, Guid> countryRepository,
@@ -40,6 +42,7 @@ namespace BiiSoft.Countries
             _countryRepository=countryRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Countries_Create)]
@@ -239,14 +242,14 @@ namespace BiiSoft.Countries
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Country.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Locations_Countries_ImportExcel)]

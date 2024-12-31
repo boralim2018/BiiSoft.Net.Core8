@@ -1,8 +1,12 @@
 ﻿using Abp.Domain.Uow;
-using Abp.Extensions;
-using Abp.Timing;
 using Abp.UI;
+using BiiSoft.BFiles.Dto;
+using BiiSoft.Columns;
+using BiiSoft.Entities;
+using BiiSoft.Excels;
+using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
+using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,12 +15,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
-using BiiSoft.Extensions;
-using BiiSoft.Entities;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Folders;
-using BiiSoft.BFiles.Dto;
 
 namespace BiiSoft.Locations
 {
@@ -27,7 +25,9 @@ namespace BiiSoft.Locations
         private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
         private readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
         private readonly IAppFolders _appFolders;
+        private readonly IExcelManager _excelManager;
         public KhanDistrictManager(
+            IExcelManager excelManager,
             IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
@@ -40,6 +40,7 @@ namespace BiiSoft.Locations
             _countryRepository = countryRepository;
             _cityProvinceRepository = cityProvinceRepository;
             _appFolders = appFolders;
+            _excelManager = excelManager;
         }
 
         #region override
@@ -84,22 +85,10 @@ namespace BiiSoft.Locations
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
-            var result = new ExportFileOutput
+            var fileInput = new ExportFileInput
             {
                 FileName = $"KhanDistrict.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> {
+                Columns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Code"), Width = 200, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Name_",L("KhanDistrict")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
@@ -107,18 +96,10 @@ namespace BiiSoft.Locations
                     new ColumnOutput{ ColumnTitle = L("Code_", L("CityProvince")), Width = 150, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
-                };
+                }
+            };
 
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _excelManager.ExportExcelTemplateAsync(fileInput);
         }
 
         /// <summary>

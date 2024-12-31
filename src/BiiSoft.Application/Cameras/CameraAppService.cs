@@ -18,18 +18,21 @@ using BiiSoft.Cameras.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.Cameras
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class CameraAppService : BiiSoftExcelAppServiceBase, ICameraAppService
+    public class CameraAppService : BiiSoftAppServiceBase, ICameraAppService
     {
         private readonly ICameraManager _cameraManager;
         private readonly IBiiSoftRepository<Camera, Guid> _cameraRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IExcelManager _excelManager;
 
         public CameraAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             ICameraManager cameraManager,
             IBiiSoftRepository<Camera, Guid> cameraRepository,
@@ -39,6 +42,7 @@ namespace BiiSoft.Cameras
             _cameraRepository=cameraRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_Cameras_Create)]
@@ -232,14 +236,14 @@ namespace BiiSoft.Cameras
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "Camera.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

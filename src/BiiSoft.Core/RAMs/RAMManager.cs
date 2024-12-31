@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.RAMs
@@ -9,10 +6,7 @@ namespace BiiSoft.RAMs
     public class RAMManager : ItemFieldManagerBase<RAM>, IRAMManager
     {
         public RAMManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<RAM, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<RAM, Guid> repository) : base(repository)
         {
 
         }

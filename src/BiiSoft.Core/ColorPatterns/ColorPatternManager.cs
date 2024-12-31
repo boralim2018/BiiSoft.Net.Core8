@@ -1,18 +1,12 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
+﻿using BiiSoft.Items;
 using System;
-using BiiSoft.Folders;
-using BiiSoft.Items;
 
 namespace BiiSoft.ColorPatterns
 {
     public class ColorPatternManager : ItemFieldManagerBase<ColorPattern>, IColorPatternManager
     {
         public ColorPatternManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<ColorPattern, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository) 
+            IBiiSoftRepository<ColorPattern, Guid> repository) : base(repository) 
         {
 
         }

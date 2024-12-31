@@ -18,18 +18,21 @@ using BiiSoft.ColorPatterns.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Items;
+using BiiSoft.Excels;
 
 namespace BiiSoft.ColorPatterns
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class ColorPatternAppService : BiiSoftExcelAppServiceBase, IColorPatternAppService
+    public class ColorPatternAppService : BiiSoftAppServiceBase, IColorPatternAppService
     {
         private readonly IColorPatternManager _colorPatternManager;
         private readonly IBiiSoftRepository<ColorPattern, Guid> _colorPatternRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IExcelManager _excelManager;
 
         public ColorPatternAppService(
+            IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IColorPatternManager colorPatternManager,
             IBiiSoftRepository<ColorPattern, Guid> colorPatternRepository,
@@ -39,6 +42,7 @@ namespace BiiSoft.ColorPatterns
             _colorPatternRepository=colorPatternRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
+            _excelManager=excelManager;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_ColorPatterns_Create)]
@@ -232,14 +236,14 @@ namespace BiiSoft.ColorPatterns
                 }
             }
 
-            var excelInput = new ExportFileInput
+            var excelInput = new ExportDataFileInput
             {
                 FileName = "ColorPattern.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
 
-            return await ExportExcelAsync(excelInput);
+            return await _excelManager.ExportExcelAsync(excelInput);
 
         }
 

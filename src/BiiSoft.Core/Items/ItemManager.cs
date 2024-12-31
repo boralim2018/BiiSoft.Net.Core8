@@ -1,23 +1,22 @@
-﻿using Abp.Extensions;
+﻿using Abp.Domain.Uow;
+using Abp.Extensions;
+using Abp.UI;
+using BiiSoft.BFiles.Dto;
+using BiiSoft.ChartOfAccounts;
+using BiiSoft.Columns;
+using BiiSoft.Entities;
 using BiiSoft.Enums;
+using BiiSoft.Excels;
+using BiiSoft.Extensions;
+using BiiSoft.FileStorages;
+using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Abp.UI;
-using Abp.Domain.Uow;
 using System.Transactions;
-using BiiSoft.FileStorages;
-using BiiSoft.Extensions;
-using BiiSoft.Entities;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Folders;
-using BiiSoft.BFiles.Dto;
-using BiiSoft.Branches;
-using BiiSoft.ChartOfAccounts;
 
 namespace BiiSoft.Items
 {
@@ -26,6 +25,7 @@ namespace BiiSoft.Items
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IAppFolders _appFolders;
+        private readonly IExcelManager _excelManager;
         private readonly IBiiSoftRepository<ItemGroup, Guid> _itemGroupRepository;
         private readonly IBiiSoftRepository<ItemBrand, Guid> _itemBrandRepository;
         private readonly IBiiSoftRepository<ItemGrade, Guid> _itemGradeRepository;
@@ -45,8 +45,9 @@ namespace BiiSoft.Items
         private readonly IBiiSoftRepository<FieldC, Guid> _fieldCRepository;
         private readonly IBiiSoftRepository<Unit, Guid> _unitRepository;
         private readonly IBiiSoftRepository<ChartOfAccount, Guid> _chartOfAccountRepository;
-        
+
         public ItemManager(
+            IExcelManager excelManager,
             IAppFolders appFolders,
             IBiiSoftRepository<Item, Guid> repository,
             IBiiSoftRepository<ItemGroup, Guid> itemGroupRepository,
@@ -69,11 +70,12 @@ namespace BiiSoft.Items
             IBiiSoftRepository<Unit, Guid> unitRepository,
             IBiiSoftRepository<ChartOfAccount, Guid> chartOfAccountRepository,
             IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager): base(repository) 
+            IUnitOfWorkManager unitOfWorkManager) : base(repository)
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _appFolders = appFolders;
+            _excelManager = excelManager;
             _itemGroupRepository = itemGroupRepository;
             _itemBrandRepository = itemBrandRepository;
             _itemGradeRepository = itemGradeRepository;
@@ -96,9 +98,9 @@ namespace BiiSoft.Items
         }
 
         #region override base class
-      
+
         protected override string InstanceName => L("Item");
-        
+
         protected override void ValidateInput(Item input)
         {
             ValidateCodeInput(input.Code);
@@ -108,8 +110,8 @@ namespace BiiSoft.Items
             ValidateSelect(input.PurchaseAccountId, L("PurchaseAccount"));
             ValidateSelect(input.SaleAccountId, L("SaleAccount"));
 
-            if (input.ItemType == ItemType.Inventory || 
-                input.ItemType == ItemType.SparePart || 
+            if (input.ItemType == ItemType.Inventory ||
+                input.ItemType == ItemType.SparePart ||
                 input.ItemType == ItemType.FixedAsset)
             {
                 ValidateSelect(input.InventoryAccountId, L("InventoryAccount"));
@@ -233,55 +235,55 @@ namespace BiiSoft.Items
         protected override Item CreateInstance(Item input)
         {
             return Item.Create(
-                input.TenantId, 
-                input.CreatorUserId.Value, 
-                input.ItemType, 
-                input.ItemCategory, 
-                input.Code, 
-                input.Name, 
-                input.DisplayName, 
-                input.Description, 
-                input.ReorderStock, 
-                input.MinStock, 
-                input.MaxStock, 
-                input.NetWeight, 
-                input.GrossWeight, 
-                input.Width, 
-                input.Height, 
-                input.Length, 
-                input.Diameter, 
-                input.Area, 
-                input.Volume, 
-                input.WeightUnit, 
-                input.LengthUnit, 
-                input.AreaUnit, 
-                input.VolumeUnit, 
-                input.TrackSerial, 
-                input.TrackExpired, 
-                input.TrackBatchNo, 
-                input.TrackInventoryStatus, 
-                input.ItemGroupId, 
-                input.ItemBrandId, 
-                input.ItemGradeId, 
-                input.ItemSizeId, 
-                input.ColorPatternId, 
-                input.UnitId, 
-                input.ItemSeriesId, 
-                input.ItemModelId, 
-                input.CPUId, 
-                input.RAMId, 
-                input.VGAId, 
-                input.ScreenId, 
-                input.BatteryId, 
-                input.CameraId, 
-                input.HDDId, 
-                input.FieldAId, 
-                input.FieldBId, 
-                input.FieldCId, 
-                input.InventoryAccountId, 
-                input.PurchaseAccountId, 
-                input.SaleAccountId, 
-                input.PurchaseTaxId, 
+                input.TenantId,
+                input.CreatorUserId.Value,
+                input.ItemType,
+                input.ItemCategory,
+                input.Code,
+                input.Name,
+                input.DisplayName,
+                input.Description,
+                input.ReorderStock,
+                input.MinStock,
+                input.MaxStock,
+                input.NetWeight,
+                input.GrossWeight,
+                input.Width,
+                input.Height,
+                input.Length,
+                input.Diameter,
+                input.Area,
+                input.Volume,
+                input.WeightUnit,
+                input.LengthUnit,
+                input.AreaUnit,
+                input.VolumeUnit,
+                input.TrackSerial,
+                input.TrackExpired,
+                input.TrackBatchNo,
+                input.TrackInventoryStatus,
+                input.ItemGroupId,
+                input.ItemBrandId,
+                input.ItemGradeId,
+                input.ItemSizeId,
+                input.ColorPatternId,
+                input.UnitId,
+                input.ItemSeriesId,
+                input.ItemModelId,
+                input.CPUId,
+                input.RAMId,
+                input.VGAId,
+                input.ScreenId,
+                input.BatteryId,
+                input.CameraId,
+                input.HDDId,
+                input.FieldAId,
+                input.FieldBId,
+                input.FieldCId,
+                input.InventoryAccountId,
+                input.PurchaseAccountId,
+                input.SaleAccountId,
+                input.PurchaseTaxId,
                 input.SaleTaxId);
         }
 
@@ -303,7 +305,7 @@ namespace BiiSoft.Items
                 input.LastModifierUserId.Value,
                 input.ItemType,
                 input.ItemCategory,
-                input.Code, 
+                input.Code,
                 input.Name,
                 input.DisplayName,
                 input.Description,
@@ -392,41 +394,21 @@ namespace BiiSoft.Items
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
-            var result = new ExportFileOutput
+            var fileInput = new ExportFileInput
             {
                 FileName = $"Item.xlsx",
-                FileToken = $"{Guid.NewGuid()}.xlsx"
-            };
-
-            using (var p = new ExcelPackage())
-            {
-                var ws = p.CreateSheet(result.FileName.RemoveExtension());
-
-                #region Row 1 Header Table
-                int rowTableHeader = 1;
-                //int colHeaderTable = 1;
-
-                // write header collumn table
-                var displayColumns = new List<ColumnOutput> {
+                Columns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Code"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Name_",L("Item")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("SubAccountType"), Width = 150, IsRequired = true},
                     new ColumnOutput{ ColumnTitle = L("ParentAccount"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
-                };
+                }
+            };
 
-                #endregion Row 1
-
-                ws.InsertTable(displayColumns, $"{ws.Name}Table", rowTableHeader, 1, 5);
-
-                result.FileUrl = $"{_appFolders.DownloadUrl}?fileName={result.FileName}&fileToken={result.FileToken}";
-
-                await _fileStorageManager.UploadTempFile(result.FileToken, p);
-            }
-
-            return result;
+            return await _excelManager.ExportExcelTemplateAsync(fileInput);
         }
 
         /// <summary>
@@ -469,7 +451,7 @@ namespace BiiSoft.Items
             //        {
             //            var code = worksheet.GetString(i, 1);
             //            if (!autoGenerateCode) ValidateCodeInput(code, $", Row: {i}");
-                       
+
             //            var name = worksheet.GetString(i, 2);
             //            ValidateName(name, $", Row: {i}");
 
@@ -496,7 +478,7 @@ namespace BiiSoft.Items
 
             //                parentId = find.Id;
             //            }
-                       
+
             //            var cannotEdit = worksheet.GetBool(i, 6);
             //            var cannotDelete = worksheet.GetBool(i, 7);
 
@@ -532,7 +514,7 @@ namespace BiiSoft.Items
             //            if (findCode) DuplicateCodeException(code, $", Row: {i}");
 
             //            var entity = Item.Create(input.TenantId.Value, input.UserId.Value, subAccountType, code, name, displayName, parentId);
-                       
+
 
             //            addAccounts.Add(entity);
             //            accounts.Add(entity);
@@ -554,6 +536,6 @@ namespace BiiSoft.Items
 
             return IdentityResult.Success;
         }
-        
+
     }
 }

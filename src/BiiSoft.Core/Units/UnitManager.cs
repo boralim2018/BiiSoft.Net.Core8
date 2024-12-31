@@ -1,7 +1,4 @@
-﻿using Abp.Domain.Uow;
-using BiiSoft.FileStorages;
-using System;
-using BiiSoft.Folders;
+﻿using System;
 using BiiSoft.Items;
 
 namespace BiiSoft.Units
@@ -9,10 +6,7 @@ namespace BiiSoft.Units
     public class UnitManager : ItemFieldManagerBase<Unit>, IUnitManager
     {
         public UnitManager(
-            IAppFolders appFolders,
-            IFileStorageManager fileStorageManager,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<Unit, Guid> repository) : base(appFolders, fileStorageManager, unitOfWorkManager, repository)
+            IBiiSoftRepository<Unit, Guid> repository) : base(repository)
         {
 
         }

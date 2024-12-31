@@ -20,6 +20,10 @@ namespace BiiSoft.BFiles.Dto
         public string FileName { get; set; }
 
         public List<ColumnOutput> Columns { get; set; }
+    }
+
+    public class ExportDataFileInput : ExportFileInput
+    {
         public IReadOnlyList<object> Items { get; set; }
     }
 

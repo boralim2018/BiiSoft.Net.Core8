@@ -379,7 +379,6 @@ namespace BiiSoft
         #endregion
     }
 
-
     public abstract class BiiSoftNameValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftValidateServiceBase<TEntity, TPrimaryKey> 
         where TEntity : NameEntity<TPrimaryKey> where TPrimaryKey : struct
     {
@@ -488,7 +487,6 @@ namespace BiiSoft
         }
 
     }
-
 
     public abstract class BiiSoftCodeGenerateNameActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftCodeGenerateServiceBase<TEntity, TPrimaryKey>, IActiveValidateServiceBase<TEntity, TPrimaryKey>
         where TEntity : NameActiveEntity<TPrimaryKey>, ICodeEntity where TPrimaryKey : struct
