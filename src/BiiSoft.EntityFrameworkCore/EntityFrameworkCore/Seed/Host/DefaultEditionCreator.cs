@@ -48,7 +48,7 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_FieldAs, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_FieldBs, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_FieldCs, true);
-            CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_PriceLevels, true);
+            CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_PriceList, true);
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_Items_Promotions, true);
 
             CreateFeatureIfNotExists(defaultEdition.Id, AppFeatures.Setup_PaymentMethods, true);
@@ -157,7 +157,7 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_FieldAs, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_FieldBs, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_FieldCs, true);
-            CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_PriceLevels, true);
+            CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_PriceList, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Items_Promotions, true);
 
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_PaymentMethods, true);
@@ -275,7 +275,7 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_FieldAs, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_FieldBs, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_FieldCs, true);
-            CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_PriceLevels, true);
+            CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_PriceList, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Items_Promotions, true);
 
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_PaymentMethods, true);

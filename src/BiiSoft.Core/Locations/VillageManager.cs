@@ -137,10 +137,13 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
-                cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
-                khanDistrictDic = await _khanDistrictRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
-                sangkatCommuneDic = await _sangkatCommuneRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                    cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                    khanDistrictDic = await _khanDistrictRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                    sangkatCommuneDic = await _sangkatCommuneRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                }
             }
 
             //var excelPackage = Read(input, _appFolders);
@@ -210,9 +213,12 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                updateVillageDic = await _repository.GetAll().AsNoTracking()
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    updateVillageDic = await _repository.GetAll().AsNoTracking()
                                               .Where(s => villageHash.Contains(s.Code))
                                               .ToDictionaryAsync(k => k.Code, v => v);
+                }
             }
 
             var addVillages = new List<Village>();
@@ -233,9 +239,11 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                if (updateVillageDic.Any()) await _repository.BulkUpdateAsync(updateVillageDic.Values.ToList());
-                if (addVillages.Any()) await _repository.BulkInsertAsync(addVillages);
-
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    if (updateVillageDic.Any()) await _repository.BulkUpdateAsync(updateVillageDic.Values.ToList());
+                    if (addVillages.Any()) await _repository.BulkInsertAsync(addVillages);
+                }
                 await uow.CompleteAsync();
             }
 

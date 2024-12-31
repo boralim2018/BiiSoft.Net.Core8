@@ -127,9 +127,12 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
-                cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
-                khanDistrictDic = await _khanDistrictRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                    cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                    khanDistrictDic = await _khanDistrictRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                }
             }
 
             //var excelPackage = Read(input, _appFolders);
@@ -192,9 +195,12 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                updateSangkatCommuneDic = await _repository.GetAll().AsNoTracking()
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    updateSangkatCommuneDic = await _repository.GetAll().AsNoTracking()
                                               .Where(s => sangkatCommuneHash.Contains(s.Code))
                                               .ToDictionaryAsync(k => k.Code, v => v);
+                }
             }
 
             var addSangkatCommunes = new List<SangkatCommune>();
@@ -215,9 +221,11 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                if (updateSangkatCommuneDic.Any()) await _repository.BulkUpdateAsync(updateSangkatCommuneDic.Values.ToList());
-                if (addSangkatCommunes.Any()) await _repository.BulkInsertAsync(addSangkatCommunes);
-
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    if (updateSangkatCommuneDic.Any()) await _repository.BulkUpdateAsync(updateSangkatCommuneDic.Values.ToList());
+                    if (addSangkatCommunes.Any()) await _repository.BulkInsertAsync(addSangkatCommunes);
+                }
                 await uow.CompleteAsync();
             }
 

@@ -315,6 +315,7 @@ namespace BiiSoft.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TenantId = table.Column<int>(type: "integer", nullable: false),
+                    UseCode = table.Column<bool>(type: "boolean", nullable: false),
                     UseItemGroup = table.Column<bool>(type: "boolean", nullable: false),
                     UseBrand = table.Column<bool>(type: "boolean", nullable: false),
                     UseModel = table.Column<bool>(type: "boolean", nullable: false),

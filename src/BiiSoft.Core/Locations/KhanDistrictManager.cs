@@ -73,7 +73,7 @@ namespace BiiSoft.Locations
 
         protected override KhanDistrict CreateInstance(KhanDistrict input)
         {
-            return KhanDistrict.Create(input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId);
+            return KhanDistrict.Create(input.TenantId, input.CreatorUserId, input.Code, input.Name, input.DisplayName, input.CountryId, input.CityProvinceId);
         }
 
         protected override void UpdateInstance(KhanDistrict input, KhanDistrict entity)
@@ -118,8 +118,11 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
-                cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    countryDic = await _countryRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                    cityProvinceDic = await _cityProvinceRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                }
             }
 
             //var excelPackage = Read(input, _appFolders);
@@ -160,7 +163,7 @@ namespace BiiSoft.Locations
                         var cannotEdit = worksheet.GetBool(i, 6);
                         var cannotDelete = worksheet.GetBool(i, 7); 
 
-                        var entity = KhanDistrict.Create(input.UserId, code, name, displayName, countryId, cityProvinceId);
+                        var entity = KhanDistrict.Create(input.TenantId.Value, input.UserId, code, name, displayName, countryId, cityProvinceId);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);
 
@@ -176,9 +179,12 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                updateKhanDistrictDic = await _repository.GetAll().AsNoTracking()
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    updateKhanDistrictDic = await _repository.GetAll().AsNoTracking()
                                               .Where(s => khanDistrictHash.Contains(s.Code))
                                               .ToDictionaryAsync(k => k.Code, v => v);
+                }
             }
 
             var addKhanDistricts = new List<KhanDistrict>();
@@ -199,9 +205,11 @@ namespace BiiSoft.Locations
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                if (updateKhanDistrictDic.Any()) await _repository.BulkUpdateAsync(updateKhanDistrictDic.Values.ToList());
-                if (addKhanDistricts.Any()) await _repository.BulkInsertAsync(addKhanDistricts);
-
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    if (updateKhanDistrictDic.Any()) await _repository.BulkUpdateAsync(updateKhanDistrictDic.Values.ToList());
+                    if (addKhanDistricts.Any()) await _repository.BulkInsertAsync(addKhanDistricts);
+                }
                 await uow.CompleteAsync();
             }
 

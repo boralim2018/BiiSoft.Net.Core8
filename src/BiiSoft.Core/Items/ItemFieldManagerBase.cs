@@ -16,6 +16,7 @@ using BiiSoft.Folders;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Excels;
 using Abp.Dependency;
+using Abp.Extensions;
 
 namespace BiiSoft.Items
 {
@@ -25,6 +26,9 @@ namespace BiiSoft.Items
         protected readonly IUnitOfWorkManager _unitOfWorkManager;
         protected readonly IAppFolders _appFolders;
         protected readonly IExcelManager _excelManager;
+
+        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
+        
         public ItemFieldManagerBase(
             IBiiSoftRepository<TEntity, Guid> repository) : base(repository) 
         {
@@ -32,6 +36,7 @@ namespace BiiSoft.Items
             _unitOfWorkManager = IocManager.Instance.Resolve<IUnitOfWorkManager>();
             _appFolders = IocManager.Instance.Resolve<IAppFolders>();
             _excelManager = IocManager.Instance.Resolve<IExcelManager>();
+            _itemFieldSettingRepository = IocManager.Instance.Resolve<IBiiSoftRepository<ItemFieldSetting, Guid>>();
         }
 
         #region override
@@ -40,6 +45,25 @@ namespace BiiSoft.Items
         protected override bool IsUniqueName => true;
 
         protected abstract TEntity CreateInstance(int tenantId, long userId, string name, string displayName, string code);
+
+        private async Task<bool> CheckUseCodeAsync()
+        {
+            return await _itemFieldSettingRepository.GetAll().AsNoTracking().AnyAsync(s => s.UseCode);
+        }
+
+        protected override async Task ValidateInputAsync(TEntity input)
+        {
+            var useCode = await CheckUseCodeAsync();
+            if (useCode)
+            {
+                ValidateCodeInput(input.Code);
+
+                var findCode = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id != input.Id && s.Code == input.Code);
+                if (findCode) DuplicateCodeException(input.Code);
+            }
+
+            await base.ValidateInputAsync(input);
+        }
 
         protected override TEntity CreateInstance(TEntity input)
         {
@@ -58,7 +82,7 @@ namespace BiiSoft.Items
             {
                 FileName = $"{InstanceKeyName}.xlsx",
                 Columns = new List<ColumnOutput> {
-                    new ColumnOutput{ ColumnTitle = L("Name_",L(InstanceKeyName)), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Name_",InstanceName), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Code"), Width = 250 },
                     new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
@@ -79,7 +103,17 @@ namespace BiiSoft.Items
         {
             var entities = new List<TEntity>();
             var entityHash = new HashSet<string>();
-           
+            var codeHash = new HashSet<string>();
+            bool useCode = false;
+
+            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    useCode = await CheckUseCodeAsync();
+                }
+            }
+
             //var excelPackage = Read(input, _appFolders);
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
@@ -92,14 +126,24 @@ namespace BiiSoft.Items
                     var worksheet = excelPackage.Workbook.Worksheets[0];
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
+                        var rowInfo = $", Row = {i}";
+
                         var name = worksheet.GetString(i, 1);
-                        ValidateName(name, $", Row = {i}");
-                        if (entityHash.Contains(name)) DuplicateCodeException(name, $", Row = {i}");
+                        ValidateName(name, rowInfo);
+                        if (entityHash.Contains(name)) DuplicateNameException(name, rowInfo);
 
                         var displayName = worksheet.GetString(i, 2);
-                        ValidateDisplayName(displayName, $", Row = {i}");
+                        ValidateDisplayName(displayName, rowInfo);
 
                         var code = worksheet.GetString(i, 3);
+                        if (useCode)
+                        {
+                            ValidateCodeInput(code, rowInfo);
+                            if (codeHash.Contains(code)) DuplicateCodeException(code, rowInfo);
+
+                            codeHash.Add(code);
+                        }
+
                         var isDefault = worksheet.GetBool(i, 4);
 
                         var entity = CreateInstance(input.TenantId.Value, input.UserId.Value, name, displayName, code);
@@ -117,9 +161,12 @@ namespace BiiSoft.Items
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                updateColorPatternDic = await _repository.GetAll().AsNoTracking()
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    updateColorPatternDic = await _repository.GetAll().AsNoTracking()
                                               .Where(s => entityHash.Contains(s.Name))
                                               .ToDictionaryAsync(k => k.Name, v => v);
+                }
             }
 
             var addColorPatterns = new List<TEntity>();
@@ -139,9 +186,11 @@ namespace BiiSoft.Items
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                if (updateColorPatternDic.Any()) await _repository.BulkUpdateAsync(updateColorPatternDic.Values.ToList());
-                if (addColorPatterns.Any()) await _repository.BulkInsertAsync(addColorPatterns);
-
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    if (updateColorPatternDic.Any()) await _repository.BulkUpdateAsync(updateColorPatternDic.Values.ToList());
+                    if (addColorPatterns.Any()) await _repository.BulkInsertAsync(addColorPatterns);
+                }
                 await uow.CompleteAsync();
             }
 

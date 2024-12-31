@@ -21,13 +21,14 @@ namespace BiiSoft.Locations
         public CityProvince CityProvince { get; private set; }
 
 
-        public static KhanDistrict Create(long? userId, string code, string name, string displayName, Guid? countryId, Guid? cityProvinceId)
+        public static KhanDistrict Create(int tenandId, long? userId, string code, string name, string displayName, Guid? countryId, Guid? cityProvinceId)
         {
             return new KhanDistrict
             {
                 Id = Guid.NewGuid(),
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
+                TenantId = tenandId,
                 Code = code,
                 Name = name,
                 DisplayName = displayName,  

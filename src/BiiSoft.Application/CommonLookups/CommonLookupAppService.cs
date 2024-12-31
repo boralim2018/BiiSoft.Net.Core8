@@ -13,6 +13,8 @@ using BiiSoft.Enums;
 using BiiSoft.Extensions;
 using Abp.Collections.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using BiiSoft.Items;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiiSoft.CommonLookups
 {
@@ -20,10 +22,13 @@ namespace BiiSoft.CommonLookups
     public class CommonLookupAppService : BiiSoftAppServiceBase, ICommonLookupAppService
     {
         private readonly ITimeZoneService _timeZoneService;
+        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
 
         public CommonLookupAppService(
+            IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             ITimeZoneService timeZoneService) : base()
         {
+            _itemFieldSettingRepository = itemFieldSettingRepository;
             _timeZoneService = timeZoneService;
         }
 
@@ -81,6 +86,13 @@ namespace BiiSoft.CommonLookups
             }
 
             return new PagedResultDto<string> { Items = items, TotalCount = totalCount };
+        }
+
+        public async Task<ItemFieldSettingDto> GetItemFieldSetting()
+        {
+            var setting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
+
+            return ObjectMapper.Map<ItemFieldSettingDto>(setting);
         }
 
     }

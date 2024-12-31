@@ -377,15 +377,15 @@
         public const string Pages_Setup_Items_FieldCs_Disable = "Pages.Setup.Items.FieldCs.Disable";
         public const string Pages_Setup_Items_FieldCs_SetAsDefault = "Pages.Setup.Items.FieldCs.SetAsDefault";
 
-        public const string Pages_Setup_Items_PriceLevels = "Pages.Setup.Items.PriceLevels";
-        public const string Pages_Setup_Items_PriceLevels_Create = "Pages.Setup.Items.PriceLevels.Create";
-        public const string Pages_Setup_Items_PriceLevels_View = "Pages.Setup.Items.PriceLevels.View";
-        public const string Pages_Setup_Items_PriceLevels_Edit = "Pages.Setup.Items.PriceLevels.Edit";
-        public const string Pages_Setup_Items_PriceLevels_Delete = "Pages.Setup.Items.PriceLevels.Delete";
-        public const string Pages_Setup_Items_PriceLevels_ImportExcel = "Pages.Setup.Items.PriceLevels.ImportExcel";
-        public const string Pages_Setup_Items_PriceLevels_ExportExcel = "Pages.Setup.Items.PriceLevels.ExportExcel";
-        public const string Pages_Setup_Items_PriceLevels_Enable = "Pages.Setup.Items.PriceLevels.Enable";
-        public const string Pages_Setup_Items_PriceLevels_Disable = "Pages.Setup.Items.PriceLevels.Disable";
+        public const string Pages_Setup_Items_PriceList = "Pages.Setup.Items.PriceList";
+        public const string Pages_Setup_Items_PriceList_Create = "Pages.Setup.Items.PriceList.Create";
+        public const string Pages_Setup_Items_PriceList_View = "Pages.Setup.Items.PriceList.View";
+        public const string Pages_Setup_Items_PriceList_Edit = "Pages.Setup.Items.PriceList.Edit";
+        public const string Pages_Setup_Items_PriceList_Delete = "Pages.Setup.Items.PriceList.Delete";
+        public const string Pages_Setup_Items_PriceList_ImportExcel = "Pages.Setup.Items.PriceList.ImportExcel";
+        public const string Pages_Setup_Items_PriceList_ExportExcel = "Pages.Setup.Items.PriceList.ExportExcel";
+        public const string Pages_Setup_Items_PriceList_Enable = "Pages.Setup.Items.PriceList.Enable";
+        public const string Pages_Setup_Items_PriceList_Disable = "Pages.Setup.Items.PriceList.Disable";
 
         public const string Pages_Setup_Items_Promotions = "Pages.Setup.Items.Promotions";
         public const string Pages_Setup_Items_Promotions_Create = "Pages.Setup.Items.Promotions.Create";

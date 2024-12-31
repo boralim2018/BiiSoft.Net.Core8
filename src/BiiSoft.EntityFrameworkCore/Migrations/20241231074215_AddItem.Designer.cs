@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20241230150709_AddItem")]
+    [Migration("20241231074215_AddItem")]
     partial class AddItem
     {
         /// <inheritdoc />
@@ -3162,6 +3162,9 @@ namespace BiiSoft.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("UseCamera")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseCode")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("UseColorPattern")

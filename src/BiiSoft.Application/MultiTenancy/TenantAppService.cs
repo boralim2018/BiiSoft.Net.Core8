@@ -30,6 +30,7 @@ using Abp.Authorization.Users;
 using BiiSoft.Features;
 using BiiSoft.Enums;
 using BiiSoft.Extensions;
+using BiiSoft.Items;
 
 namespace BiiSoft.MultiTenancy
 {
@@ -48,8 +49,10 @@ namespace BiiSoft.MultiTenancy
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
         private readonly IBiiSoftRepository<CompanyAccountSetting, long> _companyAccountSettingRepository;
         private readonly IBiiSoftRepository<TransactionNoSetting, Guid> _transactionNoSettingRepository;
+        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
         
         public TenantAppService(
+            IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             IBiiSoftRepository<TransactionNoSetting, Guid> transactionNoSettingRepository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
             IBiiSoftRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
@@ -75,6 +78,7 @@ namespace BiiSoft.MultiTenancy
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
             _companyGeneralSettingRepository = companyGeneralSettingRepository;
             _companyAccountSettingRepository = companyAccountSettingRepository;
+            _itemFieldSettingRepository = itemFieldSettingRepository;
         }
 
         public override async Task<TenantDto> GetAsync(EntityDto<int> input)
@@ -226,6 +230,13 @@ namespace BiiSoft.MultiTenancy
             {
                 var transactionNos = addJournalTypes.Select(s => TransactionNoSetting.Create(tenantId, userId, s, false, s.GetPrefix(), 6, 1, false)).ToList();
                 await _transactionNoSettingRepository.BulkInsertAsync(transactionNos);
+            }
+
+            var findItemFieldSetting = await _itemFieldSettingRepository.GetAll().AsNoTracking().AnyAsync();
+            if (!findItemFieldSetting)
+            {
+                var fieldSetting = ItemFieldSetting.Create(tenantId, userId, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, "FieldA", "FieldB", "FieldC");
+                await _itemFieldSettingRepository.InsertAsync(fieldSetting);
             }
         }
 

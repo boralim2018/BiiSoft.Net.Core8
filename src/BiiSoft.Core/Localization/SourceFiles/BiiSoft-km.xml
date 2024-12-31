@@ -335,8 +335,7 @@
 		<text name="FieldC">ជួរ C</text>
 		<text name="Units">ខ្នាត</text>
 		<text name="Unit">ខ្នាត</text>
-		<text name="PriceLevels">កម្រិកថ្លៃ</text>
-		<text name="PriceLevel">កម្រិកថ្លៃ</text>
+		<text name="PriceList">តារាងតម្លៃ</text>
 		<text name="Promotions">លក់ពិសេស</text>
 		<text name="Promotion">លក់ពិសេស</text>
 		<text name="UseDefaultCredentials">ប្រើគណនីលំនាំដើម</text>

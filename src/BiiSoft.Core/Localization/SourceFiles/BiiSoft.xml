@@ -335,8 +335,7 @@
 		<text name="FieldC">Feild C</text>
 		<text name="Units">Units</text>
 		<text name="Unit">Unit</text>
-		<text name="PriceLevels">Price Levels</text>
-		<text name="PriceLevel">Price Level</text>
+		<text name="PriceList">Price List</text>
 		<text name="Promotions">Promotions</text>
 		<text name="Promotion">Promotion</text>
 		<text name="UseDefaultCredentials">Use Default Credentials</text>

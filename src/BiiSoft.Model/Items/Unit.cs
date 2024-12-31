@@ -1,7 +1,6 @@
-﻿using Abp.Domain.Entities;
+﻿using Abp.Timing;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using Abp.Timing;
 
 namespace BiiSoft.Items
 {

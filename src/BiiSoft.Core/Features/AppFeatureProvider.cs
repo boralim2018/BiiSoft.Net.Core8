@@ -76,7 +76,7 @@ namespace BiiSoft.Features
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_FieldBs, defaultValue: "false", displayName: L("FieldBs"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_FieldCs, defaultValue: "false", displayName: L("FieldCs"), inputType: new CheckboxInputType());
             
-            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_PriceLevels, defaultValue: "false", displayName: L("PriceLevels"), inputType: new CheckboxInputType());
+            itemFeature.CreateChildFeature(AppFeatures.Setup_Items_PriceList, defaultValue: "false", displayName: L("PriceList"), inputType: new CheckboxInputType());
             itemFeature.CreateChildFeature(AppFeatures.Setup_Items_Promotions, defaultValue: "false", displayName: L("Promotions"), inputType: new CheckboxInputType());
             setupFeature.CreateChildFeature(AppFeatures.Setup_PaymentMethods, defaultValue: "false", displayName: L("PaymentMethods"), inputType: new CheckboxInputType());
             setupFeature.CreateChildFeature(AppFeatures.Setup_Classes, defaultValue: "false", displayName: L("Classes"), inputType: new CheckboxInputType());

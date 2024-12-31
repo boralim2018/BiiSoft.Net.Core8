@@ -1,13 +1,8 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Timing;
 using BiiSoft.Entities;
-using BiiSoft.Enums;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BiiSoft.Items
 {
@@ -15,6 +10,7 @@ namespace BiiSoft.Items
     public class ItemFieldSetting : ActiveEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
+        public bool UseCode { get; private set; }
         public bool UseItemGroup { get; private set; }
         public bool UseBrand { get; private set; }
         public bool UseModel { get; private set; }
@@ -39,6 +35,7 @@ namespace BiiSoft.Items
         public static ItemFieldSetting Create(
             int tenantId,
             long userId,
+            bool useCode,
             bool useItemGroup,
             bool useBrand,
             bool useModel,
@@ -65,6 +62,7 @@ namespace BiiSoft.Items
                 TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
+                UseCode = useCode,
                 UseItemGroup = useItemGroup,
                 UseBrand = useBrand,
                 UseModel = useModel,
@@ -91,6 +89,7 @@ namespace BiiSoft.Items
 
         public void Update(
             long userId,
+            bool useCode,
             bool useItemGroup,
             bool useBrand,
             bool useModel,
@@ -114,6 +113,7 @@ namespace BiiSoft.Items
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
+            UseCode = useCode;
             UseItemGroup = useItemGroup;
             UseBrand = useBrand;
             UseModel = useModel;

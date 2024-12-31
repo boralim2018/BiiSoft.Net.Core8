@@ -1,17 +1,16 @@
 ﻿using Abp.Domain.Entities;
+using Abp.Timing;
+using BiiSoft.ChartOfAccounts;
+using BiiSoft.Entities;
+using BiiSoft.Enums;
+using BiiSoft.Taxes;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Abp.Timing;
-using BiiSoft.Enums;
-using Microsoft.EntityFrameworkCore;
-using BiiSoft.ChartOfAccounts;
-using BiiSoft.Taxes;
-using BiiSoft.Entities;
 
 namespace BiiSoft.Items
 {
-   
+
     [Table("BiiItems")]
     public class Item : NameActiveEntity<Guid>, IMustHaveTenant, INoEntity, ICodeEntity
     {

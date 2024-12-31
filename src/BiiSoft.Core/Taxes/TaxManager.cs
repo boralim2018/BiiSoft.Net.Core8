@@ -114,7 +114,10 @@ namespace BiiSoft.Taxes
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                accountDic = await _chartOfAccountRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    accountDic = await _chartOfAccountRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
+                }
             }
 
             //var excelPackage = Read(input, _appFolders);
@@ -171,9 +174,12 @@ namespace BiiSoft.Taxes
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                updateTaxDic = await _repository.GetAll().AsNoTracking()
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    updateTaxDic = await _repository.GetAll().AsNoTracking()
                                               .Where(s => taxHash.Contains(s.Name))
                                               .ToDictionaryAsync(k => k.Name, v => v);
+                }
             }
 
             var addTaxs = new List<Tax>();
@@ -195,9 +201,11 @@ namespace BiiSoft.Taxes
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                if (updateTaxDic.Any()) await _repository.BulkUpdateAsync(updateTaxDic.Values.ToList());
-                if (addTaxs.Any()) await _repository.BulkInsertAsync(addTaxs);
-
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    if (updateTaxDic.Any()) await _repository.BulkUpdateAsync(updateTaxDic.Values.ToList());
+                    if (addTaxs.Any()) await _repository.BulkInsertAsync(addTaxs);
+                }
                 await uow.CompleteAsync();
             }
 

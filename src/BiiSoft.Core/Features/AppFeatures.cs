@@ -41,7 +41,7 @@
         public const string Setup_Items_FieldBs = "App.Setup.Items.FieldBs";
         public const string Setup_Items_FieldCs = "App.Setup.Items.FieldCs";
 
-        public const string Setup_Items_PriceLevels = "App.Setup.Items.PriceLevels";
+        public const string Setup_Items_PriceList = "App.Setup.Items.PriceList";
         public const string Setup_Items_Promotions = "App.Setup.Items.Promotions";
 
         public const string Setup_PaymentMethods = "App.Setup.PaymentMethods";
