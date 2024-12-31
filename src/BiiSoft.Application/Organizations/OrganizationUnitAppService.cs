@@ -11,11 +11,9 @@ using BiiSoft.Organizations.Dto;
 using System.Linq.Dynamic.Core;
 using Abp.Extensions;
 using Microsoft.EntityFrameworkCore;
-using BiiSoft;
-using BiiSoft.Organizations;
 using System.Collections.Generic;
 
-namespace CorarlERP.Organizations
+namespace BiiSoft.Organizations
 {
     [AbpAuthorize(PermissionNames.Pages_Administrations_OrganizationUnits)]
     public class OrganizationUnitAppService : BiiSoftAppServiceBase, IOrganizationUnitAppService
