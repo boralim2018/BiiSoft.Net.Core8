@@ -1,10 +1,4 @@
-﻿using Abp.Domain.Entities;
-using Abp.Timing;
-using BiiSoft.Entities;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BiiSoft.CommonLookups.Dto
+﻿namespace BiiSoft.Sessions.Dto
 {
     public class ItemFieldSettingDto
     {

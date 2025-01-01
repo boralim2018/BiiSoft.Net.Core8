@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Abp.Auditing;
 using Abp.Domain.Repositories;
 using BiiSoft.Branches;
+using BiiSoft.Items;
 using BiiSoft.Sessions.Dto;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,11 +16,14 @@ namespace BiiSoft.Sessions
     {
         private readonly IRepository<CompanyGeneralSetting, long> _companyGeneralSettingRepository;
         private readonly IRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
+        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
 
         public SessionAppService(
+            IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             IRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
             IRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository)
         {
+            _itemFieldSettingRepository = itemFieldSettingRepository;
             _companyGeneralSettingRepository = companyGeneralSettingRepository;
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
         }
@@ -70,6 +75,10 @@ namespace BiiSoft.Sessions
                                                ClassEnable = s.ClassEnable
                                            })
                                            .FirstAsync();
+
+                var setting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
+
+                output.ItemFieldSetting = ObjectMapper.Map<ItemFieldSettingDto>(setting);
 
             }
 

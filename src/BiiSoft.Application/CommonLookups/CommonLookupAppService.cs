@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Abp.Application.Services.Dto;
+﻿using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Collections.Extensions;
 using Abp.Extensions;
 using Abp.Timing.Timezone;
 using BiiSoft.Authorization;
-using BiiSoft.Timing;
 using BiiSoft.CommonLookups.Dto;
 using BiiSoft.Enums;
 using BiiSoft.Extensions;
-using Abp.Collections.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using BiiSoft.Items;
+using BiiSoft.Timing;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BiiSoft.CommonLookups
 {
@@ -22,13 +20,10 @@ namespace BiiSoft.CommonLookups
     public class CommonLookupAppService : BiiSoftAppServiceBase, ICommonLookupAppService
     {
         private readonly ITimeZoneService _timeZoneService;
-        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
-
+        
         public CommonLookupAppService(
-            IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             ITimeZoneService timeZoneService) : base()
         {
-            _itemFieldSettingRepository = itemFieldSettingRepository;
             _timeZoneService = timeZoneService;
         }
 
@@ -86,13 +81,6 @@ namespace BiiSoft.CommonLookups
             }
 
             return new PagedResultDto<string> { Items = items, TotalCount = totalCount };
-        }
-
-        public async Task<ItemFieldSettingDto> GetItemFieldSetting()
-        {
-            var setting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
-
-            return ObjectMapper.Map<ItemFieldSettingDto>(setting);
         }
 
     }

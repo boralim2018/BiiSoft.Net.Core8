@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using BiiSoft.Items;
 
-namespace BiiSoft.CommonLookups.Dto
+namespace BiiSoft.Sessions.Dto
 {
-    public class CommonLookupMapProfile : Profile
+    public class SessionMapProfile : Profile
     {
-        public CommonLookupMapProfile()
+        public SessionMapProfile()
         {
             CreateMap<ItemFieldSettingDto, ItemFieldSetting>().ReverseMap();
         }
