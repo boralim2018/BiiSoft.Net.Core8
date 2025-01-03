@@ -85,7 +85,7 @@ namespace BiiSoft.Locations
         {
             var locations = new List<Location>();
           
-            //var excelPackage = Read(input, _appFolders);
+            
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
@@ -148,7 +148,7 @@ namespace BiiSoft.Locations
 
         //    if (latestCode.IsNullOrWhiteSpace()) latestCode = GenerateCode(0);
 
-        //    //var excelPackage = Read(input, _appFolders);
+        //    
         //    var excelPackage = await _fileStorageManager.DownloadExcel(fileToken);
         //    if (excelPackage != null)
         //    {

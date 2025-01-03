@@ -2,7 +2,9 @@
 using Abp.Timing;
 using BiiSoft.ContactInfo;
 using BiiSoft.Entities;
+using BiiSoft.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -33,6 +35,10 @@ namespace BiiSoft.Branches
 
         public void SetName(string name) => Name = name; 
 
+        public Sharing Sharing { get; private set; }
+        public void SetSharing(Sharing sharing) => Sharing = sharing;
+        public ICollection<BranchUser> BranchUsers { get; set; }
+
         public static Branch Create(
             int tenantId, 
             long? userId, 
@@ -45,7 +51,8 @@ namespace BiiSoft.Branches
             string taxRegistrationNumber,
             Guid billingAddressId,
             bool sameAsBillingAddress,
-            Guid shippingAddressId)
+            Guid shippingAddressId,
+            Sharing sharing)
         {
             return new Branch
             {
@@ -63,6 +70,7 @@ namespace BiiSoft.Branches
                 BillingAddressId = billingAddressId,                
                 SameAsBillingAddress = sameAsBillingAddress,
                 ShippingAddressId = sameAsBillingAddress ? billingAddressId : shippingAddressId,
+                Sharing = sharing,
                 IsActive = true
             };
         }
@@ -93,7 +101,6 @@ namespace BiiSoft.Branches
             BillingAddressId = billingAddressId;
             SameAsBillingAddress = saveAsBillingAddress;
             ShippingAddressId = SameAsBillingAddress ? billingAddressId : shippingAddressId;
-            
         }
     }
 }

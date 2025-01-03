@@ -83,7 +83,7 @@ namespace BiiSoft.Features
             setupFeature.CreateChildFeature(AppFeatures.Setup_Taxes, defaultValue: "false", displayName: L("Taxes"), inputType: new CheckboxInputType());
 
             var warehouseFeature = setupFeature.CreateChildFeature(AppFeatures.Setup_Warehouses, defaultValue: "false", displayName: L("Warehouses"), inputType: new CheckboxInputType());
-            warehouseFeature.CreateChildFeature(AppFeatures.Setup_Warehouses_Slots, defaultValue: "false", displayName: L("Slots"), inputType: new CheckboxInputType());
+            warehouseFeature.CreateChildFeature(AppFeatures.Setup_Warehouses_Zones, defaultValue: "false", displayName: L("Zones"), inputType: new CheckboxInputType());
             warehouseFeature.CreateChildFeature(
                 AppFeatures.MaxWarehouseCount,
                 defaultValue: "0", //0 = unlimited

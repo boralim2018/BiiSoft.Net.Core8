@@ -127,7 +127,7 @@ namespace BiiSoft.Locations
                 currencyDic = await _currencyRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
             }
 
-            //var excelPackage = Read(input, _appFolders);
+            
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {

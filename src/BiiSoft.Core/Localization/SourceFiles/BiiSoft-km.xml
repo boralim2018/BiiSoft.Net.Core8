@@ -381,8 +381,8 @@
 		<text name="TransactionDetail">ប្រតិបត្តិការលម្អិត</text>
 		<text name="PurchaseBills">វិក្កយបត្រទិញ</text>
 		<text name="PurchaseBillDetail">វិក្កយបត្រទិញលម្អិត</text>
-		<text name="Slots">ទីតាំងទំនិញ</text>
-		<text name="Slot">ទីតាំងទំនិញ</text>
+		<text name="Zones">ទីតាំងទំនិញ</text>
+		<text name="Zone">ទីតាំងទំនិញ</text>
 		<text name="Collections">ប្រមូលសំណង</text>
 		<text name="Collection">ប្រមូលសំណង</text>
 		<text name="RetainEarning">ប្រាក់ចំណេញរក្សាទុក</text>
@@ -750,5 +750,6 @@
 		<text name="FindFieldCs">ស្វែងរកជួរ C</text>
 		<text name="FindItems">ស្វែងរកទំនិញ</text>
 		<text name="FindItemGroups">ស្វែងរកក្រុមទំនិញ</text>
+		<text name="IsInUse">{0} កំពុងត្រូវបានប្រើប្រាស់</text>
 	</texts>
 </localizationDictionary>

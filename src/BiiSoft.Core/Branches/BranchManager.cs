@@ -1,6 +1,5 @@
 ﻿using Abp.Domain.Uow;
 using Abp.Extensions;
-using BiiSoft.Authorization.Users;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Columns;
 using BiiSoft.ContactInfo;
@@ -36,7 +35,7 @@ namespace BiiSoft.Branches
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IContactAddressManager _contactAddressManager;
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
-        private readonly IBiiSoftRepository<UserBranch, Guid> _userBranchRepository;
+        private readonly IBiiSoftRepository<BranchUser, Guid> _branchUserRepository;
         private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public BranchManager(
@@ -49,7 +48,7 @@ namespace BiiSoft.Branches
             IBiiSoftRepository<SangkatCommune, Guid> sangkatCommuneRepository,
             IBiiSoftRepository<Village, Guid> villageRepository,
             IBiiSoftRepository<Location, Guid> locationRepository,
-            IBiiSoftRepository<UserBranch, Guid> userBranchRepository,
+            IBiiSoftRepository<BranchUser, Guid> branchUserRepository,
             IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
             IContactAddressManager contactAddressManager,
             IBiiSoftRepository<Branch, Guid> repository,
@@ -60,7 +59,7 @@ namespace BiiSoft.Branches
             _unitOfWorkManager = unitOfWorkManager;
             _contactAddressManager = contactAddressManager;
             _contactAddressRepository = contactAddressRepository;
-            _userBranchRepository = userBranchRepository;
+            _branchUserRepository = branchUserRepository;
             _countryRepository = countryRepository;
             _cityProvinceRepository = cityProvinceRepository;
             _khanDistrictRepository = khanDistrictRepository;
@@ -78,12 +77,13 @@ namespace BiiSoft.Branches
 
         protected override Branch CreateInstance(Branch input)
         {
-            return Branch.Create(input.TenantId, input.CreatorUserId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId);
+            return Branch.Create(input.TenantId, input.CreatorUserId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId, input.Sharing);
         }
 
         protected override void UpdateInstance(Branch input, Branch entity)
         {
             entity.Update(input.LastModifierUserId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId);
+            entity.SetSharing(input.Sharing);
 
             input.TenantId = entity.TenantId; //Rquired in UpdateAsync Method
         }
@@ -164,9 +164,9 @@ namespace BiiSoft.Branches
             if (entity == null) NotFoundException(InstanceName);
             ValidateDeletable(entity);
 
-            var members = await _userBranchRepository.GetAll().AsNoTracking().AnyAsync(s => s.BranchId == id);
-            if (members) ErrorException(L("AlreadyHasMembers", InstanceName));
-
+            var members = await _branchUserRepository.GetAll().AsNoTracking().Where(s => s.BranchId == id).ToListAsync();
+            if(members.Any()) await _branchUserRepository.BulkInsertAsync(members);
+           
             var address = new List<Guid>{ entity.BillingAddressId };
             if (!entity.SameAsBillingAddress) address.Add(entity.ShippingAddressId);
             
@@ -251,7 +251,7 @@ namespace BiiSoft.Branches
                 }
             }
 
-            //var excelPackage = Read(input, _appFolders);
+            
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
@@ -376,7 +376,7 @@ namespace BiiSoft.Branches
 
                         var billingAddress = ContactAddress.Create(input.TenantId.Value, input.UserId, countryId, cityProvinceId, khanDistrictId, sangkatCommuneId, villageId, null, postalCode, street, houseNo);
 
-                        var entity = Branch.Create(input.TenantId.Value, input.UserId, name, displayName, businessId, phone, email, website, taxNumber, billingAddress.Id, sameAsBillingAddress, sameAsBillingAddress ? billingAddress.Id : shippingAddress.Id);
+                        var entity = Branch.Create(input.TenantId.Value, input.UserId, name, displayName, businessId, phone, email, website, taxNumber, billingAddress.Id, sameAsBillingAddress, sameAsBillingAddress ? billingAddress.Id : shippingAddress.Id, 0);
                         if(isDefault) entity.SetDefault(isDefault);
                         entity.SetCannotEdit(cannotEdit);
                         entity.SetCannotDelete(cannotDelete);

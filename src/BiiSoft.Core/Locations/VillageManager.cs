@@ -146,7 +146,7 @@ namespace BiiSoft.Locations
                 }
             }
 
-            //var excelPackage = Read(input, _appFolders);
+            
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {

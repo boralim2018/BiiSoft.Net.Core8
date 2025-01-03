@@ -163,7 +163,7 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_PaymentMethods, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Classes, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Warehouses, true);
-            CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Warehouses_Slots, true);
+            CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Warehouses_Zones, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_FormTemplates, true);
             CreateFeatureIfNotExists(goldEdition.Id, AppFeatures.Setup_Taxes, true);
 
@@ -281,7 +281,7 @@ namespace BiiSoft.EntityFrameworkCore.Seed.Host
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_PaymentMethods, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Classes, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Warehouses, true);
-            CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Warehouses_Slots, true);
+            CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Warehouses_Zones, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_FormTemplates, true);
             CreateFeatureIfNotExists(diamondEdition.Id, AppFeatures.Setup_Taxes, true);
 

@@ -3,6 +3,7 @@ using System;
 using BiiSoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    partial class BiiSoftDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250103062201_AddWarehouse")]
+    partial class AddWarehouse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +66,7 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AbpEditions", (string)null);
+                    b.ToTable("AbpEditions");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.FeatureSetting", b =>
@@ -100,7 +103,7 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AbpFeatures", (string)null);
+                    b.ToTable("AbpFeatures");
 
                     b.HasDiscriminator().HasValue("FeatureSetting");
 
@@ -180,7 +183,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "UserId");
 
-                    b.ToTable("AbpAuditLogs", (string)null);
+                    b.ToTable("AbpAuditLogs");
                 });
 
             modelBuilder.Entity("Abp.Authorization.PermissionSetting", b =>
@@ -217,7 +220,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "Name");
 
-                    b.ToTable("AbpPermissions", (string)null);
+                    b.ToTable("AbpPermissions");
 
                     b.HasDiscriminator().HasValue("PermissionSetting");
 
@@ -257,7 +260,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "ClaimType");
 
-                    b.ToTable("AbpRoleClaims", (string)null);
+                    b.ToTable("AbpRoleClaims");
                 });
 
             modelBuilder.Entity("Abp.Authorization.Users.UserAccount", b =>
@@ -318,7 +321,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "UserName");
 
-                    b.ToTable("AbpUserAccounts", (string)null);
+                    b.ToTable("AbpUserAccounts");
                 });
 
             modelBuilder.Entity("Abp.Authorization.Users.UserClaim", b =>
@@ -354,7 +357,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "ClaimType");
 
-                    b.ToTable("AbpUserClaims", (string)null);
+                    b.ToTable("AbpUserClaims");
                 });
 
             modelBuilder.Entity("Abp.Authorization.Users.UserLogin", b =>
@@ -392,7 +395,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "LoginProvider", "ProviderKey");
 
-                    b.ToTable("AbpUserLogins", (string)null);
+                    b.ToTable("AbpUserLogins");
                 });
 
             modelBuilder.Entity("Abp.Authorization.Users.UserLoginAttempt", b =>
@@ -445,7 +448,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenancyName", "UserNameOrEmailAddress", "Result");
 
-                    b.ToTable("AbpUserLoginAttempts", (string)null);
+                    b.ToTable("AbpUserLoginAttempts");
                 });
 
             modelBuilder.Entity("Abp.Authorization.Users.UserOrganizationUnit", b =>
@@ -480,7 +483,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "UserId");
 
-                    b.ToTable("AbpUserOrganizationUnits", (string)null);
+                    b.ToTable("AbpUserOrganizationUnits");
                 });
 
             modelBuilder.Entity("Abp.Authorization.Users.UserRole", b =>
@@ -514,7 +517,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "UserId");
 
-                    b.ToTable("AbpUserRoles", (string)null);
+                    b.ToTable("AbpUserRoles");
                 });
 
             modelBuilder.Entity("Abp.Authorization.Users.UserToken", b =>
@@ -552,7 +555,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "UserId");
 
-                    b.ToTable("AbpUserTokens", (string)null);
+                    b.ToTable("AbpUserTokens");
                 });
 
             modelBuilder.Entity("Abp.BackgroundJobs.BackgroundJobInfo", b =>
@@ -598,7 +601,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("IsAbandoned", "NextTryTime");
 
-                    b.ToTable("AbpBackgroundJobs", (string)null);
+                    b.ToTable("AbpBackgroundJobs");
                 });
 
             modelBuilder.Entity("Abp.Configuration.Setting", b =>
@@ -642,7 +645,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("TenantId", "Name", "UserId")
                         .IsUnique();
 
-                    b.ToTable("AbpSettings", (string)null);
+                    b.ToTable("AbpSettings");
                 });
 
             modelBuilder.Entity("Abp.DynamicEntityProperties.DynamicEntityProperty", b =>
@@ -670,7 +673,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("EntityFullName", "DynamicPropertyId", "TenantId")
                         .IsUnique();
 
-                    b.ToTable("AbpDynamicEntityProperties", (string)null);
+                    b.ToTable("AbpDynamicEntityProperties");
                 });
 
             modelBuilder.Entity("Abp.DynamicEntityProperties.DynamicEntityPropertyValue", b =>
@@ -698,7 +701,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("DynamicEntityPropertyId");
 
-                    b.ToTable("AbpDynamicEntityPropertyValues", (string)null);
+                    b.ToTable("AbpDynamicEntityPropertyValues");
                 });
 
             modelBuilder.Entity("Abp.DynamicEntityProperties.DynamicProperty", b =>
@@ -730,7 +733,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("PropertyName", "TenantId")
                         .IsUnique();
 
-                    b.ToTable("AbpDynamicProperties", (string)null);
+                    b.ToTable("AbpDynamicProperties");
                 });
 
             modelBuilder.Entity("Abp.DynamicEntityProperties.DynamicPropertyValue", b =>
@@ -755,7 +758,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("DynamicPropertyId");
 
-                    b.ToTable("AbpDynamicPropertyValues", (string)null);
+                    b.ToTable("AbpDynamicPropertyValues");
                 });
 
             modelBuilder.Entity("Abp.EntityHistory.EntityChange", b =>
@@ -792,7 +795,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("EntityTypeFullName", "EntityId");
 
-                    b.ToTable("AbpEntityChanges", (string)null);
+                    b.ToTable("AbpEntityChanges");
                 });
 
             modelBuilder.Entity("Abp.EntityHistory.EntityChangeSet", b =>
@@ -845,7 +848,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "UserId");
 
-                    b.ToTable("AbpEntityChangeSets", (string)null);
+                    b.ToTable("AbpEntityChangeSets");
                 });
 
             modelBuilder.Entity("Abp.EntityHistory.EntityPropertyChange", b =>
@@ -888,7 +891,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("EntityChangeId");
 
-                    b.ToTable("AbpEntityPropertyChanges", (string)null);
+                    b.ToTable("AbpEntityPropertyChanges");
                 });
 
             modelBuilder.Entity("Abp.Localization.ApplicationLanguage", b =>
@@ -944,7 +947,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "Name");
 
-                    b.ToTable("AbpLanguages", (string)null);
+                    b.ToTable("AbpLanguages");
                 });
 
             modelBuilder.Entity("Abp.Localization.ApplicationLanguageText", b =>
@@ -994,7 +997,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "Source", "LanguageName", "Key");
 
-                    b.ToTable("AbpLanguageTexts", (string)null);
+                    b.ToTable("AbpLanguageTexts");
                 });
 
             modelBuilder.Entity("Abp.Notifications.NotificationInfo", b =>
@@ -1055,7 +1058,7 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AbpNotifications", (string)null);
+                    b.ToTable("AbpNotifications");
                 });
 
             modelBuilder.Entity("Abp.Notifications.NotificationSubscriptionInfo", b =>
@@ -1102,7 +1105,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "NotificationName", "EntityTypeName", "EntityId", "UserId");
 
-                    b.ToTable("AbpNotificationSubscriptions", (string)null);
+                    b.ToTable("AbpNotificationSubscriptions");
                 });
 
             modelBuilder.Entity("Abp.Notifications.TenantNotificationInfo", b =>
@@ -1152,7 +1155,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("AbpTenantNotifications", (string)null);
+                    b.ToTable("AbpTenantNotifications");
                 });
 
             modelBuilder.Entity("Abp.Notifications.UserNotificationInfo", b =>
@@ -1184,7 +1187,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("UserId", "State", "CreationTime");
 
-                    b.ToTable("AbpUserNotifications", (string)null);
+                    b.ToTable("AbpUserNotifications");
                 });
 
             modelBuilder.Entity("Abp.Organizations.OrganizationUnit", b =>
@@ -1238,7 +1241,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "Code");
 
-                    b.ToTable("AbpOrganizationUnits", (string)null);
+                    b.ToTable("AbpOrganizationUnits");
                 });
 
             modelBuilder.Entity("Abp.Organizations.OrganizationUnitRole", b =>
@@ -1273,7 +1276,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "RoleId");
 
-                    b.ToTable("AbpOrganizationUnitRoles", (string)null);
+                    b.ToTable("AbpOrganizationUnitRoles");
                 });
 
             modelBuilder.Entity("Abp.Webhooks.WebhookEvent", b =>
@@ -1303,7 +1306,7 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AbpWebhookEvents", (string)null);
+                    b.ToTable("AbpWebhookEvents");
                 });
 
             modelBuilder.Entity("Abp.Webhooks.WebhookSendAttempt", b =>
@@ -1337,7 +1340,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("WebhookEventId");
 
-                    b.ToTable("AbpWebhookSendAttempts", (string)null);
+                    b.ToTable("AbpWebhookSendAttempts");
                 });
 
             modelBuilder.Entity("Abp.Webhooks.WebhookSubscriptionInfo", b =>
@@ -1374,7 +1377,7 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AbpWebhookSubscriptions", (string)null);
+                    b.ToTable("AbpWebhookSubscriptions");
                 });
 
             modelBuilder.Entity("BiiSoft.Authorization.Roles.Role", b =>
@@ -1449,7 +1452,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "NormalizedName");
 
-                    b.ToTable("AbpRoles", (string)null);
+                    b.ToTable("AbpRoles");
                 });
 
             modelBuilder.Entity("BiiSoft.Authorization.Users.User", b =>
@@ -1598,7 +1601,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "NormalizedUserName");
 
-                    b.ToTable("AbpUsers", (string)null);
+                    b.ToTable("AbpUsers");
                 });
 
             modelBuilder.Entity("BiiSoft.BFiles.BFile", b =>
@@ -1672,7 +1675,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("Name", "TenantId");
 
-                    b.ToTable("BiiFiles", (string)null);
+                    b.ToTable("BiiFiles");
                 });
 
             modelBuilder.Entity("BiiSoft.Branches.Branch", b =>
@@ -1774,7 +1777,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("TenantId", "Name")
                         .IsUnique();
 
-                    b.ToTable("BiiBranches", (string)null);
+                    b.ToTable("BiiBranches");
                 });
 
             modelBuilder.Entity("BiiSoft.Branches.BranchUser", b =>
@@ -1817,7 +1820,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("BiiBranchUsers", (string)null);
+                    b.ToTable("BiiBranchUsers");
                 });
 
             modelBuilder.Entity("BiiSoft.Branches.CompanyAccountSetting", b =>
@@ -1930,7 +1933,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("DefaultSaleDiscountAccountId");
 
-                    b.ToTable("BiiCompanyAccountSettings", (string)null);
+                    b.ToTable("BiiCompanyAccountSettings");
                 });
 
             modelBuilder.Entity("BiiSoft.Branches.CompanyAdvanceSetting", b =>
@@ -1976,7 +1979,7 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BiiCompanyAdvanceSettings", (string)null);
+                    b.ToTable("BiiCompanyAdvanceSettings");
                 });
 
             modelBuilder.Entity("BiiSoft.Branches.CompanyGeneralSetting", b =>
@@ -2033,7 +2036,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.ToTable("BiiCompanyGeneralSettings", (string)null);
+                    b.ToTable("BiiCompanyGeneralSettings");
                 });
 
             modelBuilder.Entity("BiiSoft.Branches.TransactionNoSetting", b =>
@@ -2080,7 +2083,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("TenantId", "JournalType")
                         .IsUnique();
 
-                    b.ToTable("BiiTransactionNoSettings", (string)null);
+                    b.ToTable("BiiTransactionNoSettings");
                 });
 
             modelBuilder.Entity("BiiSoft.ChartOfAccounts.ChartOfAccount", b =>
@@ -2164,7 +2167,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("Code", "TenantId")
                         .IsUnique();
 
-                    b.ToTable("BiiChartOfAccounts", (string)null);
+                    b.ToTable("BiiChartOfAccounts");
                 });
 
             modelBuilder.Entity("BiiSoft.ContactInfo.ContactAddress", b =>
@@ -2229,7 +2232,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("VillageId");
 
-                    b.ToTable("ContactAddresses", (string)null);
+                    b.ToTable("ContactAddresses");
                 });
 
             modelBuilder.Entity("BiiSoft.Currencies.Currency", b =>
@@ -2291,7 +2294,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Currencies", (string)null);
+                    b.ToTable("Currencies");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.Battery", b =>
@@ -2355,7 +2358,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiBatteries", (string)null);
+                    b.ToTable("BiiBatteries");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.CPU", b =>
@@ -2419,7 +2422,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiCPUs", (string)null);
+                    b.ToTable("BiiCPUs");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.Camera", b =>
@@ -2483,7 +2486,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiCameras", (string)null);
+                    b.ToTable("BiiCameras");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ColorPattern", b =>
@@ -2547,7 +2550,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiColorPatterns", (string)null);
+                    b.ToTable("BiiColorPatterns");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.FieldA", b =>
@@ -2611,7 +2614,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemFieldAs", (string)null);
+                    b.ToTable("BiiItemFieldAs");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.FieldB", b =>
@@ -2675,7 +2678,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemFieldBs", (string)null);
+                    b.ToTable("BiiItemFieldBs");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.FieldC", b =>
@@ -2739,7 +2742,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemFieldCs", (string)null);
+                    b.ToTable("BiiItemFieldCs");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.HDD", b =>
@@ -2803,7 +2806,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiHDDs", (string)null);
+                    b.ToTable("BiiHDDs");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.Item", b =>
@@ -3054,7 +3057,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("VGAId");
 
-                    b.ToTable("BiiItems", (string)null);
+                    b.ToTable("BiiItems");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemBrand", b =>
@@ -3118,7 +3121,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemBrands", (string)null);
+                    b.ToTable("BiiItemBrands");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemCodeFormula", b =>
@@ -3166,7 +3169,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("LastModifierUserId");
 
-                    b.ToTable("BiiItemCodeFormulas", (string)null);
+                    b.ToTable("BiiItemCodeFormulas");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
@@ -3262,7 +3265,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("LastModifierUserId");
 
-                    b.ToTable("BiiItemFieldSettings", (string)null);
+                    b.ToTable("BiiItemFieldSettings");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemGallery", b =>
@@ -3306,7 +3309,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemGalleries", (string)null);
+                    b.ToTable("BiiItemGalleries");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemGrade", b =>
@@ -3370,7 +3373,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemGrades", (string)null);
+                    b.ToTable("BiiItemGrades");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemGroup", b =>
@@ -3434,7 +3437,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemGroups", (string)null);
+                    b.ToTable("BiiItemGroups");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemModel", b =>
@@ -3498,7 +3501,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemModels", (string)null);
+                    b.ToTable("BiiItemModels");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemSeries", b =>
@@ -3562,7 +3565,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemSeries", (string)null);
+                    b.ToTable("BiiItemSeries");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemSetting", b =>
@@ -3598,7 +3601,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("LastModifierUserId");
 
-                    b.ToTable("BiiItemSettings", (string)null);
+                    b.ToTable("BiiItemSettings");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemSize", b =>
@@ -3662,7 +3665,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiItemSizes", (string)null);
+                    b.ToTable("BiiItemSizes");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemZone", b =>
@@ -3705,7 +3708,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("ZoneId");
 
-                    b.ToTable("BiiItemZones", (string)null);
+                    b.ToTable("BiiItemZones");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.RAM", b =>
@@ -3769,7 +3772,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiRAMs", (string)null);
+                    b.ToTable("BiiRAMs");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.Screen", b =>
@@ -3833,7 +3836,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiScreens", (string)null);
+                    b.ToTable("BiiScreens");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.Unit", b =>
@@ -3897,7 +3900,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiUnits", (string)null);
+                    b.ToTable("BiiUnits");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.VGA", b =>
@@ -3961,7 +3964,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiVGAs", (string)null);
+                    b.ToTable("BiiVGAs");
                 });
 
             modelBuilder.Entity("BiiSoft.Locations.CityProvince", b =>
@@ -4038,7 +4041,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiCityProvinces", (string)null);
+                    b.ToTable("BiiCityProvinces");
                 });
 
             modelBuilder.Entity("BiiSoft.Locations.Country", b =>
@@ -4129,7 +4132,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("PhonePrefix");
 
-                    b.ToTable("BiiCountries", (string)null);
+                    b.ToTable("BiiCountries");
                 });
 
             modelBuilder.Entity("BiiSoft.Locations.KhanDistrict", b =>
@@ -4207,7 +4210,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("TenantId", "Code")
                         .IsUnique();
 
-                    b.ToTable("BiiKhanDistricts", (string)null);
+                    b.ToTable("BiiKhanDistricts");
                 });
 
             modelBuilder.Entity("BiiSoft.Locations.Location", b =>
@@ -4274,7 +4277,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("No");
 
-                    b.ToTable("BiiLocations", (string)null);
+                    b.ToTable("BiiLocations");
                 });
 
             modelBuilder.Entity("BiiSoft.Locations.SangkatCommune", b =>
@@ -4357,7 +4360,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("TenantId", "Code")
                         .IsUnique();
 
-                    b.ToTable("BiiSangkatCommunes", (string)null);
+                    b.ToTable("BiiSangkatCommunes");
                 });
 
             modelBuilder.Entity("BiiSoft.Locations.Village", b =>
@@ -4445,7 +4448,7 @@ namespace BiiSoft.Migrations
                     b.HasIndex("TenantId", "Code")
                         .IsUnique();
 
-                    b.ToTable("BiiVillages", (string)null);
+                    b.ToTable("BiiVillages");
                 });
 
             modelBuilder.Entity("BiiSoft.MultiTenancy.Tenant", b =>
@@ -4512,7 +4515,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenancyName");
 
-                    b.ToTable("AbpTenants", (string)null);
+                    b.ToTable("AbpTenants");
                 });
 
             modelBuilder.Entity("BiiSoft.Taxes.Tax", b =>
@@ -4589,7 +4592,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("SaleAccountId");
 
-                    b.ToTable("BiiTaxes", (string)null);
+                    b.ToTable("BiiTaxes");
                 });
 
             modelBuilder.Entity("BiiSoft.Warehouses.Warehouse", b =>
@@ -4658,7 +4661,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("Sharing");
 
-                    b.ToTable("BiiWarehouses", (string)null);
+                    b.ToTable("BiiWarehouses");
                 });
 
             modelBuilder.Entity("BiiSoft.Warehouses.WarehouseBranch", b =>
@@ -4701,7 +4704,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("BiiWarehouseBranchs", (string)null);
+                    b.ToTable("BiiWarehouseBranchs");
                 });
 
             modelBuilder.Entity("BiiSoft.Warehouses.Zone", b =>
@@ -4764,7 +4767,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("BiiZones", (string)null);
+                    b.ToTable("BiiZones");
                 });
 
             modelBuilder.Entity("Abp.Application.Features.EditionFeatureSetting", b =>
@@ -4776,7 +4779,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("EditionId", "Name");
 
-                    b.ToTable("AbpFeatures", (string)null);
+                    b.ToTable("AbpFeatures");
 
                     b.HasDiscriminator().HasValue("EditionFeatureSetting");
                 });
@@ -4787,7 +4790,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("TenantId", "Name");
 
-                    b.ToTable("AbpFeatures", (string)null);
+                    b.ToTable("AbpFeatures");
 
                     b.HasDiscriminator().HasValue("TenantFeatureSetting");
                 });
@@ -4801,7 +4804,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AbpPermissions", (string)null);
+                    b.ToTable("AbpPermissions");
 
                     b.HasDiscriminator().HasValue("RolePermissionSetting");
                 });
@@ -4815,7 +4818,7 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AbpPermissions", (string)null);
+                    b.ToTable("AbpPermissions");
 
                     b.HasDiscriminator().HasValue("UserPermissionSetting");
                 });

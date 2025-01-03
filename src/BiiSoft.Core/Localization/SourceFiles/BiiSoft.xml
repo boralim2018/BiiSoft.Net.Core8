@@ -380,8 +380,8 @@
 		<text name="TransactionDetail">Transaction Detail</text>
 		<text name="PurchaseBills">Purchase Bills</text>
 		<text name="PurchaseBillDetail">Purchase Bill Detail</text>
-		<text name="Slots">Slots</text>
-		<text name="Slot">Slot</text>
+		<text name="Zones">Zones</text>
+		<text name="Zone">Zone</text>
 		<text name="Collections">Collections</text>
 		<text name="Collection">Collection</text>
 		<text name="RetainEarning">Retain Earning</text>
@@ -750,5 +750,6 @@
 		<text name="FindFieldCs">Find Field C</text>
 		<text name="FindItems">Find Items</text>
 		<text name="FindItemGroups">Find Item Groups</text>
+		<text name="IsInUse">{0} is in use</text>
 	</texts>
 </localizationDictionary>

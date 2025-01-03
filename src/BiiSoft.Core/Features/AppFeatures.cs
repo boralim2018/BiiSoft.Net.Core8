@@ -47,7 +47,7 @@
         public const string Setup_PaymentMethods = "App.Setup.PaymentMethods";
         public const string Setup_Classes = "App.Setup.Classes";
         public const string Setup_Warehouses = "App.Setup.Warehouses";
-        public const string Setup_Warehouses_Slots = "App.Setup.Warehouses.Slots";
+        public const string Setup_Warehouses_Zones = "App.Setup.Warehouses.Zones";
         public const string Setup_FormTemplates = "App.Setup.FormTemplates";
         public const string Setup_Taxes = "App.Setup.Taxes";
 

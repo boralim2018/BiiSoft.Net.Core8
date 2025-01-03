@@ -182,7 +182,7 @@ namespace BiiSoft.MultiTenancy
         {   
             var billingAddressEntity = ContactAddress.Create(tenant.Id, userId, null, null, null, null, null, null, "", "", "");
             await _contactAddressRepository.InsertAsync(billingAddressEntity);
-            var branchEntity = Branch.Create(tenant.Id, userId, tenant.Name, tenant.Name, "", "", "", "", "", billingAddressEntity.Id, true, billingAddressEntity.Id);
+            var branchEntity = Branch.Create(tenant.Id, userId, tenant.Name, tenant.Name, "", "", "", "", "", billingAddressEntity.Id, true, billingAddressEntity.Id, Sharing.All);
             branchEntity.SetDefault(true);
             await _branchRepository.InsertAsync(branchEntity);
         }

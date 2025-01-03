@@ -5,35 +5,35 @@ using BiiSoft.Entities;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BiiSoft.Authorization.Users
+namespace BiiSoft.Warehouses
 {
-    [Table("BiiUserBranchs")]
-    public class UserBranch : DefaultEntity<Guid>, IMustHaveTenant
+    [Table("BiiWarehouseBranchs")]
+    public class WarehouseBranch : DefaultEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
-        public long MemberId { get; private set; }
-        public User Member { get; private set; }
+        public Guid WarehouseId { get; private set; }
+        public Warehouse Warehouse { get; private set; }
         public Guid BranchId { get; private set; }
         public Branch Branch { get; private set; }
 
-        public static UserBranch Create(int tenantId, long userId, long memberId, Guid branchId)
+        public static WarehouseBranch Create(int tenantId, long userId, Guid warehouseId, Guid branchId)
         {
-            return new UserBranch
+            return new WarehouseBranch
             {
                 Id = Guid.NewGuid(),
                 TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
-                MemberId = memberId,
+                WarehouseId = warehouseId,
                 BranchId = branchId
             };
         }
 
-        public void Update(long userId, long memberId, Guid branchId)
+        public void Update(long userId, Guid warehouseId, Guid branchId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
-            MemberId = memberId;
+            WarehouseId = warehouseId;
             BranchId = branchId;
         }
     }

@@ -1,10 +1,6 @@
 ﻿using Abp.Timing;
 using BiiSoft.ChartOfAccounts;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using BiiSoft.Enums;
 
 namespace BiiSoft.Partners
 {
@@ -56,10 +52,6 @@ namespace BiiSoft.Partners
 
 
         public bool IsSameAsBillingAddress { get; protected set; } 
-
-        public SharingType SharingType { get; protected set; }
-        public void SetAsPublicSharing() { this.SharingType = SharingType.Public; }
-        public void SetAsUserSharing() { this.SharingType = SharingType.User; }
 
         public Guid? ARAccountId { get; protected set; }
         public ChartOfAccount ARAccount { get; protected set; }

@@ -41,6 +41,8 @@
         public const string Pages_Find_FieldBs = "Pages.Find.FieldBs";
         public const string Pages_Find_FieldCs = "Pages.Find.FieldCs";
         public const string Pages_Find_Items = "Pages.Find.Items";
+        public const string Pages_Find_Warehouses = "Pages.Find.Warehouses";
+        public const string Pages_Find_Zones = "Pages.Find.Zones";
 
         #region Tenants
         public const string Pages_Tenants = "Pages.Tenants";
@@ -431,16 +433,18 @@
         public const string Pages_Setup_Warehouses_ExportExcel = "Pages.Setup.Warehouses.ExportExcel";
         public const string Pages_Setup_Warehouses_Enable = "Pages.Setup.Warehouses.Enable";
         public const string Pages_Setup_Warehouses_Disable = "Pages.Setup.Warehouses.Disable";
+        public const string Pages_Setup_Warehouses_SetAsDefault = "Pages.Setup.Warehouses.SetAsDefault";
 
-        public const string Pages_Setup_Warehouses_Slots = "Pages.Setup.Warehouses.Slots";
-        public const string Pages_Setup_Warehouses_Slots_Create = "Pages.Setup.Warehouses.Slots.Create";
-        public const string Pages_Setup_Warehouses_Slots_View = "Pages.Setup.Warehouses.Slots.View";
-        public const string Pages_Setup_Warehouses_Slots_Edit = "Pages.Setup.Warehouses.Slots.Edit";
-        public const string Pages_Setup_Warehouses_Slots_Delete = "Pages.Setup.Warehouses.Slots.Delete";
-        public const string Pages_Setup_Warehouses_Slots_ImportExcel = "Pages.Setup.Warehouses.Slots.ImportExcel";
-        public const string Pages_Setup_Warehouses_Slots_ExportExcel = "Pages.Setup.Warehouses.Slots.ExportExcel";
-        public const string Pages_Setup_Warehouses_Slots_Enable = "Pages.Setup.Warehouses.Slots.Enable";
-        public const string Pages_Setup_Warehouses_Slots_Disable = "Pages.Setup.Warehouses.Slots.Disable";
+        public const string Pages_Setup_Warehouses_Zones = "Pages.Setup.Warehouses.Zones";
+        public const string Pages_Setup_Warehouses_Zones_Create = "Pages.Setup.Warehouses.Zones.Create";
+        public const string Pages_Setup_Warehouses_Zones_View = "Pages.Setup.Warehouses.Zones.View";
+        public const string Pages_Setup_Warehouses_Zones_Edit = "Pages.Setup.Warehouses.Zones.Edit";
+        public const string Pages_Setup_Warehouses_Zones_Delete = "Pages.Setup.Warehouses.Zones.Delete";
+        public const string Pages_Setup_Warehouses_Zones_ImportExcel = "Pages.Setup.Warehouses.Zones.ImportExcel";
+        public const string Pages_Setup_Warehouses_Zones_ExportExcel = "Pages.Setup.Warehouses.Zones.ExportExcel";
+        public const string Pages_Setup_Warehouses_Zones_Enable = "Pages.Setup.Warehouses.Zones.Enable";
+        public const string Pages_Setup_Warehouses_Zones_Disable = "Pages.Setup.Warehouses.Zones.Disable";
+        public const string Pages_Setup_Warehouses_Zones_SetAsDefault = "Pages.Setup.Warehouses.Zones.SetAsDefault";
         #endregion
 
         #region Form Templates

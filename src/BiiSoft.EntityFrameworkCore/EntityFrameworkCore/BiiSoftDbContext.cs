@@ -13,6 +13,12 @@ using BiiSoft.ContactInfo;
 using BiiSoft.ChartOfAccounts;
 using BiiSoft.Taxes;
 using BiiSoft.Items;
+using BiiSoft.Warehouses;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Collections.Generic;
+using BiiSoft.Enums;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BiiSoft.EntityFrameworkCore
 {
@@ -35,7 +41,7 @@ namespace BiiSoft.EntityFrameworkCore
         public DbSet<CompanyAdvanceSetting> CompanyAdvanceSettings { get; set; }
         public DbSet<TransactionNoSetting> TransactionNoSettings { get; set; }
         public DbSet<Branch> Branchs { get; set; }
-        public DbSet<UserBranch> UserBranches { get; set; }
+        public DbSet<BranchUser> UserBranches { get; set; }
       
         public DbSet<Currency> Currencies { get; set; }
 
@@ -43,6 +49,10 @@ namespace BiiSoft.EntityFrameworkCore
         public DbSet<ChartOfAccount> ChartOfAccounts { get; set; }
         public DbSet<CompanyAccountSetting> CompanyAccountSettings { get; set; }        
         public DbSet<Tax> Taxes { get; set; }
+
+        public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<WarehouseBranch> WarehouseBranchs { get; set; }
+        public DbSet<Zone> Zones { get; set; }
 
         public DbSet<ItemGroup> ItemGroups { get; set; }
         public DbSet<ItemBrand> ItemBrands { get; set; }
@@ -63,8 +73,11 @@ namespace BiiSoft.EntityFrameworkCore
         public DbSet<FieldB> FieldBs { get; set; }
         public DbSet<FieldC> FieldCs { get; set; }
         public DbSet<Item> Items { get; set; }
-        public DbSet<ItemGallery> ItemGalleries { get; set; }
+        public DbSet<ItemSetting> ItemSettings { get; set; }
+        public DbSet<ItemCodeFormula> ItemCodeFormulas { get; set; }
         public DbSet<ItemFieldSetting> ItemFieldSettings { get; set; }
+        public DbSet<ItemZone> ItemZones { get; set; }
+        public DbSet<ItemGallery> ItemGalleries { get; set; }
 
 
         public BiiSoftDbContext(DbContextOptions<BiiSoftDbContext> options)
@@ -183,14 +196,15 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => new { i.TenantId, i.Name }).IsUnique(true);
                 e.HasIndex(i => new { i.TenantId, i.DisplayName });
                 e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Sharing);
                 e.HasOne(i => i.BillingAddress).WithMany().HasForeignKey(i => i.BillingAddressId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.ShippingAddress).WithMany().HasForeignKey(i => i.ShippingAddressId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<UserBranch>(e =>
+            modelBuilder.Entity<BranchUser>(e =>
             {
                 e.HasOne(i => i.Member).WithMany().HasForeignKey(i => i.MemberId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
-                e.HasOne(i => i.Branch).WithMany().HasForeignKey(i => i.BranchId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Branch).WithMany(i => i.BranchUsers).HasForeignKey(i => i.BranchId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
 
@@ -241,6 +255,29 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.DisplayName);
                 e.HasOne(i => i.PurchaseAccount).WithMany().HasForeignKey(i => i.PurchaseAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.SaleAccount).WithMany().HasForeignKey(i => i.SaleAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Warehouse>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Sharing);
+            });
+
+            modelBuilder.Entity<WarehouseBranch>(e =>
+            {
+                e.HasOne(i => i.Warehouse).WithMany(i => i.WarehouseBranches).HasForeignKey(i => i.WarehouseId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Branch).WithMany().HasForeignKey(i => i.BranchId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Zone>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.Name);
+                e.HasIndex(i => i.DisplayName);
+                e.HasOne(i => i.Warehouse).WithMany().HasForeignKey(i => i.WarehouseId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ItemGroup>(e =>
@@ -420,17 +457,44 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.PurchaseTax).WithMany().HasForeignKey(i => i.PurchaseTaxId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<ItemGallery>(e =>
+            modelBuilder.Entity<ItemSetting>(e =>
             {
-                e.HasIndex(i => i.No);
-                e.HasIndex(i => i.GalleryId);
-                e.HasOne(i => i.Item).WithMany().HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            var itemTypeConverter = new ValueConverter<List<ItemType>, string>(
+                v => string.Join(",", v.Select(s => (int)s)), 
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                      .Select(e => Enum.Parse<ItemType>(e))
+                      .ToList() 
+            );
+
+            var itemTypeComparer = new ValueComparer<List<ItemType>>(
+                (c1, c2) => c1.SequenceEqual(c2), // Compare lists for equality
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())), // Compute a combined hash code
+                c => c.ToList() // Clone the list to avoid shared references
+            );
+
+            modelBuilder.Entity<ItemCodeFormula>(e =>
+            {
+                e.Property(e => e.ItemTypes).HasConversion(itemTypeConverter).Metadata.SetValueComparer(itemTypeComparer);
             });
 
             modelBuilder.Entity<ItemFieldSetting>(e =>
             {  
             });
 
+            modelBuilder.Entity<ItemZone>(e =>
+            {
+                e.HasOne(i => i.Item).WithMany().HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Zone).WithMany().HasForeignKey(i => i.ZoneId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ItemGallery>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => i.GalleryId);
+                e.HasOne(i => i.Item).WithMany().HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

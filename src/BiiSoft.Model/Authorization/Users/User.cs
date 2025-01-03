@@ -25,7 +25,7 @@ namespace BiiSoft.Authorization.Users
         /// This status will exclude user from maxcount limitation
         /// </summary>
         public bool IsDeactivate { get; set; }
-
+       
         public static User CreateTenantAdminUser(int tenantId, string emailAddress)
         {
             var user = new User

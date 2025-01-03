@@ -96,7 +96,7 @@ namespace BiiSoft.Currencies
             var currencyHash = new HashSet<string>();
             var defaultCode = "";
 
-            //var excelPackage = Read(input, _appFolders);
+            
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {

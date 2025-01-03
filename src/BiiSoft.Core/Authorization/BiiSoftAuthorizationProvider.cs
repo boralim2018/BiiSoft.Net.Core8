@@ -51,6 +51,8 @@ namespace BiiSoft.Authorization
             findPage.CreateChildPermission(PermissionNames.Pages_Find_FieldBs, L("FindFieldBs"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_FieldCs, L("FindFieldCs"));
             findPage.CreateChildPermission(PermissionNames.Pages_Find_Items, L("FindItems"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_Warehouses, L("FindWarehouses"));
+            findPage.CreateChildPermission(PermissionNames.Pages_Find_Zones, L("FindZones"));
             #endregion
 
             #region Host
@@ -423,7 +425,8 @@ namespace BiiSoft.Authorization
             classPage.CreateChildPermission(PermissionNames.Pages_Setup_Classes_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Classes));
             classPage.CreateChildPermission(PermissionNames.Pages_Setup_Classes_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Classes));
             classPage.CreateChildPermission(PermissionNames.Pages_Setup_Classes_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Classes));
-
+            
+            #region Warehouse
             var warehousePage = setupPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses, L("Warehouses"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses));
             warehousePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses));
             warehousePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses));
@@ -433,16 +436,19 @@ namespace BiiSoft.Authorization
             warehousePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses));
             warehousePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses));
             warehousePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses));
+            warehousePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_SetAsDefault, L("SetAsDefault"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses));
 
-            var warehousesSlotPage = setupPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots, L("Slots"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
-            warehousesSlotPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
-            warehousesSlotPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
-            warehousesSlotPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
-            warehousesSlotPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
-            warehousesSlotPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
-            warehousesSlotPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
-            warehousesSlotPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
-            warehousesSlotPage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Slots_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Slots));
+            var warehousesZonePage = warehousePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones, L("Zones"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            warehousesZonePage.CreateChildPermission(PermissionNames.Pages_Setup_Warehouses_Zones_SetAsDefault, L("SetAsDefault"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Warehouses_Zones));
+            #endregion
 
             var formTemplatePage = setupPage.CreateChildPermission(PermissionNames.Pages_Setup_FormTemplates, L("FormTemplates"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_FormTemplates));
             formTemplatePage.CreateChildPermission(PermissionNames.Pages_Setup_FormTemplates_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_FormTemplates));
