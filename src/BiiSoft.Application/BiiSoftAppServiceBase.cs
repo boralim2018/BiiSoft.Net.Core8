@@ -12,6 +12,10 @@ using Abp.Localization;
 using BiiSoft.Entities;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
+using BiiSoft.Branches;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BiiSoft
 {
@@ -25,6 +29,8 @@ namespace BiiSoft
         public UserManager UserManager { get; set; }
 
         private readonly IApplicationLanguageManager _applicationLanguageManager;
+        private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceRepository;
+        private readonly IBiiSoftRepository<Branch, Guid> _branchRepository;
 
         //protected readonly IConfigurationRoot _appConfig;
 
@@ -39,7 +45,28 @@ namespace BiiSoft
             //var httpContextAccessor = IocManager.Instance.Resolve<IHttpContextAccessor>();
             //BASE_URL = httpContextAccessor.HttpContext.Request.Host.Value.EnsureEndsWith('/');
 
-            _applicationLanguageManager = IocManager.Instance.Resolve<ApplicationLanguageManager>();       
+            _applicationLanguageManager = IocManager.Instance.Resolve<ApplicationLanguageManager>();
+            _companyAdvanceRepository = IocManager.Instance.Resolve<IBiiSoftRepository<CompanyAdvanceSetting, long>>();
+            _branchRepository = IocManager.Instance.Resolve<IBiiSoftRepository<Branch, Guid>>();
+        }
+
+        protected async Task<CompanyAdvanceSetting> GetCompanyAdvanceSettingAsync()
+        {
+            return await _companyAdvanceRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
+        }
+        protected async Task<bool> GetMultiBranchEnableAsync()
+        {
+            return await _companyAdvanceRepository.GetAll().AsNoTracking().Select(s => s.MultiBranchesEnable).FirstOrDefaultAsync();
+        }
+
+        protected async Task<List<Guid>> GetUserBranchIdsAsync()
+        {
+            return await _branchRepository.GetAll().AsNoTracking()
+                         .Where(s => 
+                            s.Sharing == Enums.Sharing.All || 
+                            s.BranchUsers.Any(r => r.MemberId == AbpSession.UserId))
+                         .Select(s => s.Id)
+                         .ToListAsync();
         }
 
         protected async Task<bool> IsDefaultLagnuageAsync()
