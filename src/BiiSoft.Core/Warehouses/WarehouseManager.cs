@@ -22,7 +22,7 @@ using System.Transactions;
 
 namespace BiiSoft.Warehouses
 {
-    public abstract class WarehouseManagerBase : BiiSoftDefaultNameActiveValidateServiceBase<Warehouse, Guid>, IWarehouseManager
+    public class WarehouseManager : BiiSoftDefaultNameActiveValidateServiceBase<Warehouse, Guid>, IWarehouseManager
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
@@ -31,7 +31,7 @@ namespace BiiSoft.Warehouses
         private readonly IBiiSoftRepository<Zone, Guid> _zoneRepository;
         private readonly IBiiSoftRepository<WarehouseBranch, Guid> _warehouseBranchRepository;
 
-        public WarehouseManagerBase(
+        public WarehouseManager(
             IExcelManager excelManager,
             IAppFolders appFolders,
             IFileStorageManager fileStorageManager,

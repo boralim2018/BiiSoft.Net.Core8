@@ -14,7 +14,8 @@ using BiiSoft.Entities;
 using BiiSoft.Enums;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
-using BiiSoft.Warehouses.Dto;
+using BiiSoft.Warehouses;
+using BiiSoft.Zones.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,90 +24,90 @@ using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace BiiSoft.Warehouses
+namespace BiiSoft.Zones
 {
     [AbpAuthorize(PermissionNames.Pages)]
-    public class WarehouseAppService : BiiSoftAppServiceBase, IWarehouseAppService
+    public class ZoneAppService : BiiSoftAppServiceBase, IZoneAppService
     {
-        private readonly IWarehouseManager _warehouseManager;
-        private readonly IBiiSoftRepository<Warehouse, Guid> _warehouseRepository;
+        private readonly IZoneManager _zoneManager;
+        private readonly IBiiSoftRepository<Zone, Guid> _zoneRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IExcelManager _excelManager;
-        public WarehouseAppService(
+        public ZoneAppService(
             IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
-            IWarehouseManager warehouseManager,
-            IBiiSoftRepository<Warehouse, Guid> warehouseRepository,
+            IZoneManager zoneManager,
+            IBiiSoftRepository<Zone, Guid> zoneRepository,
             IBiiSoftRepository<User, long> userRepository)
         {
-            _warehouseManager=warehouseManager;
-            _warehouseRepository=warehouseRepository;
+            _zoneManager=zoneManager;
+            _zoneRepository=zoneRepository;
             _userRepository=userRepository;
             _unitOfWorkManager = unitOfWorkManager;
             _excelManager = excelManager;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Create)]
-        public async Task<Guid> Create(CreateUpdateWarehouseInputDto input)
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_Create)]
+        public async Task<Guid> Create(CreateUpdateZoneInputDto input)
         {
-            var entity = MapEntity<Warehouse, Guid>(input);
+            var entity = MapEntity<Zone, Guid>(input);
             
-            CheckErrors(await _warehouseManager.InsertAsync(entity));
+            CheckErrors(await _zoneManager.InsertAsync(entity));
             return entity.Id;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Delete)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_Delete)]
         public async Task Delete(EntityDto<Guid> input)
         {
-            CheckErrors(await _warehouseManager.DeleteAsync(input.Id));
+            CheckErrors(await _zoneManager.DeleteAsync(input.Id));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Disable)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_Disable)]
         public async Task Disable(EntityDto<Guid> input)
         {
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _warehouseManager.DisableAsync(entity));
+            CheckErrors(await _zoneManager.DisableAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Enable)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_Enable)]
         public async Task Enable(EntityDto<Guid> input)
         {
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _warehouseManager.EnableAsync(entity));
+            CheckErrors(await _zoneManager.EnableAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_SetAsDefault)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_SetAsDefault)]
         public async Task SetAsDefault(EntityDto<Guid> input)
         {
             var entity = MapEntity<UserEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _warehouseManager.SetAsDefaultAsync(entity));
+            CheckErrors(await _zoneManager.SetAsDefaultAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Find_Warehouses)]
-        public async Task<FindWarehouseDto> GetDefaultValue()
+        [AbpAuthorize(PermissionNames.Pages_Find_Zones)]
+        public async Task<FindZoneDto> GetDefaultValue()
         {
-            var find = await _warehouseManager.GetDefaultValueAsync();
-            return ObjectMapper.Map<FindWarehouseDto>(find);
+            var find = await _zoneManager.GetDefaultValueAsync();
+            return ObjectMapper.Map<FindZoneDto>(find);
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Find_Warehouses)]
-        public async Task<PagedResultDto<FindWarehouseDto>> Find(FindWarehouseInputDto input)
+        [AbpAuthorize(PermissionNames.Pages_Find_Zones)]
+        public async Task<PagedResultDto<FindZoneDto>> Find(FindZoneInputDto input)
         {
-            var isDefaultLanguage = await IsDefaultLagnuageAsync();
+            //var isDefaultLanguage = await IsDefaultLagnuageAsync();
             var multiBranchEnable = await GetMultiBranchEnableAsync();
             var userBranchIds = await GetUserBranchIdsAsync();
 
-            var query = _warehouseRepository.GetAll()
+            var query = _zoneRepository.GetAll()
                         .AsNoTracking()
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                        .WhereIf(input.BranchFilter != null && !input.BranchFilter.Ids.IsNullOrEmpty(), s => 
-                            (input.BranchFilter.Exclude && !s.WarehouseBranches.Any(r => input.BranchFilter.Ids.Contains(r.BranchId))) ||
-                            (!input.BranchFilter.Exclude && s.WarehouseBranches.Any(r => input.BranchFilter.Ids.Contains(r.BranchId))))
-                        .WhereIf(multiBranchEnable, s => s.Sharing == BranchSharing.All || s.WarehouseBranches.Any(r => userBranchIds.Contains(r.BranchId)))
+                        .WhereIf(input.WarehouseFilter != null && !input.WarehouseFilter.Ids.IsNullOrEmpty(), s => 
+                            (input.WarehouseFilter.Exclude && !input.WarehouseFilter.Ids.Contains(s.WarehouseId)) ||
+                            (!input.WarehouseFilter.Exclude && input.WarehouseFilter.Ids.Contains(s.WarehouseId)))
+                        .WhereIf(multiBranchEnable, s => s.Warehouse.Sharing == BranchSharing.All || s.Warehouse.WarehouseBranches.Any(r => userBranchIds.Contains(r.BranchId)))
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
                             (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
                             (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
@@ -114,22 +115,20 @@ namespace BiiSoft.Warehouses
                             (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                         
 
             var totalCount = await query.CountAsync();
-            var items = new List<FindWarehouseDto>();
+            var items = new List<FindZoneDto>();
             if (totalCount > 0)
             {
                 var selectQuery = query.OrderBy(input.GetOrdering())
-                .Select(l => new FindWarehouseDto
+                .Select(l => new FindZoneDto
                 {
                     Id = l.Id,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
-                    Code = l.Code,
                     IsActive = l.IsActive,
                 });
 
@@ -138,23 +137,21 @@ namespace BiiSoft.Warehouses
                 items = await selectQuery.ToListAsync();
             }
 
-            return new PagedResultDto<FindWarehouseDto> { TotalCount = totalCount, Items = items };
+            return new PagedResultDto<FindZoneDto> { TotalCount = totalCount, Items = items };
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_View, PermissionNames.Pages_Setup_Warehouses_Edit)]
-        public async Task<WarehouseDetailDto> GetDetail(EntityDto<Guid> input)
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_View, PermissionNames.Pages_Setup_Warehouses_Zones_Edit)]
+        public async Task<ZoneDetailDto> GetDetail(EntityDto<Guid> input)
         {
-            var query = _warehouseRepository.GetAll()
+            var query = _zoneRepository.GetAll()
                         .AsNoTracking()
                         .Where(s => s.Id == input.Id)
-                        .Select(l => new WarehouseDetailDto
+                        .Select(l => new ZoneDetailDto
                         {
                             Id = l.Id,
                             No = l.No,
                             Name = l.Name,
                             DisplayName = l.DisplayName,
-                            Code = l.Code,
-                            Sharing = l.Sharing,
                             IsDefault = l.IsDefault,
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
@@ -162,43 +159,36 @@ namespace BiiSoft.Warehouses
                             CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserId = l.LastModifierUserId,
-                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
-                            WarehouseBranches = l.WarehouseBranches.Select(s => new WarehouseBranchDto
-                            {
-                                Id = s.Id,
-                                WarehouseId = s.WarehouseId,
-                                BranchId = s.BranchId,
-                                BranchName = s.Branch.Name,
-                            }).ToList()
+                            LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : ""
                         });
 
             var result = await query.FirstOrDefaultAsync();
             if (result == null) throw new UserFriendlyException(L("RecordNotFound"));
 
-            await _warehouseManager.MapNavigation(result);
+            await _zoneManager.MapNavigation(result);
 
             return result;
         }
 
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses)]
-        public async Task<PagedResultDto<WarehouseListDto>> GetList(PageWarehouseInputDto input)
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones)]
+        public async Task<PagedResultDto<ZoneListDto>> GetList(PageZoneInputDto input)
         {
             return await GetListHelper(input);
         }
 
-        private async Task<PagedResultDto<WarehouseListDto>> GetListHelper(PageWarehouseInputDto input)
+        private async Task<PagedResultDto<ZoneListDto>> GetListHelper(PageZoneInputDto input)
         {
             var multiBranchEnable = await GetMultiBranchEnableAsync();
             var userBranchIds = await GetUserBranchIdsAsync();
 
-            var query = _warehouseRepository.GetAll()
+            var query = _zoneRepository.GetAll()
                         .AsNoTracking()
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
-                        .WhereIf(input.BranchFilter != null && !input.BranchFilter.Ids.IsNullOrEmpty(), s =>
-                            (input.BranchFilter.Exclude && !s.WarehouseBranches.Any(r => input.BranchFilter.Ids.Contains(r.BranchId))) ||
-                            (!input.BranchFilter.Exclude && s.WarehouseBranches.Any(r => input.BranchFilter.Ids.Contains(r.BranchId))))
-                        .WhereIf(multiBranchEnable, s => s.Sharing == BranchSharing.All || s.WarehouseBranches.Any(r => userBranchIds.Contains(r.BranchId)))
+                        .WhereIf(input.WarehouseFilter != null && !input.WarehouseFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.WarehouseFilter.Exclude && !input.WarehouseFilter.Ids.Contains(s.WarehouseId)) ||
+                            (!input.WarehouseFilter.Exclude && input.WarehouseFilter.Ids.Contains(s.WarehouseId)))
+                        .WhereIf(multiBranchEnable, s => s.Warehouse.Sharing == BranchSharing.All || s.Warehouse.WarehouseBranches.Any(r => userBranchIds.Contains(r.BranchId)))
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
                             (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
                             (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
@@ -206,24 +196,21 @@ namespace BiiSoft.Warehouses
                             (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                         
 
             var totalCount = await query.CountAsync();
-            var items = new List<WarehouseListDto>();
+            var items = new List<ZoneListDto>();
             if (totalCount > 0)
             {
                 var selectQuery = query.OrderBy(input.GetOrdering())
-                .Select(l => new WarehouseListDto
+                .Select(l => new ZoneListDto
                 {
                     Id = l.Id,
                     No = l.No,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
-                    Code = l.Code,
-                    Sharing = l.Sharing,
                     IsDefault = l.IsDefault,
                     IsActive = l.IsActive,
                     CreationTime = l.CreationTime,
@@ -239,19 +226,19 @@ namespace BiiSoft.Warehouses
                 items = await selectQuery.ToListAsync();
             }
 
-            return new PagedResultDto<WarehouseListDto> { TotalCount = totalCount, Items = items };
+            return new PagedResultDto<ZoneListDto> { TotalCount = totalCount, Items = items };
         }
 
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_ExportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_ExportExcel)]
         [UnitOfWork(IsDisabled = true)]
-        public async Task<ExportFileOutput> ExportExcel(ExportExcelWarehouseInputDto input)
+        public async Task<ExportFileOutput> ExportExcel(ExportExcelZoneInputDto input)
         {
             if (input.Columns == null || !input.Columns.Any(s => s.Visible)) throw new UserFriendlyException(L("ColumnsIsRequired", L("ExportExcel")));
 
             input.UsePagination = false;
          
-            PagedResultDto<WarehouseListDto> listResult;
+            PagedResultDto<ZoneListDto> listResult;
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
                 using (_unitOfWorkManager.Current.SetTenantId(AbpSession.TenantId))
@@ -262,7 +249,7 @@ namespace BiiSoft.Warehouses
 
             var excelInput = new ExportDataFileInput
             {
-                FileName = "Warehouse.xlsx",
+                FileName = "Zone.xlsx",
                 Items = listResult.Items,
                 Columns = input.Columns
             };
@@ -271,28 +258,28 @@ namespace BiiSoft.Warehouses
 
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_ImportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_ImportExcel)]
         [UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
-            return await _warehouseManager.ExportExcelTemplateAsync();
+            return await _zoneManager.ExportExcelTemplateAsync();
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_ImportExcel)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_ImportExcel)]
         [UnitOfWork(IsDisabled = true)]
         public async Task ImportExcel(FileTokenInput input)
         {
             var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
 
-            CheckErrors(await _warehouseManager.ImportExcelAsync(entity));
+            CheckErrors(await _zoneManager.ImportExcelAsync(entity));
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Edit)]
-        public async Task Update(CreateUpdateWarehouseInputDto input)
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_Edit)]
+        public async Task Update(CreateUpdateZoneInputDto input)
         {
-            var entity = MapEntity<Warehouse, Guid>(input);
+            var entity = MapEntity<Zone, Guid>(input);
 
-            CheckErrors(await _warehouseManager.UpdateAsync(entity));
+            CheckErrors(await _zoneManager.UpdateAsync(entity));
         }
     }
 }
