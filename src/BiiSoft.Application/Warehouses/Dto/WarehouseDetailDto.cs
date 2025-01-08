@@ -10,6 +10,7 @@ namespace BiiSoft.Warehouses.Dto
         public long No { get; set; }
         public string Code { get; set; }
         public BranchSharing Sharing { get; set; }
+        public string SharingName { get; set; }
         public List<WarehouseBranchDto> WarehouseBranches { get; set; }
     }
 }

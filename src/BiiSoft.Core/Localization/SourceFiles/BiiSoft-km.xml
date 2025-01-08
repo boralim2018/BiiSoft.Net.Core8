@@ -752,7 +752,7 @@
 		<text name="FindItems">ស្វែងរកទំនិញ</text>
 		<text name="FindItemGroups">ស្វែងរកក្រុមទំនិញ</text>
 		<text name="IsInUse">{0} កំពុងត្រូវបានប្រើប្រាស់</text>
-		<text name="FindWarehouse">ស្វែងរកឃ្លាំងទំនិញ</text>
+		<text name="FindWarehouses">ស្វែងរកឃ្លាំងទំនិញ</text>
 		<text name="FindZones">ស្វែងរកទីតាំងទំនិញ</text>
 	</texts>
 </localizationDictionary>
