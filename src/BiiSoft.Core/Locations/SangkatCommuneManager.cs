@@ -5,7 +5,6 @@ using BiiSoft.Entities;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,11 +23,9 @@ namespace BiiSoft.Locations
         private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
         private readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
         private readonly IBiiSoftRepository<KhanDistrict, Guid> _khanDistrictRepository;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public SangkatCommuneManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<KhanDistrict, Guid> khanDistrictRepository,
@@ -41,7 +38,6 @@ namespace BiiSoft.Locations
             _countryRepository = countryRepository;
             _cityProvinceRepository = cityProvinceRepository;
             _khanDistrictRepository = khanDistrictRepository;
-            _appFolders = appFolders;
             _excelManager = excelManager;
         }
 

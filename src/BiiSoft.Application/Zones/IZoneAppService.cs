@@ -18,7 +18,8 @@ namespace BiiSoft.Zones
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
-        Task<FindZoneDto> GetDefaultValue();
+        Task UnsetAsDefault(EntityDto<Guid> input);
+        Task<FindZoneDto> GetDefaultValue(EntityDto<Guid> input);
         Task<PagedResultDto<FindZoneDto>> Find(FindZoneInputDto input);
         Task ImportExcel(FileTokenInput input);
         Task<ExportFileOutput> ExportExcelTemplate();

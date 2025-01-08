@@ -83,6 +83,14 @@ namespace BiiSoft.ColorPatterns
 
             CheckErrors(await _colorPatternManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ColorPatterns_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _colorPatternManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_ColorPatterns)]
         public async Task<FindColorPatternDto> GetDefaultValue()

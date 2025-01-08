@@ -82,6 +82,14 @@ namespace BiiSoft.ItemGrades
 
             CheckErrors(await _itemGradeManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Grades_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _itemGradeManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_ItemGrades)]
         public async Task<FindItemGradeDto> GetDefaultValue()

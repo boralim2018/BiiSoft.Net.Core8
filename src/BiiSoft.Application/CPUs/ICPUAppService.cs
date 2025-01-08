@@ -4,10 +4,6 @@ using BiiSoft.BFiles;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.CPUs.Dto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiiSoft.CPUs
@@ -22,6 +18,7 @@ namespace BiiSoft.CPUs
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
         Task<FindCPUDto> GetDefaultValue();
         Task<PagedResultDto<FindCPUDto>> Find(PageCPUInputDto input);
         Task ImportExcel(FileTokenInput input);

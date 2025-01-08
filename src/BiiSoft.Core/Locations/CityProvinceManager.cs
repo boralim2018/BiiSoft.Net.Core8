@@ -6,7 +6,6 @@ using BiiSoft.Entities;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,11 +22,9 @@ namespace BiiSoft.Locations
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IBiiSoftRepository<Country, Guid> _countryRepository;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public CityProvinceManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<Country, Guid> countryRepository,
@@ -36,7 +33,6 @@ namespace BiiSoft.Locations
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _countryRepository = countryRepository;
-            _appFolders = appFolders;
             _excelManager = excelManager;
         }
 

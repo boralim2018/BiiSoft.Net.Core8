@@ -84,6 +84,14 @@ namespace BiiSoft.Cameras
             CheckErrors(await _cameraManager.SetAsDefaultAsync(entity));
         }
 
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Cameras_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _cameraManager.UnsetAsDefaultAsync(entity));
+        }
+
         [AbpAuthorize(PermissionNames.Pages_Find_Cameras)]
         public async Task<FindCameraDto> GetDefaultValue()
         {

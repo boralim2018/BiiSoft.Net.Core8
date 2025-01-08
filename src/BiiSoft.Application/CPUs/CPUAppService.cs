@@ -82,6 +82,14 @@ namespace BiiSoft.CPUs
 
             CheckErrors(await _cpuManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_CPUs_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _cpuManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_CPUs)]
         public async Task<FindCPUDto> GetDefaultValue()

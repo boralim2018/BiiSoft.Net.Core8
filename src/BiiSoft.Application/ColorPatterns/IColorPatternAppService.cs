@@ -4,10 +4,6 @@ using BiiSoft.BFiles;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.ColorPatterns.Dto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiiSoft.ColorPatterns
@@ -22,6 +18,7 @@ namespace BiiSoft.ColorPatterns
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
         Task<FindColorPatternDto> GetDefaultValue();
         Task<PagedResultDto<FindColorPatternDto>> Find(PageColorPatternInputDto input);
         Task ImportExcel(FileTokenInput input);

@@ -4,10 +4,6 @@ using BiiSoft.BFiles;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.FieldCs.Dto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiiSoft.FieldCs
@@ -22,6 +18,7 @@ namespace BiiSoft.FieldCs
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
         Task<FindFieldCDto> GetDefaultValue();
         Task<PagedResultDto<FindFieldCDto>> Find(PageFieldCInputDto input);
         Task ImportExcel(FileTokenInput input);

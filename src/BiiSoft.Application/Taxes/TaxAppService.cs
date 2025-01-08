@@ -83,6 +83,14 @@ namespace BiiSoft.Taxes
 
             CheckErrors(await _taxManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Taxes_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _taxManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Taxes)]
         public async Task<FindTaxDto> GetDefaultValue()

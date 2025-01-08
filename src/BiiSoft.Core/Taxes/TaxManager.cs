@@ -1,7 +1,11 @@
 ﻿using Abp.Domain.Uow;
-using Abp.Extensions;
-using Abp.Timing;
 using Abp.UI;
+using BiiSoft.BFiles.Dto;
+using BiiSoft.ChartOfAccounts;
+using BiiSoft.Columns;
+using BiiSoft.Entities;
+using BiiSoft.Excels;
+using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,14 +15,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
-using BiiSoft.Extensions;
-using BiiSoft.Entities;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Folders;
-using BiiSoft.BFiles.Dto;
-using BiiSoft.ChartOfAccounts;
-using BiiSoft.Excels;
 
 namespace BiiSoft.Taxes
 {
@@ -27,11 +23,9 @@ namespace BiiSoft.Taxes
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IBiiSoftRepository<ChartOfAccount, Guid> _chartOfAccountRepository;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public TaxManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<ChartOfAccount, Guid> chartOfAccountRepository,
@@ -40,7 +34,6 @@ namespace BiiSoft.Taxes
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _chartOfAccountRepository = chartOfAccountRepository;
-            _appFolders = appFolders;
             _excelManager = excelManager;
         }
 

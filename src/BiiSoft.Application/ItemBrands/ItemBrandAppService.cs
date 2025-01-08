@@ -82,6 +82,14 @@ namespace BiiSoft.ItemBrands
 
             CheckErrors(await _itemBrandManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Brands_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _itemBrandManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_ItemBrands)]
         public async Task<FindItemBrandDto> GetDefaultValue()

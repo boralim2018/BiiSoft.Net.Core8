@@ -1,18 +1,9 @@
-using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Security.Policy;
-using System.Threading.Tasks;
 using Abp;
 using Abp.Auditing;
 using Abp.Authorization;
 using Abp.BackgroundJobs;
 using Abp.Configuration;
 using Abp.Extensions;
-using Abp.IO.Extensions;
-using Abp.Localization;
 using Abp.Runtime.Caching;
 using Abp.Runtime.Session;
 using Abp.Timing;
@@ -29,8 +20,10 @@ using BiiSoft.Timing;
 using BiiSoft.Users.Profiles.Cache;
 using BiiSoft.Users.Profiles.Dto;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Threading.Tasks;
 
-namespace BiiSoft.Users.Profiles 
+namespace BiiSoft.Users.Profiles
 {
     [AbpAuthorize(PermissionNames.Pages_Profile)]
     public class ProfileAppService : BiiSoftAppServiceBase, IProfileAppService

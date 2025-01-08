@@ -7,7 +7,6 @@ using BiiSoft.Entities;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using BiiSoft.Locations;
 using BiiSoft.MultiTenancy;
 using Microsoft.AspNetCore.Identity;
@@ -36,11 +35,9 @@ namespace BiiSoft.Branches
         private readonly IContactAddressManager _contactAddressManager;
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<BranchUser, Guid> _branchUserRepository;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public BranchManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IBiiSoftRepository<Tenant, int> tenantRepository,
             IBiiSoftRepository<Country, Guid> countryRepository,
             IBiiSoftRepository<CityProvince, Guid> cityProvinceRepository,
@@ -66,8 +63,7 @@ namespace BiiSoft.Branches
             _sangkatCommuneRepository = sangkatCommuneRepository;
             _villageRepository = villageRepository;
             _locationRepository = locationRepository;
-            _tenantRepository = tenantRepository;           
-            _appFolders = appFolders;
+            _tenantRepository = tenantRepository;      
             _excelManager = excelManager;
         }
 

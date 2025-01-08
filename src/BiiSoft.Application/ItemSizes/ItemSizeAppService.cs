@@ -82,6 +82,14 @@ namespace BiiSoft.ItemSizes
 
             CheckErrors(await _itemSizeManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Sizes_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _itemSizeManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_ItemSizes)]
         public async Task<FindItemSizeDto> GetDefaultValue()

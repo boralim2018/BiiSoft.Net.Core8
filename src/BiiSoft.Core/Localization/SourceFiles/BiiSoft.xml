@@ -196,6 +196,7 @@
 		<text name="Disable">Disable</text>
 		<text name="ChangeTexts">Change Texts</text>
 		<text name="SetAsDefault">Set as default</text>
+		<text name="UnsetAsDefault">Unset as default</text>
 		<text name="MaximumUserCount">Maximum user count</text>
 		<text name="MaximumBranchCount">Maximum branch count</text>
 		<text name="MaximumWarehouseCount">Maximum warehouse count</text>

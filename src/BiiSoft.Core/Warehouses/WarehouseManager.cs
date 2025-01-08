@@ -1,5 +1,4 @@
 ﻿using Abp.Collections.Extensions;
-using Abp.Dependency;
 using Abp.Domain.Uow;
 using Abp.Extensions;
 using Abp.UI;
@@ -10,7 +9,6 @@ using BiiSoft.Enums;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,14 +24,12 @@ namespace BiiSoft.Warehouses
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         private readonly IBiiSoftRepository<Zone, Guid> _zoneRepository;
         private readonly IBiiSoftRepository<WarehouseBranch, Guid> _warehouseBranchRepository;
 
         public WarehouseManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<Zone, Guid> zoneRepository,
@@ -42,7 +38,6 @@ namespace BiiSoft.Warehouses
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
-            _appFolders = appFolders;
             _excelManager = excelManager;
             _zoneRepository = zoneRepository;
             _warehouseBranchRepository = warehouseBranchRepository;

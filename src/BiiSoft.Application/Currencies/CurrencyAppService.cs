@@ -82,6 +82,14 @@ namespace BiiSoft.Currencies
 
             CheckErrors(await _currencyManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Currencies_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<long> input)
+        {
+            var entity = MapEntity<UserEntity<long>, long>(input);
+
+            CheckErrors(await _currencyManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Currencies)]
         public async Task<FindCurrencyDto> GetDefaultValue()

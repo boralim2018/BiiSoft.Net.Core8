@@ -11,6 +11,7 @@ using Abp.Timing;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using BiiSoft.Dtos;
+using System.Collections.Generic;
 
 namespace BiiSoft
 {
@@ -455,6 +456,11 @@ namespace BiiSoft
 
         }
 
+        protected virtual async Task<List<TEntity>> GetOtherDefaultAsync(TEntity input)
+        {
+            return await _repository.GetAll().Where(s => !s.Id.Equals(input.Id) && s.IsDefault).AsNoTracking().ToListAsync();
+        }
+
         public async Task<IdentityResult> SetAsDefaultAsync(IUserEntity<TPrimaryKey> input)
         {
             var entity = await FindAsync(input.Id);
@@ -462,7 +468,7 @@ namespace BiiSoft
 
             var modificationTime = Clock.Now;
 
-            var otherDefault = await _repository.GetAll().Where(s => !s.Id.Equals(input.Id) && s.IsDefault).AsNoTracking().ToListAsync();
+            var otherDefault = await GetOtherDefaultAsync(entity);
             foreach (var d in otherDefault)
             {
                 d.SetDefault(false);
@@ -480,6 +486,23 @@ namespace BiiSoft
 
             return IdentityResult.Success;
         }
+
+        public async Task<IdentityResult> UnsetAsDefaultAsync(IUserEntity<TPrimaryKey> input)
+        {
+            var entity = await FindAsync(input.Id);
+            if (entity == null) NotFoundException(InstanceName);
+
+            if(!entity.IsDefault) return IdentityResult.Success;
+            
+            entity.SetDefault(false);
+            entity.LastModifierUserId = input.UserId;
+            entity.LastModificationTime = Clock.Now;
+
+            await _repository.UpdateAsync(entity);
+
+            return IdentityResult.Success;
+        }
+
 
         public async Task<TEntity> GetDefaultValueAsync()
         {

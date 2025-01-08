@@ -196,6 +196,7 @@
 		<text name="Disable">ផ្អាកដំនើរការ</text>
 		<text name="ChangeTexts">កែប្រែអក្សរ</text>
 		<text name="SetAsDefault">ដាក់ជាលំនាំដើម</text>
+		<text name="UnsetAsDefault">ឈប់ដាក់ជាលំនាំដើម</text>
 		<text name="MaximumUserCount">ចំនួនអ្នកប្រើប្រាស់អតិបរមា</text>
 		<text name="MaximumBranchCount">ចំនួនសាខាអតិបរាម</text>
 		<text name="MaximumWarehouseCount">ចំនួនឃ្មាំងទំនិញអតិបរមា</text>

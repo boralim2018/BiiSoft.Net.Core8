@@ -82,6 +82,14 @@ namespace BiiSoft.ItemGroups
 
             CheckErrors(await _itemGroupManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_ItemGroups_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _itemGroupManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_ItemGroups)]
         public async Task<FindItemGroupDto> GetDefaultValue()

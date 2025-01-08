@@ -1,18 +1,11 @@
 ﻿using Abp.Dependency;
-using Amazon.Runtime;
-using Amazon.S3;
 using BiiSoft.Configuration;
 using BiiSoft.Folders;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using BiiSoft.Enums;
-using Microsoft.AspNetCore.Http;
 
 namespace BiiSoft.FileStorages
 {

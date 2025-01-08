@@ -7,7 +7,6 @@ using BiiSoft.Entities;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,7 +22,6 @@ namespace BiiSoft.Items
     {
         protected readonly IFileStorageManager _fileStorageManager;
         protected readonly IUnitOfWorkManager _unitOfWorkManager;
-        protected readonly IAppFolders _appFolders;
         protected readonly IExcelManager _excelManager;
 
         private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
@@ -33,7 +31,6 @@ namespace BiiSoft.Items
         {
             _fileStorageManager = IocManager.Instance.Resolve<IFileStorageManager>();
             _unitOfWorkManager = IocManager.Instance.Resolve<IUnitOfWorkManager>();
-            _appFolders = IocManager.Instance.Resolve<IAppFolders>();
             _excelManager = IocManager.Instance.Resolve<IExcelManager>();
             _itemFieldSettingRepository = IocManager.Instance.Resolve<IBiiSoftRepository<ItemFieldSetting, Guid>>();
         }

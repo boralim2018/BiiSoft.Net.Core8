@@ -7,7 +7,6 @@ using BiiSoft.Entities;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,11 +23,9 @@ namespace BiiSoft.Locations
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IBiiSoftRepository<Currency, long> _currencyRepository;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public CountryManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IBiiSoftRepository<Currency, long> currencyRepository,
             IBiiSoftRepository<Country, Guid> repository,
             IFileStorageManager fileStorageManager,
@@ -37,7 +34,6 @@ namespace BiiSoft.Locations
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _currencyRepository = currencyRepository;
-            _appFolders = appFolders;
             _excelManager = excelManager;
         }
 

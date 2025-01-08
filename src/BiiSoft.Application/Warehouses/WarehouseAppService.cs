@@ -85,6 +85,14 @@ namespace BiiSoft.Warehouses
 
             CheckErrors(await _warehouseManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _warehouseManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Warehouses)]
         public async Task<FindWarehouseDto> GetDefaultValue()

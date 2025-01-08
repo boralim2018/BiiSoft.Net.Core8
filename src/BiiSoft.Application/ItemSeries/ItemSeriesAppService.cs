@@ -81,6 +81,14 @@ namespace BiiSoft.Items.Series
 
             CheckErrors(await _itemSeriesManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Series_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _itemSeriesManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_ItemSeries)]
         public async Task<FindItemSeriesDto> GetDefaultValue()

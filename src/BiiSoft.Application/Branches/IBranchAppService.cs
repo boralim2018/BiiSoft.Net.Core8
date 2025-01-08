@@ -4,10 +4,6 @@ using BiiSoft.BFiles;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Branches.Dto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiiSoft.Branches
@@ -22,6 +18,8 @@ namespace BiiSoft.Branches
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
+        Task<FindBranchDto> GetDefaultValue();
         Task<PagedResultDto<FindBranchDto>> Find(PageBranchInputDto input);
         Task ImportExcel(FileTokenInput input);
         Task<ExportFileOutput> ExportExcelTemplate();

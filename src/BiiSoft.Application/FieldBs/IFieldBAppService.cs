@@ -4,10 +4,6 @@ using BiiSoft.BFiles;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.FieldBs.Dto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiiSoft.FieldBs
@@ -21,6 +17,7 @@ namespace BiiSoft.FieldBs
         Task Delete(EntityDto<Guid> input);
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
         Task<FindFieldBDto> GetDefaultValue();
         Task<PagedResultDto<FindFieldBDto>> Find(PageFieldBInputDto input);

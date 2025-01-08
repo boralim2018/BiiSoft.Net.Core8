@@ -18,6 +18,7 @@ namespace BiiSoft.Warehouses
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
         Task<FindWarehouseDto> GetDefaultValue();
         Task<PagedResultDto<FindWarehouseDto>> Find(FindWarehouseInputDto input);
         Task ImportExcel(FileTokenInput input);

@@ -9,7 +9,6 @@ using BiiSoft.Enums;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,7 +23,6 @@ namespace BiiSoft.Items
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         private readonly IBiiSoftRepository<ItemGroup, Guid> _itemGroupRepository;
         private readonly IBiiSoftRepository<ItemBrand, Guid> _itemBrandRepository;
@@ -48,7 +46,6 @@ namespace BiiSoft.Items
 
         public ItemManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IBiiSoftRepository<Item, Guid> repository,
             IBiiSoftRepository<ItemGroup, Guid> itemGroupRepository,
             IBiiSoftRepository<ItemBrand, Guid> itemBrandRepository,
@@ -74,7 +71,6 @@ namespace BiiSoft.Items
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
-            _appFolders = appFolders;
             _excelManager = excelManager;
             _itemGroupRepository = itemGroupRepository;
             _itemBrandRepository = itemBrandRepository;

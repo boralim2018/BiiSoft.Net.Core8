@@ -1,23 +1,21 @@
-﻿using Abp.Extensions;
+﻿using Abp.Domain.Uow;
+using Abp.Extensions;
+using Abp.UI;
+using BiiSoft.BFiles.Dto;
+using BiiSoft.Branches;
+using BiiSoft.Columns;
+using BiiSoft.Entities;
 using BiiSoft.Enums;
+using BiiSoft.Excels;
+using BiiSoft.Extensions;
+using BiiSoft.FileStorages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Abp.UI;
-using Abp.Domain.Uow;
 using System.Transactions;
-using BiiSoft.FileStorages;
-using BiiSoft.Extensions;
-using BiiSoft.Entities;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Folders;
-using BiiSoft.BFiles.Dto;
-using BiiSoft.Branches;
-using BiiSoft.Excels;
 
 namespace BiiSoft.ChartOfAccounts
 {
@@ -25,13 +23,11 @@ namespace BiiSoft.ChartOfAccounts
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IAppFolders _appFolders;
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
         private readonly IExcelManager _excelManager;
 
         public ChartOfAccountManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IBiiSoftRepository<ChartOfAccount, Guid> repository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
             IFileStorageManager fileStorageManager,
@@ -39,7 +35,6 @@ namespace BiiSoft.ChartOfAccounts
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
-            _appFolders = appFolders;
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
             _excelManager = excelManager;
         }

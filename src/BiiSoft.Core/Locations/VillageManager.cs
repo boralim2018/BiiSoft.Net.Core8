@@ -1,4 +1,9 @@
 ﻿using Abp.Domain.Uow;
+using BiiSoft.BFiles.Dto;
+using BiiSoft.Columns;
+using BiiSoft.Entities;
+using BiiSoft.Excels;
+using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,13 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
-using BiiSoft.Extensions;
-using BiiSoft.Entities;
-using BiiSoft.Folders;
-using OfficeOpenXml;
-using BiiSoft.Columns;
-using BiiSoft.BFiles.Dto;
-using BiiSoft.Excels;
 
 namespace BiiSoft.Locations
 {
@@ -26,11 +24,9 @@ namespace BiiSoft.Locations
         private readonly IBiiSoftRepository<CityProvince, Guid> _cityProvinceRepository;
         private readonly IBiiSoftRepository<KhanDistrict, Guid> _khanDistrictRepository;
         private readonly IBiiSoftRepository<SangkatCommune, Guid> _sangkatCommuneRepository;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public VillageManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<SangkatCommune, Guid> sangkatCommuneRepository,
@@ -45,7 +41,6 @@ namespace BiiSoft.Locations
             _cityProvinceRepository = cityProvinceRepository;
             _khanDistrictRepository = khanDistrictRepository;
             _sangkatCommuneRepository = sangkatCommuneRepository;
-            _appFolders = appFolders;
             _excelManager = excelManager;
         }
 

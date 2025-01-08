@@ -1,22 +1,17 @@
-﻿using Abp.Extensions;
-using BiiSoft.Enums;
+﻿using Abp.Domain.Uow;
+using Abp.UI;
+using BiiSoft.BFiles.Dto;
+using BiiSoft.Columns;
+using BiiSoft.Entities;
+using BiiSoft.Excels;
+using BiiSoft.Extensions;
+using BiiSoft.FileStorages;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Abp.UI;
-using Abp.Domain.Uow;
 using System.Transactions;
-using BiiSoft.FileStorages;
-using BiiSoft.Extensions;
-using BiiSoft.Entities;
-using BiiSoft.Columns;
-using OfficeOpenXml;
-using BiiSoft.Folders;
-using BiiSoft.BFiles.Dto;
-using BiiSoft.Excels;
 
 namespace BiiSoft.Locations
 {
@@ -24,18 +19,15 @@ namespace BiiSoft.Locations
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public LocationManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IBiiSoftRepository<Location, Guid> repository,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager): base(repository) 
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
-            _appFolders = appFolders;
             _excelManager = excelManager;
         }
 

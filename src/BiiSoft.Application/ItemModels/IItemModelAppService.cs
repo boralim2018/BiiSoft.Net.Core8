@@ -4,10 +4,6 @@ using BiiSoft.BFiles;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.ItemModels.Dto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiiSoft.ItemModels
@@ -22,6 +18,7 @@ namespace BiiSoft.ItemModels
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
         Task<FindItemModelDto> GetDefaultValue();
         Task<PagedResultDto<FindItemModelDto>> Find(PageItemModelInputDto input);
         Task ImportExcel(FileTokenInput input);

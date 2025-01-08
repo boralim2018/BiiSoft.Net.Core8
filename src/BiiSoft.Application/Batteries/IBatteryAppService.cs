@@ -1,13 +1,9 @@
 ﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using BiiSoft.Batteries.Dto;
 using BiiSoft.BFiles;
 using BiiSoft.BFiles.Dto;
-using BiiSoft.Batteries.Dto;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiiSoft.Batteries
@@ -22,6 +18,7 @@ namespace BiiSoft.Batteries
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
         Task<FindBatteryDto> GetDefaultValue();
         Task<PagedResultDto<FindBatteryDto>> Find(PageBatteryInputDto input);
         Task ImportExcel(FileTokenInput input);

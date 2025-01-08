@@ -6,7 +6,6 @@ using BiiSoft.Entities;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using BiiSoft.Warehouses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,13 +22,11 @@ namespace BiiSoft.Zones
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         private readonly IBiiSoftRepository<Warehouse, Guid> _warehouseRepository;
 
         public ZoneManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<Warehouse, Guid> warehouseRepository,
@@ -37,7 +34,6 @@ namespace BiiSoft.Zones
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
-            _appFolders = appFolders;
             _excelManager = excelManager;
             _warehouseRepository = warehouseRepository;
         }
@@ -184,6 +180,16 @@ namespace BiiSoft.Zones
             }
 
             return IdentityResult.Success;
+        }
+
+        protected override async Task<List<Zone>> GetOtherDefaultAsync(Zone input)
+        {
+            return await _repository.GetAll().Where(s => !s.Id.Equals(input.Id) && s.IsDefault && s.WarehouseId == input.WarehouseId).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Zone> GetDefaultValueAsync(Guid WarehouseId)
+        {
+            return await _repository.GetAll().AsNoTracking().FirstAsync(s => s.IsActive && s.IsDefault && s.WarehouseId == WarehouseId);
         }
     }
 }

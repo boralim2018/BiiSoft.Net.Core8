@@ -86,18 +86,26 @@ namespace BiiSoft.Zones
 
             CheckErrors(await _zoneManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _zoneManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Zones)]
-        public async Task<FindZoneDto> GetDefaultValue()
+        public async Task<FindZoneDto> GetDefaultValue(EntityDto<Guid> input)
         {
-            var find = await _zoneManager.GetDefaultValueAsync();
+            var find = await _zoneManager.GetDefaultValueAsync(input.Id);
             return ObjectMapper.Map<FindZoneDto>(find);
         }
 
         [AbpAuthorize(PermissionNames.Pages_Find_Zones)]
         public async Task<PagedResultDto<FindZoneDto>> Find(FindZoneInputDto input)
         {
-            //var isDefaultLanguage = await IsDefaultLagnuageAsync();
+            var isDefaultLanguage = await IsDefaultLagnuageAsync();
             var multiBranchEnable = await GetMultiBranchEnableAsync();
             var userBranchIds = await GetUserBranchIdsAsync();
 
@@ -129,6 +137,7 @@ namespace BiiSoft.Zones
                     Id = l.Id,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
+                    WarehouseName = isDefaultLanguage ? l.Warehouse.Name : l.Warehouse.DisplayName,
                     IsActive = l.IsActive,
                 });
 
@@ -143,6 +152,8 @@ namespace BiiSoft.Zones
         [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_View, PermissionNames.Pages_Setup_Warehouses_Zones_Edit)]
         public async Task<ZoneDetailDto> GetDetail(EntityDto<Guid> input)
         {
+            var isDefaultLanguage = await IsDefaultLagnuageAsync();
+
             var query = _zoneRepository.GetAll()
                         .AsNoTracking()
                         .Where(s => s.Id == input.Id)
@@ -152,6 +163,8 @@ namespace BiiSoft.Zones
                             No = l.No,
                             Name = l.Name,
                             DisplayName = l.DisplayName,
+                            WarehouseId = l.WarehouseId,
+                            WarehouseName = isDefaultLanguage ? l.Warehouse.Name : l.Warehouse.DisplayName,
                             IsDefault = l.IsDefault,
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
@@ -179,6 +192,7 @@ namespace BiiSoft.Zones
 
         private async Task<PagedResultDto<ZoneListDto>> GetListHelper(PageZoneInputDto input)
         {
+            var isDefaultLanguage = await IsDefaultLagnuageAsync();
             var multiBranchEnable = await GetMultiBranchEnableAsync();
             var userBranchIds = await GetUserBranchIdsAsync();
 
@@ -211,6 +225,7 @@ namespace BiiSoft.Zones
                     No = l.No,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
+                    WarehouseName = isDefaultLanguage ? l.Warehouse.Name : l.Warehouse.DisplayName,
                     IsDefault = l.IsDefault,
                     IsActive = l.IsActive,
                     CreationTime = l.CreationTime,

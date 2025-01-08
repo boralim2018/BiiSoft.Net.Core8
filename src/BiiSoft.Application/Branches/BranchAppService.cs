@@ -93,6 +93,21 @@ namespace BiiSoft.Branches
             CheckErrors(await _branchManager.SetAsDefaultAsync(entity));
         }
 
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_Batteries_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _branchManager.UnsetAsDefaultAsync(entity));
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Find_Branches)]
+        public async Task<FindBranchDto> GetDefaultValue()
+        {
+            var find = await _branchManager.GetDefaultValueAsync();
+            return ObjectMapper.Map<FindBranchDto>(find);
+        }
+
         [AbpAuthorize(PermissionNames.Pages_Find_Branches)]
         public async Task<PagedResultDto<FindBranchDto>> Find(PageBranchInputDto input)
         {

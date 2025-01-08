@@ -6,7 +6,6 @@ using BiiSoft.Entities;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
-using BiiSoft.Folders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -20,18 +19,15 @@ namespace BiiSoft.Currencies
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-        private readonly IAppFolders _appFolders;
         private readonly IExcelManager _excelManager;
         public CurrencyManager(
             IExcelManager excelManager,
-            IAppFolders appFolders,
             IBiiSoftRepository<Currency, long> repository,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager): base(repository) 
         {
             _fileStorageManager=fileStorageManager;
             _unitOfWorkManager=unitOfWorkManager;
-            _appFolders=appFolders;
             _excelManager=excelManager;
         }
         

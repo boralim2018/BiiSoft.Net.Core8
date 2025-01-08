@@ -82,6 +82,14 @@ namespace BiiSoft.RAMs
 
             CheckErrors(await _RAMManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_RAMs_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _RAMManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_RAMs)]
         public async Task<FindRAMDto> GetDefaultValue()

@@ -82,6 +82,14 @@ namespace BiiSoft.FieldAs
 
             CheckErrors(await _fieldAManager.SetAsDefaultAsync(entity));
         }
+        
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_FieldAs_SetAsDefault)]
+        public async Task UnsetAsDefault(EntityDto<Guid> input)
+        {
+            var entity = MapEntity<UserEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _fieldAManager.UnsetAsDefaultAsync(entity));
+        }
 
         [AbpAuthorize(PermissionNames.Pages_Find_FieldAs)]
         public async Task<FindFieldADto> GetDefaultValue()

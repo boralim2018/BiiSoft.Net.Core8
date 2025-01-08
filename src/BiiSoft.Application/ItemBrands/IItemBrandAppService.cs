@@ -22,6 +22,7 @@ namespace BiiSoft.ItemBrands
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
         Task SetAsDefault(EntityDto<Guid> input);
+        Task UnsetAsDefault(EntityDto<Guid> input);
         Task<FindItemBrandDto> GetDefaultValue();
         Task<PagedResultDto<FindItemBrandDto>> Find(PageItemBrandInputDto input);
         Task ImportExcel(FileTokenInput input);
