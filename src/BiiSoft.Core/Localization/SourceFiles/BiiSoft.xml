@@ -752,5 +752,7 @@
 		<text name="FindItems">Find Items</text>
 		<text name="FindItemGroups">Find Item Groups</text>
 		<text name="IsInUse">{0} is in use</text>
+		<text name="FindWarehouse">Find Warehouses</text>
+		<text name="FindZones">Find Zones</text>
 	</texts>
 </localizationDictionary>

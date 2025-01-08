@@ -9,6 +9,7 @@ namespace BiiSoft.Zones.Dto
         public Guid? Id { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
+        public Guid WarehouseId { get; set; }
     }
 
 }
