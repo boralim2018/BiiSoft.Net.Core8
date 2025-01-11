@@ -425,6 +425,7 @@
 
         #region Warehoues
         public const string Pages_Setup_Warehouses = "Pages.Setup.Warehouses";
+        public const string Pages_Setup_Warehouses_List = "Pages.Setup.Warehouses.List";
         public const string Pages_Setup_Warehouses_Create = "Pages.Setup.Warehouses.Create";
         public const string Pages_Setup_Warehouses_View = "Pages.Setup.Warehouses.View";
         public const string Pages_Setup_Warehouses_Edit = "Pages.Setup.Warehouses.Edit";

@@ -175,7 +175,6 @@ namespace BiiSoft.Warehouses
                             WarehouseBranches = l.WarehouseBranches.Select(s => new WarehouseBranchDto
                             {
                                 Id = s.Id,
-                                WarehouseId = s.WarehouseId,
                                 BranchId = s.BranchId,
                                 BranchName = s.Branch.Name,
                             }).ToList()
@@ -190,7 +189,7 @@ namespace BiiSoft.Warehouses
         }
 
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses)]
+        [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_List)]
         public async Task<PagedResultDto<WarehouseListDto>> GetList(PageWarehouseInputDto input)
         {
             return await GetListHelper(input);

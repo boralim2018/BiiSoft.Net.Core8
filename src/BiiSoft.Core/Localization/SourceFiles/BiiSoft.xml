@@ -261,6 +261,7 @@
 		<text name="FindTaxes">Find Taxes</text>
 		<text name="Warehouses">Warehouses</text>
 		<text name="Warehouse">Warehouse</text>
+		<text name="WarehouseList">Warehouse List</text>
 		<text name="Locations">Locations</text>
 		<text name="Location">Location</text>
 		<text name="Pages">Pages</text>
@@ -754,5 +755,8 @@
 		<text name="IsInUse">{0} is in use</text>
 		<text name="FindWarehouses">Find Warehouses</text>
 		<text name="FindZones">Find Zones</text>
+		<text name="Sharing">Sharing</text>
+		<text name="SpecificBranch">Specific Branch</text>
+		<text name="SpecificUser">Specific User</text>
 	</texts>
 </localizationDictionary>

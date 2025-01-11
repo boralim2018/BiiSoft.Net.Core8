@@ -89,6 +89,7 @@ namespace BiiSoft.Warehouses
 
             if(input.Sharing == BranchSharing.SpecificBranch)
             {
+                await CurrentUnitOfWork.SaveChangesAsync();
                 var addBranchs = input.WarehouseBranches.Select(s => WarehouseBranch.Create(input.TenantId.Value, input.CreatorUserId.Value, input.Id, s.BranchId)).ToList();
                 await _warehouseBranchRepository.BulkInsertAsync(addBranchs);
             }
