@@ -1,14 +1,17 @@
-﻿using Abp.Domain.Uow;
+﻿using Abp.Collections.Extensions;
+using Abp.Domain.Uow;
 using Abp.Extensions;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Columns;
 using BiiSoft.ContactInfo;
 using BiiSoft.Entities;
+using BiiSoft.Enums;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
 using BiiSoft.Locations;
 using BiiSoft.MultiTenancy;
+using BiiSoft.Warehouses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -71,6 +74,13 @@ namespace BiiSoft.Branches
         protected override string InstanceName => L("Branch");
         protected override bool IsUniqueName => true;
 
+        protected override void ValidateInput(Branch input)
+        {
+            base.ValidateInput(input);
+
+            if (input.Sharing == Sharing.SpecificUser && input.BranchUsers.IsNullOrEmpty()) InputException(L("User"));
+        }
+
         protected override Branch CreateInstance(Branch input)
         {
             return Branch.Create(input.TenantId, input.CreatorUserId, input.Name, input.DisplayName, input.BusinessId, input.PhoneNumber, input.Email, input.Website, input.TaxRegistrationNumber, input.BillingAddressId, input.SameAsBillingAddress, input.ShippingAddressId, input.Sharing);
@@ -103,6 +113,15 @@ namespace BiiSoft.Branches
 
             await _repository.InsertAsync(entity);
             input.Id = entity.Id;
+
+            if(input.Sharing == Sharing.SpecificUser)
+            {
+                var users = input.BranchUsers.Select(s => BranchUser.Create(input.TenantId, input.CreatorUserId.Value, s.MemberId, entity.Id)).ToList();
+
+                await CurrentUnitOfWork.SaveChangesAsync();
+                await _branchUserRepository.BulkInsertAsync(users);
+            }
+
             return IdentityResult.Success;
         }
 
@@ -110,7 +129,7 @@ namespace BiiSoft.Branches
         {
             await ValidateInputAsync(input);
 
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
             ValidateEditable(entity);
 
@@ -151,12 +170,45 @@ namespace BiiSoft.Branches
                 }
             }
 
+            var users = await _branchUserRepository.GetAll().AsNoTracking().Where(s => s.BranchId == input.Id).ToListAsync();
+            if (input.Sharing == Sharing.SpecificUser)
+            {
+                var addUsers = new List<BranchUser>();
+                var updateUsers = new List<BranchUser>();
+
+                foreach (var user in input.BranchUsers)
+                {
+                    if (user.Id == Guid.Empty)
+                    {
+                        addUsers.Add(BranchUser.Create(input.TenantId, input.CreatorUserId.Value, user.MemberId, input.Id));
+                    }
+                    else
+                    {
+                        var updateUser = users.FirstOrDefault(s => s.Id == user.Id);
+                        if (updateUser == null) NotFoundException("User");
+
+                        updateUser.Update(input.LastModifierUserId.Value, user.MemberId, input.Id);
+                        updateUsers.Add(updateUser);
+                    }
+                }
+
+                if (addUsers.Any()) await _branchUserRepository.BulkInsertAsync(addUsers);
+                if (updateUsers.Any()) await _branchUserRepository.BulkUpdateAsync(updateUsers);
+
+                var deleteUsers = users.Where(s => !updateUsers.Any(r => r.Id == s.Id)).ToList();
+                if (deleteUsers.Any()) await _branchUserRepository.BulkDeleteAsync(deleteUsers);
+            }
+            else if (users.Any())
+            {
+                await _branchUserRepository.BulkDeleteAsync(users);
+            }
+
             return IdentityResult.Success;
         }
 
         public override async Task<IdentityResult> DeleteAsync(Guid id)
         {
-            var entity = await GetAsync(id);
+            var entity = await FindAsync(id);
             if (entity == null) NotFoundException(InstanceName);
             ValidateDeletable(entity);
 

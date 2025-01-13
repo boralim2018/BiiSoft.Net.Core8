@@ -21,6 +21,7 @@ using BiiSoft.ContactInfo.Dto;
 using BiiSoft.Entities;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Excels;
+using BiiSoft.Enums;
 
 namespace BiiSoft.Branches
 {
@@ -111,8 +112,11 @@ namespace BiiSoft.Branches
         [AbpAuthorize(PermissionNames.Pages_Find_Branches)]
         public async Task<PagedResultDto<FindBranchDto>> Find(PageBranchInputDto input)
         {
+            var userId = AbpSession.UserId;
+
             var query = _branchRepository.GetAll()
                         .AsNoTracking()
+                        .Where(s => s.Sharing == Sharing.All || s.BranchUsers.Any(r => r.MemberId == userId))
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
                             (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
@@ -168,6 +172,8 @@ namespace BiiSoft.Branches
                             Email = l.Email,
                             Website = l.Website,
                             TaxRegistrationNumber = l.TaxRegistrationNumber,
+                            Sharing = l.Sharing,
+                            SharingName = l.Sharing.GetName(),
                             IsDefault = l.IsDefault,
                             IsActive = l.IsActive,
                             CreationTime = l.CreationTime,
@@ -215,8 +221,14 @@ namespace BiiSoft.Branches
                                 PostalCode = l.ShippingAddress.PostalCode,
                                 Street = l.ShippingAddress.Street,
                                 HouseNo = l.ShippingAddress.HouseNo
-                            }
-
+                            },
+                            BranchUsers = l.BranchUsers.Select(s => new BranchUserDto
+                            {
+                                Id = s.Id,
+                                MemberId = s.MemberId,
+                                UserName = s.Member.UserName
+                            })
+                            .ToList()
                         });
 
             var result = await query.FirstOrDefaultAsync();
@@ -237,9 +249,11 @@ namespace BiiSoft.Branches
         private async Task<PagedResultDto<BranchListDto>> GetListHelper(PageBranchInputDto input)
         {
             var isDefaultLanguage = await IsDefaultLagnuageAsync();
+            var userId = AbpSession.UserId;
 
             var query = _branchRepository.GetAll()
                         .AsNoTracking()
+                        .Where(s => s.Sharing == Sharing.All || s.BranchUsers.Any(r => r.MemberId == userId))
                         .WhereIf(input.IsActive.HasValue, s => input.IsActive.Value)
                         .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
                             (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
@@ -268,6 +282,8 @@ namespace BiiSoft.Branches
                     Email = l.Email,
                     Website = l.Website,
                     TaxRegistrationNumber = l.TaxRegistrationNumber,
+                    Sharing = l.Sharing,
+                    SharingName = l.Sharing.GetName(),
                     IsDefault = l.IsDefault,
                     IsActive = l.IsActive,
                     CreationTime = l.CreationTime,

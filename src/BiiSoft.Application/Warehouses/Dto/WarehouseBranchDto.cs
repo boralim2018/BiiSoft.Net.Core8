@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BiiSoft.Warehouses
+namespace BiiSoft.Warehouses.Dto
 {
     public class WarehouseBranchDto 
     {

@@ -1,6 +1,7 @@
 ﻿using BiiSoft.ContactInfo.Dto;
 using BiiSoft.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace BiiSoft.Branches.Dto
 {
@@ -18,6 +19,7 @@ namespace BiiSoft.Branches.Dto
         public bool SameAsBillingAddress { get; set; }
         public ContactAddressDto ShippingAddress { get; set; }
         public Sharing Sharing { get; set; }
+        public List<BranchUserDto> BranchUsers { get; set; }
     }
 
 }
