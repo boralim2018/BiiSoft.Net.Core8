@@ -8,7 +8,7 @@ namespace BiiSoft.CommonLookups
 {
     public interface ICommonLookupAppService : IApplicationService
     {   
-        Task<PagedResultDto<string>> GetTimeZones(TimeZonePageFilterInputDto input);
+        Task<ListResultDto<string>> GetTimeZones();
         Task<ListResultDto<NameValueDto<AccountType>>> GetAccountTypes();
         Task<ListResultDto<NameValueDto<SubAccountType>>> GetSubAccountTypes(SubAccountTypeFilterInputDto input);
     }

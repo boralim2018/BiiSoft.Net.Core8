@@ -56,31 +56,14 @@ namespace BiiSoft.CommonLookups
             return new ListResultDto<NameValueDto<SubAccountType>> { Items = items };
         }
 
-        public async Task<PagedResultDto<string>> GetTimeZones(TimeZonePageFilterInputDto input)
+        public async Task<ListResultDto<string>> GetTimeZones()
         {
             var timezones = new List<string>();           
             await Task.Run(() => { 
-                timezones = TimezoneHelper.GetWindowsTimeZoneIds()
-                            .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => s.ToLower().Contains(input.Keyword.ToLower()))
-                            .OrderBy(x => input.SelectedTimeZones.IsNullOrEmpty() || input.SelectedTimeZones.Contains(x) ? 0 : 1 )
-                            .ToList(); 
+                timezones = TimezoneHelper.GetWindowsTimeZoneIds().ToList(); 
             });
 
-            var totalCount = timezones.Count;
-            var items = new List<string>();
-            if (totalCount > 0)
-            {
-                if (input.UsePagination)
-                {
-                    items = timezones.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
-                }
-                else
-                {
-                    items = timezones;
-                }
-            }
-
-            return new PagedResultDto<string> { Items = items, TotalCount = totalCount };
+            return new ListResultDto<string> { Items = timezones };
         }
 
     }
