@@ -758,5 +758,7 @@
 		<text name="Sharing">ចែករំលែក</text>
 		<text name="SpecificBranch">សាខាជាក់លាក់</text>
 		<text name="SpecificUser">អ្នកប្រើប្រាស់ជាក់លាក់</text>
+		<text name="AdvanceSetting">កំណត់ផ្សេងៗ</text>
+		<text name="AccountSetting">កំណត់គណនី</text>
 	</texts>
 </localizationDictionary>

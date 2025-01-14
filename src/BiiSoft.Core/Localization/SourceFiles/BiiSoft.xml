@@ -758,5 +758,7 @@
 		<text name="Sharing">Sharing</text>
 		<text name="SpecificBranch">Specific Branch</text>
 		<text name="SpecificUser">Specific User</text>
+		<text name="AdvanceSetting">Advance Setting</text>
+		<text name="AccountSetting">Account Setting</text>
 	</texts>
 </localizationDictionary>
