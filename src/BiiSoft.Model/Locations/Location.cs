@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using BiiSoft.Entities;
-using Abp.Domain.Entities;
+﻿using Abp.Domain.Entities;
 using Abp.Timing;
+using BiiSoft.Entities;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BiiSoft.Locations
 {

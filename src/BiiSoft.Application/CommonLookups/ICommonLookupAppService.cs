@@ -11,5 +11,7 @@ namespace BiiSoft.CommonLookups
         Task<ListResultDto<string>> GetTimeZones();
         Task<ListResultDto<NameValueDto<AccountType>>> GetAccountTypes();
         Task<ListResultDto<NameValueDto<SubAccountType>>> GetSubAccountTypes(SubAccountTypeFilterInputDto input);
+        Task<ListResultDto<NameValueDto<ItemType>>> GetItemTypes();
+        Task<ListResultDto<NameValueDto<ItemCategory>>> GetItemCategories();
     }
 }

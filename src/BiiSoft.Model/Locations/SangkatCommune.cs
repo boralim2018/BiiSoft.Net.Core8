@@ -1,7 +1,6 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Timing;
 using BiiSoft.Entities;
-using BiiSoft.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

@@ -66,5 +66,31 @@ namespace BiiSoft.CommonLookups
             return new ListResultDto<string> { Items = timezones };
         }
 
+        public async Task<ListResultDto<NameValueDto<ItemType>>> GetItemTypes()
+        {
+            var items = new List<NameValueDto<ItemType>>();
+            await Task.Run(() => {
+                items = Enum.GetValues(typeof(ItemType))
+                             .Cast<ItemType>()
+                             .Select(s => new NameValueDto<ItemType>(s.GetName(), s))
+                             .ToList();
+            });
+
+            return new ListResultDto<NameValueDto<ItemType>> { Items = items };
+        }
+
+        public async Task<ListResultDto<NameValueDto<ItemCategory>>> GetItemCategories()
+        {
+            var items = new List<NameValueDto<ItemCategory>>();
+            await Task.Run(() => {
+                items = Enum.GetValues(typeof(ItemCategory))
+                             .Cast<ItemCategory>()
+                             .Select(s => new NameValueDto<ItemCategory>(s.GetName(), s))
+                             .ToList();
+            });
+
+            return new ListResultDto<NameValueDto<ItemCategory>> { Items = items };
+        }
+
     }
 }

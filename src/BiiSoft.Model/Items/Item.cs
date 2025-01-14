@@ -5,6 +5,8 @@ using BiiSoft.Entities;
 using BiiSoft.Enums;
 using BiiSoft.Taxes;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -109,6 +111,8 @@ namespace BiiSoft.Items
         [MaxLength(BiiSoftConsts.MaxLengthLongDescription)]
         [StringLength(BiiSoftConsts.MaxLengthLongDescription, ErrorMessage = BiiSoftConsts.MaxLengthLongDescriptionErrorMessage)]
         public string Description { get; private set; }
+
+        public ICollection<ItemZone> ItemZones { get; private set; }
 
         public static Item Create(
             int tenantId,

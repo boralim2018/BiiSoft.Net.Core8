@@ -485,7 +485,7 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<ItemZone>(e =>
             {
-                e.HasOne(i => i.Item).WithMany().HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Item).WithMany(i => i.ItemZones).HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.Zone).WithMany().HasForeignKey(i => i.ZoneId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
