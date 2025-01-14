@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
-using BiiSoft.Locations;
-using Microsoft.EntityFrameworkCore;
-using BiiSoft.Extensions;
-using Microsoft.AspNetCore.Identity;
-using Abp.Timing;
-using Abp.Domain.Entities;
+﻿using Abp.Timing;
 using BiiSoft.Entities;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using BiiSoft.Extensions;
+using BiiSoft.Locations;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BiiSoft.ContactInfo
 {
@@ -207,7 +204,7 @@ namespace BiiSoft.ContactInfo
             var find = await _locationRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.LocationId.Value);
             if (!find) InvalidException(L("Location"));
 
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             var locationId = entity.LocationId;
@@ -224,7 +221,7 @@ namespace BiiSoft.ContactInfo
 
         public async Task<IdentityResult> DeleteLocationAsync(IUserEntity<Guid> input)
         {
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if(entity == null) NotFoundException(InstanceName);
             
             if(!entity.LocationId.HasValue) NotFoundException(L("Location"));

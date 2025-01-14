@@ -15,7 +15,6 @@ namespace BiiSoft
     public interface IBiiSoftValidateServiceBase<TEntity, TPrimaryKey> : IDomainService where TPrimaryKey : struct
     {
         Task<TEntity> FindAsync(TPrimaryKey id);
-        Task<TEntity> GetAsync(TPrimaryKey id);
         Task<IdentityResult> InsertAsync(TEntity input);
         Task<IdentityResult> UpdateAsync(TEntity input);
         Task<IdentityResult> DeleteAsync(TPrimaryKey id);

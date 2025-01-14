@@ -11,7 +11,6 @@ using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
 using BiiSoft.Locations;
 using BiiSoft.MultiTenancy;
-using BiiSoft.Warehouses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;

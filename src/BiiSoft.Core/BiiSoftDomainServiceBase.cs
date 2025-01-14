@@ -150,11 +150,6 @@ namespace BiiSoft
             return await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(u => u.Id.Equals(id));
         }
 
-        public virtual async Task<TEntity> GetAsync(TPrimaryKey id)
-        {
-            return await _repository.FirstOrDefaultAsync(u => u.Id.Equals(id));
-        }
-
         protected virtual void ValidateDeletable(TEntity input, string message = "")
         {
             if (input is ICanModifyEntity entity && entity.CannotDelete) NotDeletableException(InstanceName, message);
@@ -162,7 +157,7 @@ namespace BiiSoft
 
         public virtual async Task<IdentityResult> DeleteAsync(TPrimaryKey input)
         {
-            var entity = await GetAsync(input);
+            var entity = await FindAsync(input);
             if (entity == null) NotFoundException(InstanceName);
             ValidateDeletable(entity);
 
@@ -185,7 +180,7 @@ namespace BiiSoft
         {
             await ValidateInputAsync(input);
 
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if(entity == null) NotFoundException(InstanceName);
             ValidateEditable(entity);
 
@@ -422,7 +417,7 @@ namespace BiiSoft
 
         public async Task<IdentityResult> EnableAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if(entity == null) NotFoundException(InstanceName);
 
             entity.Enable(true);
@@ -435,7 +430,7 @@ namespace BiiSoft
 
         public async Task<IdentityResult> DisableAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(false);
@@ -528,7 +523,7 @@ namespace BiiSoft
 
         public async Task<IdentityResult> EnableAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(true);
@@ -541,7 +536,7 @@ namespace BiiSoft
 
         public async Task<IdentityResult> DisableAsync(IUserEntity<TPrimaryKey> input)
         {
-            var entity = await GetAsync(input.Id);
+            var entity = await FindAsync(input.Id);
             if (entity == null) NotFoundException(InstanceName);
 
             entity.Enable(false);
