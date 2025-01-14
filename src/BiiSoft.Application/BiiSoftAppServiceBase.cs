@@ -117,9 +117,13 @@ namespace BiiSoft
                 (entity as IModificationAudited).LastModifierUserId = AbpSession.UserId;
             }
 
-            if(entity is IMayHaveTenant || entity is IMayHaveTenant)
+            if(entity is IMayHaveTenant)
             {
                 (entity as IMayHaveTenant).TenantId = AbpSession.TenantId;
+            }
+            else if (entity is IMustHaveTenant)
+            {
+                (entity as IMustHaveTenant).TenantId = AbpSession.TenantId.Value;
             }
 
             return entity;
