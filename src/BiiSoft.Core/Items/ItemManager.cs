@@ -43,6 +43,8 @@ namespace BiiSoft.Items
         private readonly IBiiSoftRepository<FieldC, Guid> _fieldCRepository;
         private readonly IBiiSoftRepository<Unit, Guid> _unitRepository;
         private readonly IBiiSoftRepository<ChartOfAccount, Guid> _chartOfAccountRepository;
+        private readonly IBiiSoftRepository<ItemSetting, Guid> _itemSettingRepository;
+        private readonly IBiiSoftRepository<ItemCodeFormula, Guid> _itemCodeFormulaRepository;
 
         public ItemManager(
             IExcelManager excelManager,
@@ -66,6 +68,8 @@ namespace BiiSoft.Items
             IBiiSoftRepository<FieldC, Guid> fieldCRepository,
             IBiiSoftRepository<Unit, Guid> unitRepository,
             IBiiSoftRepository<ChartOfAccount, Guid> chartOfAccountRepository,
+            IBiiSoftRepository<ItemSetting, Guid> itemSettingRepository,
+            IBiiSoftRepository<ItemCodeFormula, Guid> itemCodeFormulaRepository,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager) : base(repository)
         {
@@ -91,6 +95,8 @@ namespace BiiSoft.Items
             _fieldCRepository = fieldCRepository;
             _unitRepository = unitRepository;
             _chartOfAccountRepository = chartOfAccountRepository;
+            _itemSettingRepository = itemSettingRepository;
+            _itemCodeFormulaRepository = itemCodeFormulaRepository;
         }
 
         #region override base class
@@ -105,10 +111,10 @@ namespace BiiSoft.Items
             ValidateSelect(input.UnitId, L("Unit"));
             ValidateSelect(input.PurchaseAccountId, L("PurchaseAccount"));
             ValidateSelect(input.SaleAccountId, L("SaleAccount"));
-
+          
             if (input.ItemType == ItemType.Inventory ||
                 input.ItemType == ItemType.SparePart ||
-                input.ItemType == ItemType.FixedAsset)
+                input.ItemType == ItemType.Asset)
             {
                 ValidateSelect(input.InventoryAccountId, L("InventoryAccount"));
             }
@@ -278,21 +284,7 @@ namespace BiiSoft.Items
                 input.FieldCId,
                 input.InventoryAccountId,
                 input.PurchaseAccountId,
-                input.SaleAccountId,
-                input.PurchaseTaxId,
-                input.SaleTaxId);
-        }
-
-        private async Task<bool> CheckAutoGenerateCodeAsync()
-        {
-            return false;
-        }
-
-        protected override async Task BeforeInstanceUpdate(Item input, Item entity)
-        {
-            var autoGenerateCode = await CheckAutoGenerateCodeAsync();
-
-            //if (autoGenerateCode && entity.SubAccountType != input.SubAccountType) await SetCodeAsync(input);
+                input.SaleAccountId);
         }
 
         protected override void UpdateInstance(Item input, Item entity)
@@ -344,36 +336,36 @@ namespace BiiSoft.Items
                 input.FieldCId,
                 input.InventoryAccountId,
                 input.PurchaseAccountId,
-                input.SaleAccountId,
-                input.PurchaseTaxId,
-                input.SaleTaxId);
+                input.SaleAccountId);
         }
 
         #endregion
-
-        private async Task<string> GetLatestCodeAsync()
-        {
-            var prefix = "ITM-";
-
-            return await _repository.GetAll()
-                            .AsNoTracking()
-                            .Where(s => s.Code.StartsWith(prefix))
-                            .Select(s => s.Code)
-                            .OrderByDescending(s => s)
-                            .FirstOrDefaultAsync();
-        }
-
 
         private async Task SetCodeAsync(Item input)
         {
             if (!input.Code.IsNullOrWhiteSpace()) return;
 
-            var prefix = "ITM-";
-            var latestCode = await GetLatestCodeAsync();
+            var formula = await _itemCodeFormulaRepository.GetAll().AsNoTracking().FirstOrDefaultAsync(s => s.ItemTypes.Contains(input.ItemType));
+
+            if(formula == null || formula.Type == ItemCodeFormulaType.Manual) return;
+
+            var prefix = "";
+            if(formula.Type == ItemCodeFormulaType.Custom)
+            {
+                prefix = formula.Prefix;
+            }
+
+            var latestCode = await _repository.GetAll()
+                            .AsNoTracking()
+                            .Where(s => formula.ItemTypes.Contains(s.ItemType))
+                            .Where(s => s.Code.StartsWith(prefix))
+                            .Select(s => s.Code)
+                            .OrderByDescending(s => s)
+                            .FirstOrDefaultAsync();
 
             if (latestCode.IsNullOrWhiteSpace())
             {
-                input.SetCode(0.GenerateCode(8, prefix));
+                input.SetCode(formula.Start.GenerateCode(formula.Digits, prefix));
             }
             else
             {
@@ -383,8 +375,7 @@ namespace BiiSoft.Items
 
         public override async Task<IdentityResult> InsertAsync(Item input)
         {
-            var autoGenerateCode = await CheckAutoGenerateCodeAsync();
-            if (autoGenerateCode) await SetCodeAsync(input);
+            await SetCodeAsync(input);
             return await base.InsertAsync(input);
         }
 
@@ -436,6 +427,7 @@ namespace BiiSoft.Items
         public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
             var accounts = new List<Item>();
+            var itemCodeFormulas = new List<ItemCodeFormula>();
             var autoGenerateCode = false;
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
@@ -443,7 +435,7 @@ namespace BiiSoft.Items
                 using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
                 {
                     accounts = await _repository.GetAll().AsNoTracking().ToListAsync();
-                    autoGenerateCode = await CheckAutoGenerateCodeAsync();
+                    itemCodeFormulas = await _itemCodeFormulaRepository.GetAll().AsNoTracking().ToListAsync();
                 }
             }
 

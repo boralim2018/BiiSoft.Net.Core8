@@ -92,13 +92,6 @@ namespace BiiSoft.Items
         public Guid? ImageId { get; private set; }
         public void SetImage(Guid? imageId) => ImageId = imageId;
 
-        public Guid? PurchaseTaxId { get; private set; }
-        public Tax PurchaseTax { get; private set; }
-        public void SetPurchaseTax(Guid? taxId) => PurchaseTaxId = taxId;
-        public Guid? SaleTaxId { get; private set; }
-        public Tax SaleTax { get; private set; }
-        public void SetSaleTax(Guid? taxId) => SaleTaxId = taxId;
-
         public Guid? PurchaseAccountId { get; private set; }
         public ChartOfAccount PurchaseAccount { get; private set; }
         public Guid? SaleAccountId { get; private set; }
@@ -162,9 +155,7 @@ namespace BiiSoft.Items
             Guid? fieldCId,
             Guid? inventoryAccountId,
             Guid? purchaseAccountId,
-            Guid? saleAccountId,
-            Guid? purchaseTaxId,
-            Guid? saleTaxId)
+            Guid? saleAccountId)
         {
             return new Item
             {
@@ -217,8 +208,6 @@ namespace BiiSoft.Items
                 InventoryAccountId = inventoryAccountId,
                 PurchaseAccountId = purchaseAccountId,
                 SaleAccountId = saleAccountId,
-                PurchaseTaxId = purchaseTaxId,
-                SaleTaxId = saleTaxId,
                 IsActive = true
             };
         }
@@ -270,9 +259,7 @@ namespace BiiSoft.Items
             Guid? fieldCId,
             Guid? inventoryAccountId,
             Guid? purchaseAccountId,
-            Guid? saleAccountId,
-            Guid? purchaseTaxId,
-            Guid? saleTaxId)
+            Guid? saleAccountId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -322,8 +309,6 @@ namespace BiiSoft.Items
             InventoryAccountId = inventoryAccountId;
             PurchaseAccountId = purchaseAccountId;
             SaleAccountId = saleAccountId;
-            PurchaseTaxId = purchaseTaxId;
-            SaleTaxId = saleTaxId;
         }
 
     }

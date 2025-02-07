@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BiiSoft.Enums
+﻿namespace BiiSoft.Enums
 {
     public enum ItemType
     {
@@ -14,6 +7,7 @@ namespace BiiSoft.Enums
         Inventory = 3,
         SparePart = 4,
         Bundle = 5,
-        FixedAsset = 6
+        Menu = 6,
+        Asset = 7,
     }
 }

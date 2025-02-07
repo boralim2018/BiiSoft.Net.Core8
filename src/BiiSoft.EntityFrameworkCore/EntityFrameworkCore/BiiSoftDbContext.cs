@@ -453,8 +453,6 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.PurchaseAccount).WithMany().HasForeignKey(i => i.PurchaseAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.SaleAccount).WithMany().HasForeignKey(i => i.SaleAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.InventoryAccount).WithMany().HasForeignKey(i => i.InventoryAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-                e.HasOne(i => i.SaleTax).WithMany().HasForeignKey(i => i.SaleTaxId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-                e.HasOne(i => i.PurchaseTax).WithMany().HasForeignKey(i => i.PurchaseTaxId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ItemSetting>(e =>
