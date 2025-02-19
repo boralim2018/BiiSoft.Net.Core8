@@ -77,7 +77,6 @@ namespace BiiSoft.EntityFrameworkCore
         public DbSet<ItemCodeFormula> ItemCodeFormulas { get; set; }
         public DbSet<ItemFieldSetting> ItemFieldSettings { get; set; }
         public DbSet<ItemZone> ItemZones { get; set; }
-        public DbSet<ItemGallery> ItemGalleries { get; set; }
 
 
         public BiiSoftDbContext(DbContextOptions<BiiSoftDbContext> options)
@@ -487,12 +486,6 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.Zone).WithMany().HasForeignKey(i => i.ZoneId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
-            modelBuilder.Entity<ItemGallery>(e =>
-            {
-                e.HasIndex(i => i.No);
-                e.HasIndex(i => i.GalleryId);
-                e.HasOne(i => i.Item).WithMany().HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
-            });
         }
     }
 }

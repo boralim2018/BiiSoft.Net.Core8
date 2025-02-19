@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using BiiSoft.Enums;
 using System.Linq;
 using System.Drawing;
+using Abp.Collections.Extensions;
 
 namespace BiiSoft.Extensions
 {
@@ -147,7 +148,7 @@ namespace BiiSoft.Extensions
             }
         }
 
-        public static void AddDropdownList(
+        public static void AddListValidation(
             this ExcelWorksheet sheet,
             int rowIndex,
             int columnIndex,
@@ -291,6 +292,24 @@ namespace BiiSoft.Extensions
             cell.Style.Indent = indent;
         }
 
+        private static void AddListValidation(
+           this ExcelWorksheet sheet,
+           int fromRowIndex,
+           int toRowIndex,
+           int columnIndex,
+           List<string> list)
+        {
+            var from = sheet.GetAddressName(fromRowIndex, columnIndex);
+            var to = sheet.GetAddressName(toRowIndex, columnIndex);
+            ExcelRange colRng = sheet.Cells[$"{from}:{to}"];
+
+            var dataValidation = sheet.DataValidations.AddListValidation(colRng.Address);
+            foreach (var i in list)
+            {
+                dataValidation.Formula.Values.Add(i);
+            }
+        }
+
         public static ExcelTable InsertTable(
             this ExcelWorksheet sheet,
             List<ColumnOutput> columns,
@@ -321,6 +340,12 @@ namespace BiiSoft.Extensions
                 {
                     table.Columns[colIndex].Name = (colHash.Contains(col.ColumnTitle) ? $"{col.ColumnTitle}{colIndex + 1}" : col.ColumnTitle) + (col.IsRequired ? $"* " : "");
                     if (col.Width > 0) sheet.Column(fromColumnIndex + colIndex).Width = col.Width.PixcelToInches();
+                    
+                    if(col.ColumnType == ColumnType.Lookup && !col.LookupList.IsNullOrEmpty())
+                    {
+                        AddListValidation(sheet, fromRowIndex, toRowIndex, colIndex, col.LookupList);
+                    }
+
                     colHash.Add(table.Columns[colIndex].Name);
                     colIndex++;
                 }
@@ -379,6 +404,11 @@ namespace BiiSoft.Extensions
                     else if(col.SelectedFunction != RowFunctions.None)
                     {
                         table.Columns[colIndex].TotalsRowFunction = col.SelectedFunction;
+                    }
+
+                    if (col.ColumnType == ColumnType.Lookup && !col.LookupList.IsNullOrEmpty())
+                    {
+                        AddListValidation(sheet, fromRowIndex, toRowIndex, colIndex, col.LookupList);
                     }
 
                     colHash.Add(table.Columns[colIndex].Name);

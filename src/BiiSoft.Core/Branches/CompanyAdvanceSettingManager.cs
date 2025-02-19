@@ -1,8 +1,6 @@
 ﻿using BiiSoft.Currencies;
 using BiiSoft.Locations;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiiSoft.Branches
@@ -25,12 +23,12 @@ namespace BiiSoft.Branches
 
         protected override CompanyAdvanceSetting CreateInstance(CompanyAdvanceSetting input)
         {
-            return CompanyAdvanceSetting.Create(input.TenantId, input.CreatorUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable);
+            return CompanyAdvanceSetting.Create(input.TenantId, input.CreatorUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable, input.TaxEnable, input.TaxType);
         }
 
         protected override void UpdateInstance(CompanyAdvanceSetting input, CompanyAdvanceSetting entity)
         {
-            entity.Update(input.LastModifierUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable);
+            entity.Update(input.LastModifierUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable, input.TaxEnable, input.TaxType);
         }
 
         protected override async Task ValidateInputAsync(CompanyAdvanceSetting input)

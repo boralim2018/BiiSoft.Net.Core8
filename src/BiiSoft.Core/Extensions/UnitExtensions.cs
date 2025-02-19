@@ -1,14 +1,11 @@
 ﻿using BiiSoft.Enums;
-using BiiSoft.Extensions;
-using System;
 using System.Collections.Generic;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace BiiSoft.Extensions
-{   
+{
     public static class UnitExtensions
     {
         // WeightUnit Conversion Factors to Kilograms
@@ -225,6 +222,16 @@ namespace BiiSoft.Extensions
         {
             decimal valueInSquareMeters = value * areaConversionFactorsToSquareMeters[(int)fromUnit];
             return valueInSquareMeters / areaConversionFactorsToSquareMeters[(int)toUnit];
+        }
+
+        public static List<T> ToList<T>(this T enumType) where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>().ToList();
+        }
+
+        public static List<string> ToListStr<T>(this T enumType) where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<string>().ToList();
         }
     }
 }

@@ -49,9 +49,11 @@ namespace BiiSoft.MultiTenancy
         private readonly IBiiSoftRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
         private readonly IBiiSoftRepository<CompanyAccountSetting, long> _companyAccountSettingRepository;
         private readonly IBiiSoftRepository<TransactionNoSetting, Guid> _transactionNoSettingRepository;
+        private readonly IBiiSoftRepository<ItemSetting, Guid> _itemSettingRepository;
         private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
         
         public TenantAppService(
+            IBiiSoftRepository<ItemSetting, Guid> itemSettingRepository,
             IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             IBiiSoftRepository<TransactionNoSetting, Guid> transactionNoSettingRepository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
@@ -78,6 +80,7 @@ namespace BiiSoft.MultiTenancy
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
             _companyGeneralSettingRepository = companyGeneralSettingRepository;
             _companyAccountSettingRepository = companyAccountSettingRepository;
+            _itemSettingRepository = itemSettingRepository;
             _itemFieldSettingRepository = itemFieldSettingRepository;
         }
 
@@ -201,7 +204,7 @@ namespace BiiSoft.MultiTenancy
             {
                 var multiBranchEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_Branches);
                 var multiCurrencyEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_MultiCurrencies);
-                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false, false);
+                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false, false, false, TaxType.Total);
                 await _companyAdvanceSettingRepository.InsertAsync(advanceSetting);
             }
 
@@ -217,8 +220,7 @@ namespace BiiSoft.MultiTenancy
                 await _companyAccountSettingRepository.InsertAsync(accountSetting);
             }
 
-            var journalTypes = Enum.GetValues(typeof(JournalType)).Cast<JournalType>()
-                               .ToList();
+            var journalTypes = Enum.GetValues(typeof(JournalType)).Cast<JournalType>().ToList();
 
             var findJournalTyps = await _transactionNoSettingRepository.GetAll().AsNoTracking()
                                         .Where(s => journalTypes.Contains(s.JournalType))
@@ -232,10 +234,17 @@ namespace BiiSoft.MultiTenancy
                 await _transactionNoSettingRepository.BulkInsertAsync(transactionNos);
             }
 
+            var findItemSetting = await _itemSettingRepository.GetAll().AsNoTracking().AnyAsync();
+            if (!findItemSetting)
+            {
+                var fieldSetting = ItemSetting.Create(tenantId, userId, true, true);
+                await _itemSettingRepository.InsertAsync(fieldSetting);
+            }
+
             var findItemFieldSetting = await _itemFieldSettingRepository.GetAll().AsNoTracking().AnyAsync();
             if (!findItemFieldSetting)
             {
-                var fieldSetting = ItemFieldSetting.Create(tenantId, userId, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, "FieldA", "FieldB", "FieldC");
+                var fieldSetting = ItemFieldSetting.Create(tenantId, userId, true);
                 await _itemFieldSettingRepository.InsertAsync(fieldSetting);
             }
         }

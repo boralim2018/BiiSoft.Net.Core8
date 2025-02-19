@@ -1,13 +1,11 @@
-﻿using Abp.Domain.Entities.Auditing;
+﻿using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
-using Abp.Domain.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
 using BiiSoft.Enums;
-using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BiiSoft.Branches
 {
-
     [Table("BiiCompanyAdvanceSettings")]
     public class CompanyAdvanceSetting : AuditedEntity<long>, IMustHaveTenant
     {
@@ -24,8 +22,9 @@ namespace BiiSoft.Branches
         public void EnableCustomAccountCode(bool enable) => CustomAccountCodeEnable = enable;
         public bool ClassEnable { get; protected set; }
         public void EnableClass(bool enable) => ClassEnable = enable;
-       
-
+        public bool TaxEnable { get; protected set; }
+        public void EnableTax(bool enable) => TaxEnable = enable;
+        public TaxType TaxType { get; protected set; }
 
         public static CompanyAdvanceSetting Create(
             int tenantId,
@@ -35,7 +34,9 @@ namespace BiiSoft.Branches
             bool lineDiscountEnable,
             bool totalDiscountEnable,
             bool customAccountCodeEnable,
-            bool classEnable)
+            bool classEnable,
+            bool taxEnable,
+            TaxType taxType)
         {
             return new CompanyAdvanceSetting
             {
@@ -47,7 +48,9 @@ namespace BiiSoft.Branches
                 LineDiscountEnable = lineDiscountEnable,
                 TotalDiscountEnable = totalDiscountEnable,
                 CustomAccountCodeEnable = customAccountCodeEnable,
-                ClassEnable = classEnable
+                ClassEnable = classEnable,
+                TaxEnable = taxEnable,
+                TaxType = taxType
             };
         }
 
@@ -58,7 +61,9 @@ namespace BiiSoft.Branches
             bool lineDiscountEnable,
             bool totalDiscountEnable,
             bool customAccountCodeEnable,
-            bool classEnable)
+            bool classEnable,
+            bool taxEnable,
+            TaxType taxType)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -68,6 +73,8 @@ namespace BiiSoft.Branches
             TotalDiscountEnable = totalDiscountEnable;
             CustomAccountCodeEnable = customAccountCodeEnable;
             ClassEnable = classEnable;
+            TaxEnable = taxEnable;
+            TaxType = taxType;
         }
     }
 }

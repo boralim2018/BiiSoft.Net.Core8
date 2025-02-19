@@ -31,9 +31,9 @@ namespace BiiSoft.Items
 
         public decimal NetWeight { get; private set; }
         public decimal GrossWeight { get; private set; }
-        public decimal Length { get; private set; }
         public decimal Width { get; private set; }
         public decimal Height { get; private set; }
+        public decimal Length { get; private set; }
         public decimal Diameter { get; private set; }
         public decimal Area { get; private set; }
         public decimal Volume { get; private set; }

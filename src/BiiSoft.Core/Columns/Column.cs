@@ -17,6 +17,7 @@ namespace BiiSoft.Columns
         Date = 5,
         CheckBox = 6,
         WrapText = 7,
+        Lookup = 8,
     }
 
     //SummaryFunction Custom
@@ -58,6 +59,7 @@ namespace BiiSoft.Columns
         public int RoundingDigits { get; set; } 
         public bool ShowCrossForFalse { get; set; }
         public bool IsRequired { get; set; }
+        public List<string> LookupList { get; set; }
     }
 
     public class SummaryColumnOutput : ColumnOutput
