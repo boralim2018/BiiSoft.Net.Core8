@@ -10,6 +10,8 @@ namespace BiiSoft.Items.Dto
         public long No { get; set; }
         public ItemType ItemType { get; set; }
         public ItemCategory ItemCategory { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
         public string Code { get; set; }
 
         public decimal NetWeight { get; set; }
