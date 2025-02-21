@@ -185,6 +185,7 @@
         public const string Pages_Setup_Items_List_Edit = "Pages.Setup.Items.List.Edit";
         public const string Pages_Setup_Items_List_EditAccount = "Pages.Setup.Items.List.EditAccount";
         public const string Pages_Setup_Items_List_SeeAccount = "Pages.Setup.Items.List.SeeAccount";
+        public const string Pages_Setup_Items_List_ChangeSetting = "Pages.Setup.Items.List.ChangeSetting";
         public const string Pages_Setup_Items_List_Delete = "Pages.Setup.Items.List.Delete";
         public const string Pages_Setup_Items_List_ImportExcel = "Pages.Setup.Items.List.ImportExcel";
         public const string Pages_Setup_Items_List_ExportExcel = "Pages.Setup.Items.List.ExportExcel";
