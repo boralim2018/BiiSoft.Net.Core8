@@ -96,7 +96,7 @@ namespace BiiSoft.Locations
             var items = new List<FindLocationDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindLocationDto
                 {
                     Id = l.Id,
@@ -105,9 +105,14 @@ namespace BiiSoft.Locations
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindLocationDto> { TotalCount = totalCount, Items = items };
@@ -173,7 +178,7 @@ namespace BiiSoft.Locations
             var items = new List<LocationListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new LocationListDto
                 {
                     Id = l.Id,
@@ -193,9 +198,14 @@ namespace BiiSoft.Locations
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<LocationListDto> { TotalCount = totalCount, Items = items };

@@ -102,7 +102,7 @@ namespace BiiSoft.Countries
             var items = new List<FindCountryDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindCountryDto
                 {
                     Id = l.Id,
@@ -117,9 +117,14 @@ namespace BiiSoft.Countries
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindCountryDto> { TotalCount = totalCount, Items = items };
@@ -192,7 +197,7 @@ namespace BiiSoft.Countries
             var items = new List<CountryListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new CountryListDto
                 {
                     Id = l.Id,
@@ -216,9 +221,14 @@ namespace BiiSoft.Countries
 
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<CountryListDto> { TotalCount = totalCount, Items = items };

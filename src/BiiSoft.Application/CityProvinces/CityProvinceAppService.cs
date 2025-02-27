@@ -104,7 +104,7 @@ namespace BiiSoft.CityProvinces
             var items = new List<FindCityProvinceDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindCityProvinceDto
                 {
                      Id = l.Id,
@@ -116,9 +116,14 @@ namespace BiiSoft.CityProvinces
                      IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindCityProvinceDto> { TotalCount = totalCount, Items = items };
@@ -194,7 +199,7 @@ namespace BiiSoft.CityProvinces
             var items = new List<CityProvinceListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new CityProvinceListDto
                 {
                     Id = l.Id,
@@ -215,9 +220,14 @@ namespace BiiSoft.CityProvinces
                     Code = l.Code,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<CityProvinceListDto> { TotalCount = totalCount, Items = items };

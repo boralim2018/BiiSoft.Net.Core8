@@ -28,33 +28,7 @@ namespace BiiSoft.Items.Dto
         public FilterInputDto<Guid> FieldAFilter { get; set; }
         public FilterInputDto<Guid> FieldBFilter { get; set; }
         public FilterInputDto<Guid> FieldCFilter { get; set; }
-        protected override string MapSortField()
-        {
-            return SortField switch
-            {
-                "ItemTypeName" => "ItemType",
-                "ItemCategoryName" => "ItemCategory",
-                "ItemGroupName" => "ItemGroup.Name",
-                "ItemGradeName" => "ItemGrade.Name",
-                "ItemBrandName" => "ItemBrand.Name",
-                "ItemModelName" => "ItemModel.Name",
-                "ItemSizeName" => "ItemSize.Name",
-                "ItemSeriesName" => "ItemSeriea.Name",
-                "ColorPatternName" => "ColorPattern.Name",
-                "UnitName" => "Unit.Name",
-                "CUPName" => "CPU.Name",
-                "RAMName" => "RAM.Name",
-                "VGAName" => "VGA.Name",
-                "HDDName" => "HDD.Name",
-                "ScreenName" => "Screen.Name",
-                "CameraName" => "Camera.Name",
-                "BatteryName" => "Battery.Name",
-                "FieldAName" => "FieldA.Name",
-                "FieldBName" => "FieldB.Name",
-                "FieldCName" => "FieldC.Name",
-                _ => base.MapSortField()
-            };
-        }
+        
     }
 
     public class ExportExcelItemInputDto : PageItemInputDto

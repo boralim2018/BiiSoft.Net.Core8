@@ -7,7 +7,7 @@ namespace BiiSoft.Sessions.Dto
     {
         public SessionMapProfile()
         {
-            CreateMap<ItemFieldSettingDto, ItemFieldSetting>().ReverseMap();
+            
         }
     }
 }

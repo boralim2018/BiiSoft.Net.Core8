@@ -123,7 +123,7 @@ namespace BiiSoft.ColorPatterns
             var items = new List<FindColorPatternDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindColorPatternDto
                 {
                     Id = l.Id,
@@ -133,9 +133,14 @@ namespace BiiSoft.ColorPatterns
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindColorPatternDto> { TotalCount = totalCount, Items = items };
@@ -200,7 +205,7 @@ namespace BiiSoft.ColorPatterns
             var items = new List<ColorPatternListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new ColorPatternListDto
                 {
                     Id = l.Id,
@@ -218,9 +223,14 @@ namespace BiiSoft.ColorPatterns
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<ColorPatternListDto> { TotalCount = totalCount, Items = items };

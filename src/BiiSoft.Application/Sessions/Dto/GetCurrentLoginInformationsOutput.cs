@@ -1,4 +1,6 @@
-﻿namespace BiiSoft.Sessions.Dto
+﻿using BiiSoft.Items.Dto;
+
+namespace BiiSoft.Sessions.Dto
 {
     public class GetCurrentLoginInformationsOutput
     {
@@ -7,6 +9,7 @@
         public TenantLoginInfoDto Tenant { get; set; }
         public GeneralSettingDto GeneralSetting { get; set; }
         public AdvanceSettingDto AdvanceSetting { get; set; }
+        public ItemSettingDto ItemSetting { get; set; }
         public ItemFieldSettingDto ItemFieldSetting { get; set; }
     }
 

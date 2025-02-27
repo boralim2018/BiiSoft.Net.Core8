@@ -123,7 +123,7 @@ namespace BiiSoft.Cameras
             var items = new List<FindCameraDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindCameraDto
                 {
                     Id = l.Id,
@@ -133,9 +133,14 @@ namespace BiiSoft.Cameras
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindCameraDto> { TotalCount = totalCount, Items = items };
@@ -200,7 +205,7 @@ namespace BiiSoft.Cameras
             var items = new List<CameraListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new CameraListDto
                 {
                     Id = l.Id,
@@ -218,9 +223,14 @@ namespace BiiSoft.Cameras
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<CameraListDto> { TotalCount = totalCount, Items = items };

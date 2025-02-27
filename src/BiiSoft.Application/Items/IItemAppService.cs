@@ -21,5 +21,10 @@ namespace BiiSoft.Items
         Task ImportExcel(FileTokenInput input);
         Task<ExportFileOutput> ExportExcelTemplate();
         Task<ExportFileOutput> ExportExcel(ExportExcelItemInputDto input);
+
+        Task<ItemSettingDto> GetItemSetting();
+        Task<Guid> CreateOrUpdateItemSetting(ItemSettingDto input);
+        Task<ItemFieldSettingDto> GetItemFieldSetting();
+        Task<Guid> CreateOrUpdateItemFieldSetting(ItemFieldSettingDto input);
     }
 }

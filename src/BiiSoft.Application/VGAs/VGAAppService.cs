@@ -122,7 +122,7 @@ namespace BiiSoft.VGAs
             var items = new List<FindVGADto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindVGADto
                 {
                     Id = l.Id,
@@ -132,9 +132,14 @@ namespace BiiSoft.VGAs
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindVGADto> { TotalCount = totalCount, Items = items };
@@ -199,7 +204,7 @@ namespace BiiSoft.VGAs
             var items = new List<VGAListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new VGAListDto
                 {
                     Id = l.Id,
@@ -217,9 +222,14 @@ namespace BiiSoft.VGAs
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<VGAListDto> { TotalCount = totalCount, Items = items };

@@ -122,7 +122,7 @@ namespace BiiSoft.FieldBs
             var items = new List<FindFieldBDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindFieldBDto
                 {
                     Id = l.Id,
@@ -132,9 +132,14 @@ namespace BiiSoft.FieldBs
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindFieldBDto> { TotalCount = totalCount, Items = items };
@@ -199,7 +204,7 @@ namespace BiiSoft.FieldBs
             var items = new List<FieldBListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FieldBListDto
                 {
                     Id = l.Id,
@@ -217,9 +222,14 @@ namespace BiiSoft.FieldBs
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FieldBListDto> { TotalCount = totalCount, Items = items };

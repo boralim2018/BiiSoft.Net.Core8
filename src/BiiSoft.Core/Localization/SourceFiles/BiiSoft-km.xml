@@ -760,5 +760,6 @@
 		<text name="SpecificUser">អ្នកប្រើប្រាស់ជាក់លាក់</text>
 		<text name="AdvanceSetting">កំណត់ផ្សេងៗ</text>
 		<text name="AccountSetting">កំណត់គណនី</text>
+		<text name="ItemFieldSetting">កំណត់លក្ខណៈទំនិញ</text>
 	</texts>
 </localizationDictionary>

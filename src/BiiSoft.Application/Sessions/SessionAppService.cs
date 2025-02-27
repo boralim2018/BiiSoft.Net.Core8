@@ -7,6 +7,7 @@ using Abp.Auditing;
 using Abp.Domain.Repositories;
 using BiiSoft.Branches;
 using BiiSoft.Items;
+using BiiSoft.Items.Dto;
 using BiiSoft.Sessions.Dto;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,13 +17,16 @@ namespace BiiSoft.Sessions
     {
         private readonly IRepository<CompanyGeneralSetting, long> _companyGeneralSettingRepository;
         private readonly IRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
+        private readonly IBiiSoftRepository<ItemSetting, Guid> _itemSettingRepository;
         private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
 
         public SessionAppService(
+            IBiiSoftRepository<ItemSetting, Guid> itemSettingRepository,
             IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             IRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
             IRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository)
         {
+            _itemSettingRepository = itemSettingRepository;
             _itemFieldSettingRepository = itemFieldSettingRepository;
             _companyGeneralSettingRepository = companyGeneralSettingRepository;
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
@@ -61,7 +65,7 @@ namespace BiiSoft.Sessions
                                                RoundTotalDigits = s.RoundTotalDigits,
                                                ContactAddressLevel = s.ContactAddressLevel
                                            })
-                                           .FirstAsync();
+                                           .FirstOrDefaultAsync();
 
                 output.AdvanceSetting = await _companyAdvanceSettingRepository.GetAll()
                                            .AsNoTracking()
@@ -74,11 +78,15 @@ namespace BiiSoft.Sessions
                                                CustomAccountCodeEnable = s.CustomAccountCodeEnable,
                                                ClassEnable = s.ClassEnable
                                            })
-                                           .FirstAsync();
+                                           .FirstOrDefaultAsync();
 
-                var setting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
+                var setting = await _itemSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
 
-                output.ItemFieldSetting = ObjectMapper.Map<ItemFieldSettingDto>(setting);
+                output.ItemSetting = ObjectMapper.Map<ItemSettingDto>(setting);
+
+                var fieldSetting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
+
+                output.ItemFieldSetting = ObjectMapper.Map<ItemFieldSettingDto>(fieldSetting);
 
             }
 

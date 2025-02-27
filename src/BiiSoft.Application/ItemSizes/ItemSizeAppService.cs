@@ -122,7 +122,7 @@ namespace BiiSoft.ItemSizes
             var items = new List<FindItemSizeDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindItemSizeDto
                 {
                     Id = l.Id,
@@ -132,9 +132,14 @@ namespace BiiSoft.ItemSizes
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindItemSizeDto> { TotalCount = totalCount, Items = items };
@@ -199,7 +204,7 @@ namespace BiiSoft.ItemSizes
             var items = new List<ItemSizeListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new ItemSizeListDto
                 {
                     Id = l.Id,
@@ -217,9 +222,14 @@ namespace BiiSoft.ItemSizes
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<ItemSizeListDto> { TotalCount = totalCount, Items = items };

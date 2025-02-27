@@ -25,19 +25,7 @@ namespace BiiSoft.Dtos
         public SortMode SortMode { get; set; } = SortMode.ASC;
         public string GetOrdering()
         {
-            var sortField = MapSortField();
-
-            return string.IsNullOrWhiteSpace(sortField) ? "" : sortField + " " + SortMode.ToString();
-        }
-
-        protected virtual string MapSortField()
-        {
-            return SortField switch
-            {
-                "CreatorUserName" => "CreatorUser.UserName",
-                "LastModifierUserName" => "LastModifierUser.UserName",
-                _ => SortField
-            };
+            return string.IsNullOrWhiteSpace(SortField) ? "" : SortField + " " + SortMode.ToString();
         }
 
     }

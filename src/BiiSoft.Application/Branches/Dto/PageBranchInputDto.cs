@@ -12,14 +12,7 @@ namespace BiiSoft.Branches.Dto
 {
     public class PageBranchInputDto : PageAuditedAcitveSortFilterInputDto
     {
-        protected override string MapSortField()
-        {
-            return SortField switch
-            {
-                "SharingName" => "Sharing",
-                _ => base.MapSortField()
-            };
-        }
+        
     }
 
     public class ExportExcelBranchInputDto : PageBranchInputDto

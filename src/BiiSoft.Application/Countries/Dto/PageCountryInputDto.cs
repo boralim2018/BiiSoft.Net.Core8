@@ -13,14 +13,6 @@ namespace BiiSoft.Countries.Dto
     {
         public FilterInputDto<long> Currencies { get; set; }
 
-        protected override string MapSortField()
-        {
-            return SortField switch
-            {
-                "CurrencyCode" => "Currency.Code",
-                _ => base.MapSortField()
-            };
-        }
     }
 
     public class ExportExcelCountryInputDto : PageCountryInputDto

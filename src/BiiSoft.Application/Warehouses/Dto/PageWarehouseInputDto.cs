@@ -9,14 +9,6 @@ namespace BiiSoft.Warehouses.Dto
     {
         public FilterInputDto<Guid> BranchFilter { get; set; }
 
-        protected override string MapSortField()
-        {
-            return SortField switch
-            {
-                "SharingName" => "Sharing",
-                _ => base.MapSortField()
-            };
-        }
     }
 
     public class FindWarehouseInputDto : PageWarehouseInputDto

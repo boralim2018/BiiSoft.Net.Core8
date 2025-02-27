@@ -121,7 +121,7 @@ namespace BiiSoft.Items.Series
             var items = new List<FindItemSeriesDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindItemSeriesDto
                 {
                     Id = l.Id,
@@ -131,9 +131,14 @@ namespace BiiSoft.Items.Series
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindItemSeriesDto> { TotalCount = totalCount, Items = items };
@@ -198,7 +203,7 @@ namespace BiiSoft.Items.Series
             var items = new List<ItemSeriesListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new ItemSeriesListDto
                 {
                     Id = l.Id,
@@ -216,9 +221,14 @@ namespace BiiSoft.Items.Series
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<ItemSeriesListDto> { TotalCount = totalCount, Items = items };

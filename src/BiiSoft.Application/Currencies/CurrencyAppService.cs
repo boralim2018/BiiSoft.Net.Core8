@@ -120,7 +120,7 @@ namespace BiiSoft.Currencies
             var items = new List<FindCurrencyDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindCurrencyDto
                 {
                     Id = l.Id,
@@ -132,9 +132,14 @@ namespace BiiSoft.Currencies
                     IsDefault = l.IsDefault
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindCurrencyDto> { TotalCount = totalCount, Items = items };
@@ -200,7 +205,7 @@ namespace BiiSoft.Currencies
             var items = new List<CurrencyListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new CurrencyListDto
                 {
                     Id = l.Id,
@@ -218,9 +223,14 @@ namespace BiiSoft.Currencies
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<CurrencyListDto> { TotalCount = totalCount, Items = items };

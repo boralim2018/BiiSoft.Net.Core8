@@ -111,7 +111,7 @@ namespace BiiSoft.ChartOfAccounts
             {
                 var isDefaultLanguage = await IsDefaultLagnuageAsync();
 
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindChartOfAccountDto
                 {
                     Id = l.Id,
@@ -124,9 +124,14 @@ namespace BiiSoft.ChartOfAccounts
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindChartOfAccountDto> { TotalCount = totalCount, Items = items };
@@ -210,7 +215,7 @@ namespace BiiSoft.ChartOfAccounts
             var items = new List<ChartOfAccountListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new ChartOfAccountListDto
                 {
                     Id = l.Id,
@@ -233,9 +238,14 @@ namespace BiiSoft.ChartOfAccounts
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<ChartOfAccountListDto> { TotalCount = totalCount, Items = items };

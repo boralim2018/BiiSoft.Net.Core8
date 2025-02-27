@@ -760,5 +760,6 @@
 		<text name="SpecificUser">Specific User</text>
 		<text name="AdvanceSetting">Advance Setting</text>
 		<text name="AccountSetting">Account Setting</text>
+		<text name="ItemFieldSetting">Item Field Setting</text>
 	</texts>
 </localizationDictionary>

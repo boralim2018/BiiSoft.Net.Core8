@@ -9,10 +9,12 @@ using BiiSoft.Authorization;
 using BiiSoft.Authorization.Users;
 using BiiSoft.BFiles;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Branches;
 using BiiSoft.ContactInfo;
 using BiiSoft.Entities;
 using BiiSoft.Enums;
 using BiiSoft.Excels;
+using BiiSoft.Extensions;
 using BiiSoft.Items.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,24 +31,36 @@ namespace BiiSoft.Items
     {
         private readonly IItemManager _itemManager;
         private readonly IBiiSoftRepository<Item, Guid> _itemRepository;
+        private readonly IBiiSoftRepository<ItemSetting, Guid> _itemSettingRepository;
+        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
         private readonly IContactAddressManager _contactAddressManager;
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IExcelManager _excelManager;
+        private readonly IItemSettingManager _itemSettingManager;
+        private readonly IItemFieldSettingManager _itemFieldSettingManager;
 
         public ItemAppService(
             IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IItemManager itemManager,
+            IItemSettingManager itemSettingManager,
+            IItemFieldSettingManager itemFieldSettingManager,
             IBiiSoftRepository<Item, Guid> itemRepository,
+            IBiiSoftRepository<ItemSetting, Guid> itemSettingRepository,
+            IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             IContactAddressManager contactAddressManager,
             IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
             IBiiSoftRepository<User, long> userRepository)
         {
             _itemManager=itemManager;
-            _itemRepository=itemRepository;
-            _contactAddressManager=contactAddressManager;
+            _itemSettingManager = itemSettingManager;
+            _itemFieldSettingManager = itemFieldSettingManager;
+            _itemRepository =itemRepository;
+            _itemSettingRepository = itemSettingRepository;
+            _itemFieldSettingRepository = itemFieldSettingRepository;
+            _contactAddressManager =contactAddressManager;
             _contactAddressRepository=contactAddressRepository;
             _userRepository=userRepository;
             _unitOfWorkManager=unitOfWorkManager;
@@ -170,7 +184,7 @@ namespace BiiSoft.Items
             var items = new List<FindItemDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindItemDto
                 {
                     Id = l.Id,
@@ -180,9 +194,14 @@ namespace BiiSoft.Items
                     IsActive = l.IsActive
                  });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindItemDto> { TotalCount = totalCount, Items = items };
@@ -389,7 +408,7 @@ namespace BiiSoft.Items
             var items = new List<ItemListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new ItemListDto
                 {
                     Id = l.Id,
@@ -452,9 +471,14 @@ namespace BiiSoft.Items
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : ""   
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<ItemListDto> { TotalCount = totalCount, Items = items };
@@ -513,5 +537,52 @@ namespace BiiSoft.Items
             CheckErrors(await _itemManager.UpdateAsync(entity));          
         }
 
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ChangeSetting)]
+        public async Task<ItemSettingDto> GetItemSetting()
+        {
+            var setting = await _itemSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
+            return ObjectMapper.Map<ItemSettingDto>(setting);
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ChangeSetting)]
+        public async Task<Guid> CreateOrUpdateItemSetting(ItemSettingDto input)
+        {
+            var entity = MapEntity<ItemSetting, Guid>(input);
+
+            if (input.Id.IsNullOrEmpty())
+            {
+                CheckErrors(await _itemSettingManager.InsertAsync(entity));
+            }
+            else
+            {
+                CheckErrors(await _itemSettingManager.UpdateAsync(entity));
+            }
+
+            return entity.Id;
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ChangeSetting)]
+        public async Task<ItemFieldSettingDto> GetItemFieldSetting()
+        {
+            var setting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
+            return ObjectMapper.Map<ItemFieldSettingDto>(setting);
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ChangeSetting)]
+        public async Task<Guid> CreateOrUpdateItemFieldSetting(ItemFieldSettingDto input)
+        {
+            var entity = MapEntity<ItemFieldSetting, Guid>(input);
+
+            if (input.Id.IsNullOrEmpty())
+            {
+                CheckErrors(await _itemFieldSettingManager.InsertAsync(entity));
+            }
+            else
+            {
+                CheckErrors(await _itemFieldSettingManager.UpdateAsync(entity));
+            }
+
+            return entity.Id;
+        }
     }
 }

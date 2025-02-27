@@ -109,7 +109,7 @@ namespace BiiSoft.SangkatCommunes
             var items = new List<FindSangkatCommuneDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindSangkatCommuneDto
                 {
                     Id = l.Id,
@@ -122,9 +122,14 @@ namespace BiiSoft.SangkatCommunes
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindSangkatCommuneDto> { TotalCount = totalCount, Items = items };
@@ -209,7 +214,7 @@ namespace BiiSoft.SangkatCommunes
             var items = new List<SangkatCommuneListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new SangkatCommuneListDto
                 {
                     Id = l.Id,
@@ -231,9 +236,14 @@ namespace BiiSoft.SangkatCommunes
                     KhanDistrictName = !l.KhanDistrictId.HasValue ? "" : isDefaultLanguage ? l.KhanDistrict.Name : l.KhanDistrict.DisplayName,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<SangkatCommuneListDto> { TotalCount = totalCount, Items = items };

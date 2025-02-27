@@ -106,7 +106,7 @@ namespace BiiSoft.KhanDistricts
             var items = new List<FindKhanDistrictDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindKhanDistrictDto
                 {
                     Id = l.Id,
@@ -118,9 +118,14 @@ namespace BiiSoft.KhanDistricts
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindKhanDistrictDto> { TotalCount = totalCount, Items = items };
@@ -200,7 +205,7 @@ namespace BiiSoft.KhanDistricts
             var items = new List<KhanDistrictListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new KhanDistrictListDto
                 {
                     Id = l.Id,
@@ -221,9 +226,14 @@ namespace BiiSoft.KhanDistricts
                     CityProvinceName = !l.CityProvinceId.HasValue ? "" : isDefaultLanguage ? l.CityProvince.Name : l.CityProvince.DisplayName
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<KhanDistrictListDto> { TotalCount = totalCount, Items = items };

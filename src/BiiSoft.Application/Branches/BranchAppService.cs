@@ -133,7 +133,7 @@ namespace BiiSoft.Branches
             var items = new List<FindBranchDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindBranchDto
                 {
                     Id = l.Id,
@@ -145,9 +145,14 @@ namespace BiiSoft.Branches
                     IsDefault = l.IsDefault
                  });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindBranchDto> { TotalCount = totalCount, Items = items };
@@ -270,7 +275,7 @@ namespace BiiSoft.Branches
             var items = new List<BranchListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new BranchListDto
                 {
                     Id = l.Id,
@@ -294,9 +299,14 @@ namespace BiiSoft.Branches
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : ""            
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<BranchListDto> { TotalCount = totalCount, Items = items };

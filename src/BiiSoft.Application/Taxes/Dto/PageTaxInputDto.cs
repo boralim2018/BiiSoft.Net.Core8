@@ -11,15 +11,7 @@ namespace BiiSoft.Taxes.Dto
 {
     public class PageTaxInputDto : PageAuditedAcitveSortFilterInputDto
     {
-        protected override string MapSortField()
-        {
-            return SortField switch
-            {
-                "PurchaseAccountName" => "PurchaseAccount.Name",
-                "SaleAccountName" => "SaleAccount.Name",
-                _ => base.MapSortField()
-            };
-        }
+        
     }
 
     public class ExportExcelTaxInputDto : PageTaxInputDto

@@ -15,16 +15,6 @@ namespace BiiSoft.SangkatCommunes.Dto
         public FilterInputDto<Guid?> CityProvinces { get; set; }
         public FilterInputDto<Guid?> KhanDistricts { get; set; }
 
-        protected override string MapSortField()
-        {
-            return SortField switch
-            {
-                "CountryName" => "Country.Name",
-                "CityProvinceName" => "CityProvince.Name",
-                "KhanDistrictName" => "KhanDistrict.Name",
-                _ => base.MapSortField()
-            };
-        }
     }
 
     public class ExportExcelSangkatCommuneInputDto : PageSangkatCommuneInputDto

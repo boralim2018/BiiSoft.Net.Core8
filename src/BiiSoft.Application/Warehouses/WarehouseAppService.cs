@@ -131,7 +131,7 @@ namespace BiiSoft.Warehouses
             var items = new List<FindWarehouseDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new FindWarehouseDto
                 {
                     Id = l.Id,
@@ -141,9 +141,14 @@ namespace BiiSoft.Warehouses
                     IsActive = l.IsActive,
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<FindWarehouseDto> { TotalCount = totalCount, Items = items };
@@ -223,7 +228,7 @@ namespace BiiSoft.Warehouses
             var items = new List<WarehouseListDto>();
             if (totalCount > 0)
             {
-                var selectQuery = query.OrderBy(input.GetOrdering())
+                var selectQuery = query
                 .Select(l => new WarehouseListDto
                 {
                     Id = l.Id,
@@ -243,9 +248,14 @@ namespace BiiSoft.Warehouses
                     LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
                 });
 
-                if (input.UsePagination) selectQuery = selectQuery.PageBy(input);
-
-                items = await selectQuery.ToListAsync();
+                if (input.UsePagination)
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).PageBy(input).ToListAsync();
+                }
+                else
+                {
+                    items = await selectQuery.OrderBy(input.GetOrdering()).ToListAsync();
+                }
             }
 
             return new PagedResultDto<WarehouseListDto> { TotalCount = totalCount, Items = items };
