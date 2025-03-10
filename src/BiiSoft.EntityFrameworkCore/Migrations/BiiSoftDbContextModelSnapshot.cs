@@ -3466,9 +3466,6 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("AreaRequired")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("BatchNoRequired")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("BatteryRequired")
                         .HasColumnType("boolean");
 
@@ -3491,9 +3488,6 @@ namespace BiiSoft.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<bool>("DiameterRequired")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("ExpiredRequired")
                         .HasColumnType("boolean");
 
                     b.Property<string>("FieldALabel")
@@ -3524,9 +3518,6 @@ namespace BiiSoft.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("HeightRequired")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("InventoryStatusRequired")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsActive")
@@ -3563,9 +3554,6 @@ namespace BiiSoft.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("ScreenRequired")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("SerialRequired")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("SeriesRequired")

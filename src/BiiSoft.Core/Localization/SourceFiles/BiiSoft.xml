@@ -761,5 +761,23 @@
 		<text name="AdvanceSetting">Advance Setting</text>
 		<text name="AccountSetting">Account Setting</text>
 		<text name="ItemFieldSetting">Item Field Setting</text>
+		<text name="ChangeSetting">Change Setting</text>
+		<text name="Use_">Use {0}</text>
+		<text name="Required_">Required {0}</text>
+		<text name="CodeFormula">Code Formula</text>
+		<text name="Width">Width</text>
+		<text name="Height">Height</text>
+		<text name="Length">Length</text>
+		<text name="Diameter">Diameter</text>
+		<text name="Area">Area</text>
+		<text name="Volume">Volume</text>
+		<text name="Serial">Serial</text>
+		<text name="BatchNo">Batch No</text>
+		<text name="Expired">Expired</text>
+		<text name="InventoryStatus">Inventory Status</text>
+		<text name="ReorderStock">Reorder Stock</text>
+		<text name="MaxStock">Max Stock</text>
+		<text name="MinStock">Min Stock</text>
+		<text name="Label_">{0} Label</text>
 	</texts>
 </localizationDictionary>

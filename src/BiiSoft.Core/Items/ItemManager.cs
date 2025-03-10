@@ -715,7 +715,7 @@ namespace BiiSoft.Items
                         if (itemSetting.UseSeries)
                         {
                             var itemSeriesName = worksheet.GetString(i, 12);
-                            if(itemSetting.SerialRequired) ValidateInput(itemSeriesName, L("ItemSeries"), rowMessage);
+                            if(itemSetting.SeriesRequired) ValidateInput(itemSeriesName, L("ItemSeries"), rowMessage);
                             if (!itemSeriesName.IsNullOrEmpty())
                             {
                                 if (!itemSeriesDic.ContainsKey(itemSeriesName)) InvalidException(L("ItemSeries"), rowMessage);
@@ -916,17 +916,13 @@ namespace BiiSoft.Items
                         if (!volumeUnitName.IsNullOrEmpty()) volumeUnit = Enum.Parse<VolumeUnit>(volumeUnitName);
 
                         bool? trackSerial = worksheet.GetBoolOrNull(i, 39);                       
-                        if (itemSetting.SerialRequired && trackSerial == null) InputException(L("TrackSerial"), rowMessage);
-
+                     
                         bool? trackExpired = worksheet.GetBoolOrNull(i, 40);
-                        if (itemSetting.ExpiredRequired && trackExpired == null) InputException(L("TrackExpired"), rowMessage);
-
+                       
                         bool? trackBatchNo = worksheet.GetBoolOrNull(i, 41);
-                        if (itemSetting.BatchNoRequired && trackBatchNo == null) InputException(L("TrackBatchNo"), rowMessage);
-
+                       
                         bool? trackInventoryStatus = worksheet.GetBoolOrNull(i, 42);
-                        if (itemSetting.BatchNoRequired && trackInventoryStatus == null) InputException(L("TrackInventoryStatus"), rowMessage);
-
+                       
                         decimal reorderStock = worksheet.GetDecimal(i, 43);
                         if (itemSetting.ReorderStockRequired && reorderStock == 0) InputException(L("ReorderStock"), rowMessage);
 

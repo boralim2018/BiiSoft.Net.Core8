@@ -132,13 +132,6 @@ namespace BiiSoft.Migrations
                 defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
-                name: "BatchNoRequired",
-                table: "BiiItemSettings",
-                type: "boolean",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddColumn<bool>(
                 name: "BatteryRequired",
                 table: "BiiItemSettings",
                 type: "boolean",
@@ -175,13 +168,6 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.AddColumn<bool>(
                 name: "DiameterRequired",
-                table: "BiiItemSettings",
-                type: "boolean",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddColumn<bool>(
-                name: "ExpiredRequired",
                 table: "BiiItemSettings",
                 type: "boolean",
                 nullable: false,
@@ -255,13 +241,6 @@ namespace BiiSoft.Migrations
                 defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
-                name: "InventoryStatusRequired",
-                table: "BiiItemSettings",
-                type: "boolean",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddColumn<bool>(
                 name: "ItemGroupRequired",
                 table: "BiiItemSettings",
                 type: "boolean",
@@ -319,13 +298,6 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.AddColumn<bool>(
                 name: "ScreenRequired",
-                table: "BiiItemSettings",
-                type: "boolean",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddColumn<bool>(
-                name: "SerialRequired",
                 table: "BiiItemSettings",
                 type: "boolean",
                 nullable: false,
@@ -613,10 +585,6 @@ namespace BiiSoft.Migrations
                 table: "BiiItemSettings");
 
             migrationBuilder.DropColumn(
-                name: "BatchNoRequired",
-                table: "BiiItemSettings");
-
-            migrationBuilder.DropColumn(
                 name: "BatteryRequired",
                 table: "BiiItemSettings");
 
@@ -638,10 +606,6 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.DropColumn(
                 name: "DiameterRequired",
-                table: "BiiItemSettings");
-
-            migrationBuilder.DropColumn(
-                name: "ExpiredRequired",
                 table: "BiiItemSettings");
 
             migrationBuilder.DropColumn(
@@ -685,10 +649,6 @@ namespace BiiSoft.Migrations
                 table: "BiiItemSettings");
 
             migrationBuilder.DropColumn(
-                name: "InventoryStatusRequired",
-                table: "BiiItemSettings");
-
-            migrationBuilder.DropColumn(
                 name: "ItemGroupRequired",
                 table: "BiiItemSettings");
 
@@ -722,10 +682,6 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ScreenRequired",
-                table: "BiiItemSettings");
-
-            migrationBuilder.DropColumn(
-                name: "SerialRequired",
                 table: "BiiItemSettings");
 
             migrationBuilder.DropColumn(

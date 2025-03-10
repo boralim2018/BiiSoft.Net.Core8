@@ -56,11 +56,7 @@ namespace BiiSoft.Items
         public bool DiameterRequired { get; private set; }
         public bool AreaRequired { get; private set; }
         public bool VolumeRequired { get; private set; }
-        public bool SerialRequired { get; private set; }
-        public bool ExpiredRequired { get; private set; }
-        public bool BatchNoRequired { get; private set; }
-        public bool InventoryStatusRequired { get; private set; }
-
+     
         public bool ReorderStockRequired { get; private set; }
         public bool MinStockRequired { get; private set; }
         public bool MaxStockRequired { get; private set; }
@@ -147,10 +143,6 @@ namespace BiiSoft.Items
             bool diameterRequired,
             bool areaRequired,
             bool volumeRequired,
-            bool serialRequired,
-            bool expiredRequired,
-            bool batchNoRequired,
-            bool inventoryStatusRequired,
             bool reorderStockRequired,
             bool maxStockRequired,
             bool minStockRequired,
@@ -221,10 +213,6 @@ namespace BiiSoft.Items
                 DiameterRequired = diameterRequired,
                 AreaRequired = areaRequired,
                 VolumeRequired = volumeRequired,
-                SerialRequired = serialRequired,
-                ExpiredRequired = expiredRequired,
-                BatchNoRequired = batchNoRequired,
-                InventoryStatusRequired = inventoryStatusRequired,
                 ReorderStockRequired = reorderStockRequired,
                 MaxStockRequired = maxStockRequired,
                 MinStockRequired = minStockRequired,
@@ -295,10 +283,6 @@ namespace BiiSoft.Items
             bool diameterRequired,
             bool areaRequired,
             bool volumeRequired,
-            bool serialRequired,
-            bool expiredRequired,
-            bool batchNoRequired,
-            bool inventoryStatusRequired,
             bool reorderStockRequired,
             bool maxStockRequired,
             bool minStockRequired,
@@ -366,10 +350,6 @@ namespace BiiSoft.Items
             DiameterRequired = diameterRequired;
             AreaRequired = areaRequired;
             VolumeRequired = volumeRequired;
-            SerialRequired = serialRequired;
-            ExpiredRequired = expiredRequired;
-            BatchNoRequired = batchNoRequired;
-            InventoryStatusRequired = inventoryStatusRequired;
             ReorderStockRequired = reorderStockRequired;
             MaxStockRequired = maxStockRequired;
             MinStockRequired = minStockRequired;

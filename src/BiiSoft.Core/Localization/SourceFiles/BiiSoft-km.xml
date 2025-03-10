@@ -761,5 +761,23 @@
 		<text name="AdvanceSetting">កំណត់ផ្សេងៗ</text>
 		<text name="AccountSetting">កំណត់គណនី</text>
 		<text name="ItemFieldSetting">កំណត់លក្ខណៈទំនិញ</text>
+		<text name="ChangeSetting">កែប្រែការកំណត់</text>
+		<text name="Use_">ប្រើ {0}</text>
+		<text name="Required_">ត្រូវបំពេញ {0}</text>
+		<text name="CodeFormula">រូបមន្ដកំណត់លេខកូដ</text>
+		<text name="Width">ទទឹង</text>
+		<text name="Height">កម្ពស់</text>
+		<text name="Length">ប្រវែង</text>
+		<text name="Diameter">អង្កត់ផ្ចឹត</text>
+		<text name="Area">ផ្ទៃ</text>
+		<text name="Volume">ចំនុះ</text>
+		<text name="Serial">លេខតួ</text>
+		<text name="BatchNo">លេខផលិត</text>
+		<text name="Expired">ផុតកំណត់</text>
+		<text name="InventoryStatus">ស្ថានភាពស្ដុក</text>
+		<text name="ReorderStock">ទិញបំពេញស្តុក</text>
+		<text name="MaxStock">ស្តុកអតិបរមា</text>
+		<text name="MinStock">ស្តុកអប្បរមា</text>
+		<text name="Label_">ឈ្មោះ {0}</text>
 	</texts>
 </localizationDictionary>
