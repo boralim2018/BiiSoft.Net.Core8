@@ -18,6 +18,7 @@ namespace BiiSoft.Columns
         CheckBox = 6,
         WrapText = 7,
         Lookup = 8,
+        List = 9,
     }
 
     //SummaryFunction Custom

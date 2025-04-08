@@ -161,8 +161,15 @@ namespace BiiSoft
             if (entity == null) NotFoundException(InstanceName);
             ValidateDeletable(entity);
 
+            await BeforeInstanceDeleteAsync(entity);
+
             await _repository.DeleteAsync(entity);
             return IdentityResult.Success;
+        }
+
+        protected virtual async Task BeforeInstanceDeleteAsync(TEntity entity)
+        {
+            await Task.Run(() => { });
         }
 
         protected abstract void UpdateInstance(TEntity input, TEntity entity);
@@ -171,7 +178,7 @@ namespace BiiSoft
             if (input is ICanModifyEntity entity && entity.CannotEdit) NotEditableException(InstanceName, message);
         }
 
-        protected virtual async Task BeforeInstanceUpdate(TEntity input, TEntity entity)
+        protected virtual async Task BeforeInstanceUpdateAsync(TEntity input, TEntity entity)
         {
             await Task.Run(() => { });
         }
@@ -184,7 +191,7 @@ namespace BiiSoft
             if(entity == null) NotFoundException(InstanceName);
             ValidateEditable(entity);
 
-            await BeforeInstanceUpdate(input, entity);
+            await BeforeInstanceUpdateAsync(input, entity);
 
             UpdateInstance(input, entity);
 
@@ -207,16 +214,19 @@ namespace BiiSoft
                                    .Select(s => new
                                    {
                                        First = s.Where(r => ((INoEntity)r).No < no).OrderBy(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
-                                       Pervious = s.Where(r => ((INoEntity)r).No < no).OrderByDescending(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
+                                       Previous = s.Where(r => ((INoEntity)r).No < no).OrderByDescending(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
                                        Next = s.Where(r => ((INoEntity)r).No > no).OrderBy(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
                                        Last = s.Where(r => ((INoEntity)r).No > no).OrderByDescending(o => ((INoEntity)o).No).Select(n => n.Id).FirstOrDefault(),
                                    })
                                    .FirstOrDefaultAsync();
 
-                if (record != null && !record.First.Equals(Guid.Empty)) result.FirstId = record.First;
-                if (record != null && !record.Pervious.Equals(Guid.Empty)) result.PreviousId = record.Pervious;
-                if (record != null && !record.Next.Equals(Guid.Empty)) result.NextId = record.Next;
-                if (record != null && !record.Last.Equals(Guid.Empty)) result.LastId = record.Last;
+                if (record != null)
+                {
+                    if (!record.First.Equals(Guid.Empty)) result.FirstId = record.First;
+                    if (!record.Previous.Equals(Guid.Empty)) result.PreviousId = record.Previous;
+                    if (!record.Next.Equals(Guid.Empty)) result.NextId = record.Next;
+                    if (!record.Last.Equals(Guid.Empty)) result.LastId = record.Last;
+                }
             }
             else if (typeof(TPrimaryKey) == typeof(long) || typeof(TPrimaryKey) == typeof(int))
             {
@@ -229,16 +239,19 @@ namespace BiiSoft
                                .Select(s => new
                                {
                                    First = s.Where(r => ((IEntity<long>) r).Id < dto.Id).OrderBy(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
-                                   Pervious = s.Where(r => ((IEntity<long>) r).Id < dto.Id).OrderByDescending(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
+                                   Previous = s.Where(r => ((IEntity<long>) r).Id < dto.Id).OrderByDescending(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
                                    Next = s.Where(r => ((IEntity<long>) r).Id > dto.Id).OrderBy(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
                                    Last = s.Where(r => ((IEntity<long>) r).Id > dto.Id).OrderByDescending(o => o.Id).Select(r => ((IEntity<long>)r).Id).FirstOrDefault(),
                                })
                                .FirstOrDefaultAsync();
 
-                if (record != null && record.First > 0) dto.FirstId = record.First;
-                if (record != null && record.Pervious > 0) dto.PreviousId = record.Pervious;
-                if (record != null && record.Next > 0) dto.NextId = record.Next;
-                if (record != null && record.Last > 0) dto.LastId = record.Last;
+                if (record != null)
+                {
+                    if (record.First > 0) dto.FirstId = record.First;
+                    if (record.Previous > 0) dto.PreviousId = record.Previous;
+                    if (record.Next > 0) dto.NextId = record.Next;
+                    if (record.Last > 0) dto.LastId = record.Last;
+                }
             }
 
         }
@@ -404,6 +417,41 @@ namespace BiiSoft
                 var find = await _repository.GetAll().AsNoTracking().FirstOrDefaultAsync(s => !s.Id.Equals(input.Id) && (s.Name == input.Name || s.DisplayName == input.DisplayName));
                 if (find != null) DuplicateNameException(find.Name == input.Name ? input.Name : input.DisplayName);
             }
+        }
+    }
+
+    public abstract class BiiSoftActiveValidateServiceBase<TEntity, TPrimaryKey> : BiiSoftValidateServiceBase<TEntity, TPrimaryKey>, IActiveValidateServiceBase<TEntity, TPrimaryKey>
+       where TEntity : ActiveEntity<TPrimaryKey> where TPrimaryKey : struct
+    {
+        public BiiSoftActiveValidateServiceBase(IBiiSoftRepository<TEntity, TPrimaryKey> repository) : base(repository)
+        {
+
+        }
+
+        public async Task<IdentityResult> EnableAsync(IUserEntity<TPrimaryKey> input)
+        {
+            var entity = await FindAsync(input.Id);
+            if (entity == null) NotFoundException(InstanceName);
+
+            entity.Enable(true);
+            entity.LastModifierUserId = input.UserId;
+            entity.LastModificationTime = Clock.Now;
+
+            await _repository.UpdateAsync(entity);
+            return IdentityResult.Success;
+        }
+
+        public async Task<IdentityResult> DisableAsync(IUserEntity<TPrimaryKey> input)
+        {
+            var entity = await FindAsync(input.Id);
+            if (entity == null) NotFoundException(InstanceName);
+
+            entity.Enable(false);
+            entity.LastModifierUserId = input.UserId;
+            entity.LastModificationTime = Clock.Now;
+
+            await _repository.UpdateAsync(entity);
+            return IdentityResult.Success;
         }
     }
 

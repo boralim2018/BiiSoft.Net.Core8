@@ -191,7 +191,14 @@
         public const string Pages_Setup_Items_List_ExportExcel = "Pages.Setup.Items.List.ExportExcel";
         public const string Pages_Setup_Items_List_Enable = "Pages.Setup.Items.List.Enable";
         public const string Pages_Setup_Items_List_Disable = "Pages.Setup.Items.List.Disable";
-       
+
+        public const string Pages_Setup_Items_ItemCodeFormulas = "Pages.Setup.Items.ItemCodeFormulas";
+        public const string Pages_Setup_Items_ItemCodeFormulas_Create = "Pages.Setup.Items.ItemCodeFormulas.Create";
+        public const string Pages_Setup_Items_ItemCodeFormulas_View = "Pages.Setup.Items.ItemCodeFormulas.View";
+        public const string Pages_Setup_Items_ItemCodeFormulas_Edit = "Pages.Setup.Items.ItemCodeFormulas.Edit";
+        public const string Pages_Setup_Items_ItemCodeFormulas_Delete = "Pages.Setup.Items.ItemCodeFormulas.Delete";
+        public const string Pages_Setup_Items_ItemCodeFormulas_Enable = "Pages.Setup.Items.ItemCodeFormulas.Enable";
+        public const string Pages_Setup_Items_ItemCodeFormulas_Disable = "Pages.Setup.Items.ItemCodeFormulas.Disable";
 
         public const string Pages_Setup_Items_Units = "Pages.Setup.Units";
         public const string Pages_Setup_Items_Units_Create = "Pages.Setup.Items.Units.Create";

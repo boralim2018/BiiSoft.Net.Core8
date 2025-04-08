@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20250310072309_UpdateCompanyAndItemFieldSettings")]
+    [Migration("20250402042238_UpdateCompanyAndItemFieldSettings")]
     partial class UpdateCompanyAndItemFieldSettings
     {
         /// <inheritdoc />
@@ -3138,14 +3138,17 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ItemTypes")
-                        .HasColumnType("text");
-
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
 
                     b.Property<string>("Prefix")
                         .HasColumnType("text");
@@ -3166,6 +3169,50 @@ namespace BiiSoft.Migrations
                     b.HasIndex("LastModifierUserId");
 
                     b.ToTable("BiiItemCodeFormulas");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemCodeFormulaItemType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("ItemCodeFormulaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ItemType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("ItemCodeFormulaId");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.ToTable("BiiItemCodeFormulaItemTypes");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
@@ -5679,6 +5726,29 @@ namespace BiiSoft.Migrations
                     b.Navigation("LastModifierUser");
                 });
 
+            modelBuilder.Entity("BiiSoft.Items.ItemCodeFormulaItemType", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Items.ItemCodeFormula", "ItemCodeFormula")
+                        .WithMany("ItemTypes")
+                        .HasForeignKey("ItemCodeFormulaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("ItemCodeFormula");
+
+                    b.Navigation("LastModifierUser");
+                });
+
             modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
                 {
                     b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
@@ -6246,6 +6316,11 @@ namespace BiiSoft.Migrations
             modelBuilder.Entity("BiiSoft.Items.Item", b =>
                 {
                     b.Navigation("ItemZones");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemCodeFormula", b =>
+                {
+                    b.Navigation("ItemTypes");
                 });
 
             modelBuilder.Entity("BiiSoft.Warehouses.Warehouse", b =>

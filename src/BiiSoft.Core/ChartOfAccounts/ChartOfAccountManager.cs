@@ -77,7 +77,7 @@ namespace BiiSoft.ChartOfAccounts
             return !await _companyAdvanceSettingRepository.GetAll().AsNoTracking().Select(s => s.CustomAccountCodeEnable).FirstOrDefaultAsync();
         }
 
-        protected override async Task BeforeInstanceUpdate(ChartOfAccount input, ChartOfAccount entity)
+        protected override async Task BeforeInstanceUpdateAsync(ChartOfAccount input, ChartOfAccount entity)
         {
             var autoGenerateCode = await CheckAutoGenerateCodeAsync();
 

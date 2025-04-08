@@ -385,7 +385,7 @@ namespace BiiSoft.Items
            
             if (itemSetting == null || !itemSetting.UseCodeFormula) return;
 
-            var formula = await _itemCodeFormulaRepository.GetAll().AsNoTracking().FirstOrDefaultAsync(s => s.ItemTypes.Contains(input.ItemType));
+            var formula = await _itemCodeFormulaRepository.GetAll().Include(s => s.ItemTypes).AsNoTracking().FirstOrDefaultAsync(s => s.ItemTypes.Any(r => r.ItemType == input.ItemType));
 
             if(formula == null || formula.Type == ItemCodeFormulaType.Manual) return;
 
@@ -397,7 +397,7 @@ namespace BiiSoft.Items
 
             var latestCode = await _repository.GetAll()
                             .AsNoTracking()
-                            .Where(s => formula.ItemTypes.Contains(s.ItemType))
+                            .Where(s => formula.ItemTypes.Any(r => r.ItemType == s.ItemType))
                             .Where(s => s.Code.StartsWith(prefix))
                             .Select(s => s.Code)
                             .OrderByDescending(s => s)
@@ -413,7 +413,7 @@ namespace BiiSoft.Items
             }
         }
 
-        protected override async Task BeforeInstanceUpdate(Item input, Item entity)
+        protected override async Task BeforeInstanceUpdateAsync(Item input, Item entity)
         {
             var itemZones = await _itemZoneRepository.GetAll().AsNoTracking().Where(s => s.ItemId == input.Id).ToListAsync();
 
@@ -550,7 +550,7 @@ namespace BiiSoft.Items
             {
                 using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
                 {  
-                    itemCodeFormulas = await _itemCodeFormulaRepository.GetAll().AsNoTracking().ToListAsync();
+                    itemCodeFormulas = await _itemCodeFormulaRepository.GetAll().Include(s => s.ItemTypes).AsNoTracking().ToListAsync();
                     itemSetting = await GetItemSettingAsync();
 
                     if (itemSetting == null) InputException(L("ItemSetting"));
@@ -604,7 +604,7 @@ namespace BiiSoft.Items
                         }
                         else
                         {
-                            var formula = itemCodeFormulas.Where(s => s.ItemTypes.Contains(itemType)).FirstOrDefault();
+                            var formula = itemCodeFormulas.Where(s => s.ItemTypes.Any(r => r.ItemType == itemType)).FirstOrDefault();
 
                             if (formula == null) InputException(L("ItemCodeFormula"), rowMessage);
                             
@@ -617,7 +617,7 @@ namespace BiiSoft.Items
                                 var prefix = formula.Prefix;
 
                                 var latestCode = itemDic
-                                                .Where(s => formula.ItemTypes.Contains(s.Value.Value))
+                                                .Where(s => formula.ItemTypes.Any(r => r.ItemType == s.Value.Value))
                                                 .Where(s => s.Key.StartsWith(prefix))
                                                 .Select(s => s.Key)
                                                 .OrderByDescending(s => s)

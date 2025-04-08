@@ -200,6 +200,14 @@ namespace BiiSoft.Authorization
             itemListPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_List_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
             itemListPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_List_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
 
+            var itemCodeFormulaPage = itemPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_ItemCodeFormulas, L("ItemCodeFormulas"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
+            itemCodeFormulaPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_ItemCodeFormulas_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
+            itemCodeFormulaPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_ItemCodeFormulas_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
+            itemCodeFormulaPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_ItemCodeFormulas_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
+            itemCodeFormulaPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_ItemCodeFormulas_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
+            itemCodeFormulaPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_ItemCodeFormulas_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
+            itemCodeFormulaPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_ItemCodeFormulas_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items));
+
             var unitPage = itemPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Units, L("Units"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Units));
             unitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Units_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Units));
             unitPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_Units_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_Units));

@@ -1,24 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Abp.Localization;
 using Abp.Zero.EntityFrameworkCore;
 using BiiSoft.Authorization.Roles;
 using BiiSoft.Authorization.Users;
-using BiiSoft.MultiTenancy;
-using Abp.Localization;
-using System;
-using BiiSoft.Branches;
 using BiiSoft.BFiles;
-using BiiSoft.Locations;
-using BiiSoft.Currencies;
-using BiiSoft.ContactInfo;
+using BiiSoft.Branches;
 using BiiSoft.ChartOfAccounts;
-using BiiSoft.Taxes;
+using BiiSoft.ContactInfo;
+using BiiSoft.Currencies;
 using BiiSoft.Items;
+using BiiSoft.Locations;
+using BiiSoft.MultiTenancy;
+using BiiSoft.Taxes;
 using BiiSoft.Warehouses;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Collections.Generic;
-using BiiSoft.Enums;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore;
 
 namespace BiiSoft.EntityFrameworkCore
 {
@@ -75,6 +69,7 @@ namespace BiiSoft.EntityFrameworkCore
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemSetting> ItemSettings { get; set; }
         public DbSet<ItemCodeFormula> ItemCodeFormulas { get; set; }
+        public DbSet<ItemCodeFormulaItemType> ItemCodeFormulaItemTypes { get; set; }
         public DbSet<ItemFieldSetting> ItemFieldSettings { get; set; }
         public DbSet<ItemZone> ItemZones { get; set; }
 
@@ -458,22 +453,15 @@ namespace BiiSoft.EntityFrameworkCore
             {
             });
 
-            var itemTypeConverter = new ValueConverter<List<ItemType>, string>(
-                v => string.Join(",", v.Select(s => (int)s)), 
-                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                      .Select(e => Enum.Parse<ItemType>(e))
-                      .ToList() 
-            );
-
-            var itemTypeComparer = new ValueComparer<List<ItemType>>(
-                (c1, c2) => c1.SequenceEqual(c2), // Compare lists for equality
-                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())), // Compute a combined hash code
-                c => c.ToList() // Clone the list to avoid shared references
-            );
-
             modelBuilder.Entity<ItemCodeFormula>(e =>
             {
-                e.Property(e => e.ItemTypes).HasConversion(itemTypeConverter).Metadata.SetValueComparer(itemTypeComparer);
+                
+            });
+
+
+            modelBuilder.Entity<ItemCodeFormulaItemType>(e =>
+            {
+                e.HasOne(i => i.ItemCodeFormula).WithMany(i => i.ItemTypes).HasForeignKey(i => i.ItemCodeFormulaId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ItemFieldSetting>(e =>

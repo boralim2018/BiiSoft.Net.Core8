@@ -779,5 +779,7 @@
 		<text name="MaxStock">Max Stock</text>
 		<text name="MinStock">Min Stock</text>
 		<text name="Label_">{0} Label</text>
+		<text name="ItemCodeFormulas">Item Code Formulas</text>
+		<text name="ItemCodeFormula">Item Code Formula</text>
 	</texts>
 </localizationDictionary>

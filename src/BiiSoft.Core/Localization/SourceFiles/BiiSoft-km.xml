@@ -779,5 +779,7 @@
 		<text name="MaxStock">ស្តុកអតិបរមា</text>
 		<text name="MinStock">ស្តុកអប្បរមា</text>
 		<text name="Label_">ឈ្មោះ {0}</text>
+		<text name="ItemCodeFormulas">រូបមន្តកូដទំនិញ</text>
+		<text name="ItemCodeFormula">រូបមន្តកូដទំនិញ</text>
 	</texts>
 </localizationDictionary>

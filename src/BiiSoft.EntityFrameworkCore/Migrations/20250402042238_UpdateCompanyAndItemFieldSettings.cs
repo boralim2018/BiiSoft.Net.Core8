@@ -119,6 +119,10 @@ namespace BiiSoft.Migrations
                 name: "UseVGA",
                 table: "BiiItemFieldSettings");
 
+            migrationBuilder.DropColumn(
+                name: "ItemTypes",
+                table: "BiiItemCodeFormulas");
+
             migrationBuilder.RenameColumn(
                 name: "CodeFormalaEnable",
                 table: "BiiItemSettings",
@@ -562,6 +566,14 @@ namespace BiiSoft.Migrations
                 nullable: false,
                 defaultValue: false);
 
+            migrationBuilder.AddColumn<long>(
+                name: "No",
+                table: "BiiItemCodeFormulas",
+                type: "bigint",
+                nullable: false,
+                defaultValue: 0L)
+                .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
             migrationBuilder.AddColumn<bool>(
                 name: "TaxEnable",
                 table: "BiiCompanyAdvanceSettings",
@@ -575,11 +587,65 @@ namespace BiiSoft.Migrations
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.CreateTable(
+                name: "BiiItemCodeFormulaItemTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemType = table.Column<int>(type: "integer", nullable: false),
+                    ItemCodeFormulaId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiItemCodeFormulaItemTypes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiItemCodeFormulaItemTypes_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemCodeFormulaItemTypes_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemCodeFormulaItemTypes_BiiItemCodeFormulas_ItemCodeFor~",
+                        column: x => x.ItemCodeFormulaId,
+                        principalTable: "BiiItemCodeFormulas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulaItemTypes_CreatorUserId",
+                table: "BiiItemCodeFormulaItemTypes",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulaItemTypes_ItemCodeFormulaId",
+                table: "BiiItemCodeFormulaItemTypes",
+                column: "ItemCodeFormulaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulaItemTypes_LastModifierUserId",
+                table: "BiiItemCodeFormulaItemTypes",
+                column: "LastModifierUserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "BiiItemCodeFormulaItemTypes");
+
             migrationBuilder.DropColumn(
                 name: "AreaRequired",
                 table: "BiiItemSettings");
@@ -833,6 +899,10 @@ namespace BiiSoft.Migrations
                 table: "BiiItemSettings");
 
             migrationBuilder.DropColumn(
+                name: "No",
+                table: "BiiItemCodeFormulas");
+
+            migrationBuilder.DropColumn(
                 name: "TaxEnable",
                 table: "BiiCompanyAdvanceSettings");
 
@@ -993,6 +1063,12 @@ namespace BiiSoft.Migrations
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
+
+            migrationBuilder.AddColumn<string>(
+                name: "ItemTypes",
+                table: "BiiItemCodeFormulas",
+                type: "text",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "BiiItemGalleries",
