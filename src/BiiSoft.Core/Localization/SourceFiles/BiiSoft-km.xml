@@ -781,5 +781,8 @@
 		<text name="Label_">ឈ្មោះ {0}</text>
 		<text name="ItemCodeFormulas">រូបមន្តកូដទំនិញ</text>
 		<text name="ItemCodeFormula">រូបមន្តកូដទំនិញ</text>
+		<text name="ItemType">ប្រភេទទំនិញ</text>
+		<text name="ItemTypes">ប្រភេទទំនិញ</text>
+		<text name="Image">រូបភាព</text>
 	</texts>
 </localizationDictionary>

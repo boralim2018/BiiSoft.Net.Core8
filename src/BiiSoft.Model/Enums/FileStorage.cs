@@ -13,9 +13,10 @@ namespace BiiSoft.Enums
 
     public enum UploadSource
     {
-        CompanyLogo = 0,
-        UserProfile = 1,
-        Item = 2,
-        FormTemplate = 3
+        Attachment = 0,
+        CompanyLogo = 1,
+        UserProfile = 2,
+        Item = 3,
+        FormTemplate = 4,
     }
 }

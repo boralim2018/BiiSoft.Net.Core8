@@ -781,5 +781,8 @@
 		<text name="Label_">{0} Label</text>
 		<text name="ItemCodeFormulas">Item Code Formulas</text>
 		<text name="ItemCodeFormula">Item Code Formula</text>
+		<text name="ItemType">Item Type</text>
+		<text name="ItemTypes">Item Types</text>
+		<text name="Image">Image</text>
 	</texts>
 </localizationDictionary>
