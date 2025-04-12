@@ -13,5 +13,9 @@ namespace BiiSoft.CommonLookups
         Task<ListResultDto<NameValueDto<SubAccountType>>> GetSubAccountTypes(SubAccountTypeFilterInputDto input);
         Task<ListResultDto<NameValueDto<ItemType>>> GetItemTypes();
         Task<ListResultDto<NameValueDto<ItemCategory>>> GetItemCategories();
+        Task<ListResultDto<NameValueDto<LengthUnit>>> GetLengthUnits();
+        Task<ListResultDto<NameValueDto<WeightUnit>>> GetWeightUnits();
+        Task<ListResultDto<NameValueDto<AreaUnit>>> GetAreaUnits();
+        Task<ListResultDto<NameValueDto<VolumeUnit>>> GetVolumeUnits();
     }
 }

@@ -783,6 +783,7 @@
 		<text name="ItemCodeFormula">Item Code Formula</text>
 		<text name="ItemType">Item Type</text>
 		<text name="ItemTypes">Item Types</text>
+		<text name="ItemCategory">Item Category</text>
 		<text name="Image">Image</text>
 	</texts>
 </localizationDictionary>

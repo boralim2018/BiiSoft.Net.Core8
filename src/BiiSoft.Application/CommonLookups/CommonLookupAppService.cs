@@ -92,5 +92,56 @@ namespace BiiSoft.CommonLookups
             return new ListResultDto<NameValueDto<ItemCategory>> { Items = items };
         }
 
+        public async Task<ListResultDto<NameValueDto<LengthUnit>>> GetLengthUnits()
+        {
+            var items = new List<NameValueDto<LengthUnit>>();
+            await Task.Run(() => {
+                items = Enum.GetValues(typeof(LengthUnit))
+                             .Cast<LengthUnit>()
+                             .Select(s => new NameValueDto<LengthUnit>(s.Symbol(), s))
+                             .ToList();
+            });
+
+            return new ListResultDto<NameValueDto<LengthUnit>> { Items = items };
+        }
+
+        public async Task<ListResultDto<NameValueDto<WeightUnit>>> GetWeightUnits()
+        {
+            var items = new List<NameValueDto<WeightUnit>>();
+            await Task.Run(() => {
+                items = Enum.GetValues(typeof(WeightUnit))
+                             .Cast<WeightUnit>()
+                             .Select(s => new NameValueDto<WeightUnit>(s.Symbol(), s))
+                             .ToList();
+            });
+
+            return new ListResultDto<NameValueDto<WeightUnit>> { Items = items };
+        }
+
+        public async Task<ListResultDto<NameValueDto<AreaUnit>>> GetAreaUnits()
+        {
+            var items = new List<NameValueDto<AreaUnit>>();
+            await Task.Run(() => {
+                items = Enum.GetValues(typeof(AreaUnit))
+                             .Cast<AreaUnit>()
+                             .Select(s => new NameValueDto<AreaUnit>(s.Symbol(), s))
+                             .ToList();
+            });
+
+            return new ListResultDto<NameValueDto<AreaUnit>> { Items = items };
+        }
+
+        public async Task<ListResultDto<NameValueDto<VolumeUnit>>> GetVolumeUnits()
+        {
+            var items = new List<NameValueDto<VolumeUnit>>();
+            await Task.Run(() => {
+                items = Enum.GetValues(typeof(VolumeUnit))
+                             .Cast<VolumeUnit>()
+                             .Select(s => new NameValueDto<VolumeUnit>(s.Symbol(), s))
+                             .ToList();
+            });
+
+            return new ListResultDto<NameValueDto<VolumeUnit>> { Items = items };
+        }
     }
 }

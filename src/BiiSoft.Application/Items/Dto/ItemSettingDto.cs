@@ -55,10 +55,6 @@ namespace BiiSoft.Items.Dto
         public bool DiameterRequired { get; set; }
         public bool AreaRequired { get; set; }
         public bool VolumeRequired { get; set; }
-        public bool SerialRequired { get; set; }
-        public bool ExpiredRequired { get; set; }
-        public bool BatchNoRequired { get; set; }
-        public bool InventoryStatusRequired { get; set; }
 
         public bool ReorderStockRequired { get; set; }
         public bool MinStockRequired { get; set; }

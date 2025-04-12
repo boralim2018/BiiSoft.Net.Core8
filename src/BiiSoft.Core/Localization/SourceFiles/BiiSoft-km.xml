@@ -78,7 +78,7 @@
 		<text name="EditUser">កែប្រេអ្នកប្រើប្រាស់</text>
 		<text name="TenantIdIsNotActive{0}">TenantId {0} is not active</text>
 		<text name="UnknownTenantId{0}">Unknown tenantId {0}</text>
-		<text name="ThisFieldIsRequired">This field is required</text>
+		<text name="ThisFieldIsRequired">សូមបំពេញត្រង់នេះ</text>
 		<text name="PleaseWait">Please wait...</text>
 		<text name="Administration">រដ្ឋបាលគ្រប់គ្រង</text>
 		<text name="ClearAll">Clear all</text>
@@ -711,8 +711,8 @@
 		<text name="ItemBrands">ម៉ាក</text>
 		<text name="ItemBrand">ម៉ាក</text>
 		<text name="FindItemBrands">ស្វែងរកម៉ាក</text>
-		<text name="ItemGrades">ថ្នាក់</text>
-		<text name="ItemGrade">ថ្នាក់</text>
+		<text name="ItemGrades">ចំណាត់ថ្នាក់</text>
+		<text name="ItemGrade">ចំណាត់ថ្នាក់</text>
 		<text name="FindItemGrades">ស្វែងរកថ្នាក់</text>
 		<text name="Models">គម្រូ</text>
 		<text name="ItemModels">គម្រូ</text>
@@ -783,6 +783,7 @@
 		<text name="ItemCodeFormula">រូបមន្តកូដទំនិញ</text>
 		<text name="ItemType">ប្រភេទទំនិញ</text>
 		<text name="ItemTypes">ប្រភេទទំនិញ</text>
+		<text name="ItemCategory">ប្រភេទទំនិញរង</text>
 		<text name="Image">រូបភាព</text>
 	</texts>
 </localizationDictionary>
