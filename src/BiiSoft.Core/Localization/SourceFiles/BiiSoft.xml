@@ -113,6 +113,7 @@
 		<text name="PleaseEnterNoMoreThanNCharacter">Please enter no more than {0} characters</text>
 		<text name="InvalidEmailAddress">Invalid email address</text>
 		<text name="InvalidPattern">Invalid Pattern</text>
+		<text name="InvalidURL">Invalid URL</text>
 		<text name="PairsDoNotMatch">Do not match</text>
 		<text name="All">All</text>
 		<text name="TotalRecordsCount">Total: {0}</text>
@@ -764,6 +765,7 @@
 		<text name="ChangeSetting">Change Setting</text>
 		<text name="Use_">Use {0}</text>
 		<text name="Required_">Required {0}</text>
+		<text name="Required">Required</text>
 		<text name="CodeFormula">Code Formula</text>
 		<text name="Width">Width</text>
 		<text name="Height">Height</text>

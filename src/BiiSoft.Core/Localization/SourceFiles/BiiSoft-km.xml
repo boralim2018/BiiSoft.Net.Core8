@@ -113,6 +113,7 @@
 		<text name="PleaseEnterNoMoreThanNCharacter">សូមបំពេញមិនឱ្យលើស {0} តួរអក្សរ</text>
 		<text name="InvalidEmailAddress">អ៊ីម៉ែលមិនត្រឹមត្រូវ</text>
 		<text name="InvalidPattern">គំរូមិនត្រឹមត្រូវ</text>
+		<text name="InvalidURL">គេហទំព័រមិនត្រឹមត្រូវ</text>
 		<text name="PairsDoNotMatch">Do not match</text>
 		<text name="All">ទាំងអស់</text>
 		<text name="TotalRecordsCount">Total: {0}</text>
@@ -512,7 +513,7 @@
 		<text name="ReceiptOther">ទទួលផ្សេងៗ</text>
 		<text name="IssueOthers">បញ្ចេញផ្សេងៗ</text>
 		<text name="IssueOther">បញ្ចេញផ្សេងៗ</text>
-		<text name="IsRequired">{0} ត្រូវតែបំពេញ</text>
+		<text name="IsRequired">សូមបំពេញ {0}</text>
 		<text name="Select">ជ្រើសរើស</text>
 		<text name="Select_">ជ្រើសរើស {0}</text>
 		<text name="DisableWarningMessage">តើអ្នកចង់ផ្អាកបណ្ដោះចំពោះ {0} មែនទេ</text>
@@ -677,7 +678,7 @@
 		<text name="LineDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃតាមជួរ</text>
 		<text name="TotalDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃចុងក្រោយ</text>
 		<text name="CustomTransactionNoEnable">ប្រើមុខងារដាក់លេខឯកសារខ្លួនឯង</text>
-		<text name="CustomNo">ដាក់លេខឯកសារខ្លួនឯង</text>
+		<text name="CustomNo">ដាក់លេខខ្លួនឯង</text>
 		<text name="TransactionNo">លេខប្រតិបត្តិការ</text>
 		<text name="ClassEnable">ប្រើថ្នាក់</text>
 		<text name="ContactAddressLevel">កម្រិតអាសយដ្ឋានទំនាក់ទំនង</text>
@@ -764,6 +765,7 @@
 		<text name="ChangeSetting">កែប្រែការកំណត់</text>
 		<text name="Use_">ប្រើ {0}</text>
 		<text name="Required_">ត្រូវបំពេញ {0}</text>
+		<text name="Required">ត្រូវបំពេញ</text>
 		<text name="CodeFormula">រូបមន្ដកំណត់លេខកូដ</text>
 		<text name="Width">ទទឹង</text>
 		<text name="Height">កម្ពស់</text>
