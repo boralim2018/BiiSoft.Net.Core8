@@ -16,7 +16,7 @@ namespace BiiSoft.Enums
         Poition = 6,
         Clothes = 7,
         BeautyFashion = 8,
-        LearningMaterial = 9,
+        BookLearningMaterial = 9,
         KidsEntertainment = 10,
         SportHealthcare = 11,
         MedicalInstrument = 12,
@@ -31,7 +31,9 @@ namespace BiiSoft.Enums
         LandHouse = 21,
         CarVehicle = 22,
         Machinery = 23,
-        FurnitureOrnament = 24,
+        SparePart = 24,
+        Furniture = 25,
+        DecorationOrnament = 26,
         Other = 99
     }
 }

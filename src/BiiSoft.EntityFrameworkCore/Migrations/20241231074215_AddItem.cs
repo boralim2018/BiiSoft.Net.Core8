@@ -680,7 +680,7 @@ namespace BiiSoft.Migrations
                     TrackSerial = table.Column<bool>(type: "boolean", nullable: false),
                     TrackExpired = table.Column<bool>(type: "boolean", nullable: false),
                     TrackBatchNo = table.Column<bool>(type: "boolean", nullable: false),
-                    TrackInventoryStatus = table.Column<bool>(type: "boolean", nullable: false),
+                    TrackAssetStatus = table.Column<bool>(type: "boolean", nullable: false),
                     ReorderStock = table.Column<decimal>(type: "numeric", nullable: false),
                     MinStock = table.Column<decimal>(type: "numeric", nullable: false),
                     MaxStock = table.Column<decimal>(type: "numeric", nullable: false),

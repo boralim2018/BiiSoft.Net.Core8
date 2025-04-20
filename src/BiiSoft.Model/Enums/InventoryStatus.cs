@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BiiSoft.Enums
 {
-    public enum InventoryStatus
+    public enum AssetStatus
     {
         New = 1,
         Good = 2,

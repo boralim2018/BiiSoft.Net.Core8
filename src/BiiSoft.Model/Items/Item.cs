@@ -46,7 +46,7 @@ namespace BiiSoft.Items
         public bool TrackSerial { get; private set; }
         public bool TrackExpired { get; private set; }
         public bool TrackBatchNo { get; private set; }
-        public bool TrackInventoryStatus { get; private set; }
+        public bool TrackAssetStatus { get; private set; }
 
         public decimal ReorderStock { get; private set; }
         public decimal MinStock { get; private set; }
@@ -134,7 +134,7 @@ namespace BiiSoft.Items
             bool trackSerial,
             bool trackExpired,
             bool trackBatchNo,
-            bool trackInventoryStatus,
+            bool trackAssetStatus,
             Guid? itemGroupId,
             Guid? itemBrandId,
             Guid? itemGradeId,
@@ -186,7 +186,7 @@ namespace BiiSoft.Items
                 TrackSerial = trackSerial,
                 TrackExpired = trackExpired,
                 TrackBatchNo = trackBatchNo,
-                TrackInventoryStatus = trackInventoryStatus,
+                TrackAssetStatus = trackAssetStatus,
                 ItemGroupId = itemGroupId,
                 ItemBrandId = itemBrandId,
                 ItemGradeId = itemGradeId,
@@ -238,7 +238,7 @@ namespace BiiSoft.Items
             bool trackSerial,
             bool trackExpired,
             bool trackBatchNo,
-            bool trackInventoryStatus,
+            bool trackAssetStatus,
             Guid? itemGroupId,
             Guid? itemBrandId,
             Guid? itemGradeId,
@@ -287,7 +287,7 @@ namespace BiiSoft.Items
             TrackSerial = trackSerial;
             TrackExpired = trackExpired;
             TrackBatchNo = trackBatchNo;
-            TrackInventoryStatus = trackInventoryStatus;
+            TrackAssetStatus = trackAssetStatus;
             ItemGroupId = itemGroupId;
             ItemBrandId = itemBrandId;
             ItemGradeId = itemGradeId;

@@ -122,7 +122,6 @@ namespace BiiSoft.Items
             ValidateSelect(input.SaleAccountId, L("SaleAccount"));
           
             if (input.ItemType == ItemType.Inventory ||
-                input.ItemType == ItemType.SparePart ||
                 input.ItemType == ItemType.Asset)
             {
                 ValidateSelect(input.InventoryAccountId, L("InventoryAccount"));
@@ -244,7 +243,6 @@ namespace BiiSoft.Items
                 if (!find) InvalidException(L("SaleAccount"));
             }
             if (input.ItemType == ItemType.Inventory ||
-                input.ItemType == ItemType.SparePart ||
                 input.ItemType == ItemType.Asset)
             {
                 var find = await _chartOfAccountRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.InventoryAccountId);
@@ -288,7 +286,7 @@ namespace BiiSoft.Items
                 input.TrackSerial,
                 input.TrackExpired,
                 input.TrackBatchNo,
-                input.TrackInventoryStatus,
+                input.TrackAssetStatus,
                 input.ItemGroupId,
                 input.ItemBrandId,
                 input.ItemGradeId,
@@ -344,7 +342,7 @@ namespace BiiSoft.Items
                 input.TrackSerial,
                 input.TrackExpired,
                 input.TrackBatchNo,
-                input.TrackInventoryStatus,
+                input.TrackAssetStatus,
                 input.ItemGroupId,
                 input.ItemBrandId,
                 input.ItemGradeId,
@@ -500,7 +498,7 @@ namespace BiiSoft.Items
                     new ColumnOutput{ ColumnTitle = L("TrackSerial"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("TrackExpired"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("TrackBatchNo"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("TrackInventoryStatus"), Width = 100 },
+                    new ColumnOutput{ ColumnTitle = L("TrackAssetStatus"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("ReorderStock"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("MaxStock"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("MinStock"), Width = 100 },
@@ -921,7 +919,7 @@ namespace BiiSoft.Items
                        
                         bool? trackBatchNo = worksheet.GetBoolOrNull(i, 41);
                        
-                        bool? trackInventoryStatus = worksheet.GetBoolOrNull(i, 42);
+                        bool? trackAssetStatus = worksheet.GetBoolOrNull(i, 42);
                        
                         decimal reorderStock = worksheet.GetDecimal(i, 43);
                         if (itemSetting.ReorderStockRequired && reorderStock == 0) InputException(L("ReorderStock"), rowMessage);
@@ -961,7 +959,7 @@ namespace BiiSoft.Items
                             trackSerial??false,
                             trackExpired??false,
                             trackBatchNo??false,
-                            trackInventoryStatus??false,
+                            trackAssetStatus??false,
                             itemGroupId,
                             itemBrandId,
                             itemGradeId,

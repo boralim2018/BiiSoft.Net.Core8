@@ -2964,7 +2964,7 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("TrackExpired")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("TrackInventoryStatus")
+                    b.Property<bool>("TrackAssetStatus")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("TrackSerial")

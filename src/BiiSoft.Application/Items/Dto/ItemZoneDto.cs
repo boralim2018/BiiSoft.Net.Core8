@@ -8,6 +8,7 @@ namespace BiiSoft.Items.Dto
         public Guid ZoneId { get; set; }
         public string ZoneName { get; set; }
         public Guid WarehouseId { get; set; }
+        public string WarehouseName { get; set; }
 
     }
 }

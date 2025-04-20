@@ -21,7 +21,7 @@ namespace BiiSoft.Items.Dto
         public bool UseSerial { get; set; }
         public bool UseExpired { get; set; }
         public bool UseBatchNo { get; set; }
-        public bool UseInventoryStatus { get; set; }
+        public bool UseAssetStatus { get; set; }
 
         public bool UseReorderStock { get; set; }
         public bool UseMinStock { get; set; }

@@ -65,7 +65,7 @@
 		<text name="SuccessfullyRegistered">Successfully registered</text>
 		<text name="WaitingForEmailActivation">Your email address should be activated</text>
 		<text name="Roles">Roles</text>
-		<text name="DisplayName">Display Name</text>
+		<text name="DisplayName">Name KH</text>
 		<text name="Edit">Edit</text>
 		<text name="Delete">Delete</text>
 		<text name="CreateNewRole">Create new role</text>
@@ -650,6 +650,7 @@
 		<text name="AlreadyHasMembers">{0} already has members</text>
 		<text name="BusinessId">Business Id</text>
 		<text name="PhoneNumber">Phone Number</text>
+		<text name="Phone">Phone</text>
 		<text name="Email">Email</text>
 		<text name="Website">Website</text>
 		<text name="TaxRegistrationNumber">Tax Registration Number</text>
@@ -776,7 +777,7 @@
 		<text name="Serial">Serial</text>
 		<text name="BatchNo">Batch No</text>
 		<text name="Expired">Expired</text>
-		<text name="InventoryStatus">Inventory Status</text>
+		<text name="AssetStatus">Asset Status</text>
 		<text name="ReorderStock">Reorder Stock</text>
 		<text name="MaxStock">Max Stock</text>
 		<text name="MinStock">Min Stock</text>
@@ -787,5 +788,9 @@
 		<text name="ItemTypes">Item Types</text>
 		<text name="ItemCategory">Item Category</text>
 		<text name="Image">Image</text>
+		<text name="TrackSerial">Track Serial</text>
+		<text name="TrackBatchNo">Track Batch No</text>
+		<text name="TrackExpired">Track Expired</text>
+		<text name="TrackAssetStatus">Track Asset Status</text>
 	</texts>
 </localizationDictionary>

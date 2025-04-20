@@ -65,7 +65,7 @@
 		<text name="SuccessfullyRegistered">Successfully registered</text>
 		<text name="WaitingForEmailActivation">Your email address should be activated</text>
 		<text name="Roles">តួនាទី</text>
-		<text name="DisplayName">ឈ្មោះបង្ហាញ</text>
+		<text name="DisplayName">ឈ្មោះខ្មែរ</text>
 		<text name="Edit">កែប្រែ</text>
 		<text name="Delete">លុយ</text>
 		<text name="CreateNewRole">បង្កើតតួនាទីថ្មី</text>
@@ -112,7 +112,7 @@
 		<text name="PleaseEnterAtLeastNCharacter">សូមបំពេញយ៉ាងតិច {0} តួរអក្សរ</text>
 		<text name="PleaseEnterNoMoreThanNCharacter">សូមបំពេញមិនឱ្យលើស {0} តួរអក្សរ</text>
 		<text name="InvalidEmailAddress">អ៊ីម៉ែលមិនត្រឹមត្រូវ</text>
-		<text name="InvalidPattern">គំរូមិនត្រឹមត្រូវ</text>
+		<text name="InvalidPattern">បំពេញមិនត្រឹមត្រូវ</text>
 		<text name="InvalidURL">គេហទំព័រមិនត្រឹមត្រូវ</text>
 		<text name="PairsDoNotMatch">Do not match</text>
 		<text name="All">ទាំងអស់</text>
@@ -650,6 +650,7 @@
 		<text name="AlreadyHasMembers">{0} មានសមាជិកភាពហើយ</text>
 		<text name="BusinessId">អក្សរកាត់</text>
 		<text name="PhoneNumber">លេខទូរសព្ទ</text>
+		<text name="Phone">ទូរសព្ទ</text>
 		<text name="Email">អ៊ីម៉ែល</text>
 		<text name="Website">គេហទំព័រ</text>
 		<text name="TaxRegistrationNumber">លេខចុះបញ្ជីពន្ធ</text>
@@ -776,8 +777,8 @@
 		<text name="Serial">លេខតួ</text>
 		<text name="BatchNo">លេខផលិត</text>
 		<text name="Expired">ផុតកំណត់</text>
-		<text name="InventoryStatus">ស្ថានភាពស្ដុក</text>
-		<text name="ReorderStock">ទិញបំពេញស្តុក</text>
+		<text name="AssetStatus">លក្ខណៈទ្រព្យ</text>
+		<text name="ReorderStock">ស្តុកបញ្ជាបំពេញ</text>
 		<text name="MaxStock">ស្តុកអតិបរមា</text>
 		<text name="MinStock">ស្តុកអប្បរមា</text>
 		<text name="Label_">ឈ្មោះ {0}</text>
@@ -787,5 +788,9 @@
 		<text name="ItemTypes">ប្រភេទទំនិញ</text>
 		<text name="ItemCategory">ប្រភេទទំនិញរង</text>
 		<text name="Image">រូបភាព</text>
+		<text name="TrackSerial">តាមដានលេខ Serial</text>
+		<text name="TrackBatchNo">តាមដានលេខ Batch</text>
+		<text name="TrackExpired">តាមដានថ្ងៃផុតកំណត់</text>
+		<text name="TrackAssetStatus">តាមដានលក្ខណៈទ្រព្យ</text>
 	</texts>
 </localizationDictionary>

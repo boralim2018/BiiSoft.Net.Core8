@@ -22,7 +22,7 @@ namespace BiiSoft.Items
         public bool UseSerial { get; private set; }
         public bool UseExpired { get; private set; }
         public bool UseBatchNo { get; private set; }
-        public bool UseInventoryStatus { get; private set; }
+        public bool UseAssetStatus { get; private set; }
 
         public bool UseReorderStock { get; private set; }
         public bool UseMinStock { get; private set; }
@@ -111,7 +111,7 @@ namespace BiiSoft.Items
             bool useSerial,
             bool useExpired,
             bool useBatchNo,
-            bool useInventoryStatus,
+            bool useAssetStatus,
             bool useReorderStock,
             bool useMaxStock,
             bool useMinStock,
@@ -181,7 +181,7 @@ namespace BiiSoft.Items
                 UseSerial = useSerial,
                 UseExpired = useExpired,
                 UseBatchNo = useBatchNo,
-                UseInventoryStatus = useInventoryStatus,
+                UseAssetStatus = useAssetStatus,
                 UseReorderStock = useReorderStock,
                 UseMaxStock = useMaxStock,
                 UseMinStock = useMinStock,
@@ -251,7 +251,7 @@ namespace BiiSoft.Items
             bool useSerial,
             bool useExpired,
             bool useBatchNo,
-            bool useInventoryStatus,
+            bool useAssetStatus,
             bool useReorderStock,
             bool useMaxStock,
             bool useMinStock,
@@ -318,7 +318,7 @@ namespace BiiSoft.Items
             UseSerial = useSerial;
             UseExpired = useExpired;
             UseBatchNo = useBatchNo;
-            UseInventoryStatus = useInventoryStatus;
+            UseAssetStatus = useAssetStatus;
             UseReorderStock = useReorderStock;
             UseMaxStock = useMaxStock;
             UseMinStock = useMinStock;

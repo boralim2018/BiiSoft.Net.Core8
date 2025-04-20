@@ -2969,7 +2969,7 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("TrackExpired")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("TrackInventoryStatus")
+                    b.Property<bool>("TrackAssetStatus")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("TrackSerial")
@@ -3666,7 +3666,7 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("UseHeight")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("UseInventoryStatus")
+                    b.Property<bool>("UseAssetStatus")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("UseItemGroup")

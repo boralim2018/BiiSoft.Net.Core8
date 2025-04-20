@@ -441,7 +441,7 @@ namespace BiiSoft.Migrations
                 defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
-                name: "UseInventoryStatus",
+                name: "UseAssetStatus",
                 table: "BiiItemSettings",
                 type: "boolean",
                 nullable: false,
@@ -827,7 +827,7 @@ namespace BiiSoft.Migrations
                 table: "BiiItemSettings");
 
             migrationBuilder.DropColumn(
-                name: "UseInventoryStatus",
+                name: "UseAssetStatus",
                 table: "BiiItemSettings");
 
             migrationBuilder.DropColumn(

@@ -31,7 +31,7 @@ namespace BiiSoft.Items.Dto
         public bool TrackSerial { get; set; }
         public bool TrackExpired { get; set; }
         public bool TrackBatchNo { get; set; }
-        public bool TrackInventoryStatus { get; set; }
+        public bool TrackAssetStatus { get; set; }
 
         public decimal ReorderStock { get; set; }
         public decimal MinStock { get; set; }

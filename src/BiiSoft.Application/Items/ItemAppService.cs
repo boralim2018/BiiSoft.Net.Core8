@@ -239,7 +239,7 @@ namespace BiiSoft.Items
                             ReorderStock = l.ReorderStock,
                             TrackBatchNo = l.TrackBatchNo,
                             TrackExpired = l.TrackExpired,
-                            TrackInventoryStatus = l.TrackInventoryStatus,
+                            TrackAssetStatus = l.TrackAssetStatus,
                             TrackSerial = l.TrackSerial,
                             AreaUnit = l.AreaUnit,
                             AreaUnitName = l.AreaUnit.GetName(),
@@ -306,6 +306,7 @@ namespace BiiSoft.Items
                                 WarehouseId = s.Zone.WarehouseId,
                                 ZoneId = s.ZoneId,
                                 ZoneName = isDefaultLanguage ? s.Zone.Name : s.Zone.DisplayName,
+                                WarehouseName = isDefaultLanguage ? s.Zone.Warehouse.Name : s.Zone.Warehouse.DisplayName
                             }).ToList()
                         });
 
@@ -433,7 +434,7 @@ namespace BiiSoft.Items
                     ReorderStock = l.ReorderStock,
                     TrackBatchNo = l.TrackBatchNo,
                     TrackExpired = l.TrackExpired,
-                    TrackInventoryStatus = l.TrackInventoryStatus,
+                    TrackAssetStatus = l.TrackAssetStatus,
                     TrackSerial = l.TrackSerial,
                     AreaUnit = l.AreaUnit,
                     AreaUnitName = l.AreaUnit.GetName(),
