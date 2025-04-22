@@ -265,6 +265,7 @@ namespace BiiSoft.Items
                 input.ItemType,
                 input.ItemCategory,
                 input.Code,
+                input.Barcode,
                 input.Name,
                 input.DisplayName,
                 input.Description,
@@ -321,6 +322,7 @@ namespace BiiSoft.Items
                 input.ItemType,
                 input.ItemCategory,
                 input.Code,
+                input.Barcode,
                 input.Name,
                 input.DisplayName,
                 input.Description,
@@ -462,6 +464,7 @@ namespace BiiSoft.Items
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("ItemType"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = ItemType.Service.ToListStr() },
                     new ColumnOutput{ ColumnTitle = L("ItemCategory"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = ItemCategory.Service.ToListStr() },
+                    new ColumnOutput{ ColumnTitle = L("Barcode"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("Unit"), Width = 150, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("ItemGroup"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("ItemBrand"), Width = 150 },
@@ -644,7 +647,14 @@ namespace BiiSoft.Items
                         ValidateSelect(categoryName, L("ItemCategory"), rowMessage);
                         var itemCategory = Enum.Parse<ItemCategory>(categoryName);
 
-                        var unitName = worksheet.GetString(i, 6);
+                        var barcode = worksheet.GetString(i, 6);
+                        if(!barcode.IsNullOrEmpty())
+                        {
+                            //TODO: check barcode
+                            //if (itemDic.ContainsKey(barcode)) DuplicateException(L("Barcode"), rowMessage);
+                        }
+
+                        var unitName = worksheet.GetString(i, 7);
                         ValidateInput(unitName, L("Unit"), rowMessage);
                         if(unitDic.ContainsKey(unitName)) InvalidException(L("Unit"), rowMessage);
                         Guid? unitId = unitDic[unitName];
@@ -652,7 +662,7 @@ namespace BiiSoft.Items
                         Guid? itemGroupId = null;
                         if (itemSetting.UseItemGroup)
                         {
-                            var itemGroupName = worksheet.GetString(i, 7);
+                            var itemGroupName = worksheet.GetString(i, 8);
                             if(itemSetting.ItemGroupRequired) ValidateInput(itemGroupName, L("ItemGroup"), rowMessage);
                             if (!itemGroupName.IsNullOrEmpty())
                             {
@@ -664,7 +674,7 @@ namespace BiiSoft.Items
                         Guid? itemBrandId = null;
                         if (itemSetting.UseBrand)
                         {
-                            var itemBrandName = worksheet.GetString(i, 8);
+                            var itemBrandName = worksheet.GetString(i, 9);
                             if(itemSetting.BrandRequired) ValidateInput(itemBrandName, L("ItemBrand"), rowMessage);
                             if (!itemBrandName.IsNullOrEmpty())
                             {
@@ -676,7 +686,7 @@ namespace BiiSoft.Items
                         Guid? itemModelId = null;
                         if (itemSetting.UseModel)
                         {
-                            var itemModelName = worksheet.GetString(i, 9);
+                            var itemModelName = worksheet.GetString(i, 10);
                             if(itemSetting.ModelRequired) ValidateInput(itemModelName, L("ItemModel"), rowMessage);
                             if (!itemModelName.IsNullOrEmpty())
                             {
@@ -688,7 +698,7 @@ namespace BiiSoft.Items
                         Guid? itemGradeId = null;
                         if (itemSetting.UseGrade)
                         {
-                            var itemGradeName = worksheet.GetString(i, 10);
+                            var itemGradeName = worksheet.GetString(i, 11);
                             if(itemSetting.GradeRequired) ValidateInput(itemGradeName, L("ItemGrade"), rowMessage);
                             if (!itemGradeName.IsNullOrEmpty())
                             {
@@ -700,7 +710,7 @@ namespace BiiSoft.Items
                         Guid? itemSizeId = null;
                         if (itemSetting.UseSize)
                         {
-                            var itemSizeName = worksheet.GetString(i, 11);
+                            var itemSizeName = worksheet.GetString(i, 12);
                             if(itemSetting.SizeRequired) ValidateInput(itemSizeName, L("ItemSize"), rowMessage);
                             if (!itemSizeName.IsNullOrEmpty())
                             {
@@ -712,7 +722,7 @@ namespace BiiSoft.Items
                         Guid? itemSeriesId = null;
                         if (itemSetting.UseSeries)
                         {
-                            var itemSeriesName = worksheet.GetString(i, 12);
+                            var itemSeriesName = worksheet.GetString(i, 13);
                             if(itemSetting.SeriesRequired) ValidateInput(itemSeriesName, L("ItemSeries"), rowMessage);
                             if (!itemSeriesName.IsNullOrEmpty())
                             {
@@ -724,7 +734,7 @@ namespace BiiSoft.Items
                         Guid? colorPatternId = null;
                         if (itemSetting.UseColorPattern)
                         {
-                            var colorPatternName = worksheet.GetString(i, 13);
+                            var colorPatternName = worksheet.GetString(i, 14);
                             if(itemSetting.ColorPatternRequired) ValidateInput(colorPatternName, L("ColorPattern"), rowMessage);
                             if (!colorPatternName.IsNullOrEmpty())
                             {
@@ -736,7 +746,7 @@ namespace BiiSoft.Items
                         Guid? cpuId = null;
                         if (itemSetting.UseCPU)
                         {
-                            var cpuName = worksheet.GetString(i, 14);
+                            var cpuName = worksheet.GetString(i, 15);
                             if (itemSetting.CPURequired) ValidateInput(cpuName, L("CPU"), rowMessage);
                             if (!cpuName.IsNullOrEmpty())
                             {
@@ -748,7 +758,7 @@ namespace BiiSoft.Items
                         Guid? ramId = null;
                         if (itemSetting.UseRAM)
                         {
-                            var ramName = worksheet.GetString(i, 15);
+                            var ramName = worksheet.GetString(i, 16);
                             if (itemSetting.RAMRequired) ValidateInput(ramName, L("RAM"), rowMessage);
                             if (!ramName.IsNullOrEmpty())
                             {
@@ -760,7 +770,7 @@ namespace BiiSoft.Items
                         Guid? vgaId = null;
                         if (itemSetting.UseVGA)
                         {
-                            var vgaName = worksheet.GetString(i, 16);
+                            var vgaName = worksheet.GetString(i, 17);
                             if (itemSetting.VGARequired) ValidateInput(vgaName, L("VGA"), rowMessage);
                             if (!vgaName.IsNullOrEmpty())
                             {
@@ -772,7 +782,7 @@ namespace BiiSoft.Items
                         Guid? hddId = null;
                         if (itemSetting.UseHDD)
                         {
-                            var hddName = worksheet.GetString(i, 17);
+                            var hddName = worksheet.GetString(i, 18);
                             if (itemSetting.HDDRequired) ValidateInput(hddName, L("HDD"), rowMessage);
                             if (!hddName.IsNullOrEmpty())
                             {
@@ -784,7 +794,7 @@ namespace BiiSoft.Items
                         Guid? screenId = null;
                         if (itemSetting.UseScreen)
                         {
-                            var screenName = worksheet.GetString(i, 18);
+                            var screenName = worksheet.GetString(i, 19);
                             if (itemSetting.ScreenRequired) ValidateInput(screenName, L("Screen"), rowMessage);
                             if (!screenName.IsNullOrEmpty())
                             {
@@ -797,7 +807,7 @@ namespace BiiSoft.Items
                         Guid? cameraId = null;
                         if (itemSetting.UseCamera)
                         {
-                            var cameraName = worksheet.GetString(i, 19);
+                            var cameraName = worksheet.GetString(i, 20);
                             if (itemSetting.CameraRequired) ValidateInput(cameraName, L("Camera"), rowMessage);
                             if (!cameraName.IsNullOrEmpty())
                             {
@@ -809,7 +819,7 @@ namespace BiiSoft.Items
                         Guid? batteryId = null;
                         if (itemSetting.UseBattery)
                         {
-                            var batteryName = worksheet.GetString(i, 20);
+                            var batteryName = worksheet.GetString(i, 21);
                             if (itemSetting.BatteryRequired) ValidateInput(batteryName, L("Battery"), rowMessage);
                             if (!batteryName.IsNullOrEmpty())
                             {
@@ -821,7 +831,7 @@ namespace BiiSoft.Items
                         Guid? fieldAId = null;
                         if (itemSetting.UseFieldA)
                         {
-                            var fieldAName = worksheet.GetString(i, 21);
+                            var fieldAName = worksheet.GetString(i, 22);
                             if (itemSetting.FieldARequired) ValidateInput(fieldAName, L("FieldA"), rowMessage);
                             if (!fieldAName.IsNullOrEmpty())
                             {
@@ -833,7 +843,7 @@ namespace BiiSoft.Items
                         Guid? fieldBId = null;
                         if (itemSetting.UseFieldB)
                         {
-                            var fieldBName = worksheet.GetString(i, 22);
+                            var fieldBName = worksheet.GetString(i, 23);
                             if (itemSetting.FieldBRequired) ValidateInput(fieldBName, L("FieldB"), rowMessage);
                             if (!fieldBName.IsNullOrEmpty())
                             {
@@ -845,7 +855,7 @@ namespace BiiSoft.Items
                         Guid? fieldCId = null;
                         if (itemSetting.UseFieldC)
                         {
-                            var fieldCName = worksheet.GetString(i, 23);
+                            var fieldCName = worksheet.GetString(i, 24);
                             if (itemSetting.FieldCRequired) ValidateInput(fieldCName, L("FieldC"), rowMessage);
                             if (!fieldCName.IsNullOrEmpty())
                             {
@@ -854,90 +864,91 @@ namespace BiiSoft.Items
                             }
                         }
 
-                        var purchaseAccountName = worksheet.GetString(i, 24);
+                        var purchaseAccountName = worksheet.GetString(i, 25);
                         ValidateInput(purchaseAccountName, L("PurchaseAccount"), rowMessage);
                         if (!accountDic.ContainsKey(purchaseAccountName)) InvalidException(L("PurchaseAccount"), rowMessage);
                         Guid? purchaseAccountId = accountDic[purchaseAccountName];
 
-                        var saleAccountName = worksheet.GetString(i, 25);
+                        var saleAccountName = worksheet.GetString(i, 26);
                         ValidateInput(saleAccountName, L("SaleAccount"), rowMessage);
                         if (!accountDic.ContainsKey(saleAccountName)) InvalidException(L("SaleAccount"), rowMessage);
                         Guid? saleAccountId = accountDic[saleAccountName];
 
-                        var inventoryAccountName = worksheet.GetString(i, 26);
+                        var inventoryAccountName = worksheet.GetString(i, 27);
                         ValidateInput(inventoryAccountName, L("InventoryAccount"), rowMessage);
                         if (!accountDic.ContainsKey(inventoryAccountName)) InvalidException(L("InventoryAccount"), rowMessage);
                         Guid? inventoryAccountId = accountDic[inventoryAccountName];
 
-                        decimal netWeight = worksheet.GetDecimal(i, 27);
+                        decimal netWeight = worksheet.GetDecimal(i, 28);
                         if (itemSetting.NetWeightRequired && netWeight == 0) InputException(L("NetWeight"), rowMessage);
 
-                        decimal grossWeight = worksheet.GetDecimal(i, 28);
+                        decimal grossWeight = worksheet.GetDecimal(i, 29);
                         if (itemSetting.GrossWeightRequired && grossWeight == 0) InputException(L("GrossWeight"), rowMessage);
 
-                        decimal width = worksheet.GetDecimal(i, 29);
+                        decimal width = worksheet.GetDecimal(i, 30);
                         if (itemSetting.WidthRequired && width == 0) InputException(L("Width"), rowMessage);
 
-                        decimal height = worksheet.GetDecimal(i, 30);
+                        decimal height = worksheet.GetDecimal(i, 31);
                         if (itemSetting.HeightRequired && height == 0) InputException(L("Height"), rowMessage);
 
-                        decimal length = worksheet.GetDecimal(i, 31);
+                        decimal length = worksheet.GetDecimal(i, 32);
                         if (itemSetting.LengthRequired && length == 0) InputException(L("Length"), rowMessage);
 
-                        decimal diameter = worksheet.GetDecimal(i, 32);
+                        decimal diameter = worksheet.GetDecimal(i, 33);
                         if (itemSetting.DiameterRequired && diameter == 0) InputException(L("Diameter"), rowMessage);
 
-                        decimal area = worksheet.GetDecimal(i, 33);
+                        decimal area = worksheet.GetDecimal(i, 34);
                         if (itemSetting.AreaRequired && area == 0) InputException(L("Area"), rowMessage);
 
-                        decimal volume = worksheet.GetDecimal(i, 34);
+                        decimal volume = worksheet.GetDecimal(i, 35);
                         if (itemSetting.VolumeRequired && volume == 0) InputException(L("Volume"), rowMessage);
 
                         WeightUnit? weightUnit = null;
-                        var weightUnitName = worksheet.GetString(i, 35);
+                        var weightUnitName = worksheet.GetString(i, 36);
                         if(itemSetting.NetWeightRequired || itemSetting.GrossWeightRequired) ValidateSelect(weightUnitName, L("WeightUnit"), rowMessage);
                         if(!weightUnitName.IsNullOrEmpty()) weightUnit = Enum.Parse<WeightUnit>(weightUnitName);
 
                         LengthUnit? lengthUnit = null;
-                        var lengthUnitName = worksheet.GetString(i, 36);
+                        var lengthUnitName = worksheet.GetString(i, 37);
                         if (itemSetting.WidthRequired || itemSetting.HeightRequired || itemSetting.LengthRequired || itemSetting.DiameterRequired) ValidateSelect(lengthUnitName, L("LengthUnit"), rowMessage);
                         if (!lengthUnitName.IsNullOrEmpty()) lengthUnit = Enum.Parse<LengthUnit>(lengthUnitName);
 
                         AreaUnit? areaUnit = null;
-                        var areaUnitName = worksheet.GetString(i, 37);
+                        var areaUnitName = worksheet.GetString(i, 38);
                         if (itemSetting.AreaRequired) ValidateSelect(areaUnitName, L("AreaUnit"), rowMessage);
                         if (!areaUnitName.IsNullOrEmpty()) areaUnit = Enum.Parse<AreaUnit>(areaUnitName);
 
                         VolumeUnit? volumeUnit = null;
-                        var volumeUnitName = worksheet.GetString(i, 38);
+                        var volumeUnitName = worksheet.GetString(i, 39);
                         if (itemSetting.VolumeRequired) ValidateSelect(volumeUnitName, L("VolumeUnit"), rowMessage);
                         if (!volumeUnitName.IsNullOrEmpty()) volumeUnit = Enum.Parse<VolumeUnit>(volumeUnitName);
 
-                        bool? trackSerial = worksheet.GetBoolOrNull(i, 39);                       
+                        bool? trackSerial = worksheet.GetBoolOrNull(i, 40);                       
                      
-                        bool? trackExpired = worksheet.GetBoolOrNull(i, 40);
+                        bool? trackExpired = worksheet.GetBoolOrNull(i, 41);
                        
-                        bool? trackBatchNo = worksheet.GetBoolOrNull(i, 41);
+                        bool? trackBatchNo = worksheet.GetBoolOrNull(i, 42);
                        
-                        bool? trackAssetStatus = worksheet.GetBoolOrNull(i, 42);
+                        bool? trackAssetStatus = worksheet.GetBoolOrNull(i, 43);
                        
-                        decimal reorderStock = worksheet.GetDecimal(i, 43);
+                        decimal reorderStock = worksheet.GetDecimal(i, 44);
                         if (itemSetting.ReorderStockRequired && reorderStock == 0) InputException(L("ReorderStock"), rowMessage);
 
-                        decimal maxStock = worksheet.GetDecimal(i, 44);
+                        decimal maxStock = worksheet.GetDecimal(i, 45);
                         if (itemSetting.MaxStockRequired && maxStock == 0) InputException(L("MaxStock"), rowMessage);
 
-                        decimal minStock = worksheet.GetDecimal(i, 45);
+                        decimal minStock = worksheet.GetDecimal(i, 46);
                         if (itemSetting.MinStockRequired && minStock == 0) InputException(L("MinStock"), rowMessage);
 
-                        var description = worksheet.GetString(i, 46);
+                        var description = worksheet.GetString(i, 47);
 
                         var entity = Item.Create(
                             input.TenantId.Value, 
                             input.UserId.Value, 
                             itemType, 
                             itemCategory, 
-                            code, 
+                            code,
+                            barcode,
                             name, 
                             displayName, 
                             description,

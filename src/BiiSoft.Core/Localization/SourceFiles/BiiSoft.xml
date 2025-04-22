@@ -709,6 +709,8 @@
 		<text name="SubAccountCannotUseAsParent">Sub Account cannot use as Parent Account</text>
 		<text name="PurchaseAccount">Purchase Account</text>
 		<text name="SaleAccount">Sale Account</text>
+		<text name="InventoryAccount">Inventory Account</text>
+		<text name="AssetAccount">Asset Account</text>
 		<text name="FindUnits">Find Units</text>
 		<text name="ItemBrands">Brands</text>
 		<text name="ItemBrand">Brand</text>
@@ -792,5 +794,12 @@
 		<text name="TrackBatchNo">Track Batch No</text>
 		<text name="TrackExpired">Track Expired</text>
 		<text name="TrackAssetStatus">Track Asset Status</text>
+		<text name="StockTracking">StockTracking</text>
+		<text name="UOM">Fitler</text>
+		<text name="WeightUnit">Weight Unit</text>
+		<text name="LengthUnit">Length Unit</text>
+		<text name="AreaUnit">Area Unit</text>
+		<text name="VolumeUnit">Volume Unit</text>
+		<text name="PackageUnit">package Unit</text>
 	</texts>
 </localizationDictionary>

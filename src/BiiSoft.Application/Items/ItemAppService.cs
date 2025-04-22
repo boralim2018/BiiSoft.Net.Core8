@@ -176,6 +176,7 @@ namespace BiiSoft.Items
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
                             s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.Barcode.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                        
@@ -191,6 +192,7 @@ namespace BiiSoft.Items
                     Name = l.Name,
                     DisplayName = l.DisplayName,
                     Code = l.Code,
+                    Barcode = l.Barcode,
                     IsActive = l.IsActive
                  });
 
@@ -220,6 +222,7 @@ namespace BiiSoft.Items
                             Id = l.Id,
                             No = l.No,
                             Code = l.Code,
+                            Barcode = l.Barcode,
                             Name = l.Name,
                             DisplayName = l.DisplayName,
                             ItemType = l.ItemType,
@@ -401,6 +404,7 @@ namespace BiiSoft.Items
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
                             s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
+                            s.Barcode.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                       
@@ -415,6 +419,7 @@ namespace BiiSoft.Items
                     Id = l.Id,
                     No = l.No,
                     Code = l.Code,
+                    Barcode = l.Barcode,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
                     ItemType = l.ItemType,

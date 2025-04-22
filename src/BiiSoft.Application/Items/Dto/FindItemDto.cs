@@ -6,5 +6,6 @@ namespace BiiSoft.Items.Dto
     public class FindItemDto : NameActiveDto<Guid>
     {
         public string Code { get; set; }
+        public string Barcode { get; set; }
     }
 }

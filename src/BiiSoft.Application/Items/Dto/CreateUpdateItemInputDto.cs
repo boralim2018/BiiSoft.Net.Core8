@@ -13,7 +13,7 @@ namespace BiiSoft.Items.Dto
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Code { get; set; }
-
+        public string Barcode { get; set; }
         public decimal NetWeight { get; set; }
         public decimal GrossWeight { get; set; }
         public decimal Length { get; set; }

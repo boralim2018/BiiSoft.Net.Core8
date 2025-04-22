@@ -28,6 +28,7 @@ namespace BiiSoft.Items
         [StringLength(BiiSoftConsts.MaxLengthLongCode, ErrorMessage = BiiSoftConsts.MaxLengthLongCodeErrorMessage)]
         public string Code { get; private set; }
         public void SetCode(string code) => Code = code;
+        public string Barcode { get; private set; }
 
         public decimal NetWeight { get; private set; }
         public decimal GrossWeight { get; private set; }
@@ -113,6 +114,7 @@ namespace BiiSoft.Items
             ItemType itemType,
             ItemCategory itemCategory,
             string code,
+            string barcode,
             string name,
             string displayName,
             string description,
@@ -165,6 +167,7 @@ namespace BiiSoft.Items
                 ItemType = itemType,
                 ItemCategory = itemCategory,
                 Code = code,
+                Barcode = barcode,
                 Name = name,
                 DisplayName = displayName,
                 Description = description,
@@ -217,6 +220,7 @@ namespace BiiSoft.Items
             ItemType itemType,
             ItemCategory itemCategory,
             string code,
+            string barcode,
             string name,
             string displayName,
             string description,
@@ -266,6 +270,7 @@ namespace BiiSoft.Items
             ItemType = itemType;
             ItemCategory = itemCategory;
             Code = code;
+            Barcode = barcode;
             Name = name;
             DisplayName = displayName;
             Description = description;

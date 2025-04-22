@@ -709,6 +709,8 @@
 		<text name="SubAccountCannotUseAsParent">គណនីរងមិនអាចប្រើជាគណនីមេបានទេ</text>
 		<text name="PurchaseAccount">គណនីទិញចូល</text>
 		<text name="SaleAccount">គណនីលក់ចេញ</text>
+		<text name="InventoryAccount">គណនីស្តុក</text>
+		<text name="AssetAccount">គណនីទ្រព្យ</text>
 		<text name="FindUnits">ស្វែងរកខ្នាត</text>
 		<text name="ItemBrands">ម៉ាក</text>
 		<text name="ItemBrand">ម៉ាក</text>
@@ -792,5 +794,12 @@
 		<text name="TrackBatchNo">តាមដានលេខ Batch</text>
 		<text name="TrackExpired">តាមដានថ្ងៃផុតកំណត់</text>
 		<text name="TrackAssetStatus">តាមដានលក្ខណៈទ្រព្យ</text>
+		<text name="StockTracking">តាមដានស្តុក</text>
+		<text name="UOM">ខ្នាតរង្វាស់</text>
+		<text name="WeightUnit">ខ្នាតទម្ងន់</text>
+		<text name="LengthUnit">ខ្នាតប្រវែង</text>
+		<text name="AreaUnit">ខ្នាតក្រឡាផ្ទែ</text>
+		<text name="VolumeUnit">ខ្នាតមាឌចំណុះ</text>
+		<text name="PackageUnit">ខ្នាតវេចខ្ចប់</text>
 	</texts>
 </localizationDictionary>

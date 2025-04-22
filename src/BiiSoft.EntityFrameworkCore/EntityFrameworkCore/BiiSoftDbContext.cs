@@ -424,6 +424,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
                 e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Barcode);
                 e.HasIndex(i => i.ItemType);
                 e.HasIndex(i => i.ItemCategory);
                 e.HasOne(i => i.ItemGroup).WithMany().HasForeignKey(i => i.ItemGroupId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
