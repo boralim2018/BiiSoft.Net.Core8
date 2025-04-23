@@ -306,9 +306,10 @@ namespace BiiSoft.Items
                             ItemZones = l.ItemZones.Select(s => new ItemZoneDto
                             {
                                 Id = s.Id,
-                                WarehouseId = s.Zone.WarehouseId,
                                 ZoneId = s.ZoneId,
-                                ZoneName = isDefaultLanguage ? s.Zone.Name : s.Zone.DisplayName,
+                                Name = s.Zone.Name,
+                                DisplayName = s.Zone.DisplayName,
+                                WarehouseId = s.Zone.WarehouseId,
                                 WarehouseName = isDefaultLanguage ? s.Zone.Warehouse.Name : s.Zone.Warehouse.DisplayName
                             }).ToList()
                         });

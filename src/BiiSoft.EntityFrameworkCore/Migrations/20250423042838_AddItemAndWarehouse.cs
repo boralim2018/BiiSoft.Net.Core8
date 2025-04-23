@@ -7,11 +7,35 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     /// <inheritdoc />
-    public partial class AddItem : Migration
+    public partial class AddItemAndWarehouse : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "BiiUserBranchs");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "TaxEnable",
+                table: "BiiCompanyAdvanceSettings",
+                type: "boolean",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.AddColumn<int>(
+                name: "TaxType",
+                table: "BiiCompanyAdvanceSettings",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "Sharing",
+                table: "BiiBranches",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.CreateTable(
                 name: "BiiBatteries",
                 columns: table => new
@@ -43,6 +67,47 @@ namespace BiiSoft.Migrations
                         column: x => x.LastModifierUserId,
                         principalTable: "AbpUsers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BiiBranchUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    MemberId = table.Column<long>(type: "bigint", nullable: false),
+                    BranchId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiBranchUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiBranchUsers_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiBranchUsers_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiBranchUsers_AbpUsers_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiBranchUsers_BiiBranches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "BiiBranches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,6 +276,40 @@ namespace BiiSoft.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BiiItemCodeFormulas",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IsAllItemType = table.Column<bool>(type: "boolean", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Prefix = table.Column<string>(type: "text", nullable: true),
+                    Digits = table.Column<int>(type: "integer", nullable: false),
+                    Start = table.Column<int>(type: "integer", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiItemCodeFormulas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiItemCodeFormulas_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemCodeFormulas_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BiiItemFieldAs",
                 columns: table => new
                 {
@@ -316,26 +415,6 @@ namespace BiiSoft.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TenantId = table.Column<int>(type: "integer", nullable: false),
                     UseCode = table.Column<bool>(type: "boolean", nullable: false),
-                    UseItemGroup = table.Column<bool>(type: "boolean", nullable: false),
-                    UseBrand = table.Column<bool>(type: "boolean", nullable: false),
-                    UseModel = table.Column<bool>(type: "boolean", nullable: false),
-                    UseSeries = table.Column<bool>(type: "boolean", nullable: false),
-                    UseSize = table.Column<bool>(type: "boolean", nullable: false),
-                    UseGrade = table.Column<bool>(type: "boolean", nullable: false),
-                    UseColorPattern = table.Column<bool>(type: "boolean", nullable: false),
-                    UseCPU = table.Column<bool>(type: "boolean", nullable: false),
-                    UseRAM = table.Column<bool>(type: "boolean", nullable: false),
-                    UseVGA = table.Column<bool>(type: "boolean", nullable: false),
-                    UseCamera = table.Column<bool>(type: "boolean", nullable: false),
-                    UseScreen = table.Column<bool>(type: "boolean", nullable: false),
-                    UseHDD = table.Column<bool>(type: "boolean", nullable: false),
-                    UseBattery = table.Column<bool>(type: "boolean", nullable: false),
-                    UseFieldA = table.Column<bool>(type: "boolean", nullable: false),
-                    UseFieldB = table.Column<bool>(type: "boolean", nullable: false),
-                    UseFieldC = table.Column<bool>(type: "boolean", nullable: false),
-                    FieldALabel = table.Column<string>(type: "text", nullable: true),
-                    FieldBLabel = table.Column<string>(type: "text", nullable: true),
-                    FieldCLabel = table.Column<string>(type: "text", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -487,6 +566,136 @@ namespace BiiSoft.Migrations
                         column: x => x.LastModifierUserId,
                         principalTable: "AbpUsers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BiiItemSettings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    UseCodeFormula = table.Column<bool>(type: "boolean", nullable: false),
+                    UseNetWeight = table.Column<bool>(type: "boolean", nullable: false),
+                    UseGrossWeight = table.Column<bool>(type: "boolean", nullable: false),
+                    UseWidth = table.Column<bool>(type: "boolean", nullable: false),
+                    UseHeight = table.Column<bool>(type: "boolean", nullable: false),
+                    UseLength = table.Column<bool>(type: "boolean", nullable: false),
+                    UseDiameter = table.Column<bool>(type: "boolean", nullable: false),
+                    UseArea = table.Column<bool>(type: "boolean", nullable: false),
+                    UseVolume = table.Column<bool>(type: "boolean", nullable: false),
+                    UseSerial = table.Column<bool>(type: "boolean", nullable: false),
+                    UseExpired = table.Column<bool>(type: "boolean", nullable: false),
+                    UseBatchNo = table.Column<bool>(type: "boolean", nullable: false),
+                    UseAssetStatus = table.Column<bool>(type: "boolean", nullable: false),
+                    UseReorderStock = table.Column<bool>(type: "boolean", nullable: false),
+                    UseMinStock = table.Column<bool>(type: "boolean", nullable: false),
+                    UseMaxStock = table.Column<bool>(type: "boolean", nullable: false),
+                    UseItemGroup = table.Column<bool>(type: "boolean", nullable: false),
+                    UseBrand = table.Column<bool>(type: "boolean", nullable: false),
+                    UseModel = table.Column<bool>(type: "boolean", nullable: false),
+                    UseSeries = table.Column<bool>(type: "boolean", nullable: false),
+                    UseSize = table.Column<bool>(type: "boolean", nullable: false),
+                    UseGrade = table.Column<bool>(type: "boolean", nullable: false),
+                    UseColorPattern = table.Column<bool>(type: "boolean", nullable: false),
+                    UseCPU = table.Column<bool>(type: "boolean", nullable: false),
+                    UseRAM = table.Column<bool>(type: "boolean", nullable: false),
+                    UseVGA = table.Column<bool>(type: "boolean", nullable: false),
+                    UseCamera = table.Column<bool>(type: "boolean", nullable: false),
+                    UseScreen = table.Column<bool>(type: "boolean", nullable: false),
+                    UseHDD = table.Column<bool>(type: "boolean", nullable: false),
+                    UseBattery = table.Column<bool>(type: "boolean", nullable: false),
+                    UseFieldA = table.Column<bool>(type: "boolean", nullable: false),
+                    UseFieldB = table.Column<bool>(type: "boolean", nullable: false),
+                    UseFieldC = table.Column<bool>(type: "boolean", nullable: false),
+                    FieldALabel = table.Column<string>(type: "text", nullable: true),
+                    FieldBLabel = table.Column<string>(type: "text", nullable: true),
+                    FieldCLabel = table.Column<string>(type: "text", nullable: true),
+                    NetWeightRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    GrossWeightRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    WidthRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    HeightRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    LengthRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    DiameterRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    AreaRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    VolumeRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    ReorderStockRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    MinStockRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    MaxStockRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    ItemGroupRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    BrandRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    ModelRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    SeriesRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    SizeRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    GradeRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    ColorPatternRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    CPURequired = table.Column<bool>(type: "boolean", nullable: false),
+                    RAMRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    VGARequired = table.Column<bool>(type: "boolean", nullable: false),
+                    CameraRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    ScreenRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    HDDRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    BatteryRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    FieldARequired = table.Column<bool>(type: "boolean", nullable: false),
+                    FieldBRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    FieldCRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    WeightUnit = table.Column<int>(type: "integer", nullable: false),
+                    LengthUnit = table.Column<int>(type: "integer", nullable: false),
+                    VolumeUnit = table.Column<int>(type: "integer", nullable: false),
+                    AreaUnit = table.Column<int>(type: "integer", nullable: false),
+                    InventoryAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    AssetAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ExpenseAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    COGSAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RevenueAccountId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiItemSettings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiItemSettings_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemSettings_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemSettings_BiiChartOfAccounts_AssetAccountId",
+                        column: x => x.AssetAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiItemSettings_BiiChartOfAccounts_COGSAccountId",
+                        column: x => x.COGSAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiItemSettings_BiiChartOfAccounts_ExpenseAccountId",
+                        column: x => x.ExpenseAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiItemSettings_BiiChartOfAccounts_InventoryAccountId",
+                        column: x => x.InventoryAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiItemSettings_BiiChartOfAccounts_RevenueAccountId",
+                        column: x => x.RevenueAccountId,
+                        principalTable: "BiiChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -655,6 +864,76 @@ namespace BiiSoft.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BiiWarehouses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Code = table.Column<string>(type: "character varying(4)", maxLength: 4, nullable: true),
+                    Sharing = table.Column<int>(type: "integer", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiWarehouses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiWarehouses_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiWarehouses_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BiiItemCodeFormulaItemTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    No = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ItemType = table.Column<int>(type: "integer", nullable: false),
+                    ItemCodeFormulaId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiItemCodeFormulaItemTypes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiItemCodeFormulaItemTypes_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemCodeFormulaItemTypes_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemCodeFormulaItemTypes_BiiItemCodeFormulas_ItemCodeFor~",
+                        column: x => x.ItemCodeFormulaId,
+                        principalTable: "BiiItemCodeFormulas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BiiItems",
                 columns: table => new
                 {
@@ -665,11 +944,12 @@ namespace BiiSoft.Migrations
                     ItemType = table.Column<int>(type: "integer", nullable: false),
                     ItemCategory = table.Column<int>(type: "integer", nullable: false),
                     Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    Barcode = table.Column<string>(type: "text", nullable: true),
                     NetWeight = table.Column<decimal>(type: "numeric", nullable: false),
                     GrossWeight = table.Column<decimal>(type: "numeric", nullable: false),
-                    Length = table.Column<decimal>(type: "numeric", nullable: false),
                     Width = table.Column<decimal>(type: "numeric", nullable: false),
                     Height = table.Column<decimal>(type: "numeric", nullable: false),
+                    Length = table.Column<decimal>(type: "numeric", nullable: false),
                     Diameter = table.Column<decimal>(type: "numeric", nullable: false),
                     Area = table.Column<decimal>(type: "numeric", nullable: false),
                     Volume = table.Column<decimal>(type: "numeric", nullable: false),
@@ -703,12 +983,14 @@ namespace BiiSoft.Migrations
                     FieldBId = table.Column<Guid>(type: "uuid", nullable: true),
                     FieldCId = table.Column<Guid>(type: "uuid", nullable: true),
                     ImageId = table.Column<Guid>(type: "uuid", nullable: true),
-                    PurchaseTaxId = table.Column<Guid>(type: "uuid", nullable: true),
-                    SaleTaxId = table.Column<Guid>(type: "uuid", nullable: true),
                     PurchaseAccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     SaleAccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     InventoryAccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     Description = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    IsModifier = table.Column<bool>(type: "boolean", nullable: false),
+                    IsAddOn = table.Column<bool>(type: "boolean", nullable: false),
+                    UseBOM = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplayBOM = table.Column<bool>(type: "boolean", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -845,18 +1127,6 @@ namespace BiiSoft.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_BiiItems_BiiTaxes_PurchaseTaxId",
-                        column: x => x.PurchaseTaxId,
-                        principalTable: "BiiTaxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_BiiItems_BiiTaxes_SaleTaxId",
-                        column: x => x.SaleTaxId,
-                        principalTable: "BiiTaxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_BiiItems_BiiUnits_UnitId",
                         column: x => x.UnitId,
                         principalTable: "BiiUnits",
@@ -871,15 +1141,93 @@ namespace BiiSoft.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BiiItemGalleries",
+                name: "BiiWarehouseBranchs",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TenantId = table.Column<int>(type: "integer", nullable: false),
+                    WarehouseId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BranchId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiWarehouseBranchs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiWarehouseBranchs_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiWarehouseBranchs_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiWarehouseBranchs_BiiBranches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "BiiBranches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiWarehouseBranchs_BiiWarehouses_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalTable: "BiiWarehouses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BiiZones",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: true),
                     No = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    WarehouseId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    DisplayName = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiZones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiZones_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiZones_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiZones_BiiWarehouses_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalTable: "BiiWarehouses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BiiItemZones",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
                     ItemId = table.Column<Guid>(type: "uuid", nullable: false),
-                    GalleryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ZoneId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -887,14 +1235,35 @@ namespace BiiSoft.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BiiItemGalleries", x => x.Id);
+                    table.PrimaryKey("PK_BiiItemZones", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BiiItemGalleries_BiiItems_ItemId",
+                        name: "FK_BiiItemZones_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemZones_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiItemZones_BiiItems_ItemId",
                         column: x => x.ItemId,
                         principalTable: "BiiItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiItemZones_BiiZones_ZoneId",
+                        column: x => x.ZoneId,
+                        principalTable: "BiiZones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiBranches_Sharing",
+                table: "BiiBranches",
+                column: "Sharing");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiBatteries_Code",
@@ -925,6 +1294,26 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiBatteries_No",
                 table: "BiiBatteries",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiBranchUsers_BranchId",
+                table: "BiiBranchUsers",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiBranchUsers_CreatorUserId",
+                table: "BiiBranchUsers",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiBranchUsers_LastModifierUserId",
+                table: "BiiBranchUsers",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiBranchUsers_MemberId",
+                table: "BiiBranchUsers",
+                column: "MemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCameras_Code",
@@ -1077,6 +1466,37 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulaItemTypes_CreatorUserId",
+                table: "BiiItemCodeFormulaItemTypes",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulaItemTypes_ItemCodeFormulaId",
+                table: "BiiItemCodeFormulaItemTypes",
+                column: "ItemCodeFormulaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulaItemTypes_LastModifierUserId",
+                table: "BiiItemCodeFormulaItemTypes",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulas_CreatorUserId",
+                table: "BiiItemCodeFormulas",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulas_IsAllItemType",
+                table: "BiiItemCodeFormulas",
+                column: "IsAllItemType",
+                filter: "\"IsAllItemType\"=true");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemCodeFormulas_LastModifierUserId",
+                table: "BiiItemCodeFormulas",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldAs_Code",
                 table: "BiiItemFieldAs",
                 column: "Code");
@@ -1177,21 +1597,6 @@ namespace BiiSoft.Migrations
                 column: "LastModifierUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BiiItemGalleries_GalleryId",
-                table: "BiiItemGalleries",
-                column: "GalleryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiItemGalleries_ItemId",
-                table: "BiiItemGalleries",
-                column: "ItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiItemGalleries_No",
-                table: "BiiItemGalleries",
-                column: "No");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemGrades_Code",
                 table: "BiiItemGrades",
                 column: "Code");
@@ -1282,6 +1687,11 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_Barcode",
+                table: "BiiItems",
+                column: "Barcode");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_BatteryId",
                 table: "BiiItems",
                 column: "BatteryId");
@@ -1340,6 +1750,18 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiItems_InventoryAccountId",
                 table: "BiiItems",
                 column: "InventoryAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_IsAddOn",
+                table: "BiiItems",
+                column: "IsAddOn",
+                filter: "\"IsAddOn\"=true");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_IsModifier",
+                table: "BiiItems",
+                column: "IsModifier",
+                filter: "\"IsModifier\"=true");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_ItemBrandId",
@@ -1402,11 +1824,6 @@ namespace BiiSoft.Migrations
                 column: "PurchaseAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BiiItems_PurchaseTaxId",
-                table: "BiiItems",
-                column: "PurchaseTaxId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_RAMId",
                 table: "BiiItems",
                 column: "RAMId");
@@ -1417,19 +1834,44 @@ namespace BiiSoft.Migrations
                 column: "SaleAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BiiItems_SaleTaxId",
-                table: "BiiItems",
-                column: "SaleTaxId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_ScreenId",
                 table: "BiiItems",
                 column: "ScreenId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_TrackAssetStatus",
+                table: "BiiItems",
+                column: "TrackAssetStatus",
+                filter: "\"TrackAssetStatus\"=true");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_TrackBatchNo",
+                table: "BiiItems",
+                column: "TrackBatchNo",
+                filter: "\"TrackBatchNo\"=true");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_TrackExpired",
+                table: "BiiItems",
+                column: "TrackExpired",
+                filter: "\"TrackExpired\"=true");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_TrackSerial",
+                table: "BiiItems",
+                column: "TrackSerial",
+                filter: "\"TrackSerial\"=true");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_UnitId",
                 table: "BiiItems",
                 column: "UnitId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_UseBOM",
+                table: "BiiItems",
+                column: "UseBOM",
+                filter: "\"UseBOM\"=true");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_VGAId",
@@ -1467,6 +1909,41 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSettings_AssetAccountId",
+                table: "BiiItemSettings",
+                column: "AssetAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSettings_COGSAccountId",
+                table: "BiiItemSettings",
+                column: "COGSAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSettings_CreatorUserId",
+                table: "BiiItemSettings",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSettings_ExpenseAccountId",
+                table: "BiiItemSettings",
+                column: "ExpenseAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSettings_InventoryAccountId",
+                table: "BiiItemSettings",
+                column: "InventoryAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSettings_LastModifierUserId",
+                table: "BiiItemSettings",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemSettings_RevenueAccountId",
+                table: "BiiItemSettings",
+                column: "RevenueAccountId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemSizes_Code",
                 table: "BiiItemSizes",
                 column: "Code");
@@ -1495,6 +1972,26 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiItemSizes_No",
                 table: "BiiItemSizes",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemZones_CreatorUserId",
+                table: "BiiItemZones",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemZones_ItemId",
+                table: "BiiItemZones",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemZones_LastModifierUserId",
+                table: "BiiItemZones",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiItemZones_ZoneId",
+                table: "BiiItemZones",
+                column: "ZoneId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiRAMs_Code",
@@ -1615,19 +2112,122 @@ namespace BiiSoft.Migrations
                 name: "IX_BiiVGAs_No",
                 table: "BiiVGAs",
                 column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouseBranchs_BranchId",
+                table: "BiiWarehouseBranchs",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouseBranchs_CreatorUserId",
+                table: "BiiWarehouseBranchs",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouseBranchs_LastModifierUserId",
+                table: "BiiWarehouseBranchs",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouseBranchs_WarehouseId",
+                table: "BiiWarehouseBranchs",
+                column: "WarehouseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouses_Code",
+                table: "BiiWarehouses",
+                column: "Code");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouses_CreatorUserId",
+                table: "BiiWarehouses",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouses_DisplayName",
+                table: "BiiWarehouses",
+                column: "DisplayName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouses_LastModifierUserId",
+                table: "BiiWarehouses",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouses_Name",
+                table: "BiiWarehouses",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouses_No",
+                table: "BiiWarehouses",
+                column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiWarehouses_Sharing",
+                table: "BiiWarehouses",
+                column: "Sharing");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiZones_CreatorUserId",
+                table: "BiiZones",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiZones_DisplayName",
+                table: "BiiZones",
+                column: "DisplayName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiZones_LastModifierUserId",
+                table: "BiiZones",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiZones_Name",
+                table: "BiiZones",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiZones_No",
+                table: "BiiZones",
+                column: "No");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiZones_WarehouseId",
+                table: "BiiZones",
+                column: "WarehouseId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BiiBranchUsers");
+
+            migrationBuilder.DropTable(
+                name: "BiiItemCodeFormulaItemTypes");
+
+            migrationBuilder.DropTable(
                 name: "BiiItemFieldSettings");
 
             migrationBuilder.DropTable(
-                name: "BiiItemGalleries");
+                name: "BiiItemSettings");
+
+            migrationBuilder.DropTable(
+                name: "BiiItemZones");
+
+            migrationBuilder.DropTable(
+                name: "BiiWarehouseBranchs");
+
+            migrationBuilder.DropTable(
+                name: "BiiItemCodeFormulas");
 
             migrationBuilder.DropTable(
                 name: "BiiItems");
+
+            migrationBuilder.DropTable(
+                name: "BiiZones");
 
             migrationBuilder.DropTable(
                 name: "BiiBatteries");
@@ -1682,6 +2282,86 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.DropTable(
                 name: "BiiVGAs");
+
+            migrationBuilder.DropTable(
+                name: "BiiWarehouses");
+
+            migrationBuilder.DropIndex(
+                name: "IX_BiiBranches_Sharing",
+                table: "BiiBranches");
+
+            migrationBuilder.DropColumn(
+                name: "TaxEnable",
+                table: "BiiCompanyAdvanceSettings");
+
+            migrationBuilder.DropColumn(
+                name: "TaxType",
+                table: "BiiCompanyAdvanceSettings");
+
+            migrationBuilder.DropColumn(
+                name: "Sharing",
+                table: "BiiBranches");
+
+            migrationBuilder.CreateTable(
+                name: "BiiUserBranchs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BranchId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
+                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
+                    MemberId = table.Column<long>(type: "bigint", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    TenantId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BiiUserBranchs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BiiUserBranchs_AbpUsers_CreatorUserId",
+                        column: x => x.CreatorUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiUserBranchs_AbpUsers_LastModifierUserId",
+                        column: x => x.LastModifierUserId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_BiiUserBranchs_AbpUsers_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "AbpUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BiiUserBranchs_BiiBranches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "BiiBranches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiUserBranchs_BranchId",
+                table: "BiiUserBranchs",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiUserBranchs_CreatorUserId",
+                table: "BiiUserBranchs",
+                column: "CreatorUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiUserBranchs_LastModifierUserId",
+                table: "BiiUserBranchs",
+                column: "LastModifierUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BiiUserBranchs_MemberId",
+                table: "BiiUserBranchs",
+                column: "MemberId");
         }
     }
 }

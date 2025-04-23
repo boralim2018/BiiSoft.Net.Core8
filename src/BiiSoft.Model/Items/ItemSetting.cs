@@ -1,6 +1,8 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Timing;
+using BiiSoft.ChartOfAccounts;
 using BiiSoft.Entities;
+using BiiSoft.Enums;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -78,6 +80,25 @@ namespace BiiSoft.Items
         public bool FieldARequired { get; private set; }
         public bool FieldBRequired { get; private set; }
         public bool FieldCRequired { get; private set; }
+
+       
+        public WeightUnit WeightUnit { get; private set; }
+        public LengthUnit LengthUnit { get; private set; }
+        public VolumeUnit VolumeUnit { get; private set; }
+        public AreaUnit AreaUnit { get; private set; }
+
+        public Guid? InventoryAccountId { get; private set; }
+        public ChartOfAccount InventoryAccount { get; private set; }
+        public Guid? AssetAccountId { get; private set; }
+        public ChartOfAccount AssetAccount { get; private set; }
+        public Guid? ExpenseAccountId { get; private set; }
+        public ChartOfAccount ExpenseAccount { get; private set; }
+        public Guid? COGSAccountId { get; private set; }
+        public ChartOfAccount COGSAccount { get; private set; }
+        public Guid? RevenueAccountId { get; private set; }
+        public ChartOfAccount RevenueAccount { get; private set; }
+       
+
 
         public static ItemSetting Create(
             int tenantId,
@@ -162,7 +183,16 @@ namespace BiiSoft.Items
             bool batteryRequired,
             bool fieldARequired,
             bool fieldBRequired,
-            bool fieldCRequired)
+            bool fieldCRequired,
+            WeightUnit weightUnit,
+            LengthUnit lengthUnit,
+            AreaUnit areaUnit,
+            VolumeUnit volumeUnit,
+            Guid? inventoryAccountId,
+            Guid? assetAccountId,
+            Guid? expenseAccountId,
+            Guid? cogsAccountId,
+            Guid? revenueAccountId)
         {
             return new ItemSetting
             {
@@ -233,6 +263,15 @@ namespace BiiSoft.Items
                 FieldARequired = fieldARequired,
                 FieldBRequired = fieldBRequired,
                 FieldCRequired = fieldCRequired,
+                WeightUnit = weightUnit,
+                LengthUnit = lengthUnit,
+                AreaUnit = areaUnit,
+                VolumeUnit = volumeUnit,
+                InventoryAccountId = inventoryAccountId,
+                AssetAccountId = assetAccountId,
+                ExpenseAccountId = expenseAccountId,
+                COGSAccountId = cogsAccountId,
+                RevenueAccountId = revenueAccountId,
                 IsActive = true
             };
         }
@@ -302,7 +341,16 @@ namespace BiiSoft.Items
             bool batteryRequired,
             bool fieldARequired,
             bool fieldBRequired,
-            bool fieldCRequired)
+            bool fieldCRequired,
+            WeightUnit weightUnit,
+            LengthUnit lengthUnit,
+            AreaUnit areaUnit,
+            VolumeUnit volumeUnit,
+            Guid? inventoryAccountId,
+            Guid? assetAccountId,
+            Guid? expenseAccountId,
+            Guid? cogsAccountId,
+            Guid? revenueAccountId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -370,6 +418,15 @@ namespace BiiSoft.Items
             FieldARequired = fieldARequired;
             FieldBRequired = fieldBRequired;
             FieldCRequired = fieldCRequired;
+            WeightUnit = weightUnit;
+            LengthUnit = lengthUnit;
+            AreaUnit = areaUnit;
+            VolumeUnit = volumeUnit;
+            InventoryAccountId = inventoryAccountId;
+            AssetAccountId = assetAccountId;
+            ExpenseAccountId = expenseAccountId;
+            COGSAccountId = cogsAccountId;
+            RevenueAccountId = revenueAccountId;
         }
     }
 }

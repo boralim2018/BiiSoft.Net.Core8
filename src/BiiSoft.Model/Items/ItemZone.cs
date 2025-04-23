@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace BiiSoft.Items
 {
     [Table("BiiItemZones")]
-    public class ItemZone : DefaultEntity<Guid>, IMustHaveTenant
+    public class ItemZone : BaseAuditedEntity<Guid>, IMustHaveTenant
     {
         public int TenantId { get; set; }
         public Guid ItemId { get; private set; }

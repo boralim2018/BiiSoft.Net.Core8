@@ -1,4 +1,6 @@
-﻿using BiiSoft.Items;
+﻿using BiiSoft.Extensions;
+using BiiSoft.Items;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
@@ -83,7 +85,16 @@ namespace BiiSoft.Branches
                 input.BatteryRequired,
                 input.FieldARequired,
                 input.FieldBRequired,
-                input.FieldCRequired);
+                input.FieldCRequired,
+                input.WeightUnit,
+                input.LengthUnit,
+                input.AreaUnit,
+                input.VolumeUnit,
+                input.InventoryAccountId,
+                input.AssetAccountId,
+                input.ExpenseAccountId,
+                input.COGSAccountId,
+                input.RevenueAccountId);
         }
 
         protected override void UpdateInstance(ItemSetting input, ItemSetting entity)
@@ -153,12 +164,49 @@ namespace BiiSoft.Branches
                 input.BatteryRequired,
                 input.FieldARequired,
                 input.FieldBRequired,
-                input.FieldCRequired);
+                input.FieldCRequired,
+                input.WeightUnit,
+                input.LengthUnit,
+                input.AreaUnit,
+                input.VolumeUnit,
+                input.InventoryAccountId,
+                input.AssetAccountId,
+                input.ExpenseAccountId,
+                input.COGSAccountId,
+                input.RevenueAccountId);
         }
 
         protected override async Task ValidateInputAsync(ItemSetting input)
         {
-            await Task.Run(() => { });
+            if (!input.InventoryAccountId.IsNullOrEmpty())
+            {
+                var findInventoryAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.InventoryAccountId);
+                if(!findInventoryAccount) InvalidException(L("InventoryAccount"));
+            }
+
+            if (!input.AssetAccountId.IsNullOrEmpty())
+            {
+                var findAssetAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.AssetAccountId);
+                if (!findAssetAccount) InvalidException(L("AssetAccount"));
+            }
+
+            if (!input.ExpenseAccountId.IsNullOrEmpty())
+            {
+                var findExpenseAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ExpenseAccountId);
+                if (!findExpenseAccount) InvalidException(L("ExpenseAccount"));
+            }
+
+            if (!input.COGSAccountId.IsNullOrEmpty())
+            {
+                var findCOGSAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.COGSAccountId);
+                if (!findCOGSAccount) InvalidException(L("COGSAccount"));
+            }
+
+            if (!input.RevenueAccountId.IsNullOrEmpty())
+            {
+                var findRevenueAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.RevenueAccountId);
+                if (!findRevenueAccount) InvalidException(L("RevenueAccount"));
+            }
         }
 
     }

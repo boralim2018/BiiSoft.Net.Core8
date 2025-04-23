@@ -427,6 +427,13 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.Barcode);
                 e.HasIndex(i => i.ItemType);
                 e.HasIndex(i => i.ItemCategory);
+                e.HasIndex(i => i.TrackSerial).HasFilter("\"TrackSerial\"=true");
+                e.HasIndex(i => i.TrackExpired).HasFilter("\"TrackExpired\"=true");
+                e.HasIndex(i => i.TrackBatchNo).HasFilter("\"TrackBatchNo\"=true");
+                e.HasIndex(i => i.TrackAssetStatus).HasFilter("\"TrackAssetStatus\"=true");
+                e.HasIndex(i => i.IsModifier).HasFilter("\"IsModifier\"=true");
+                e.HasIndex(i => i.IsAddOn).HasFilter("\"IsAddOn\"=true");
+                e.HasIndex(i => i.UseBOM).HasFilter("\"UseBOM\"=true");
                 e.HasOne(i => i.ItemGroup).WithMany().HasForeignKey(i => i.ItemGroupId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.ItemBrand).WithMany().HasForeignKey(i => i.ItemBrandId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(i => i.ItemGrade).WithMany().HasForeignKey(i => i.ItemGradeId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
@@ -452,13 +459,17 @@ namespace BiiSoft.EntityFrameworkCore
 
             modelBuilder.Entity<ItemSetting>(e =>
             {
+                e.HasOne(i => i.InventoryAccount).WithMany().HasForeignKey(i => i.InventoryAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.AssetAccount).WithMany().HasForeignKey(i => i.AssetAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.ExpenseAccount).WithMany().HasForeignKey(i => i.ExpenseAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.COGSAccount).WithMany().HasForeignKey(i => i.COGSAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.RevenueAccount).WithMany().HasForeignKey(i => i.RevenueAccountId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ItemCodeFormula>(e =>
             {
-                
+                e.HasIndex(i => i.IsAllItemType).HasFilter("\"IsAllItemType\"=true");
             });
-
 
             modelBuilder.Entity<ItemCodeFormulaItemType>(e =>
             {

@@ -137,6 +137,7 @@ namespace BiiSoft.Zones
                     Id = l.Id,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
+                    WarehouseId = l.WarehouseId,
                     WarehouseName = isDefaultLanguage ? l.Warehouse.Name : l.Warehouse.DisplayName,
                     IsActive = l.IsActive,
                 });

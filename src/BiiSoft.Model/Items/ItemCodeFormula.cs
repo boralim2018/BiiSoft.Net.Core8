@@ -15,13 +15,14 @@ namespace BiiSoft.Items
         public int TenantId { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long No { get; private set; }
+        public bool IsAllItemType { get; private set; }
         public ICollection<ItemCodeFormulaItemType> ItemTypes { get; private set; }
         public ItemCodeFormulaType Type { get; private set; }
         public string Prefix { get; private set; }
         public int Digits { get; private set; }
         public int Start { get; private set; }
 
-        public static ItemCodeFormula Create(int tenantId, long userId, ItemCodeFormulaType type, string prefix, int digits, int start)
+        public static ItemCodeFormula Create(int tenantId, long userId, bool isAllItemItemtype, ItemCodeFormulaType type, string prefix, int digits, int start)
         {
             return new ItemCodeFormula
             {
@@ -29,6 +30,7 @@ namespace BiiSoft.Items
                 TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
+                IsAllItemType = isAllItemItemtype,
                 ItemTypes = new List<ItemCodeFormulaItemType>(),
                 Type = type,
                 Prefix = prefix,
@@ -38,10 +40,11 @@ namespace BiiSoft.Items
             };
         }
 
-        public void Update(long userId, ItemCodeFormulaType type, string prefix, int digits, int start)
+        public void Update(long userId, bool isAllItemType, ItemCodeFormulaType type, string prefix, int digits, int start)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
+            IsAllItemType = isAllItemType;
             Type = type;
             Prefix = prefix;
             Digits = digits;

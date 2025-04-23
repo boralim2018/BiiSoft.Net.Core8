@@ -17,7 +17,7 @@ namespace BiiSoft.Items
         public ItemType ItemType { get; private set; }
         public Guid ItemCodeFormulaId { get; private set; }
         public ItemCodeFormula ItemCodeFormula { get; private set; }
-
+       
         public static ItemCodeFormulaItemType Create(int tenantId, long userId, ItemType itemType, Guid itemCodeFormulaId)
         {
             return new ItemCodeFormulaItemType

@@ -711,6 +711,9 @@
 		<text name="SaleAccount">គណនីលក់ចេញ</text>
 		<text name="InventoryAccount">គណនីស្តុក</text>
 		<text name="AssetAccount">គណនីទ្រព្យ</text>
+		<text name="ExpenseAccount">គណនីចំណាយ</text>
+		<text name="COGSAccount">គណនីថ្លៃដើម</text>
+		<text name="RevenueAccount">គណនីចំណូល</text>
 		<text name="FindUnits">ស្វែងរកខ្នាត</text>
 		<text name="ItemBrands">ម៉ាក</text>
 		<text name="ItemBrand">ម៉ាក</text>
@@ -736,9 +739,9 @@
 		<text name="RAMs">RAM</text>
 		<text name="RAM">RAM</text>
 		<text name="FindRAMs">ស្វែងរក RAM</text>
-		<text name="VGAs">VGA</text>
-		<text name="VGA">VGA</text>
-		<text name="FindVGAs">ស្វែងរក VGA</text>
+		<text name="VGAs">VGA/GPU</text>
+		<text name="VGA">VGA/GPU</text>
+		<text name="FindVGAs">ស្វែងរក VGA/GPU</text>
 		<text name="HDDs">HDD</text>
 		<text name="HDD">HDD</text>
 		<text name="FindHDDs">ស្វែងរក HDD</text>
@@ -762,9 +765,11 @@
 		<text name="Sharing">ចែករំលែក</text>
 		<text name="SpecificBranch">សាខាជាក់លាក់</text>
 		<text name="SpecificUser">អ្នកប្រើប្រាស់ជាក់លាក់</text>
+		<text name="SpecificItemType">ប្រភេទទំនិញជាក់លាក់</text>
 		<text name="AdvanceSetting">កំណត់ផ្សេងៗ</text>
 		<text name="AccountSetting">កំណត់គណនី</text>
 		<text name="ItemFieldSetting">កំណត់លក្ខណៈទំនិញ</text>
+		<text name="ItemFields">លក្ខណៈទំនិញ</text>
 		<text name="ChangeSetting">កែប្រែការកំណត់</text>
 		<text name="Use_">ប្រើ {0}</text>
 		<text name="Required_">ត្រូវបំពេញ {0}</text>
@@ -796,10 +801,13 @@
 		<text name="TrackAssetStatus">តាមដានលក្ខណៈទ្រព្យ</text>
 		<text name="StockTracking">តាមដានស្តុក</text>
 		<text name="UOM">ខ្នាតរង្វាស់</text>
+		<text name="Measurement">រង្វាស់</text>
 		<text name="WeightUnit">ខ្នាតទម្ងន់</text>
 		<text name="LengthUnit">ខ្នាតប្រវែង</text>
 		<text name="AreaUnit">ខ្នាតក្រឡាផ្ទែ</text>
 		<text name="VolumeUnit">ខ្នាតមាឌចំណុះ</text>
 		<text name="PackageUnit">ខ្នាតវេចខ្ចប់</text>
+		<text name="CodeSetting">កំណត់លេខកូដ</text>
+		<text name="Barcode">បាកូដ</text>
 	</texts>
 </localizationDictionary>

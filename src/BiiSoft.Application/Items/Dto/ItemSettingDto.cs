@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BiiSoft.Enums;
 
 namespace BiiSoft.Items.Dto
 {
@@ -77,5 +78,27 @@ namespace BiiSoft.Items.Dto
         public bool FieldARequired { get; set; }
         public bool FieldBRequired { get; set; }
         public bool FieldCRequired { get; set; }
+
+        public WeightUnit WeightUnit { get; set; }
+        public LengthUnit LengthUnit { get; set; }
+        public AreaUnit AreaUnit { get; set; }
+        public VolumeUnit VolumeUnit { get; set; }
+        public Guid? InventoryAccountId { get; set; }
+        public Guid? AssetAccountId { get; set; }
+        public Guid? ExpenseAccountId { get; set; }
+        public Guid? COGSAccountId { get; set; }
+        public Guid? RevenueAccountId { get; set; }
+
+        public string InventoryAccountName { get; set; }
+        public string AssetAccountName { get; set; }
+        public string ExpenseAccountName { get; set; }
+        public string COGSAccountName { get; set; }
+        public string RevenueAccountName { get; set; }
+
+
+        public bool ItemFilterEnable => UseItemGroup || UseBrand || UseGrade || UseModel || UseSize || UseSeries || UseColorPattern || UseCPU || UseRAM ||
+                    UseVGA || UseHDD || UseScreen || UseCamera || UseBattery || UseFieldA || UseFieldB || UseFieldC;    
+        public bool MeasurementEnable => UseGrossWeight || UseNetWeight || UseWidth || UseHeight || UseLength || UseDiameter || UseArea || UseVolume;
+        public bool StockTrackingEnable => UseReorderStock || UseMinStock || UseMaxStock || UseBatchNo || UseSerial || UseExpired || UseAssetStatus;
     }
 }

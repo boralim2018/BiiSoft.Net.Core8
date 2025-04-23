@@ -10,6 +10,7 @@ namespace BiiSoft.ItemCodeFormulas.Dto
     public class CreateUpdateItemCodeFormulaInputDto
     {
         public Guid? Id { get; set; }
+        public bool IsAllItemType { get; set; }
         public List<ItemCodeFormulaItemTypeDto> ItemTypes { get; set; }
         public ItemCodeFormulaType Type { get; set; }
         public string Prefix { get; set; }

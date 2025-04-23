@@ -2857,6 +2857,9 @@ namespace BiiSoft.Migrations
                     b.Property<decimal>("Diameter")
                         .HasColumnType("numeric");
 
+                    b.Property<bool>("DisplayBOM")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -2887,6 +2890,12 @@ namespace BiiSoft.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsAddOn")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsModifier")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("ItemBrandId")
@@ -2978,6 +2987,9 @@ namespace BiiSoft.Migrations
                     b.Property<Guid?>("UnitId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("UseBOM")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid?>("VGAId")
                         .HasColumnType("uuid");
 
@@ -3021,6 +3033,12 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("InventoryAccountId");
 
+                    b.HasIndex("IsAddOn")
+                        .HasFilter("\"IsAddOn\"=true");
+
+                    b.HasIndex("IsModifier")
+                        .HasFilter("\"IsModifier\"=true");
+
                     b.HasIndex("ItemBrandId");
 
                     b.HasIndex("ItemCategory");
@@ -3051,7 +3069,22 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("ScreenId");
 
+                    b.HasIndex("TrackAssetStatus")
+                        .HasFilter("\"TrackAssetStatus\"=true");
+
+                    b.HasIndex("TrackBatchNo")
+                        .HasFilter("\"TrackBatchNo\"=true");
+
+                    b.HasIndex("TrackExpired")
+                        .HasFilter("\"TrackExpired\"=true");
+
+                    b.HasIndex("TrackSerial")
+                        .HasFilter("\"TrackSerial\"=true");
+
                     b.HasIndex("UnitId");
+
+                    b.HasIndex("UseBOM")
+                        .HasFilter("\"UseBOM\"=true");
 
                     b.HasIndex("VGAId");
 
@@ -3140,6 +3173,9 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsAllItemType")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -3167,6 +3203,9 @@ namespace BiiSoft.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("IsAllItemType")
+                        .HasFilter("\"IsAllItemType\"=true");
 
                     b.HasIndex("LastModifierUserId");
 
@@ -3518,11 +3557,20 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("AreaRequired")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("AreaUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("AssetAccountId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("BatteryRequired")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("BrandRequired")
                         .HasColumnType("boolean");
+
+                    b.Property<Guid?>("COGSAccountId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("CPURequired")
                         .HasColumnType("boolean");
@@ -3541,6 +3589,9 @@ namespace BiiSoft.Migrations
 
                     b.Property<bool>("DiameterRequired")
                         .HasColumnType("boolean");
+
+                    b.Property<Guid?>("ExpenseAccountId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("FieldALabel")
                         .HasColumnType("text");
@@ -3572,6 +3623,9 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("HeightRequired")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid?>("InventoryAccountId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
@@ -3586,6 +3640,9 @@ namespace BiiSoft.Migrations
 
                     b.Property<bool>("LengthRequired")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("LengthUnit")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("MaxStockRequired")
                         .HasColumnType("boolean");
@@ -3604,6 +3661,9 @@ namespace BiiSoft.Migrations
 
                     b.Property<bool>("ReorderStockRequired")
                         .HasColumnType("boolean");
+
+                    b.Property<Guid?>("RevenueAccountId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("ScreenRequired")
                         .HasColumnType("boolean");
@@ -3722,14 +3782,30 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("VolumeRequired")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("VolumeUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WeightUnit")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("WidthRequired")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AssetAccountId");
+
+                    b.HasIndex("COGSAccountId");
+
                     b.HasIndex("CreatorUserId");
 
+                    b.HasIndex("ExpenseAccountId");
+
+                    b.HasIndex("InventoryAccountId");
+
                     b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("RevenueAccountId");
 
                     b.ToTable("BiiItemSettings");
                 });
@@ -3809,9 +3885,6 @@ namespace BiiSoft.Migrations
 
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("boolean");
 
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uuid");
@@ -5828,17 +5901,52 @@ namespace BiiSoft.Migrations
 
             modelBuilder.Entity("BiiSoft.Items.ItemSetting", b =>
                 {
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "AssetAccount")
+                        .WithMany()
+                        .HasForeignKey("AssetAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "COGSAccount")
+                        .WithMany()
+                        .HasForeignKey("COGSAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "ExpenseAccount")
+                        .WithMany()
+                        .HasForeignKey("ExpenseAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "InventoryAccount")
+                        .WithMany()
+                        .HasForeignKey("InventoryAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
 
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "RevenueAccount")
+                        .WithMany()
+                        .HasForeignKey("RevenueAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AssetAccount");
+
+                    b.Navigation("COGSAccount");
+
                     b.Navigation("CreatorUser");
 
+                    b.Navigation("ExpenseAccount");
+
+                    b.Navigation("InventoryAccount");
+
                     b.Navigation("LastModifierUser");
+
+                    b.Navigation("RevenueAccount");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemSize", b =>

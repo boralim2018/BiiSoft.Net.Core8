@@ -108,6 +108,11 @@ namespace BiiSoft.Items
 
         public ICollection<ItemZone> ItemZones { get; private set; }
 
+        public bool IsModifier { get; private set; }
+        public bool IsAddOn { get; private set; }
+        public bool UseBOM { get; private set; }
+        public bool DisplayBOM { get; private set; }
+
         public static Item Create(
             int tenantId,
             long userId,
@@ -157,7 +162,11 @@ namespace BiiSoft.Items
             Guid? fieldCId,
             Guid? inventoryAccountId,
             Guid? purchaseAccountId,
-            Guid? saleAccountId)
+            Guid? saleAccountId,
+            bool isModifier,
+            bool isAddOn,
+            bool useBOM,
+            bool displayBOM)
         {
             return new Item
             {
@@ -211,6 +220,10 @@ namespace BiiSoft.Items
                 InventoryAccountId = inventoryAccountId,
                 PurchaseAccountId = purchaseAccountId,
                 SaleAccountId = saleAccountId,
+                IsModifier = isModifier,
+                IsAddOn = isAddOn,
+                UseBOM = useBOM,
+                DisplayBOM = displayBOM,
                 IsActive = true
             };
         }
@@ -263,7 +276,11 @@ namespace BiiSoft.Items
             Guid? fieldCId,
             Guid? inventoryAccountId,
             Guid? purchaseAccountId,
-            Guid? saleAccountId)
+            Guid? saleAccountId,
+            bool isModifier,
+            bool isAddOn,
+            bool useBOM,
+            bool displayBOM)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -314,6 +331,10 @@ namespace BiiSoft.Items
             InventoryAccountId = inventoryAccountId;
             PurchaseAccountId = purchaseAccountId;
             SaleAccountId = saleAccountId;
+            IsModifier = isModifier;
+            IsAddOn = isAddOn;
+            UseBOM = useBOM;
+            DisplayBOM = displayBOM;
         }
 
     }

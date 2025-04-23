@@ -63,6 +63,11 @@ namespace BiiSoft.Items.Dto
         public Guid? InventoryAccountId { get; set; }
         public string Description { get; set; }
         public List<ItemZoneDto> ItemZones { get; set; }
+        public bool IsModified { get; set; }
+        public bool IsAddOn { get; set; }
+        public bool UseBOM { get; set; }
+        public bool DisplayBOM { get; set; }
+
     }
 
 }

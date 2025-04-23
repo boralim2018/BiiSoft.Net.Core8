@@ -711,6 +711,9 @@
 		<text name="SaleAccount">Sale Account</text>
 		<text name="InventoryAccount">Inventory Account</text>
 		<text name="AssetAccount">Asset Account</text>
+		<text name="ExpenseAccount">Expense Account</text>
+		<text name="COGSAccount">COGS Account</text>
+		<text name="RevenueAccount">Revenue Account</text>
 		<text name="FindUnits">Find Units</text>
 		<text name="ItemBrands">Brands</text>
 		<text name="ItemBrand">Brand</text>
@@ -730,18 +733,18 @@
 		<text name="ItemSize">Size</text>
 		<text name="FindItemSizes">Find Sizes</text>
 		<text name="FindColorPatterns">Find Color Patterns</text>
-		<text name="CPUs">CPUs</text>
+		<text name="CPUs">CPU</text>
 		<text name="CPU">CPU</text>
-		<text name="FindCPUs">Find CPUs</text>
-		<text name="RAMs">RAMs</text>
+		<text name="FindCPUs">Find CPU</text>
+		<text name="RAMs">RAM</text>
 		<text name="RAM">RAM</text>
-		<text name="FindRAMs">Find RAMs</text>
-		<text name="VGAs">VGAs</text>
-		<text name="VGA">VGA</text>
-		<text name="FindVGAs">Find VGAs</text>
-		<text name="HDDs">HDDs</text>
+		<text name="FindRAMs">Find RAM</text>
+		<text name="VGAs">VGA/GPU</text>
+		<text name="VGA">VGA/GPU</text>
+		<text name="FindVGAs">Find VGA/GPU</text>
+		<text name="HDDs">HDD</text>
 		<text name="HDD">HDD</text>
-		<text name="FindHDDs">Find HDDs</text>
+		<text name="FindHDDs">Find HDD</text>
 		<text name="Screens">Screens</text>
 		<text name="Screen">Screen</text>
 		<text name="FindScreens">Find Screens</text>
@@ -762,9 +765,11 @@
 		<text name="Sharing">Sharing</text>
 		<text name="SpecificBranch">Specific Branch</text>
 		<text name="SpecificUser">Specific User</text>
+		<text name="SpecificItemType">Specific Item Type</text>
 		<text name="AdvanceSetting">Advance Setting</text>
 		<text name="AccountSetting">Account Setting</text>
 		<text name="ItemFieldSetting">Item Field Setting</text>
+		<text name="ItemFields">Item Fields</text>
 		<text name="ChangeSetting">Change Setting</text>
 		<text name="Use_">Use {0}</text>
 		<text name="Required_">Required {0}</text>
@@ -795,11 +800,14 @@
 		<text name="TrackExpired">Track Expired</text>
 		<text name="TrackAssetStatus">Track Asset Status</text>
 		<text name="StockTracking">StockTracking</text>
-		<text name="UOM">Fitler</text>
+		<text name="UOM">UOM</text>
+		<text name="Measurement">Measurement</text>
 		<text name="WeightUnit">Weight Unit</text>
 		<text name="LengthUnit">Length Unit</text>
 		<text name="AreaUnit">Area Unit</text>
 		<text name="VolumeUnit">Volume Unit</text>
-		<text name="PackageUnit">package Unit</text>
+		<text name="PackageUnit">Package Unit</text>
+		<text name="CodeSetting">Code Setting</text>
+		<text name="Barcode">Barcode</text>
 	</texts>
 </localizationDictionary>

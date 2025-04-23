@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20250103062201_AddWarehouse")]
-    partial class AddWarehouse
+    [Migration("20250423042838_AddItemAndWarehouse")]
+    partial class AddItemAndWarehouse
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1971,6 +1971,12 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("MultiCurrencyEnable")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("TaxEnable")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("TaxType")
+                        .HasColumnType("integer");
+
                     b.Property<int>("TenantId")
                         .HasColumnType("integer");
 
@@ -2821,6 +2827,9 @@ namespace BiiSoft.Migrations
                     b.Property<int>("AreaUnit")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Barcode")
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("BatteryId")
                         .HasColumnType("uuid");
 
@@ -2850,6 +2859,9 @@ namespace BiiSoft.Migrations
 
                     b.Property<decimal>("Diameter")
                         .HasColumnType("numeric");
+
+                    b.Property<bool>("DisplayBOM")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -2881,6 +2893,12 @@ namespace BiiSoft.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsAddOn")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsModifier")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("ItemBrandId")
@@ -2942,9 +2960,6 @@ namespace BiiSoft.Migrations
                     b.Property<Guid?>("PurchaseAccountId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PurchaseTaxId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("RAMId")
                         .HasColumnType("uuid");
 
@@ -2954,14 +2969,14 @@ namespace BiiSoft.Migrations
                     b.Property<Guid?>("SaleAccountId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("SaleTaxId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("ScreenId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("TrackAssetStatus")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("TrackBatchNo")
                         .HasColumnType("boolean");
@@ -2969,14 +2984,14 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("TrackExpired")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("TrackAssetStatus")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("TrackSerial")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("UnitId")
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("UseBOM")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid?>("VGAId")
                         .HasColumnType("uuid");
@@ -2994,6 +3009,8 @@ namespace BiiSoft.Migrations
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Barcode");
 
                     b.HasIndex("BatteryId");
 
@@ -3019,6 +3036,12 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("InventoryAccountId");
 
+                    b.HasIndex("IsAddOn")
+                        .HasFilter("\"IsAddOn\"=true");
+
+                    b.HasIndex("IsModifier")
+                        .HasFilter("\"IsModifier\"=true");
+
                     b.HasIndex("ItemBrandId");
 
                     b.HasIndex("ItemCategory");
@@ -3043,17 +3066,28 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("PurchaseAccountId");
 
-                    b.HasIndex("PurchaseTaxId");
-
                     b.HasIndex("RAMId");
 
                     b.HasIndex("SaleAccountId");
 
-                    b.HasIndex("SaleTaxId");
-
                     b.HasIndex("ScreenId");
 
+                    b.HasIndex("TrackAssetStatus")
+                        .HasFilter("\"TrackAssetStatus\"=true");
+
+                    b.HasIndex("TrackBatchNo")
+                        .HasFilter("\"TrackBatchNo\"=true");
+
+                    b.HasIndex("TrackExpired")
+                        .HasFilter("\"TrackExpired\"=true");
+
+                    b.HasIndex("TrackSerial")
+                        .HasFilter("\"TrackSerial\"=true");
+
                     b.HasIndex("UnitId");
+
+                    b.HasIndex("UseBOM")
+                        .HasFilter("\"UseBOM\"=true");
 
                     b.HasIndex("VGAId");
 
@@ -3142,14 +3176,20 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ItemTypes")
-                        .HasColumnType("text");
+                    b.Property<bool>("IsAllItemType")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<long>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("No"));
 
                     b.Property<string>("Prefix")
                         .HasColumnType("text");
@@ -3167,12 +3207,15 @@ namespace BiiSoft.Migrations
 
                     b.HasIndex("CreatorUserId");
 
+                    b.HasIndex("IsAllItemType")
+                        .HasFilter("\"IsAllItemType\"=true");
+
                     b.HasIndex("LastModifierUserId");
 
                     b.ToTable("BiiItemCodeFormulas");
                 });
 
-            modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
+            modelBuilder.Entity("BiiSoft.Items.ItemCodeFormulaItemType", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3184,107 +3227,11 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("FieldALabel")
-                        .HasColumnType("text");
+                    b.Property<Guid>("ItemCodeFormulaId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("FieldBLabel")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FieldCLabel")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("TenantId")
+                    b.Property<int>("ItemType")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("UseBattery")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseBrand")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseCPU")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseCamera")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseCode")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseColorPattern")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseFieldA")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseFieldB")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseFieldC")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseGrade")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseHDD")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseItemGroup")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseModel")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseRAM")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseScreen")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseSeries")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseSize")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("UseVGA")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("LastModifierUserId");
-
-                    b.ToTable("BiiItemFieldSettings");
-                });
-
-            modelBuilder.Entity("BiiSoft.Items.ItemGallery", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("GalleryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ItemId")
-                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("timestamp without time zone");
@@ -3303,13 +3250,49 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GalleryId");
+                    b.HasIndex("CreatorUserId");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("ItemCodeFormulaId");
 
-                    b.HasIndex("No");
+                    b.HasIndex("LastModifierUserId");
 
-                    b.ToTable("BiiItemGalleries");
+                    b.ToTable("BiiItemCodeFormulaItemTypes");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("UseCode")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorUserId");
+
+                    b.HasIndex("LastModifierUserId");
+
+                    b.ToTable("BiiItemFieldSettings");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemGrade", b =>
@@ -3574,7 +3557,31 @@ namespace BiiSoft.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("CodeFormalaEnable")
+                    b.Property<bool>("AreaRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("AreaUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("AssetAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("BatteryRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("BrandRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("COGSAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("CPURequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("CameraRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ColorPatternRequired")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime>("CreationTime")
@@ -3583,7 +3590,49 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("DiameterRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("ExpenseAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FieldALabel")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("FieldARequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("FieldBLabel")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("FieldBRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("FieldCLabel")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("FieldCRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("GradeRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("GrossWeightRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HDDRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("HeightRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("InventoryAccountId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ItemGroupRequired")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastModificationTime")
@@ -3592,14 +3641,174 @@ namespace BiiSoft.Migrations
                     b.Property<long?>("LastModifierUserId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("LengthRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("LengthUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("MaxStockRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("MinStockRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ModelRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("NetWeightRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RAMRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ReorderStockRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("RevenueAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("ScreenRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("SeriesRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("SizeRequired")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("TenantId")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("UseArea")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseAssetStatus")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseBatchNo")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseBattery")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseBrand")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseCPU")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseCamera")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseCodeFormula")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseColorPattern")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseDiameter")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseExpired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseFieldA")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseFieldB")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseFieldC")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseGrade")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseGrossWeight")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseHDD")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseHeight")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseItemGroup")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseLength")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseMaxStock")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseMinStock")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseModel")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseNetWeight")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseRAM")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseReorderStock")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseScreen")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseSerial")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseSeries")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseSize")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseVGA")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseVolume")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("UseWidth")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("VGARequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("VolumeRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("VolumeUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WeightUnit")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("WidthRequired")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AssetAccountId");
+
+                    b.HasIndex("COGSAccountId");
 
                     b.HasIndex("CreatorUserId");
 
+                    b.HasIndex("ExpenseAccountId");
+
+                    b.HasIndex("InventoryAccountId");
+
                     b.HasIndex("LastModifierUserId");
+
+                    b.HasIndex("RevenueAccountId");
 
                     b.ToTable("BiiItemSettings");
                 });
@@ -3679,9 +3888,6 @@ namespace BiiSoft.Migrations
 
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("boolean");
 
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uuid");
@@ -5496,11 +5702,6 @@ namespace BiiSoft.Migrations
                         .HasForeignKey("PurchaseAccountId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("BiiSoft.Taxes.Tax", "PurchaseTax")
-                        .WithMany()
-                        .HasForeignKey("PurchaseTaxId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("BiiSoft.Items.RAM", "RAM")
                         .WithMany()
                         .HasForeignKey("RAMId")
@@ -5509,11 +5710,6 @@ namespace BiiSoft.Migrations
                     b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "SaleAccount")
                         .WithMany()
                         .HasForeignKey("SaleAccountId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("BiiSoft.Taxes.Tax", "SaleTax")
-                        .WithMany()
-                        .HasForeignKey("SaleTaxId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BiiSoft.Items.Screen", "Screen")
@@ -5567,13 +5763,9 @@ namespace BiiSoft.Migrations
 
                     b.Navigation("PurchaseAccount");
 
-                    b.Navigation("PurchaseTax");
-
                     b.Navigation("RAM");
 
                     b.Navigation("SaleAccount");
-
-                    b.Navigation("SaleTax");
 
                     b.Navigation("Screen");
 
@@ -5612,6 +5804,29 @@ namespace BiiSoft.Migrations
                     b.Navigation("LastModifierUser");
                 });
 
+            modelBuilder.Entity("BiiSoft.Items.ItemCodeFormulaItemType", b =>
+                {
+                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
+                        .WithMany()
+                        .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.Items.ItemCodeFormula", "ItemCodeFormula")
+                        .WithMany("ItemTypes")
+                        .HasForeignKey("ItemCodeFormulaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
+                        .WithMany()
+                        .HasForeignKey("LastModifierUserId");
+
+                    b.Navigation("CreatorUser");
+
+                    b.Navigation("ItemCodeFormula");
+
+                    b.Navigation("LastModifierUser");
+                });
+
             modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
                 {
                     b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
@@ -5625,17 +5840,6 @@ namespace BiiSoft.Migrations
                     b.Navigation("CreatorUser");
 
                     b.Navigation("LastModifierUser");
-                });
-
-            modelBuilder.Entity("BiiSoft.Items.ItemGallery", b =>
-                {
-                    b.HasOne("BiiSoft.Items.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemGrade", b =>
@@ -5700,17 +5904,52 @@ namespace BiiSoft.Migrations
 
             modelBuilder.Entity("BiiSoft.Items.ItemSetting", b =>
                 {
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "AssetAccount")
+                        .WithMany()
+                        .HasForeignKey("AssetAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "COGSAccount")
+                        .WithMany()
+                        .HasForeignKey("COGSAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
                         .WithMany()
                         .HasForeignKey("CreatorUserId");
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "ExpenseAccount")
+                        .WithMany()
+                        .HasForeignKey("ExpenseAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "InventoryAccount")
+                        .WithMany()
+                        .HasForeignKey("InventoryAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
                         .WithMany()
                         .HasForeignKey("LastModifierUserId");
 
+                    b.HasOne("BiiSoft.ChartOfAccounts.ChartOfAccount", "RevenueAccount")
+                        .WithMany()
+                        .HasForeignKey("RevenueAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AssetAccount");
+
+                    b.Navigation("COGSAccount");
+
                     b.Navigation("CreatorUser");
 
+                    b.Navigation("ExpenseAccount");
+
+                    b.Navigation("InventoryAccount");
+
                     b.Navigation("LastModifierUser");
+
+                    b.Navigation("RevenueAccount");
                 });
 
             modelBuilder.Entity("BiiSoft.Items.ItemSize", b =>
@@ -5735,7 +5974,7 @@ namespace BiiSoft.Migrations
                         .HasForeignKey("CreatorUserId");
 
                     b.HasOne("BiiSoft.Items.Item", "Item")
-                        .WithMany()
+                        .WithMany("ItemZones")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -6185,6 +6424,16 @@ namespace BiiSoft.Migrations
             modelBuilder.Entity("BiiSoft.Branches.Branch", b =>
                 {
                     b.Navigation("BranchUsers");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.Item", b =>
+                {
+                    b.Navigation("ItemZones");
+                });
+
+            modelBuilder.Entity("BiiSoft.Items.ItemCodeFormula", b =>
+                {
+                    b.Navigation("ItemTypes");
                 });
 
             modelBuilder.Entity("BiiSoft.Warehouses.Warehouse", b =>

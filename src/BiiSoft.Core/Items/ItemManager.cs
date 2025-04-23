@@ -120,7 +120,7 @@ namespace BiiSoft.Items
             ValidateSelect(input.UnitId, L("Unit"));
             ValidateSelect(input.PurchaseAccountId, L("PurchaseAccount"));
             ValidateSelect(input.SaleAccountId, L("SaleAccount"));
-          
+
             if (input.ItemType == ItemType.Inventory ||
                 input.ItemType == ItemType.Asset)
             {
@@ -308,7 +308,11 @@ namespace BiiSoft.Items
                 input.FieldCId,
                 input.InventoryAccountId,
                 input.PurchaseAccountId,
-                input.SaleAccountId);
+                input.SaleAccountId,
+                input.IsModifier,
+                input.IsAddOn,
+                input.UseBOM,
+                input.DisplayBOM);
 
             entity.SetImage(input.ImageId);
 
@@ -365,7 +369,11 @@ namespace BiiSoft.Items
                 input.FieldCId,
                 input.InventoryAccountId,
                 input.PurchaseAccountId,
-                input.SaleAccountId);
+                input.SaleAccountId,
+                input.IsModifier,
+                input.IsAddOn,
+                input.UseBOM,
+                input.DisplayBOM);
 
             entity.SetImage(input.ImageId);
         }
@@ -382,15 +390,15 @@ namespace BiiSoft.Items
             if (!input.Code.IsNullOrWhiteSpace()) return;
 
             var itemSetting = await GetItemSettingAsync();
-           
+
             if (itemSetting == null || !itemSetting.UseCodeFormula) return;
 
             var formula = await _itemCodeFormulaRepository.GetAll().Include(s => s.ItemTypes).AsNoTracking().FirstOrDefaultAsync(s => s.ItemTypes.Any(r => r.ItemType == input.ItemType));
 
-            if(formula == null || formula.Type == ItemCodeFormulaType.Manual) return;
+            if (formula == null || formula.Type == ItemCodeFormulaType.Manual) return;
 
             var prefix = "";
-            if(formula.Type == ItemCodeFormulaType.Custom)
+            if (formula.Type == ItemCodeFormulaType.Custom)
             {
                 prefix = formula.Prefix;
             }
@@ -423,7 +431,7 @@ namespace BiiSoft.Items
             foreach (var zone in input.ItemZones)
             {
                 var updateZone = itemZones.FirstOrDefault(s => s.ZoneId == zone.ZoneId);
-                if(updateZone != null)
+                if (updateZone != null)
                 {
                     updateZones.Add(updateZone);
                 }
@@ -444,7 +452,8 @@ namespace BiiSoft.Items
             await SetCodeAsync(input);
             var result = await base.InsertAsync(input);
 
-            if (!input.ItemZones.IsNullOrEmpty()) {
+            if (!input.ItemZones.IsNullOrEmpty())
+            {
                 var addZones = input.ItemZones.Select(s => ItemZone.Create(input.TenantId, input.CreatorUserId.Value, input.Id, s.ZoneId)).ToList();
                 await CurrentUnitOfWork.SaveChangesAsync();
                 await _itemZoneRepository.BulkInsertAsync(addZones);
@@ -505,6 +514,10 @@ namespace BiiSoft.Items
                     new ColumnOutput{ ColumnTitle = L("ReorderStock"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("MaxStock"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("MinStock"), Width = 100 },
+                    new ColumnOutput{ ColumnTitle = L("IsModifier"), Width = 100 },
+                    new ColumnOutput{ ColumnTitle = L("IsAddOn"), Width = 100 },
+                    new ColumnOutput{ ColumnTitle = L("UseBOM"), Width = 100 },
+                    new ColumnOutput{ ColumnTitle = L("DisplayBOM"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("Description"), Width = 150 },
                 }
             };
@@ -550,7 +563,7 @@ namespace BiiSoft.Items
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
                 using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
-                {  
+                {
                     itemCodeFormulas = await _itemCodeFormulaRepository.GetAll().Include(s => s.ItemTypes).AsNoTracking().ToListAsync();
                     itemSetting = await GetItemSettingAsync();
 
@@ -580,7 +593,7 @@ namespace BiiSoft.Items
             }
 
             var addItems = new List<Item>();
-           
+
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
             {
@@ -608,12 +621,12 @@ namespace BiiSoft.Items
                             var formula = itemCodeFormulas.Where(s => s.ItemTypes.Any(r => r.ItemType == itemType)).FirstOrDefault();
 
                             if (formula == null) InputException(L("ItemCodeFormula"), rowMessage);
-                            
+
                             if (formula.Type == ItemCodeFormulaType.Manual)
                             {
                                 ValidateCodeInput(code, rowMessage);
                             }
-                            else if(code.IsNullOrEmpty())
+                            else if (code.IsNullOrEmpty())
                             {
                                 var prefix = formula.Prefix;
 
@@ -648,7 +661,7 @@ namespace BiiSoft.Items
                         var itemCategory = Enum.Parse<ItemCategory>(categoryName);
 
                         var barcode = worksheet.GetString(i, 6);
-                        if(!barcode.IsNullOrEmpty())
+                        if (!barcode.IsNullOrEmpty())
                         {
                             //TODO: check barcode
                             //if (itemDic.ContainsKey(barcode)) DuplicateException(L("Barcode"), rowMessage);
@@ -656,14 +669,14 @@ namespace BiiSoft.Items
 
                         var unitName = worksheet.GetString(i, 7);
                         ValidateInput(unitName, L("Unit"), rowMessage);
-                        if(unitDic.ContainsKey(unitName)) InvalidException(L("Unit"), rowMessage);
+                        if (unitDic.ContainsKey(unitName)) InvalidException(L("Unit"), rowMessage);
                         Guid? unitId = unitDic[unitName];
 
                         Guid? itemGroupId = null;
                         if (itemSetting.UseItemGroup)
                         {
                             var itemGroupName = worksheet.GetString(i, 8);
-                            if(itemSetting.ItemGroupRequired) ValidateInput(itemGroupName, L("ItemGroup"), rowMessage);
+                            if (itemSetting.ItemGroupRequired) ValidateInput(itemGroupName, L("ItemGroup"), rowMessage);
                             if (!itemGroupName.IsNullOrEmpty())
                             {
                                 if (!itemGroupDic.ContainsKey(itemGroupName)) InvalidException(L("ItemGroup"), rowMessage);
@@ -675,7 +688,7 @@ namespace BiiSoft.Items
                         if (itemSetting.UseBrand)
                         {
                             var itemBrandName = worksheet.GetString(i, 9);
-                            if(itemSetting.BrandRequired) ValidateInput(itemBrandName, L("ItemBrand"), rowMessage);
+                            if (itemSetting.BrandRequired) ValidateInput(itemBrandName, L("ItemBrand"), rowMessage);
                             if (!itemBrandName.IsNullOrEmpty())
                             {
                                 if (!itemBrandDic.ContainsKey(itemBrandName)) InvalidException(L("ItemBrand"), rowMessage);
@@ -687,7 +700,7 @@ namespace BiiSoft.Items
                         if (itemSetting.UseModel)
                         {
                             var itemModelName = worksheet.GetString(i, 10);
-                            if(itemSetting.ModelRequired) ValidateInput(itemModelName, L("ItemModel"), rowMessage);
+                            if (itemSetting.ModelRequired) ValidateInput(itemModelName, L("ItemModel"), rowMessage);
                             if (!itemModelName.IsNullOrEmpty())
                             {
                                 if (!itemModelDic.ContainsKey(itemModelName)) InvalidException(L("ItemModel"), rowMessage);
@@ -699,7 +712,7 @@ namespace BiiSoft.Items
                         if (itemSetting.UseGrade)
                         {
                             var itemGradeName = worksheet.GetString(i, 11);
-                            if(itemSetting.GradeRequired) ValidateInput(itemGradeName, L("ItemGrade"), rowMessage);
+                            if (itemSetting.GradeRequired) ValidateInput(itemGradeName, L("ItemGrade"), rowMessage);
                             if (!itemGradeName.IsNullOrEmpty())
                             {
                                 if (!itemGradeDic.ContainsKey(itemGradeName)) InvalidException(L("ItemGrade"), rowMessage);
@@ -711,7 +724,7 @@ namespace BiiSoft.Items
                         if (itemSetting.UseSize)
                         {
                             var itemSizeName = worksheet.GetString(i, 12);
-                            if(itemSetting.SizeRequired) ValidateInput(itemSizeName, L("ItemSize"), rowMessage);
+                            if (itemSetting.SizeRequired) ValidateInput(itemSizeName, L("ItemSize"), rowMessage);
                             if (!itemSizeName.IsNullOrEmpty())
                             {
                                 if (!itemSizeDic.ContainsKey(itemSizeName)) InvalidException(L("ItemSize"), rowMessage);
@@ -723,7 +736,7 @@ namespace BiiSoft.Items
                         if (itemSetting.UseSeries)
                         {
                             var itemSeriesName = worksheet.GetString(i, 13);
-                            if(itemSetting.SeriesRequired) ValidateInput(itemSeriesName, L("ItemSeries"), rowMessage);
+                            if (itemSetting.SeriesRequired) ValidateInput(itemSeriesName, L("ItemSeries"), rowMessage);
                             if (!itemSeriesName.IsNullOrEmpty())
                             {
                                 if (!itemSeriesDic.ContainsKey(itemSeriesName)) InvalidException(L("ItemSeries"), rowMessage);
@@ -735,7 +748,7 @@ namespace BiiSoft.Items
                         if (itemSetting.UseColorPattern)
                         {
                             var colorPatternName = worksheet.GetString(i, 14);
-                            if(itemSetting.ColorPatternRequired) ValidateInput(colorPatternName, L("ColorPattern"), rowMessage);
+                            if (itemSetting.ColorPatternRequired) ValidateInput(colorPatternName, L("ColorPattern"), rowMessage);
                             if (!colorPatternName.IsNullOrEmpty())
                             {
                                 if (!colorPatternDic.ContainsKey(colorPatternName)) InvalidException(L("ColorPattern"), rowMessage);
@@ -905,8 +918,8 @@ namespace BiiSoft.Items
 
                         WeightUnit? weightUnit = null;
                         var weightUnitName = worksheet.GetString(i, 36);
-                        if(itemSetting.NetWeightRequired || itemSetting.GrossWeightRequired) ValidateSelect(weightUnitName, L("WeightUnit"), rowMessage);
-                        if(!weightUnitName.IsNullOrEmpty()) weightUnit = Enum.Parse<WeightUnit>(weightUnitName);
+                        if (itemSetting.NetWeightRequired || itemSetting.GrossWeightRequired) ValidateSelect(weightUnitName, L("WeightUnit"), rowMessage);
+                        if (!weightUnitName.IsNullOrEmpty()) weightUnit = Enum.Parse<WeightUnit>(weightUnitName);
 
                         LengthUnit? lengthUnit = null;
                         var lengthUnitName = worksheet.GetString(i, 37);
@@ -923,14 +936,14 @@ namespace BiiSoft.Items
                         if (itemSetting.VolumeRequired) ValidateSelect(volumeUnitName, L("VolumeUnit"), rowMessage);
                         if (!volumeUnitName.IsNullOrEmpty()) volumeUnit = Enum.Parse<VolumeUnit>(volumeUnitName);
 
-                        bool? trackSerial = worksheet.GetBoolOrNull(i, 40);                       
-                     
+                        bool? trackSerial = worksheet.GetBoolOrNull(i, 40);
+
                         bool? trackExpired = worksheet.GetBoolOrNull(i, 41);
-                       
+
                         bool? trackBatchNo = worksheet.GetBoolOrNull(i, 42);
-                       
+
                         bool? trackAssetStatus = worksheet.GetBoolOrNull(i, 43);
-                       
+
                         decimal reorderStock = worksheet.GetDecimal(i, 44);
                         if (itemSetting.ReorderStockRequired && reorderStock == 0) InputException(L("ReorderStock"), rowMessage);
 
@@ -940,17 +953,21 @@ namespace BiiSoft.Items
                         decimal minStock = worksheet.GetDecimal(i, 46);
                         if (itemSetting.MinStockRequired && minStock == 0) InputException(L("MinStock"), rowMessage);
 
-                        var description = worksheet.GetString(i, 47);
+                        var isModifier = worksheet.GetBoolOrNull(i, 47);
+                        var isAddOn = worksheet.GetBoolOrNull(i, 48);
+                        var useBOM = worksheet.GetBoolOrNull(i, 49);
+                        var displayBOM = worksheet.GetBoolOrNull(i, 50);
+                        var description = worksheet.GetString(i, 51);
 
                         var entity = Item.Create(
-                            input.TenantId.Value, 
-                            input.UserId.Value, 
-                            itemType, 
-                            itemCategory, 
+                            input.TenantId.Value,
+                            input.UserId.Value,
+                            itemType,
+                            itemCategory,
                             code,
                             barcode,
-                            name, 
-                            displayName, 
+                            name,
+                            displayName,
                             description,
                             reorderStock,
                             minStock,
@@ -963,14 +980,14 @@ namespace BiiSoft.Items
                             diameter,
                             area,
                             volume,
-                            weightUnit??WeightUnit.kg,
-                            lengthUnit??LengthUnit.m,
-                            areaUnit??AreaUnit.m2,
-                            volumeUnit??VolumeUnit.m3,
-                            trackSerial??false,
-                            trackExpired??false,
-                            trackBatchNo??false,
-                            trackAssetStatus??false,
+                            weightUnit ?? WeightUnit.kg,
+                            lengthUnit ?? LengthUnit.m,
+                            areaUnit ?? AreaUnit.m2,
+                            volumeUnit ?? VolumeUnit.m3,
+                            trackSerial ?? false,
+                            trackExpired ?? false,
+                            trackBatchNo ?? false,
+                            trackAssetStatus ?? false,
                             itemGroupId,
                             itemBrandId,
                             itemGradeId,
@@ -982,16 +999,20 @@ namespace BiiSoft.Items
                             cpuId,
                             ramId,
                             vgaId,
-                            screenId, 
-                            batteryId, 
-                            cameraId, 
-                            hddId, 
+                            screenId,
+                            batteryId,
+                            cameraId,
+                            hddId,
                             fieldAId,
                             fieldBId,
                             fieldCId,
                             inventoryAccountId,
                             purchaseAccountId,
-                            saleAccountId);
+                            saleAccountId,
+                            isModifier ?? false,
+                            isAddOn ?? false,
+                            useBOM ?? false,
+                            displayBOM ?? false);
 
                         addItems.Add(entity);
                         itemDic.Add(entity.Code, new KeyValuePair<Guid, ItemType>(entity.Id, entity.ItemType));

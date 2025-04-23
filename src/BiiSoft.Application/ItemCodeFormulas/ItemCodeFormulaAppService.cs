@@ -77,7 +77,8 @@ namespace BiiSoft.ItemCodeFormulas
                         {
                             Id = l.Id,
                             No = l.No,
-                            ItemTypes = l.ItemTypes.Select(s => new ItemCodeFormulaItemTypeDto { ItemType = s.ItemType }).ToList(),
+                            IsAllItemType = l.IsAllItemType,
+                            ItemTypes = l.IsAllItemType ? null : l.ItemTypes.Select(s => new ItemCodeFormulaItemTypeDto { ItemType = s.ItemType }).ToList(),
                             Type = l.Type,
                             TypeName = l.Type.ToString(),
                             Prefix = l.Prefix,
@@ -130,7 +131,8 @@ namespace BiiSoft.ItemCodeFormulas
                 {
                     Id = l.Id,
                     No = l.No,
-                    ItemTypes = l.ItemTypes.Select(s => s.ItemType.GetName()).ToList(),
+                    IsAllItemType = l.IsAllItemType,
+                    ItemTypes = l.IsAllItemType ? null : l.ItemTypes.Select(s => s.ItemType.GetName()).ToList(),
                     Type = l.Type.ToString(),
                     Prefix = l.Prefix,
                     Digits = l.Digits,

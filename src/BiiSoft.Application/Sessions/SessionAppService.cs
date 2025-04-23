@@ -80,9 +80,21 @@ namespace BiiSoft.Sessions
                                            })
                                            .FirstOrDefaultAsync();
 
-                var setting = await _itemSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
+                var setting = await _itemSettingRepository.GetAll()
+                                    .Include(s => s.InventoryAccount)
+                                    .Include(s => s.AssetAccount)
+                                    .Include(s => s.ExpenseAccount)
+                                    .Include(s => s.COGSAccount)
+                                    .Include(s => s.RevenueAccount)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync();
 
                 output.ItemSetting = ObjectMapper.Map<ItemSettingDto>(setting);
+                if (setting?.InventoryAccount != null) output.ItemSetting.InventoryAccountName = isDefaultLanguage ? setting.InventoryAccount.Name : setting.InventoryAccount.DisplayName;
+                if (setting?.AssetAccount != null) output.ItemSetting.AssetAccountName = isDefaultLanguage ? setting.AssetAccount.Name : setting.AssetAccount.DisplayName;
+                if (setting?.ExpenseAccount != null) output.ItemSetting.ExpenseAccountName = isDefaultLanguage ? setting.ExpenseAccount.Name : setting.ExpenseAccount.DisplayName;
+                if (setting?.COGSAccount != null) output.ItemSetting.COGSAccountName = isDefaultLanguage ? setting.COGSAccount.Name : setting.COGSAccount.DisplayName;
+                if (setting?.RevenueAccount != null) output.ItemSetting.RevenueAccountName = isDefaultLanguage ? setting.RevenueAccount.Name : setting.RevenueAccount.DisplayName;
 
                 var fieldSetting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
 
