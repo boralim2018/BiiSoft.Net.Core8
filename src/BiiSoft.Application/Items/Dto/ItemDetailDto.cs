@@ -14,6 +14,7 @@ namespace BiiSoft.Items.Dto
         public string ItemCategoryName { get; set; }
         public string Code { get; set; }
         public string Barcode { get; set; }
+        public string ALTCode { get; set; }
         public decimal NetWeight { get; set; }
         public decimal GrossWeight { get; set; }
         public decimal Length { get; set; }

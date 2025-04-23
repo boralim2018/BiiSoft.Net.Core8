@@ -809,5 +809,6 @@
 		<text name="PackageUnit">ខ្នាតវេចខ្ចប់</text>
 		<text name="CodeSetting">កំណត់លេខកូដ</text>
 		<text name="Barcode">បាកូដ</text>
+		<text name="ALTCode">ALT កូដ</text>
 	</texts>
 </localizationDictionary>

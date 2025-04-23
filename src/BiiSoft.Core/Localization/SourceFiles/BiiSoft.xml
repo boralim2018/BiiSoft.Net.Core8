@@ -809,5 +809,6 @@
 		<text name="PackageUnit">Package Unit</text>
 		<text name="CodeSetting">Code Setting</text>
 		<text name="Barcode">Barcode</text>
+		<text name="ALTCode">ALT Code</text>
 	</texts>
 </localizationDictionary>

@@ -424,7 +424,8 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
                 e.HasIndex(i => i.Code);
-                e.HasIndex(i => i.Barcode);
+                e.HasIndex(i => i.Barcode).HasFilter("\"Barcode\" IS NOT NULL");
+                e.HasIndex(i => i.ALTCode).HasFilter("\"ALTCode\" IS NOT NULL");
                 e.HasIndex(i => i.ItemType);
                 e.HasIndex(i => i.ItemCategory);
                 e.HasIndex(i => i.TrackSerial).HasFilter("\"TrackSerial\"=true");

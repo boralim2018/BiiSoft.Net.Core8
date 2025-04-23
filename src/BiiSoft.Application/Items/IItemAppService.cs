@@ -17,7 +17,7 @@ namespace BiiSoft.Items
         Task Delete(EntityDto<Guid> input);
         Task Enable(EntityDto<Guid> input);
         Task Disable(EntityDto<Guid> input);
-        Task<PagedResultDto<FindItemDto>> Find(PageItemInputDto input);
+        Task<PagedResultDto<FindItemDto>> Find(FindItemInputDto input);
         Task ImportExcel(FileTokenInput input);
         Task<ExportFileOutput> ExportExcelTemplate();
         Task<ExportFileOutput> ExportExcel(ExportExcelItemInputDto input);

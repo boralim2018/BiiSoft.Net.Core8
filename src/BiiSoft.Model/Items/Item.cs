@@ -29,6 +29,7 @@ namespace BiiSoft.Items
         public string Code { get; private set; }
         public void SetCode(string code) => Code = code;
         public string Barcode { get; private set; }
+        public string ALTCode { get; private set; }
 
         public decimal NetWeight { get; private set; }
         public decimal GrossWeight { get; private set; }
@@ -166,7 +167,8 @@ namespace BiiSoft.Items
             bool isModifier,
             bool isAddOn,
             bool useBOM,
-            bool displayBOM)
+            bool displayBOM, 
+            string atlCode)
         {
             return new Item
             {
@@ -224,6 +226,7 @@ namespace BiiSoft.Items
                 IsAddOn = isAddOn,
                 UseBOM = useBOM,
                 DisplayBOM = displayBOM,
+                ALTCode = atlCode,
                 IsActive = true
             };
         }
@@ -280,7 +283,8 @@ namespace BiiSoft.Items
             bool isModifier,
             bool isAddOn,
             bool useBOM,
-            bool displayBOM)
+            bool displayBOM,
+            string atlCode)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -335,6 +339,7 @@ namespace BiiSoft.Items
             IsAddOn = isAddOn;
             UseBOM = useBOM;
             DisplayBOM = displayBOM;
+            ALTCode = atlCode;
         }
 
     }

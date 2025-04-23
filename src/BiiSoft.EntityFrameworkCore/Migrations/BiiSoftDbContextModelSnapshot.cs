@@ -2818,6 +2818,9 @@ namespace BiiSoft.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ALTCode")
+                        .HasColumnType("text");
+
                     b.Property<decimal>("Area")
                         .HasColumnType("numeric");
 
@@ -3007,7 +3010,11 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Barcode");
+                    b.HasIndex("ALTCode")
+                        .HasFilter("\"ALTCode\" IS NOT NULL");
+
+                    b.HasIndex("Barcode")
+                        .HasFilter("\"Barcode\" IS NOT NULL");
 
                     b.HasIndex("BatteryId");
 

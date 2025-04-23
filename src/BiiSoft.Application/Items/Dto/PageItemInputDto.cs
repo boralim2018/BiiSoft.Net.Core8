@@ -35,4 +35,15 @@ namespace BiiSoft.Items.Dto
     {
         public List<ColumnOutput> Columns { get; set; }
     }
+
+    public enum SearchOption
+    {
+        Contians = 0,
+        Exact = 1,
+    }
+
+    public class FindItemInputDto: PageItemInputDto
+    {
+        public SearchOption SearchOption { get; set; }
+    }
 }

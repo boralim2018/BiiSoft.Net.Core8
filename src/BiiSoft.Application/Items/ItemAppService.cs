@@ -101,7 +101,7 @@ namespace BiiSoft.Items
 
 
         [AbpAuthorize(PermissionNames.Pages_Find_Items)]
-        public async Task<PagedResultDto<FindItemDto>> Find(PageItemInputDto input)
+        public async Task<PagedResultDto<FindItemDto>> Find(FindItemInputDto input)
         {
             var userId = AbpSession.UserId;
 
@@ -174,11 +174,19 @@ namespace BiiSoft.Items
                         .WhereIf(input.Modifiers != null && !input.Modifiers.Ids.IsNullOrEmpty(), s =>
                             (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
-                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
-                            s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
-                            s.Barcode.ToLower().Contains(input.Keyword.ToLower()) ||
-                            s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
-                            s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
+                        .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => 
+                            (input.SearchOption == SearchOption.Contians && (
+                                s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
+                                (!s.Barcode.IsNullOrEmpty() && s.Barcode.ToLower().Contains(input.Keyword.ToLower())) ||
+                                (!s.ALTCode.IsNullOrEmpty() && s.ALTCode.ToLower().Contains(input.Keyword.ToLower())) ||
+                                s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
+                                s.DisplayName.ToLower().Contains(input.Keyword.ToLower()))) ||
+                            (input.SearchOption == SearchOption.Exact && (
+                                s.Code.ToLower().Equals(input.Keyword.ToLower()) ||
+                                (!s.Barcode.IsNullOrEmpty() && s.Barcode.ToLower().Equals(input.Keyword.ToLower())) ||
+                                (!s.ALTCode.IsNullOrEmpty() && s.ALTCode.ToLower().Equals(input.Keyword.ToLower())))
+                            )
+                        );
                        
 
             var totalCount = await query.CountAsync();
@@ -193,6 +201,7 @@ namespace BiiSoft.Items
                     DisplayName = l.DisplayName,
                     Code = l.Code,
                     Barcode = l.Barcode,
+                    ALTCode = l.ALTCode,
                     IsActive = l.IsActive
                  });
 
@@ -223,6 +232,7 @@ namespace BiiSoft.Items
                             No = l.No,
                             Code = l.Code,
                             Barcode = l.Barcode,
+                            ALTCode = l.ALTCode,
                             Name = l.Name,
                             DisplayName = l.DisplayName,
                             ItemType = l.ItemType,
@@ -405,7 +415,8 @@ namespace BiiSoft.Items
                             (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
                             s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
-                            s.Barcode.ToLower().Contains(input.Keyword.ToLower()) ||
+                            (!s.Barcode.IsNullOrEmpty() && s.Barcode.ToLower().Contains(input.Keyword.ToLower())) ||
+                            (!s.ALTCode.IsNullOrEmpty() && s.ALTCode.ToLower().Contains(input.Keyword.ToLower())) ||
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));
                       
@@ -421,6 +432,7 @@ namespace BiiSoft.Items
                     No = l.No,
                     Code = l.Code,
                     Barcode = l.Barcode,
+                    ALTCode = l.ALTCode,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
                     ItemType = l.ItemType,

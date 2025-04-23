@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20250423042838_AddItemAndWarehouse")]
+    [Migration("20250423072053_AddItemAndWarehouse")]
     partial class AddItemAndWarehouse
     {
         /// <inheritdoc />
@@ -2821,6 +2821,9 @@ namespace BiiSoft.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ALTCode")
+                        .HasColumnType("text");
+
                     b.Property<decimal>("Area")
                         .HasColumnType("numeric");
 
@@ -3010,7 +3013,11 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Barcode");
+                    b.HasIndex("ALTCode")
+                        .HasFilter("\"ALTCode\" IS NOT NULL");
+
+                    b.HasIndex("Barcode")
+                        .HasFilter("\"Barcode\" IS NOT NULL");
 
                     b.HasIndex("BatteryId");
 

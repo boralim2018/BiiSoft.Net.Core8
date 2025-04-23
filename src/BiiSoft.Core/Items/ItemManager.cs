@@ -141,6 +141,12 @@ namespace BiiSoft.Items
             var findCode = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Code == input.Code && s.Id != input.Id);
             if (findCode) DuplicateCodeException(input.Code);
 
+            if (!input.Barcode.IsNullOrEmpty())
+            {
+                var findBarode = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Barcode == input.Barcode && s.Id != input.Id);
+                if (findBarode) DuplicateException(L("Barcode"), input.Barcode);
+            }
+
             var findUnit = await _unitRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.UnitId);
             if (!findUnit) InvalidException(L("Unit"));
 
@@ -246,7 +252,7 @@ namespace BiiSoft.Items
                 input.ItemType == ItemType.Asset)
             {
                 var find = await _chartOfAccountRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.InventoryAccountId);
-                if (!find) InvalidException(L("InventoryAccount"));
+                if (!find) InvalidException(input.ItemType == ItemType.NonInvnetory ? L("InventoryAccount") : L("AssetAccount"));
             }
 
             if (!input.ItemZones.IsNullOrEmpty())
@@ -312,7 +318,8 @@ namespace BiiSoft.Items
                 input.IsModifier,
                 input.IsAddOn,
                 input.UseBOM,
-                input.DisplayBOM);
+                input.DisplayBOM,
+                input.ALTCode);
 
             entity.SetImage(input.ImageId);
 
@@ -373,7 +380,8 @@ namespace BiiSoft.Items
                 input.IsModifier,
                 input.IsAddOn,
                 input.UseBOM,
-                input.DisplayBOM);
+                input.DisplayBOM,
+                input.ALTCode);
 
             entity.SetImage(input.ImageId);
         }
@@ -393,7 +401,10 @@ namespace BiiSoft.Items
 
             if (itemSetting == null || !itemSetting.UseCodeFormula) return;
 
-            var formula = await _itemCodeFormulaRepository.GetAll().Include(s => s.ItemTypes).AsNoTracking().FirstOrDefaultAsync(s => s.ItemTypes.Any(r => r.ItemType == input.ItemType));
+            var formula = await _itemCodeFormulaRepository.GetAll()
+                                .Include(s => s.ItemTypes)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(s => s.IsAllItemType || s.ItemTypes.Any(r => r.ItemType == input.ItemType));
 
             if (formula == null || formula.Type == ItemCodeFormulaType.Manual) return;
 
@@ -518,6 +529,7 @@ namespace BiiSoft.Items
                     new ColumnOutput{ ColumnTitle = L("IsAddOn"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("UseBOM"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("DisplayBOM"), Width = 100 },
+                    new ColumnOutput{ ColumnTitle = L("ALTCode"), Width = 100 },
                     new ColumnOutput{ ColumnTitle = L("Description"), Width = 150 },
                 }
             };
@@ -618,7 +630,7 @@ namespace BiiSoft.Items
                         }
                         else
                         {
-                            var formula = itemCodeFormulas.Where(s => s.ItemTypes.Any(r => r.ItemType == itemType)).FirstOrDefault();
+                            var formula = itemCodeFormulas.Where(s => s.IsAllItemType || s.ItemTypes.Any(r => r.ItemType == itemType)).FirstOrDefault();
 
                             if (formula == null) InputException(L("ItemCodeFormula"), rowMessage);
 
@@ -887,10 +899,14 @@ namespace BiiSoft.Items
                         if (!accountDic.ContainsKey(saleAccountName)) InvalidException(L("SaleAccount"), rowMessage);
                         Guid? saleAccountId = accountDic[saleAccountName];
 
-                        var inventoryAccountName = worksheet.GetString(i, 27);
-                        ValidateInput(inventoryAccountName, L("InventoryAccount"), rowMessage);
-                        if (!accountDic.ContainsKey(inventoryAccountName)) InvalidException(L("InventoryAccount"), rowMessage);
-                        Guid? inventoryAccountId = accountDic[inventoryAccountName];
+                        Guid? inventoryAccountId = null;
+                        if(itemType == ItemType.Inventory || itemType == ItemType.Asset)
+                        {
+                            var inventoryAccountName = worksheet.GetString(i, 27);
+                            ValidateInput(inventoryAccountName, L("InventoryAccount"), rowMessage);                           
+                            if (!accountDic.ContainsKey(inventoryAccountName)) InvalidException(L("InventoryAccount"), rowMessage);
+                            inventoryAccountId = accountDic[inventoryAccountName];
+                        }
 
                         decimal netWeight = worksheet.GetDecimal(i, 28);
                         if (itemSetting.NetWeightRequired && netWeight == 0) InputException(L("NetWeight"), rowMessage);
@@ -957,7 +973,8 @@ namespace BiiSoft.Items
                         var isAddOn = worksheet.GetBoolOrNull(i, 48);
                         var useBOM = worksheet.GetBoolOrNull(i, 49);
                         var displayBOM = worksheet.GetBoolOrNull(i, 50);
-                        var description = worksheet.GetString(i, 51);
+                        var altCode = worksheet.GetString(i, 51);
+                        var description = worksheet.GetString(i, 52);
 
                         var entity = Item.Create(
                             input.TenantId.Value,
@@ -1012,7 +1029,8 @@ namespace BiiSoft.Items
                             isModifier ?? false,
                             isAddOn ?? false,
                             useBOM ?? false,
-                            displayBOM ?? false);
+                            displayBOM ?? false,
+                            altCode);
 
                         addItems.Add(entity);
                         itemDic.Add(entity.Code, new KeyValuePair<Guid, ItemType>(entity.Id, entity.ItemType));

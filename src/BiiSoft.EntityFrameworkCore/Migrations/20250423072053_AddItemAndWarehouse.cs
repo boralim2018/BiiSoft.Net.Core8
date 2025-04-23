@@ -945,6 +945,7 @@ namespace BiiSoft.Migrations
                     ItemCategory = table.Column<int>(type: "integer", nullable: false),
                     Code = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     Barcode = table.Column<string>(type: "text", nullable: true),
+                    ALTCode = table.Column<string>(type: "text", nullable: true),
                     NetWeight = table.Column<decimal>(type: "numeric", nullable: false),
                     GrossWeight = table.Column<decimal>(type: "numeric", nullable: false),
                     Width = table.Column<decimal>(type: "numeric", nullable: false),
@@ -1687,9 +1688,16 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BiiItems_ALTCode",
+                table: "BiiItems",
+                column: "ALTCode",
+                filter: "\"ALTCode\" IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_Barcode",
                 table: "BiiItems",
-                column: "Barcode");
+                column: "Barcode",
+                filter: "\"Barcode\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItems_BatteryId",
