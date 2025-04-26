@@ -23,12 +23,12 @@ namespace BiiSoft.Branches
 
         protected override CompanyAdvanceSetting CreateInstance(CompanyAdvanceSetting input)
         {
-            return CompanyAdvanceSetting.Create(input.TenantId, input.CreatorUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable, input.TaxEnable, input.TaxType);
+            return CompanyAdvanceSetting.Create(input.TenantId, input.CreatorUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable, input.TaxEnable);
         }
 
         protected override void UpdateInstance(CompanyAdvanceSetting input, CompanyAdvanceSetting entity)
         {
-            entity.Update(input.LastModifierUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable, input.TaxEnable, input.TaxType);
+            entity.Update(input.LastModifierUserId, input.MultiBranchesEnable, input.MultiCurrencyEnable, input.LineDiscountEnable, input.TotalDiscountEnable, input.CustomAccountCodeEnable, input.ClassEnable, input.TaxEnable);
         }
 
         protected override async Task ValidateInputAsync(CompanyAdvanceSetting input)

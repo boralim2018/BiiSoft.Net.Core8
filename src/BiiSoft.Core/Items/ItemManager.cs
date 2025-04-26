@@ -1,4 +1,5 @@
-﻿using Abp.Collections.Extensions;
+﻿using Abp.Application.Features;
+using Abp.Collections.Extensions;
 using Abp.Domain.Uow;
 using Abp.Extensions;
 using Abp.UI;
@@ -9,16 +10,23 @@ using BiiSoft.Entities;
 using BiiSoft.Enums;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
+using BiiSoft.Features;
 using BiiSoft.FileStorages;
 using BiiSoft.Warehouses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Xml.Linq;
+using Abp.Configuration;
+using static Dapper.SqlMapper;
+using Abp.Application.Services.Dto;
 
 namespace BiiSoft.Items
 {
@@ -50,8 +58,10 @@ namespace BiiSoft.Items
         private readonly IBiiSoftRepository<ItemCodeFormula, Guid> _itemCodeFormulaRepository;
         private readonly IBiiSoftRepository<ItemZone, Guid> _itemZoneRepository;
         private readonly IBiiSoftRepository<Zone, Guid> _zoneRepository;
+        private readonly IFeatureChecker _featureChecker;
 
         public ItemManager(
+            IFeatureChecker featureChecker,
             IExcelManager excelManager,
             IBiiSoftRepository<Item, Guid> repository,
             IBiiSoftRepository<ItemGroup, Guid> itemGroupRepository,
@@ -82,6 +92,7 @@ namespace BiiSoft.Items
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
+            _featureChecker = featureChecker;
             _excelManager = excelManager;
             _itemGroupRepository = itemGroupRepository;
             _itemBrandRepository = itemBrandRepository;
@@ -473,65 +484,269 @@ namespace BiiSoft.Items
             return result;
         }
 
+        private bool AccountingFeatureEnable => _featureChecker.IsEnabled(AppFeatures.Accounting_ChartOfAccounts);
+
+        private async Task<List<ColumnOutput>> GetExcelTemplateColumnsAsync()
+        {
+            var setting = await GetItemSettingAsync();
+
+            if (setting == null) RequiredException(L("ItemSetting"));
+
+            var columns = new List<ColumnOutput>
+            {
+                new ColumnOutput{ ColumnName = "Name",  ColumnTitle = L("Name_",L("Item")), Width = 250, Index = 1, IsRequired = true },
+                new ColumnOutput{ ColumnName = "DisplayName", ColumnTitle = L("DisplayName"), Width = 250, Index = 2, IsRequired = true },
+                new ColumnOutput{ ColumnName = "ItemType", ColumnTitle = L("ItemType"), Width = 150, Index = 3, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = ItemType.Service.ToListStr() },
+                new ColumnOutput{ ColumnName = "ItemCategory",  ColumnTitle = L("ItemCategory"), Width = 150, Index = 4, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = ItemCategory.Service.ToListStr() },
+                new ColumnOutput{ ColumnName = "Code", ColumnTitle = L("Code"), Width = 100, Index = 5, IsRequired = setting.UseCodeFormula },
+                new ColumnOutput{ ColumnName = "Barcode", ColumnTitle = L("Barcode"), Width = 150, Index = 6 },
+                new ColumnOutput{ ColumnName = "ALTCode",  ColumnTitle = L("ALTCode"), Width = 100, Index = 7 },
+                new ColumnOutput{ ColumnName = "Description",  ColumnTitle = L("Description"), Width = 150, Index = 8 },
+                new ColumnOutput { ColumnName = "Unit", ColumnTitle = L("PackageUnit"), Width = 150, Index = 9, IsRequired = true }
+            };
+
+            var index = columns.Select(s => s.Index).OrderByDescending(s => s).FirstOrDefault() + 1;
+
+            if (setting.UseGrossWeight)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "GrossWeight", ColumnTitle = L("GrossWeight"), Width = 100, Index = index, IsRequired = setting.GrossWeightRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+            if (setting.UseNetWeight)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "NetWeight", ColumnTitle = L("NetWeight"), Width = 100, Index = index, IsRequired = setting.NetWeightRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+
+            if (setting.UseGrossWeight || setting.UseNetWeight)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "WeightUnit", ColumnTitle = L("WeightUnit"), Width = 100, Index = index, IsRequired = setting.GrossWeightRequired || setting.NetWeightRequired, ColumnType = ColumnType.Lookup, LookupList = WeightUnit.g.ToListStr() });
+                index++;
+            }
+
+            if (setting.UseWidth)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Width", ColumnTitle = L("Width"), Width = 100, Index = index, IsRequired = setting.WidthRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+            if (setting.UseHeight)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Height", ColumnTitle = L("Height"), Width = 100, Index = index, IsRequired = setting.HeightRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+            if (setting.UseLength)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Length", ColumnTitle = L("Length"), Width = 100, Index = index, IsRequired = setting.LengthRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+            if (setting.UseDiameter)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Diameter", ColumnTitle = L("Diameter"), Width = 100, Index = index, IsRequired = setting.DiameterRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+            if (setting.UseWidth || setting.UseHeight || setting.UseLength || setting.UseDiameter)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "LengthUnit", ColumnTitle = L("LengthUnit"), Width = 100, Index = index, IsRequired = setting.WidthRequired || setting.HeightRequired || setting.LengthRequired || setting.DiameterRequired, ColumnType = ColumnType.Lookup, LookupList = LengthUnit.m.ToListStr() });
+                index++;
+            }
+
+            if (setting.UseArea)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Area", ColumnTitle = L("Area"), Width = 100, Index = index, IsRequired = setting.AreaRequired, ColumnType = ColumnType.Number });
+                columns.Add(new ColumnOutput { ColumnName = "AreaUnit", ColumnTitle = L("AreaUnit"), Width = 100, Index = index + 1, IsRequired = setting.AreaRequired, ColumnType = ColumnType.Lookup, LookupList = AreaUnit.m2.ToListStr() });
+                index += 2;
+            }
+
+            if (setting.UseVolume)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Volume", ColumnTitle = L("Volume"), Width = 100, Index = index, IsRequired = setting.VolumeRequired, ColumnType = ColumnType.Number });
+                columns.Add(new ColumnOutput { ColumnName = "VolumeUnit", ColumnTitle = L("VolumeUnit"), Width = 100, Index = index + 1, IsRequired = setting.VolumeRequired, ColumnType = ColumnType.Lookup, LookupList = VolumeUnit.m3.ToListStr() });
+                index += 2;
+            }
+
+            if (AccountingFeatureEnable)
+            {
+                columns.AddRange(new List<ColumnOutput> {
+                    new ColumnOutput {ColumnName = "PurchaseAccount",  ColumnTitle = L("PurchaseAccount"), Width = 150, Index = index, IsRequired = true },
+                    new ColumnOutput {ColumnName = "SaleAccount",  ColumnTitle = L("SaleAccount"), Width = 150, Index = index + 1, IsRequired = true },
+                    new ColumnOutput {ColumnName = "InventoryAccount", ColumnTitle = L("InventoryAccount"), Width = 150, Index = index + 2},
+                });
+
+                index += 3;
+            }
+
+            if (setting.UseItemGroup)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "ItemGroup", ColumnTitle = L("ItemGroup"), Width = 150, Index = index, IsRequired = setting.ItemGroupRequired });
+                index++;
+            }
+
+            if (setting.UseBrand)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "ItemBrand", ColumnTitle = L("ItemBrand"), Width = 150, Index = index, IsRequired = setting.BrandRequired });
+                index++;
+            }
+
+            if (setting.UseGrade)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "ItemGrade", ColumnTitle = L("ItemGrade"), Width = 150, Index = index, IsRequired = setting.GradeRequired });
+                index++;
+            }
+
+            if (setting.UseModel)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "ItemModel", ColumnTitle = L("ItemModel"), Width = 150, Index = index, IsRequired = setting.ModelRequired });
+                index++;
+            }
+
+            if (setting.UseSize)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "ItemSize", ColumnTitle = L("ItemSize"), Width = 150, Index = index, IsRequired = setting.SizeRequired });
+                index++;
+            }
+
+            if (setting.UseSeries)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "ItemSeries", ColumnTitle = L("ItemSeries"), Width = 150, Index = index, IsRequired = setting.SeriesRequired });
+                index++;
+            }
+
+            if (setting.UseColorPattern)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "ColorPattern", ColumnTitle = L("ColorPattern"), Width = 150, Index = index, IsRequired = setting.ColorPatternRequired });
+                index++;
+            }
+
+            if (setting.UseCPU)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "CPU", ColumnTitle = L("CPU"), Width = 150, Index = index, IsRequired = setting.CPURequired });
+                index++;
+            }
+
+            if (setting.UseRAM)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "RAM", ColumnTitle = L("RAM"), Width = 150, Index = index, IsRequired = setting.RAMRequired });
+                index++;
+            }
+
+            if (setting.UseVGA)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "VGA", ColumnTitle = L("VGA"), Width = 150, Index = index, IsRequired = setting.VGARequired });
+                index++;
+            }
+
+            if (setting.UseHDD)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "HDD", ColumnTitle = L("HDD"), Width = 150, Index = index, IsRequired = setting.HDDRequired });
+                index++;
+            }
+
+            if (setting.UseScreen)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Screen", ColumnTitle = L("Screen"), Width = 150, Index = index, IsRequired = setting.ScreenRequired });
+                index++;
+            }
+
+            if (setting.UseCamera)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Camera", ColumnTitle = L("Camera"), Width = 150, Index = index, IsRequired = setting.CameraRequired });
+                index++;
+            }
+
+            if (setting.UseBattery)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "Battery", ColumnTitle = L("Battery"), Width = 150, Index = index, IsRequired = setting.BatteryRequired });
+                index++;
+            }
+
+            if (setting.UseFieldA)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "FieldA", ColumnTitle = setting.FieldALabel.IsNullOrEmpty() ? L("FieldA") : L(setting.FieldALabel), Width = 150, Index = index, IsRequired = setting.FieldARequired });
+                index++;
+            }
+
+            if (setting.UseFieldB)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "FieldB", ColumnTitle = setting.FieldBLabel.IsNullOrEmpty() ? L("FieldB") : L(setting.FieldBLabel), Width = 150, Index = index, IsRequired = setting.FieldBRequired });
+                index++;
+            }
+
+            if (setting.UseFieldC)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "FieldC", ColumnTitle = setting.FieldBLabel.IsNullOrEmpty() ? L("FieldC") : L(setting.FieldCLabel), Width = 150, Index = index, IsRequired = setting.FieldCRequired });
+                index++;
+            }
+
+            if (setting.UseSerial)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "TrackSerial", ColumnTitle = L("TrackSerial"), Width = 100, Index = index, ColumnType = ColumnType.Bool });
+                index++;
+            }
+
+            if (setting.UseExpired)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "TrackExpired", ColumnTitle = L("TrackExpired"), Width = 100, Index = index, ColumnType = ColumnType.Bool });
+                index++;
+            }
+
+            if (setting.UseBatchNo)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "TrackBatchNo", ColumnTitle = L("TrackBatchNo"), Width = 100, Index = index, ColumnType = ColumnType.Bool });
+                index++;
+            }
+
+            if (setting.UseAssetStatus)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "TrackAssetStatus", ColumnTitle = L("TrackAssetStatus"), Width = 100, Index = index, ColumnType = ColumnType.Bool });
+                index++;
+            }
+
+            if (setting.UseReorderStock)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "ReorderStock", ColumnTitle = L("ReorderStock"), Width = 100, Index = index, IsRequired = setting.ReorderStockRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+            if (setting.UseMaxStock)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "MaxStock", ColumnTitle = L("MaxStock"), Width = 100, Index = index, IsRequired = setting.MaxStockRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+            if (setting.UseMinStock)
+            {
+                columns.Add(new ColumnOutput { ColumnName = "MinStock", ColumnTitle = L("MinStock"), Width = 100, Index = index, IsRequired = setting.MinStockRequired, ColumnType = ColumnType.Number });
+                index++;
+            }
+
+            columns.Add(new ColumnOutput { ColumnName = "IsModifier", ColumnTitle = L("IsModifier"), Width = 100, Index = index, ColumnType = ColumnType.Bool });
+            index++;
+
+            columns.Add(new ColumnOutput { ColumnName = "IsAddOn", ColumnTitle = L("IsAddOn"), Width = 100, Index = index, ColumnType = ColumnType.Bool });
+            index++;
+
+            columns.Add(new ColumnOutput { ColumnName = "UseBOM", ColumnTitle = L("UseBOM"), Width = 100, Index = index, ColumnType = ColumnType.Bool });
+            index++;
+
+            columns.Add(new ColumnOutput { ColumnName = "DisplayBOM", ColumnTitle = L("DisplayBOM"), Width = 100, Index = index, ColumnType = ColumnType.Bool });
+            index++;
+
+
+            return columns;
+        }
+
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
             var fileInput = new ExportFileInput
             {
                 FileName = $"Item.xlsx",
-                Columns = new List<ColumnOutput> {
-                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("Item")), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("ItemType"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = ItemType.Service.ToListStr() },
-                    new ColumnOutput{ ColumnTitle = L("ItemCategory"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = ItemCategory.Service.ToListStr() },
-                    new ColumnOutput{ ColumnTitle = L("Barcode"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Unit"), Width = 150, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("ItemGroup"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("ItemBrand"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("ItemModel"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("ItemGrade"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("ItemSize"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("ItemSeries"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("ColorPattern"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CPU"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("RAM"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("VGA"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("HDD"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Screen"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Camera"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Battery"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("FieldA"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("FieldB"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("FieldC"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("PurchaseAccount"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("SaleAccount"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("InventoryAccount"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("NetWeight"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("GrossWeight"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("Width"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("Height"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("Length"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("Diameter"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("Area"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("Volume"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("WeightUnit"), Width = 100, ColumnType = ColumnType.Lookup, LookupList = WeightUnit.g.ToListStr() },
-                    new ColumnOutput{ ColumnTitle = L("LengthUnit"), Width = 100, ColumnType = ColumnType.Lookup, LookupList = LengthUnit.m.ToListStr() },
-                    new ColumnOutput{ ColumnTitle = L("AreaUnit"), Width = 100, ColumnType = ColumnType.Lookup, LookupList = AreaUnit.m2.ToListStr() },
-                    new ColumnOutput{ ColumnTitle = L("VolumeUnit"), Width = 100, ColumnType = ColumnType.Lookup, LookupList = VolumeUnit.m3.ToListStr() },
-                    new ColumnOutput{ ColumnTitle = L("TrackSerial"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("TrackExpired"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("TrackBatchNo"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("TrackAssetStatus"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("ReorderStock"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("MaxStock"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("MinStock"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("IsModifier"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("IsAddOn"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("UseBOM"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("DisplayBOM"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("ALTCode"), Width = 100 },
-                    new ColumnOutput{ ColumnTitle = L("Description"), Width = 150 },
-                }
+                Columns = await GetExcelTemplateColumnsAsync()
             };
 
             return await _excelManager.ExportExcelTemplateAsync(fileInput);
@@ -550,7 +765,9 @@ namespace BiiSoft.Items
             var itemCodeFormulas = new List<ItemCodeFormula>();
             ItemSetting itemSetting = null;
 
-            var itemDic = new Dictionary<string, KeyValuePair<Guid, ItemType>>();
+            var barcodeHash = new HashSet<string>();
+            var altCodeHash = new HashSet<string>();
+            var itemDic = new Dictionary<string, ItemType>();
             var unitDic = new Dictionary<string, Guid>();
             var itemGroupDic = new Dictionary<string, Guid>();
             var itemBrandDic = new Dictionary<string, Guid>();
@@ -569,8 +786,9 @@ namespace BiiSoft.Items
             var fieldADic = new Dictionary<string, Guid>();
             var fieldBDic = new Dictionary<string, Guid>();
             var fieldCDic = new Dictionary<string, Guid>();
-            var accountDic = new Dictionary<string, Guid>();
+            var accountDic = new Dictionary<string, KeyValuePair<Guid, AccountType>>();
 
+            var columns = new List<ColumnOutput>();
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -581,7 +799,21 @@ namespace BiiSoft.Items
 
                     if (itemSetting == null) InputException(L("ItemSetting"));
 
-                    itemDic = await _repository.GetAll().AsNoTracking().OrderByDescending(s => s.Code).ToDictionaryAsync(k => k.Code, v => new KeyValuePair<Guid, ItemType>(v.Id, v.ItemType));
+                    var items = await _repository.GetAll().AsNoTracking()
+                                      .Select(s => new
+                                      {
+                                          s.Code,
+                                          s.ItemType,
+                                          s.Barcode,
+                                          s.ALTCode
+                                      })
+                                      .OrderByDescending(s => s.Code)
+                                      .ToListAsync();
+
+                    itemDic = items.ToDictionary(k => k.Code, v => v.ItemType);
+                    barcodeHash = items.Where(s => !s.Barcode.IsNullOrEmpty()).Select(s => s.Barcode).ToHashSet(StringComparer.OrdinalIgnoreCase);
+                    altCodeHash = items.Where(s => !s.ALTCode.IsNullOrEmpty()).Select(s => s.ALTCode).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
                     unitDic = await _unitRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
                     itemGroupDic = await _itemGroupRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
                     itemBrandDic = await _itemBrandRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
@@ -600,7 +832,9 @@ namespace BiiSoft.Items
                     fieldADic = await _fieldARepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
                     fieldBDic = await _fieldBRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
                     fieldCDic = await _fieldCRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
-                    accountDic = await _chartOfAccountRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => v.Id);
+                    accountDic = await _chartOfAccountRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => new KeyValuePair<Guid, AccountType>(v.Id, v.AccountType));
+
+                    columns = await GetExcelTemplateColumnsAsync();
                 }
             }
 
@@ -617,364 +851,476 @@ namespace BiiSoft.Items
                     var worksheet = excelPackage.Workbook.Worksheets[0];
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
+
+                        ItemType itemType = ItemType.Service;
+                        ItemCategory itemCategory = ItemCategory.Service;
+                        string name = "";
+                        string displayName = "";
+                        string code = "";
+                        string barcode = "";
+                        string altCode = "";
+                        string description = "";
+                        decimal reorderStock = 0;
+                        decimal minStock = 0;
+                        decimal maxStock = 0;
+                        decimal netWeight = 0;
+                        decimal grossWeight = 0;
+                        decimal width = 0;
+                        decimal height = 0;
+                        decimal length = 0;
+                        decimal diameter = 0;
+                        decimal area = 0;
+                        decimal volume = 0;
+                        WeightUnit? weightUnit = null;
+                        LengthUnit? lengthUnit = null;
+                        AreaUnit? areaUnit = null;
+                        VolumeUnit? volumeUnit = null;
+                        bool? trackSerial = null;
+                        bool? trackExpired = null;
+                        bool? trackBatchNo = null;
+                        bool? trackAssetStatus = null;
+                        Guid? itemGroupId = null;
+                        Guid? itemBrandId = null;
+                        Guid? itemGradeId = null;
+                        Guid? itemModelId = null;
+                        Guid? itemSizeId = null;
+                        Guid? itemSeriesId = null;
+                        Guid? colorPatternId = null;
+                        Guid? unitId = null;
+                        Guid? cpuId = null;
+                        Guid? ramId = null;
+                        Guid? vgaId = null;
+                        Guid? screenId = null;
+                        Guid? batteryId = null;
+                        Guid? cameraId = null;
+                        Guid? hddId = null;
+                        Guid? fieldAId = null;
+                        Guid? fieldBId = null;
+                        Guid? fieldCId = null;
+                        Guid? purchaseAccountId = null;
+                        Guid? saleAccountId = null;
+                        Guid? inventoryAccountId = null;
+                        bool? isModifier = false;
+                        bool? isAddOn = false;
+                        bool? useBOM = false;
+                        bool? displayBOM = false;
+
                         var rowMessage = $", Row: {i}";
 
-                        var typeTypeName = worksheet.GetString(i, 4);
-                        ValidateSelect(typeTypeName, L("ItemType"), rowMessage);
-                        var itemType = Enum.Parse<ItemType>(typeTypeName);
-
-                        var code = worksheet.GetString(i, 1);
-                        if (!itemSetting.UseCodeFormula)
+                        foreach (var col in columns)
                         {
-                            ValidateCodeInput(code, rowMessage);
-                        }
-                        else
-                        {
-                            var formula = itemCodeFormulas.Where(s => s.IsAllItemType || s.ItemTypes.Any(r => r.ItemType == itemType)).FirstOrDefault();
-
-                            if (formula == null) InputException(L("ItemCodeFormula"), rowMessage);
-
-                            if (formula.Type == ItemCodeFormulaType.Manual)
+                            switch (col.ColumnName)
                             {
-                                ValidateCodeInput(code, rowMessage);
+                                case "ItemType":
+                                    var itemTypeName = worksheet.GetString(i, col.Index);
+                                    ValidateSelect(itemTypeName, col.ColumnTitle, rowMessage);
+                                    itemType = Enum.Parse<ItemType>(itemTypeName);
+                                    break;
+                                case "ItemCategory":
+                                    var itemCategoryName = worksheet.GetString(i, col.Index);
+                                    ValidateSelect(itemCategoryName, col.ColumnTitle, rowMessage);
+                                    itemCategory = Enum.Parse<ItemCategory>(itemCategoryName);
+                                    break;
+                                case "Name":
+                                    name = worksheet.GetString(i, col.Index);
+                                    ValidateInput(name, col.ColumnTitle, rowMessage);
+                                    break;
+                                case "DisplayName":
+                                    displayName = worksheet.GetString(i, col.Index);
+                                    ValidateDisplayName(displayName, rowMessage);
+                                    break;
+                                case "Code":
+                                    code = worksheet.GetString(i, col.Index);
+
+                                    if (!itemSetting.UseCodeFormula)
+                                    {
+                                        ValidateCodeInput(code, rowMessage);
+                                    }
+                                    else
+                                    {
+                                        var formula = itemCodeFormulas.Where(s => s.IsAllItemType || s.ItemTypes.Any(r => r.ItemType == itemType)).FirstOrDefault();
+
+                                        if (formula == null) InputException(L("ItemCodeFormula"), rowMessage);
+
+                                        if (formula.Type == ItemCodeFormulaType.Manual)
+                                        {
+                                            ValidateCodeInput(code, rowMessage);
+                                        }
+                                        else if (code.IsNullOrEmpty())
+                                        {
+                                            var prefix = formula.Prefix;
+
+                                            var latestCode = itemDic
+                                                            .Where(s => formula.IsAllItemType || formula.ItemTypes.Any(r => r.ItemType == s.Value))
+                                                            .Where(s => s.Key.StartsWith(prefix))
+                                                            .Select(s => s.Key)
+                                                            .OrderByDescending(s => s)
+                                                            .FirstOrDefault();
+
+                                            if (latestCode.IsNullOrWhiteSpace())
+                                            {
+                                                code = formula.Start.GenerateCode(formula.Digits, prefix);
+                                            }
+                                            else
+                                            {
+                                                code = latestCode.NextCode(prefix);
+                                            }
+                                        }
+                                    }
+
+                                    if (itemDic.ContainsKey(code) || altCodeHash.Contains(code)) DuplicateCodeException(code, rowMessage);
+
+                                    break;
+                                case "Barcode":
+                                    barcode = worksheet.GetString(i, col.Index);
+                                    if (!barcode.IsNullOrEmpty() && barcodeHash.Contains(barcode)) DuplicateException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "ALTCode":
+                                    altCode = worksheet.GetString(i, col.Index);
+                                    if (!altCode.IsNullOrEmpty())
+                                    {
+                                        if (altCode == code ||
+                                           altCodeHash.Contains(altCode) ||
+                                           itemDic.ContainsKey(altCode)) DuplicateException(col.ColumnTitle, rowMessage);
+                                    }
+                                    break;
+                                case "Description":
+                                    description = worksheet.GetString(i, col.Index);
+                                    break;
+                                case "Unit":
+                                    var unitName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateSelect(unitName, col.ColumnTitle, rowMessage);
+                                    if (!unitName.IsNullOrEmpty())
+                                    {
+                                        if (!unitDic.ContainsKey(unitName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        unitId = unitDic[unitName];
+                                    }
+                                    break;
+                                case "ReorderStock":
+                                    reorderStock = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && reorderStock == 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "MinStock":
+                                    minStock = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && minStock < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "MaxStock":
+                                    maxStock = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && maxStock < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "NetWeight":
+                                    netWeight = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && netWeight < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "GrossWeight":
+                                    grossWeight = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && grossWeight < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "Width":
+                                    width = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && width < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "Height":
+                                    height = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && height < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "Length":
+                                    length = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && length < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "Diameter":
+                                    diameter = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && diameter < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "Area":
+                                    area = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && area < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "Volume":
+                                    volume = worksheet.GetDecimal(i, col.Index);
+                                    if (col.IsRequired && volume < 0) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "WeightUnit":
+                                    var weightUnitName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateSelect(weightUnitName, col.ColumnTitle, rowMessage);
+                                    if (!weightUnitName.IsNullOrEmpty())
+                                    {
+                                        if (!Enum.TryParse(weightUnitName, out WeightUnit weightUnitValue)) InvalidException(col.ColumnTitle, rowMessage);
+                                        weightUnit = weightUnitValue;
+                                    }
+                                    break;
+                                case "LengthUnit":
+                                    var lengthUnitName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateSelect(lengthUnitName, col.ColumnTitle, rowMessage);
+                                    if (!lengthUnitName.IsNullOrEmpty())
+                                    {
+                                        if (!Enum.TryParse(lengthUnitName, out LengthUnit lengthUnitValue)) InvalidException(col.ColumnTitle, rowMessage);
+                                        lengthUnit = lengthUnitValue;
+                                    }
+                                    break;
+                                case "AreaUnit":
+                                    var areaUnitName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateSelect(areaUnitName, col.ColumnTitle, rowMessage);
+                                    if (!areaUnitName.IsNullOrEmpty())
+                                    {
+                                        if (!Enum.TryParse(areaUnitName, out AreaUnit areaUnitValue)) InvalidException(col.ColumnTitle, rowMessage);
+                                        areaUnit = areaUnitValue;
+                                    }
+                                    break;
+                                case "VolumeUnit":
+                                    var volumeUnitName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateSelect(volumeUnitName, col.ColumnTitle, rowMessage);
+                                    if (!volumeUnitName.IsNullOrEmpty())
+                                    {
+                                        if (!Enum.TryParse(volumeUnitName, out VolumeUnit volumeUnitValue)) InvalidException(col.ColumnTitle, rowMessage);
+                                        volumeUnit = volumeUnitValue;
+                                    }
+                                    break;
+                                case "TrackSerial":
+                                    trackSerial = worksheet.GetBoolOrNull(i, col.Index);
+                                    if (col.IsRequired && !trackSerial.HasValue) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "TrackExpired":
+                                    trackExpired = worksheet.GetBoolOrNull(i, col.Index);
+                                    if (col.IsRequired && !trackExpired.HasValue) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "TrackBatchNo":
+                                    trackBatchNo = worksheet.GetBoolOrNull(i, col.Index);
+                                    if (col.IsRequired && !trackBatchNo.HasValue) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "TrackAssetStatus":
+                                    trackAssetStatus = worksheet.GetBoolOrNull(i, col.Index);
+                                    if (col.IsRequired && !trackAssetStatus.HasValue) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "PurchaseAccount":
+                                    var purchaseAccountName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(purchaseAccountName, col.ColumnTitle, rowMessage);
+                                    if (!purchaseAccountName.IsNullOrEmpty())
+                                    {
+                                        if (!accountDic.ContainsKey(purchaseAccountName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        if (!accountDic[purchaseAccountName].Value.IsExpenseOrCostOfSale()) InvalidException(col.ColumnTitle, rowMessage);
+                                        purchaseAccountId = accountDic[purchaseAccountName].Key;
+                                    }
+                                    break;
+                                case "SaleAccount":
+                                    var saleAccountName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(saleAccountName, col.ColumnTitle, rowMessage);
+                                    if (!saleAccountName.IsNullOrEmpty())
+                                    {
+                                        if (!accountDic.ContainsKey(saleAccountName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        if (!accountDic[saleAccountName].Value.IsRevenue()) InvalidException(col.ColumnTitle, rowMessage);
+                                        saleAccountId = accountDic[saleAccountName].Key;
+                                    }
+                                    break;
+                                case "InventoryAccount":
+                                    var inventoryAccountName = worksheet.GetString(i, col.Index);
+                                    if (itemType == ItemType.Inventory || itemType == ItemType.Asset) ValidateInput(inventoryAccountName, col.ColumnTitle, rowMessage);
+                                    if (!inventoryAccountName.IsNullOrEmpty())
+                                    {
+                                        if (!accountDic.ContainsKey(inventoryAccountName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        if (itemType == ItemType.Asset && accountDic[inventoryAccountName].Value != AccountType.FixedAsset) InvalidException(L("AssetAccount"), rowMessage);
+                                        if (itemType != ItemType.Inventory && accountDic[inventoryAccountName].Value != AccountType.Inventory) InvalidException(L("InventoryAccount"), rowMessage);
+                                        inventoryAccountId = accountDic[inventoryAccountName].Key;
+                                    }
+                                    break;
+                                case "ItemGroup":
+                                    var itemGroupName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(itemGroupName, col.ColumnTitle, rowMessage);
+                                    if (!itemGroupName.IsNullOrEmpty())
+                                    {
+                                        if (!itemGroupDic.ContainsKey(itemGroupName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        itemGroupId = itemGroupDic[itemGroupName];
+                                    }
+                                    break;
+                                case "ItemBrand":
+                                    var itemBrandName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(itemBrandName, col.ColumnTitle, rowMessage);
+                                    if (!itemBrandName.IsNullOrEmpty())
+                                    {
+                                        if (!itemBrandDic.ContainsKey(itemBrandName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        itemBrandId = itemBrandDic[itemBrandName];
+                                    }
+                                    break;
+                                case "ItemGrade":
+                                    var itemGradeName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(itemGradeName, col.ColumnTitle, rowMessage);
+                                    if (!itemGradeName.IsNullOrEmpty())
+                                    {
+                                        if (!itemGradeDic.ContainsKey(itemGradeName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        itemGradeId = itemGradeDic[itemGradeName];
+                                    }
+                                    break;
+                                case "ItemModel":
+                                    var itemModelName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(itemModelName, col.ColumnTitle, rowMessage);
+                                    if (!itemModelName.IsNullOrEmpty())
+                                    {
+                                        if (!itemModelDic.ContainsKey(itemModelName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        itemModelId = itemModelDic[itemModelName];
+                                    }
+                                    break;
+                                case "ItemSize":
+                                    var itemSizeName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(itemSizeName, col.ColumnTitle, rowMessage);
+                                    if (!itemSizeName.IsNullOrEmpty())
+                                    {
+                                        if (!itemSizeDic.ContainsKey(itemSizeName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        itemSizeId = itemSizeDic[itemSizeName];
+                                    }
+                                    break;
+                                case "ItemSeries":
+                                    var itemSeriesName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(itemSeriesName, col.ColumnTitle, rowMessage);
+                                    if (!itemSeriesName.IsNullOrEmpty())
+                                    {
+                                        if (!itemSeriesDic.ContainsKey(itemSeriesName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        itemSeriesId = itemSeriesDic[itemSeriesName];
+                                    }
+                                    break;
+                                case "ColorPattern":
+                                    var colorPatternName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(colorPatternName, col.ColumnTitle, rowMessage);
+                                    if (!colorPatternName.IsNullOrEmpty())
+                                    {
+                                        if (!colorPatternDic.ContainsKey(colorPatternName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        colorPatternId = colorPatternDic[colorPatternName];
+                                    }
+                                    break;
+                                case "CPU":
+                                    var cpuName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(cpuName, col.ColumnTitle, rowMessage);
+                                    if (!cpuName.IsNullOrEmpty())
+                                    {
+                                        if (!cpuDic.ContainsKey(cpuName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        cpuId = cpuDic[cpuName];
+                                    }
+                                    break;
+                                case "RAM":
+                                    var ramName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(ramName, col.ColumnTitle, rowMessage);
+                                    if (!ramName.IsNullOrEmpty())
+                                    {
+                                        if (!ramDic.ContainsKey(ramName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        ramId = ramDic[ramName];
+                                    }
+                                    break;
+                                case "VGA":
+                                    var vgaName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(vgaName, col.ColumnTitle, rowMessage);
+                                    if (!vgaName.IsNullOrEmpty())
+                                    {
+                                        if (!vgaDic.ContainsKey(vgaName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        vgaId = vgaDic[vgaName];
+                                    }
+                                    break;
+                                case "HDD":
+                                    var hddName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(hddName, col.ColumnTitle, rowMessage);
+                                    if (!hddName.IsNullOrEmpty())
+                                    {
+                                        if (!hddDic.ContainsKey(hddName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        hddId = hddDic[hddName];
+                                    }
+                                    break;
+                                case "Screen":
+                                    var screenName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(screenName, col.ColumnTitle, rowMessage);
+                                    if (!screenName.IsNullOrEmpty())
+                                    {
+                                        if (!screenDic.ContainsKey(screenName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        screenId = screenDic[screenName];
+                                    }
+                                    break;
+                                case "Camera":
+                                    var cameraName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(cameraName, col.ColumnTitle, rowMessage);
+                                    if (!cameraName.IsNullOrEmpty())
+                                    {
+                                        if (!cameraDic.ContainsKey(cameraName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        cameraId = cameraDic[cameraName];
+                                    }
+                                    break;
+                                case "Battery":
+                                    var batteryName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(batteryName, col.ColumnTitle, rowMessage);
+                                    if (!batteryName.IsNullOrEmpty())
+                                    {
+                                        if (!batteryDic.ContainsKey(batteryName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        batteryId = batteryDic[batteryName];
+                                    }
+                                    break;
+                                case "FieldA":
+                                    var fieldAName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(fieldAName, col.ColumnTitle, rowMessage);
+                                    if (!fieldAName.IsNullOrEmpty())
+                                    {
+                                        if (!fieldADic.ContainsKey(fieldAName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        fieldAId = fieldADic[fieldAName];
+                                    }
+                                    break;
+                                case "FieldB":
+                                    var fieldBName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(fieldBName, col.ColumnTitle, rowMessage);
+                                    if (!fieldBName.IsNullOrEmpty())
+                                    {
+                                        if (!fieldBDic.ContainsKey(fieldBName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        fieldBId = fieldBDic[fieldBName];
+                                    }
+                                    break;
+                                case "FieldC":
+                                    var fieldCName = worksheet.GetString(i, col.Index);
+                                    if (col.IsRequired) ValidateInput(fieldCName, col.ColumnTitle, rowMessage);
+                                    if (!fieldCName.IsNullOrEmpty())
+                                    {
+                                        if (!fieldCDic.ContainsKey(fieldCName)) InvalidException(col.ColumnTitle, rowMessage);
+                                        fieldCId = fieldCDic[fieldCName];
+                                    }
+                                    break;
+                                case "IsModifier":
+                                    isModifier = worksheet.GetBoolOrNull(i, col.Index);
+                                    if (col.IsRequired && !isModifier.HasValue) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "IsAddOn":
+                                    isAddOn = worksheet.GetBoolOrNull(i, col.Index);
+                                    if (col.IsRequired && !isAddOn.HasValue) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "UseBOM":
+                                    useBOM = worksheet.GetBoolOrNull(i, col.Index);
+                                    if (col.IsRequired && !useBOM.HasValue) InputException(col.ColumnTitle, rowMessage);
+                                    break;
+                                case "DisplayBOM":
+                                    displayBOM = worksheet.GetBoolOrNull(i, col.Index);
+                                    if (col.IsRequired && !displayBOM.HasValue) InputException(col.ColumnTitle, rowMessage);
+                                    break;
                             }
-                            else if (code.IsNullOrEmpty())
+                        }
+
+                        if (!AccountingFeatureEnable)
+                        {
+                            if (itemType == ItemType.Inventory)
                             {
-                                var prefix = formula.Prefix;
+                                ValidateSelect(itemSetting.COGSAccountId, L("COGSAccount"), rowMessage);
+                                ValidateSelect(itemSetting.InventoryAccountId, L("InventoryAccount"), rowMessage);
 
-                                var latestCode = itemDic
-                                                .Where(s => formula.ItemTypes.Any(r => r.ItemType == s.Value.Value))
-                                                .Where(s => s.Key.StartsWith(prefix))
-                                                .Select(s => s.Key)
-                                                .OrderByDescending(s => s)
-                                                .FirstOrDefault();
-
-                                if (latestCode.IsNullOrWhiteSpace())
-                                {
-                                    code = formula.Start.GenerateCode(formula.Digits, prefix);
-                                }
-                                else
-                                {
-                                    code = latestCode.NextCode(prefix);
-                                }
+                                purchaseAccountId = itemSetting.COGSAccountId;
+                                inventoryAccountId = itemSetting.InventoryAccountId;
                             }
-                        }
-
-                        if (itemDic.ContainsKey(code)) DuplicateCodeException(code, rowMessage);
-
-                        var name = worksheet.GetString(i, 2);
-                        ValidateName(name, rowMessage);
-
-                        var displayName = worksheet.GetString(i, 3);
-                        ValidateDisplayName(displayName, rowMessage);
-
-                        var categoryName = worksheet.GetString(i, 5);
-                        ValidateSelect(categoryName, L("ItemCategory"), rowMessage);
-                        var itemCategory = Enum.Parse<ItemCategory>(categoryName);
-
-                        var barcode = worksheet.GetString(i, 6);
-                        if (!barcode.IsNullOrEmpty())
-                        {
-                            //TODO: check barcode
-                            //if (itemDic.ContainsKey(barcode)) DuplicateException(L("Barcode"), rowMessage);
-                        }
-
-                        var unitName = worksheet.GetString(i, 7);
-                        ValidateInput(unitName, L("Unit"), rowMessage);
-                        if (unitDic.ContainsKey(unitName)) InvalidException(L("Unit"), rowMessage);
-                        Guid? unitId = unitDic[unitName];
-
-                        Guid? itemGroupId = null;
-                        if (itemSetting.UseItemGroup)
-                        {
-                            var itemGroupName = worksheet.GetString(i, 8);
-                            if (itemSetting.ItemGroupRequired) ValidateInput(itemGroupName, L("ItemGroup"), rowMessage);
-                            if (!itemGroupName.IsNullOrEmpty())
+                            else if (itemType == ItemType.Asset)
                             {
-                                if (!itemGroupDic.ContainsKey(itemGroupName)) InvalidException(L("ItemGroup"), rowMessage);
-                                itemGroupId = itemGroupDic[itemGroupName];
+                                ValidateSelect(itemSetting.COGSAccountId, L("COGSAccount"), rowMessage);
+                                ValidateSelect(itemSetting.AssetAccountId, L("AssetAccount"), rowMessage);
+                                purchaseAccountId = itemSetting.COGSAccountId;
+                                inventoryAccountId = itemSetting.AssetAccountId;
                             }
-                        }
-
-                        Guid? itemBrandId = null;
-                        if (itemSetting.UseBrand)
-                        {
-                            var itemBrandName = worksheet.GetString(i, 9);
-                            if (itemSetting.BrandRequired) ValidateInput(itemBrandName, L("ItemBrand"), rowMessage);
-                            if (!itemBrandName.IsNullOrEmpty())
+                            else
                             {
-                                if (!itemBrandDic.ContainsKey(itemBrandName)) InvalidException(L("ItemBrand"), rowMessage);
-                                itemBrandId = itemBrandDic[itemBrandName];
+                                ValidateSelect(itemSetting.ExpenseAccountId, L("ExpenseAccount"), rowMessage);
+                                purchaseAccountId = itemSetting.ExpenseAccountId;
                             }
+
+                            ValidateSelect(itemSetting.RevenueAccountId, L("RevenueAccount"), rowMessage);
+                            saleAccountId = itemSetting.RevenueAccountId;
                         }
-
-                        Guid? itemModelId = null;
-                        if (itemSetting.UseModel)
-                        {
-                            var itemModelName = worksheet.GetString(i, 10);
-                            if (itemSetting.ModelRequired) ValidateInput(itemModelName, L("ItemModel"), rowMessage);
-                            if (!itemModelName.IsNullOrEmpty())
-                            {
-                                if (!itemModelDic.ContainsKey(itemModelName)) InvalidException(L("ItemModel"), rowMessage);
-                                itemModelId = itemModelDic[itemModelName];
-                            }
-                        }
-
-                        Guid? itemGradeId = null;
-                        if (itemSetting.UseGrade)
-                        {
-                            var itemGradeName = worksheet.GetString(i, 11);
-                            if (itemSetting.GradeRequired) ValidateInput(itemGradeName, L("ItemGrade"), rowMessage);
-                            if (!itemGradeName.IsNullOrEmpty())
-                            {
-                                if (!itemGradeDic.ContainsKey(itemGradeName)) InvalidException(L("ItemGrade"), rowMessage);
-                                itemGradeId = itemGradeDic[itemGradeName];
-                            }
-                        }
-
-                        Guid? itemSizeId = null;
-                        if (itemSetting.UseSize)
-                        {
-                            var itemSizeName = worksheet.GetString(i, 12);
-                            if (itemSetting.SizeRequired) ValidateInput(itemSizeName, L("ItemSize"), rowMessage);
-                            if (!itemSizeName.IsNullOrEmpty())
-                            {
-                                if (!itemSizeDic.ContainsKey(itemSizeName)) InvalidException(L("ItemSize"), rowMessage);
-                                itemSizeId = itemSizeDic[itemSizeName];
-                            }
-                        }
-
-                        Guid? itemSeriesId = null;
-                        if (itemSetting.UseSeries)
-                        {
-                            var itemSeriesName = worksheet.GetString(i, 13);
-                            if (itemSetting.SeriesRequired) ValidateInput(itemSeriesName, L("ItemSeries"), rowMessage);
-                            if (!itemSeriesName.IsNullOrEmpty())
-                            {
-                                if (!itemSeriesDic.ContainsKey(itemSeriesName)) InvalidException(L("ItemSeries"), rowMessage);
-                                itemSeriesId = itemSeriesDic[itemSeriesName];
-                            }
-                        }
-
-                        Guid? colorPatternId = null;
-                        if (itemSetting.UseColorPattern)
-                        {
-                            var colorPatternName = worksheet.GetString(i, 14);
-                            if (itemSetting.ColorPatternRequired) ValidateInput(colorPatternName, L("ColorPattern"), rowMessage);
-                            if (!colorPatternName.IsNullOrEmpty())
-                            {
-                                if (!colorPatternDic.ContainsKey(colorPatternName)) InvalidException(L("ColorPattern"), rowMessage);
-                                colorPatternId = colorPatternDic[colorPatternName];
-                            }
-                        }
-
-                        Guid? cpuId = null;
-                        if (itemSetting.UseCPU)
-                        {
-                            var cpuName = worksheet.GetString(i, 15);
-                            if (itemSetting.CPURequired) ValidateInput(cpuName, L("CPU"), rowMessage);
-                            if (!cpuName.IsNullOrEmpty())
-                            {
-                                if (!cpuDic.ContainsKey(cpuName)) InvalidException(L("CPU"), rowMessage);
-                                cpuId = cpuDic[cpuName];
-                            }
-                        }
-
-                        Guid? ramId = null;
-                        if (itemSetting.UseRAM)
-                        {
-                            var ramName = worksheet.GetString(i, 16);
-                            if (itemSetting.RAMRequired) ValidateInput(ramName, L("RAM"), rowMessage);
-                            if (!ramName.IsNullOrEmpty())
-                            {
-                                if (!ramDic.ContainsKey(ramName)) InvalidException(L("RAM"), rowMessage);
-                                ramId = ramDic[ramName];
-                            }
-                        }
-
-                        Guid? vgaId = null;
-                        if (itemSetting.UseVGA)
-                        {
-                            var vgaName = worksheet.GetString(i, 17);
-                            if (itemSetting.VGARequired) ValidateInput(vgaName, L("VGA"), rowMessage);
-                            if (!vgaName.IsNullOrEmpty())
-                            {
-                                if (!vgaDic.ContainsKey(vgaName)) InvalidException(L("VGA"), rowMessage);
-                                vgaId = vgaDic[vgaName];
-                            }
-                        }
-
-                        Guid? hddId = null;
-                        if (itemSetting.UseHDD)
-                        {
-                            var hddName = worksheet.GetString(i, 18);
-                            if (itemSetting.HDDRequired) ValidateInput(hddName, L("HDD"), rowMessage);
-                            if (!hddName.IsNullOrEmpty())
-                            {
-                                if (!hddDic.ContainsKey(hddName)) InvalidException(L("HDD"), rowMessage);
-                                hddId = hddDic[hddName];
-                            }
-                        }
-
-                        Guid? screenId = null;
-                        if (itemSetting.UseScreen)
-                        {
-                            var screenName = worksheet.GetString(i, 19);
-                            if (itemSetting.ScreenRequired) ValidateInput(screenName, L("Screen"), rowMessage);
-                            if (!screenName.IsNullOrEmpty())
-                            {
-                                if (!screenDic.ContainsKey(screenName)) InvalidException(L("Screen"), rowMessage);
-                                screenId = screenDic[screenName];
-                            }
-                        }
-
-
-                        Guid? cameraId = null;
-                        if (itemSetting.UseCamera)
-                        {
-                            var cameraName = worksheet.GetString(i, 20);
-                            if (itemSetting.CameraRequired) ValidateInput(cameraName, L("Camera"), rowMessage);
-                            if (!cameraName.IsNullOrEmpty())
-                            {
-                                if (!cameraDic.ContainsKey(cameraName)) InvalidException(L("Camera"), rowMessage);
-                                cameraId = cameraDic[cameraName];
-                            }
-                        }
-
-                        Guid? batteryId = null;
-                        if (itemSetting.UseBattery)
-                        {
-                            var batteryName = worksheet.GetString(i, 21);
-                            if (itemSetting.BatteryRequired) ValidateInput(batteryName, L("Battery"), rowMessage);
-                            if (!batteryName.IsNullOrEmpty())
-                            {
-                                if (!batteryDic.ContainsKey(batteryName)) InvalidException(L("Battery"), rowMessage);
-                                batteryId = batteryDic[batteryName];
-                            }
-                        }
-
-                        Guid? fieldAId = null;
-                        if (itemSetting.UseFieldA)
-                        {
-                            var fieldAName = worksheet.GetString(i, 22);
-                            if (itemSetting.FieldARequired) ValidateInput(fieldAName, L("FieldA"), rowMessage);
-                            if (!fieldAName.IsNullOrEmpty())
-                            {
-                                if (!fieldADic.ContainsKey(fieldAName)) InvalidException(L("FieldA"), rowMessage);
-                                fieldAId = fieldADic[fieldAName];
-                            }
-                        }
-
-                        Guid? fieldBId = null;
-                        if (itemSetting.UseFieldB)
-                        {
-                            var fieldBName = worksheet.GetString(i, 23);
-                            if (itemSetting.FieldBRequired) ValidateInput(fieldBName, L("FieldB"), rowMessage);
-                            if (!fieldBName.IsNullOrEmpty())
-                            {
-                                if (!fieldBDic.ContainsKey(fieldBName)) InvalidException(L("FieldB"), rowMessage);
-                                fieldBId = fieldBDic[fieldBName];
-                            }
-                        }
-
-                        Guid? fieldCId = null;
-                        if (itemSetting.UseFieldC)
-                        {
-                            var fieldCName = worksheet.GetString(i, 24);
-                            if (itemSetting.FieldCRequired) ValidateInput(fieldCName, L("FieldC"), rowMessage);
-                            if (!fieldCName.IsNullOrEmpty())
-                            {
-                                if (!fieldCDic.ContainsKey(fieldCName)) InvalidException(L("FieldC"), rowMessage);
-                                fieldCId = fieldCDic[fieldCName];
-                            }
-                        }
-
-                        var purchaseAccountName = worksheet.GetString(i, 25);
-                        ValidateInput(purchaseAccountName, L("PurchaseAccount"), rowMessage);
-                        if (!accountDic.ContainsKey(purchaseAccountName)) InvalidException(L("PurchaseAccount"), rowMessage);
-                        Guid? purchaseAccountId = accountDic[purchaseAccountName];
-
-                        var saleAccountName = worksheet.GetString(i, 26);
-                        ValidateInput(saleAccountName, L("SaleAccount"), rowMessage);
-                        if (!accountDic.ContainsKey(saleAccountName)) InvalidException(L("SaleAccount"), rowMessage);
-                        Guid? saleAccountId = accountDic[saleAccountName];
-
-                        Guid? inventoryAccountId = null;
-                        if(itemType == ItemType.Inventory || itemType == ItemType.Asset)
-                        {
-                            var inventoryAccountName = worksheet.GetString(i, 27);
-                            ValidateInput(inventoryAccountName, L("InventoryAccount"), rowMessage);                           
-                            if (!accountDic.ContainsKey(inventoryAccountName)) InvalidException(L("InventoryAccount"), rowMessage);
-                            inventoryAccountId = accountDic[inventoryAccountName];
-                        }
-
-                        decimal netWeight = worksheet.GetDecimal(i, 28);
-                        if (itemSetting.NetWeightRequired && netWeight == 0) InputException(L("NetWeight"), rowMessage);
-
-                        decimal grossWeight = worksheet.GetDecimal(i, 29);
-                        if (itemSetting.GrossWeightRequired && grossWeight == 0) InputException(L("GrossWeight"), rowMessage);
-
-                        decimal width = worksheet.GetDecimal(i, 30);
-                        if (itemSetting.WidthRequired && width == 0) InputException(L("Width"), rowMessage);
-
-                        decimal height = worksheet.GetDecimal(i, 31);
-                        if (itemSetting.HeightRequired && height == 0) InputException(L("Height"), rowMessage);
-
-                        decimal length = worksheet.GetDecimal(i, 32);
-                        if (itemSetting.LengthRequired && length == 0) InputException(L("Length"), rowMessage);
-
-                        decimal diameter = worksheet.GetDecimal(i, 33);
-                        if (itemSetting.DiameterRequired && diameter == 0) InputException(L("Diameter"), rowMessage);
-
-                        decimal area = worksheet.GetDecimal(i, 34);
-                        if (itemSetting.AreaRequired && area == 0) InputException(L("Area"), rowMessage);
-
-                        decimal volume = worksheet.GetDecimal(i, 35);
-                        if (itemSetting.VolumeRequired && volume == 0) InputException(L("Volume"), rowMessage);
-
-                        WeightUnit? weightUnit = null;
-                        var weightUnitName = worksheet.GetString(i, 36);
-                        if (itemSetting.NetWeightRequired || itemSetting.GrossWeightRequired) ValidateSelect(weightUnitName, L("WeightUnit"), rowMessage);
-                        if (!weightUnitName.IsNullOrEmpty()) weightUnit = Enum.Parse<WeightUnit>(weightUnitName);
-
-                        LengthUnit? lengthUnit = null;
-                        var lengthUnitName = worksheet.GetString(i, 37);
-                        if (itemSetting.WidthRequired || itemSetting.HeightRequired || itemSetting.LengthRequired || itemSetting.DiameterRequired) ValidateSelect(lengthUnitName, L("LengthUnit"), rowMessage);
-                        if (!lengthUnitName.IsNullOrEmpty()) lengthUnit = Enum.Parse<LengthUnit>(lengthUnitName);
-
-                        AreaUnit? areaUnit = null;
-                        var areaUnitName = worksheet.GetString(i, 38);
-                        if (itemSetting.AreaRequired) ValidateSelect(areaUnitName, L("AreaUnit"), rowMessage);
-                        if (!areaUnitName.IsNullOrEmpty()) areaUnit = Enum.Parse<AreaUnit>(areaUnitName);
-
-                        VolumeUnit? volumeUnit = null;
-                        var volumeUnitName = worksheet.GetString(i, 39);
-                        if (itemSetting.VolumeRequired) ValidateSelect(volumeUnitName, L("VolumeUnit"), rowMessage);
-                        if (!volumeUnitName.IsNullOrEmpty()) volumeUnit = Enum.Parse<VolumeUnit>(volumeUnitName);
-
-                        bool? trackSerial = worksheet.GetBoolOrNull(i, 40);
-
-                        bool? trackExpired = worksheet.GetBoolOrNull(i, 41);
-
-                        bool? trackBatchNo = worksheet.GetBoolOrNull(i, 42);
-
-                        bool? trackAssetStatus = worksheet.GetBoolOrNull(i, 43);
-
-                        decimal reorderStock = worksheet.GetDecimal(i, 44);
-                        if (itemSetting.ReorderStockRequired && reorderStock == 0) InputException(L("ReorderStock"), rowMessage);
-
-                        decimal maxStock = worksheet.GetDecimal(i, 45);
-                        if (itemSetting.MaxStockRequired && maxStock == 0) InputException(L("MaxStock"), rowMessage);
-
-                        decimal minStock = worksheet.GetDecimal(i, 46);
-                        if (itemSetting.MinStockRequired && minStock == 0) InputException(L("MinStock"), rowMessage);
-
-                        var isModifier = worksheet.GetBoolOrNull(i, 47);
-                        var isAddOn = worksheet.GetBoolOrNull(i, 48);
-                        var useBOM = worksheet.GetBoolOrNull(i, 49);
-                        var displayBOM = worksheet.GetBoolOrNull(i, 50);
-                        var altCode = worksheet.GetString(i, 51);
-                        var description = worksheet.GetString(i, 52);
 
                         var entity = Item.Create(
                             input.TenantId.Value,
@@ -1030,10 +1376,13 @@ namespace BiiSoft.Items
                             isAddOn ?? false,
                             useBOM ?? false,
                             displayBOM ?? false,
-                            altCode);
+                            altCode
+                        );
 
                         addItems.Add(entity);
-                        itemDic.Add(entity.Code, new KeyValuePair<Guid, ItemType>(entity.Id, entity.ItemType));
+                        itemDic.Add(entity.Code, entity.ItemType);
+                        if (!entity.Barcode.IsNullOrEmpty()) barcodeHash.Add(entity.Barcode);
+                        if (!entity.ALTCode.IsNullOrEmpty()) altCodeHash.Add(entity.ALTCode);
                     }
                 }
             }
@@ -1052,6 +1401,115 @@ namespace BiiSoft.Items
 
             return IdentityResult.Success;
         }
+
+        public async Task<ExportFileOutput> ExportExcelUpdateItemZonesAsync()
+        {
+            var items = await _repository.GetAll().AsNoTracking().Where(s => s.IsActive).Select(s => new { s.Code, s.Name }).ToListAsync();
+
+            var excelInput = new ExportDataFileInput
+            {
+                FileName = "CityProvince.xlsx",
+                Items = items,
+                Columns = new List<ColumnOutput>
+                {
+                    new ColumnOutput{ ColumnName = "Code", ColumnTitle = L("Code"), Width = 100, Index = 5, IsRequired = true },
+                    new ColumnOutput{ ColumnName = "Name",  ColumnTitle = L("Name_",L("Item")), Width = 250, Index = 1 },
+                    new ColumnOutput{ ColumnName = "Zone", ColumnTitle = L("Zone"), Width = 150, Index = 6 }
+                }
+            };
+
+            return await _excelManager.ExportExcelAsync(excelInput);
+        }
+
+        /// <summary>
+        /// Import data from excel file template. Must call in close connection
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <param name="userId"></param>
+        /// <param name="fileToken"></param>
+        /// <returns></returns>
+        /// <exception cref="UserFriendlyException"></exception>
+        public async Task<IdentityResult> ImportExcelUpdateItemZonesAsync(IImportExcelEntity<Guid> input)
+        {   
+            var itemDic = new Dictionary<string, Guid>();
+            var zoneDic = new Dictionary<string, KeyValuePair<Guid, Guid>>();
+            var itemZones = new List<ItemZone>();
+
+            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    itemDic = await _repository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Code, v => v.Id);
+                    zoneDic = await _zoneRepository.GetAll().AsNoTracking().ToDictionaryAsync(k => k.Name, v => new KeyValuePair<Guid, Guid>(v.Id, v.WarehouseId));
+                    itemZones = await _itemZoneRepository.GetAll().Include(s => s.Zone).AsNoTracking().ToListAsync();
+                }
+            }
+
+            var itemWarehouseHash = new HashSet<string>();
+            var addItemZoneItems = new List<ItemZone>();
+            var updateItemZones = new List<ItemZone>();
+            var deleteItemZones = new List<ItemZone>();
+
+            var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
+            if (excelPackage != null)
+            {
+                // Get the work book in the file
+                var workBook = excelPackage.Workbook;
+                if (workBook != null)
+                {
+                    // retrive first worksheets
+                    var worksheet = excelPackage.Workbook.Worksheets[0];
+                    for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
+                    {
+                        var rowMessage = $", Row: {i}";
+
+                        var code = worksheet.GetString(i, 1);
+                        ValidateCodeInput(code, rowMessage);
+                        if (!itemDic.ContainsKey(code)) InvalidException(L("ItemCode"), rowMessage);
+
+                        var zoneName = worksheet.GetString(i, 3);
+                        ValidateInput(zoneName, L("Zone"), rowMessage);
+                        if (!zoneDic.ContainsKey(zoneName)) InvalidException(L("Zone"), rowMessage);
+
+                        var zoneKey = $"{code}-{zoneDic[zoneName].Value}";
+                        if(itemWarehouseHash.Contains(zoneKey)) DuplicateException(L("Warehouse"), rowMessage);
+
+                        var findItemZone = itemZones.FirstOrDefault(s => s.ItemId == itemDic[code] && s.Zone.WarehouseId == zoneDic[zoneName].Value);
+                        if (findItemZone == null)
+                        {   
+                            var entity = ItemZone.Create(input.TenantId.Value, input.UserId.Value, itemDic[code], zoneDic[zoneName].Key);
+                            addItemZoneItems.Add(entity);
+                        }
+                        else
+                        {
+                            findItemZone.Update(input.UserId.Value, itemDic[code], zoneDic[zoneName].Key);
+                            updateItemZones.Add(findItemZone);
+                        }
+
+                        itemWarehouseHash.Add(zoneKey);
+                    }
+                }
+            }
+
+            if(itemZones.Any()) deleteItemZones = itemZones.Where(s => !updateItemZones.Any(r => r.Id == s.Id)).ToList();
+
+            if (!addItemZoneItems.Any() && !updateItemZones.Any() && !deleteItemZones.Any()) return IdentityResult.Success;
+
+            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
+                {
+                    if(addItemZoneItems.Any()) await _itemZoneRepository.BulkInsertAsync(addItemZoneItems);
+                    if (updateItemZones.Any()) await _itemZoneRepository.BulkUpdateAsync(updateItemZones);
+                    if (deleteItemZones.Any()) await _itemZoneRepository.BulkDeleteAsync(deleteItemZones);
+                }
+
+                await uow.CompleteAsync();
+            }
+
+            return IdentityResult.Success;
+        }
+
 
     }
 }

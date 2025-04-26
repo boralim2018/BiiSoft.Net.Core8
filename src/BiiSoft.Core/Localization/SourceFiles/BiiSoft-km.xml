@@ -676,8 +676,8 @@
 		<text name="Logo">ឡូហ្កូ</text>
 		<text name="MultiBranchesEnable">ប្រើមុខងារ​ច្រើនសាខា</text>
 		<text name="MultiCurrencyEnable">ប្រើមុខងាររូបិយបណ្ណច្រើន</text>
-		<text name="LineDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃតាមជួរ</text>
-		<text name="TotalDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃចុងក្រោយ</text>
+		<text name="LineDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃតាមទំនិញ</text>
+		<text name="TotalDiscountEnable">ប្រើមុខងារបញ្ចុះតម្លៃសរុប</text>
 		<text name="CustomTransactionNoEnable">ប្រើមុខងារដាក់លេខឯកសារខ្លួនឯង</text>
 		<text name="CustomNo">ដាក់លេខខ្លួនឯង</text>
 		<text name="TransactionNo">លេខប្រតិបត្តិការ</text>
@@ -769,6 +769,7 @@
 		<text name="AdvanceSetting">កំណត់ផ្សេងៗ</text>
 		<text name="AccountSetting">កំណត់គណនី</text>
 		<text name="ItemFieldSetting">កំណត់លក្ខណៈទំនិញ</text>
+		<text name="ItemSetting">កំណត់លក្ខណៈទំនិញ</text>
 		<text name="ItemFields">លក្ខណៈទំនិញ</text>
 		<text name="ChangeSetting">កែប្រែការកំណត់</text>
 		<text name="Use_">ប្រើ {0}</text>
@@ -810,5 +811,18 @@
 		<text name="CodeSetting">កំណត់លេខកូដ</text>
 		<text name="Barcode">បាកូដ</text>
 		<text name="ALTCode">ALT កូដ</text>
+		<text name="TaxEnable">ប្រើពន្ធ</text>
+		<text name="TaxType">ប្រភេទពន្ធ</text>
+		<text name="TotalTax">ពន្ធសរុប</text>
+		<text name="InLineTax">ពន្ធតាមមុខទំនិញ</text>
+		<text name="Account_">គណនី {0}</text>
+		<text name="AP">គណនីត្រូវទទួល</text>
+		<text name="AR">គណនីត្រូវបង់</text>
+		<text name="PurchaseDiscount">បញ្ចុះតម្លៃទិញ</text>
+		<text name="SaleDiscount">បញ្ចុះតម្លៃលក់</text>
+		<text name="GoodsInTransit">ទំនិញក្នុងការដឹកជញ្ជូន</text>
+		<text name="ExchangeLossGain">ចំណេញខាតអត្រាប្ដូរប្រាក់</text>
+		<text name="ItemAdjustment">កែតម្រូវស្ដុក</text>
+		<text name="ItemProduction">ផលិតកម្ម</text>
 	</texts>
 </localizationDictionary>

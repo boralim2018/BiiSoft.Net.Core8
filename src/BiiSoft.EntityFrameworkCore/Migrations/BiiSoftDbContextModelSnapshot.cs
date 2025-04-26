@@ -1971,9 +1971,6 @@ namespace BiiSoft.Migrations
                     b.Property<bool>("TaxEnable")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("TaxType")
-                        .HasColumnType("integer");
-
                     b.Property<int>("TenantId")
                         .HasColumnType("integer");
 

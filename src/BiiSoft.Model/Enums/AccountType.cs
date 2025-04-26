@@ -218,6 +218,7 @@ namespace BiiSoft.Enums
         public static bool IsCashEquivalent(this AccountType type) => type == AccountType.Cash || type == AccountType.Bank;
         public static bool IsRevenue(this AccountType type) => type == AccountType.Revenue || type == AccountType.OtherRevenue;
         public static bool IsExpense(this AccountType type) => type == AccountType.Expense || type == AccountType.OtherExpense;
+        public static bool IsExpenseOrCostOfSale(this AccountType type) => type == AccountType.Expense || type == AccountType.OtherExpense || type == AccountType.CostOfSale;
 
         private static readonly HashSet<SubAccountType> AccumulatedDepreciations = new HashSet<SubAccountType> 
         {

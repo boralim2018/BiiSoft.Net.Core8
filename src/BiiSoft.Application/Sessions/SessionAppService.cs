@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Abp.Auditing;
 using Abp.Domain.Repositories;
 using BiiSoft.Branches;
+using BiiSoft.CompanySettings.Dto;
 using BiiSoft.Items;
 using BiiSoft.Items.Dto;
 using BiiSoft.Sessions.Dto;
@@ -53,8 +54,9 @@ namespace BiiSoft.Sessions
 
                 output.GeneralSetting = await _companyGeneralSettingRepository.GetAll()
                                            .AsNoTracking()
-                                           .Select(s => new GeneralSettingDto
+                                           .Select(s => new CompanyGeneralSettingDto
                                            {
+                                               Id = s.Id,
                                                CountryId = s.CountryId,
                                                CountryName = !s.CountryId.HasValue ? "" : isDefaultLanguage ? s.Country.Name : s.Country.DisplayName,
                                                DefaultTimeZone = s.DefaultTimeZone,
@@ -69,14 +71,16 @@ namespace BiiSoft.Sessions
 
                 output.AdvanceSetting = await _companyAdvanceSettingRepository.GetAll()
                                            .AsNoTracking()
-                                           .Select(s => new AdvanceSettingDto
+                                           .Select(s => new CompanyAdvanceSettingDto
                                            {
+                                               Id = s.Id,
                                                MultiBranchesEnable = s.MultiBranchesEnable,
                                                MultiCurrencyEnable = s.MultiCurrencyEnable,
                                                LineDiscountEnable = s.LineDiscountEnable,
                                                TotalDiscountEnable = s.TotalDiscountEnable,
                                                CustomAccountCodeEnable = s.CustomAccountCodeEnable,
-                                               ClassEnable = s.ClassEnable
+                                               ClassEnable = s.ClassEnable,
+                                               TaxEnable = s.TaxEnable
                                            })
                                            .FirstOrDefaultAsync();
 

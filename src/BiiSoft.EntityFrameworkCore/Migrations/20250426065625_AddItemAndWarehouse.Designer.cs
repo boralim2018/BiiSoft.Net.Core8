@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20250423072053_AddItemAndWarehouse")]
+    [Migration("20250426065625_AddItemAndWarehouse")]
     partial class AddItemAndWarehouse
     {
         /// <inheritdoc />
@@ -1973,9 +1973,6 @@ namespace BiiSoft.Migrations
 
                     b.Property<bool>("TaxEnable")
                         .HasColumnType("boolean");
-
-                    b.Property<int>("TaxType")
-                        .HasColumnType("integer");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("integer");

@@ -1,4 +1,5 @@
-﻿using BiiSoft.Extensions;
+﻿using BiiSoft.ChartOfAccounts;
+using BiiSoft.Extensions;
 using BiiSoft.Items;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,10 +10,13 @@ namespace BiiSoft.Branches
     public class ItemSettingManager : BiiSoftValidateServiceBase<ItemSetting, Guid>, IItemSettingManager
     {
       
+        private readonly IBiiSoftRepository<ChartOfAccount, Guid> _chartOfAccountsRepository;
         public ItemSettingManager(
+            IBiiSoftRepository<ChartOfAccount, Guid> chartOfAccountsRepository,
             IBiiSoftRepository<ItemSetting, Guid> repository) 
         : base(repository)
         {
+            _chartOfAccountsRepository = chartOfAccountsRepository;
         }
 
         protected override string InstanceName => L("ItemSetting");
@@ -180,31 +184,31 @@ namespace BiiSoft.Branches
         {
             if (!input.InventoryAccountId.IsNullOrEmpty())
             {
-                var findInventoryAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.InventoryAccountId);
+                var findInventoryAccount = await _chartOfAccountsRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.InventoryAccountId);
                 if(!findInventoryAccount) InvalidException(L("InventoryAccount"));
             }
 
             if (!input.AssetAccountId.IsNullOrEmpty())
             {
-                var findAssetAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.AssetAccountId);
+                var findAssetAccount = await _chartOfAccountsRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.AssetAccountId);
                 if (!findAssetAccount) InvalidException(L("AssetAccount"));
             }
 
             if (!input.ExpenseAccountId.IsNullOrEmpty())
             {
-                var findExpenseAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ExpenseAccountId);
+                var findExpenseAccount = await _chartOfAccountsRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ExpenseAccountId);
                 if (!findExpenseAccount) InvalidException(L("ExpenseAccount"));
             }
 
             if (!input.COGSAccountId.IsNullOrEmpty())
             {
-                var findCOGSAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.COGSAccountId);
+                var findCOGSAccount = await _chartOfAccountsRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.COGSAccountId);
                 if (!findCOGSAccount) InvalidException(L("COGSAccount"));
             }
 
             if (!input.RevenueAccountId.IsNullOrEmpty())
             {
-                var findRevenueAccount = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.RevenueAccountId);
+                var findRevenueAccount = await _chartOfAccountsRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.RevenueAccountId);
                 if (!findRevenueAccount) InvalidException(L("RevenueAccount"));
             }
         }

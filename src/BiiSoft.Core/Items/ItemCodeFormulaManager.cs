@@ -30,7 +30,7 @@ namespace BiiSoft.Branches
         {
             if (input.IsAllItemType)
             {
-                var find = await _repository.GetAll().AsNoTracking().AnyAsync();
+                var find = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id != input.Id);
                 if (find) DuplicateException(InstanceName);
             }
             else

@@ -769,6 +769,7 @@
 		<text name="AdvanceSetting">Advance Setting</text>
 		<text name="AccountSetting">Account Setting</text>
 		<text name="ItemFieldSetting">Item Field Setting</text>
+		<text name="ItemSetting">Item Setting</text>
 		<text name="ItemFields">Item Fields</text>
 		<text name="ChangeSetting">Change Setting</text>
 		<text name="Use_">Use {0}</text>
@@ -810,5 +811,18 @@
 		<text name="CodeSetting">Code Setting</text>
 		<text name="Barcode">Barcode</text>
 		<text name="ALTCode">ALT Code</text>
+		<text name="TaxEnable">Tax Enable</text>
+		<text name="TaxType">Tax Type</text>
+		<text name="TotalTax">Total Tax</text>
+		<text name="InLineTax">In Line Tax</text>
+		<text name="Account_">{0} Account</text>
+		<text name="AP">AP</text>
+		<text name="AR">AR</text>
+		<text name="PurchaseDiscount">Purchase Discount</text>
+		<text name="SaleDiscount">Sale Discount</text>
+		<text name="GoodsInTransit">Goods In Transit</text>
+		<text name="ExchangeLossGain">Exchange Loss Gain</text>
+		<text name="ItemAdjustment">Item Adjustment</text>
+		<text name="ItemProduction">Item Production</text>
 	</texts>
 </localizationDictionary>

@@ -55,7 +55,7 @@ namespace BiiSoft.Columns
         public int Index { get; set; }
         public bool Visible { get; set; }
         public decimal Width { get; set; }
-        public ColumnType ColumnType { get; set; }
+        public ColumnType ColumnType { get; set; } = ColumnType.Text;
         public CellFormat CellFormat { get; set; } = CellFormat.Number;
         public int RoundingDigits { get; set; } 
         public bool ShowCrossForFalse { get; set; }

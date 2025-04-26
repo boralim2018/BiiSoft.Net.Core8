@@ -284,7 +284,8 @@ namespace BiiSoft.Branches
                 LineDiscountEnable = s.LineDiscountEnable,
                 TotalDiscountEnable = s.TotalDiscountEnable,
                 CustomAccountCodeEnable = s.CustomAccountCodeEnable,
-                ClassEnable = s.ClassEnable
+                ClassEnable = s.ClassEnable,
+                TaxEnable = s.TaxEnable
             })
             .FirstOrDefaultAsync();
 
@@ -299,6 +300,8 @@ namespace BiiSoft.Branches
                 DefaultInventoryPurchaseAccountId = s.DefaultInventoryPurchaseAccountId,
                 DefaultBillPaymentAccountId = s.DefaultBillPaymentAccountId,
                 DefaultReceivePaymentAccountId = s.DefaultReceivePaymentAccountId,
+                DefaultRetainEarningAccountId = s.DefaultRetainEarningAccountId,
+                DefaultExchangeLossGainAccountId = s.DefaultExchangeLossGainAccountId,
                 DefaultItemReceiptAccountId = s.DefaultItemReceiptAccountId,
                 DefaultItemIssueAccountId = s.DefaultItemIssueAccountId,
                 DefaultItemAdjustmentAccountId = s.DefaultItemAdjustmentAccountId,
@@ -314,6 +317,8 @@ namespace BiiSoft.Branches
                 DefaultInventoryPurchaseAccountName = !s.DefaultInventoryPurchaseAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultInventoryPurchaseAccount.Name : s.DefaultInventoryPurchaseAccount.DisplayName,
                 DefaultBillPaymentAccountName = !s.DefaultBillPaymentAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultBillPaymentAccount.Name : s.DefaultBillPaymentAccount.DisplayName,
                 DefaultReceivePaymentAccountName = !s.DefaultReceivePaymentAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultReceivePaymentAccount.Name : s.DefaultReceivePaymentAccount.DisplayName,
+                DefaultRetainEarningAccountName = !s.DefaultRetainEarningAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultRetainEarningAccount.Name : s.DefaultRetainEarningAccount.DisplayName,
+                DefaultExchangeLossGainAccountName = !s.DefaultExchangeLossGainAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultExchangeLossGainAccount.Name : s.DefaultExchangeLossGainAccount.DisplayName,
                 DefaultItemReceiptAccountName = !s.DefaultItemReceiptAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemReceiptAccount.Name : s.DefaultItemReceiptAccount.DisplayName,
                 DefaultItemIssueAccountName = !s.DefaultItemIssueAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemIssueAccount.Name : s.DefaultItemIssueAccount.DisplayName,
                 DefaultItemAdjustmentAccountName = !s.DefaultItemAdjustmentAccountId.HasValue ? "" : isDefaultLanguage ? s.DefaultItemAdjustmentAccount.Name : s.DefaultItemAdjustmentAccount.DisplayName,

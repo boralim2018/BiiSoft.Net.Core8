@@ -23,13 +23,6 @@ namespace BiiSoft.Migrations
                 defaultValue: false);
 
             migrationBuilder.AddColumn<int>(
-                name: "TaxType",
-                table: "BiiCompanyAdvanceSettings",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
                 name: "Sharing",
                 table: "BiiBranches",
                 type: "integer",
@@ -2300,10 +2293,6 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.DropColumn(
                 name: "TaxEnable",
-                table: "BiiCompanyAdvanceSettings");
-
-            migrationBuilder.DropColumn(
-                name: "TaxType",
                 table: "BiiCompanyAdvanceSettings");
 
             migrationBuilder.DropColumn(

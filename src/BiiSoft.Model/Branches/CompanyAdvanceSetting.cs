@@ -24,7 +24,6 @@ namespace BiiSoft.Branches
         public void EnableClass(bool enable) => ClassEnable = enable;
         public bool TaxEnable { get; protected set; }
         public void EnableTax(bool enable) => TaxEnable = enable;
-        public TaxType TaxType { get; protected set; }
 
         public static CompanyAdvanceSetting Create(
             int tenantId,
@@ -35,8 +34,7 @@ namespace BiiSoft.Branches
             bool totalDiscountEnable,
             bool customAccountCodeEnable,
             bool classEnable,
-            bool taxEnable,
-            TaxType taxType)
+            bool taxEnable)
         {
             return new CompanyAdvanceSetting
             {
@@ -49,8 +47,7 @@ namespace BiiSoft.Branches
                 TotalDiscountEnable = totalDiscountEnable,
                 CustomAccountCodeEnable = customAccountCodeEnable,
                 ClassEnable = classEnable,
-                TaxEnable = taxEnable,
-                TaxType = taxType
+                TaxEnable = taxEnable
             };
         }
 
@@ -62,8 +59,7 @@ namespace BiiSoft.Branches
             bool totalDiscountEnable,
             bool customAccountCodeEnable,
             bool classEnable,
-            bool taxEnable,
-            TaxType taxType)
+            bool taxEnable)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
@@ -74,7 +70,6 @@ namespace BiiSoft.Branches
             CustomAccountCodeEnable = customAccountCodeEnable;
             ClassEnable = classEnable;
             TaxEnable = taxEnable;
-            TaxType = taxType;
         }
     }
 }

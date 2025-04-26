@@ -548,6 +548,22 @@ namespace BiiSoft.Items
             CheckErrors(await _itemManager.ImportExcelAsync(entity));
         }
 
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ImportExcel)]
+        [UnitOfWork(IsDisabled = true)]
+        public async Task<ExportFileOutput> ExportExcelUpdateZonesTemplate()
+        {
+            return await _itemManager.ExportExcelUpdateItemZonesAsync();
+        }
+
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ImportExcel)]
+        [UnitOfWork(IsDisabled = true)]
+        public async Task ImportExcelUpdateZones(FileTokenInput input)
+        {
+            var entity = MapEntity<ImportExcelEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _itemManager.ImportExcelUpdateItemZonesAsync(entity));
+        }
+
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_Edit)]
         public async Task Update(CreateUpdateItemInputDto input)
         {
@@ -559,8 +575,24 @@ namespace BiiSoft.Items
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ChangeSetting)]
         public async Task<ItemSettingDto> GetItemSetting()
         {
-            var setting = await _itemSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
-            return ObjectMapper.Map<ItemSettingDto>(setting);
+            var isDefaultLagnuage = await IsDefaultLagnuageAsync();
+
+            var setting = await _itemSettingRepository.GetAll()
+                                .Include(s => s.AssetAccount)
+                                .Include(s => s.InventoryAccount)
+                                .Include(s => s.COGSAccount)
+                                .Include(s => s.RevenueAccount)
+                                .Include(s => s.ExpenseAccount)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync();
+            var result = ObjectMapper.Map<ItemSettingDto>(setting);
+            if (setting?.AssetAccount != null) result.AssetAccountName = isDefaultLagnuage ? setting.AssetAccount.Name : setting.AssetAccount.DisplayName;
+            if (setting?.InventoryAccount != null) result.InventoryAccountName = isDefaultLagnuage ? setting.InventoryAccount.Name : setting.InventoryAccount.DisplayName;
+            if (setting?.COGSAccount != null) result.COGSAccountName = isDefaultLagnuage ? setting.COGSAccount.Name : setting.COGSAccount.DisplayName;
+            if(setting?.RevenueAccount != null) result.RevenueAccountName = isDefaultLagnuage ? setting.RevenueAccount.Name : setting.RevenueAccount.DisplayName;
+            if (setting?.ExpenseAccount != null) result.ExpenseAccountName = isDefaultLagnuage ? setting.ExpenseAccount.Name : setting.ExpenseAccount.DisplayName;
+
+            return result;
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ChangeSetting)]

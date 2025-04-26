@@ -204,7 +204,7 @@ namespace BiiSoft.MultiTenancy
             {
                 var multiBranchEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_Branches);
                 var multiCurrencyEnable = await FeatureChecker.IsEnabledAsync(tenantId, AppFeatures.Company_MultiCurrencies);
-                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false, false, false, TaxType.Total);
+                var advanceSetting = CompanyAdvanceSetting.Create(tenantId, userId, multiBranchEnable, multiCurrencyEnable, true, false, false, false, false);
                 await _companyAdvanceSettingRepository.InsertAsync(advanceSetting);
             }
 

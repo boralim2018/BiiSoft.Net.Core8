@@ -33,7 +33,7 @@ namespace BiiSoft
         protected UserFriendlyException ErrorException(string message) => throw new UserFriendlyException(L("Error"), message);
         protected UserFriendlyException SelectException(string instance, string message = "") => ErrorException(L("PleaseSelect_", instance) + message);
         protected UserFriendlyException InvalidException(string instance, string message = "") => ErrorException(L("Invalid", instance) + message);
-        protected UserFriendlyException IsNotValidException(string instance, string message = "") => ErrorException(L("IsNotValid", instance) + message);
+        protected UserFriendlyException RequiredException(string instance, string message = "") => ErrorException(L("IsRequired", instance) + message);
         protected UserFriendlyException InputException(string instance, string message = "") => ErrorException(L("PleaseEnter_", instance) + message);
         protected UserFriendlyException NotEditableException(string instance, string message = "") => ErrorException(L("IsNotEditable", instance) + message);
         protected UserFriendlyException NotDeletableException(string instance, string message = "") => ErrorException(L("IsNotDeletable", instance) + message);
