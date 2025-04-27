@@ -816,8 +816,8 @@
 		<text name="TotalTax">ពន្ធសរុប</text>
 		<text name="InLineTax">ពន្ធតាមមុខទំនិញ</text>
 		<text name="Account_">គណនី {0}</text>
-		<text name="AP">គណនីត្រូវទទួល</text>
-		<text name="AR">គណនីត្រូវបង់</text>
+		<text name="AP">គណនីត្រូវបង់</text>
+		<text name="AR">គណនីត្រូវទទួល</text>
 		<text name="PurchaseDiscount">បញ្ចុះតម្លៃទិញ</text>
 		<text name="SaleDiscount">បញ្ចុះតម្លៃលក់</text>
 		<text name="GoodsInTransit">ទំនិញក្នុងការដឹកជញ្ជូន</text>

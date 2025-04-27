@@ -263,7 +263,7 @@ namespace BiiSoft.Items
                 input.ItemType == ItemType.Asset)
             {
                 var find = await _chartOfAccountRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.InventoryAccountId);
-                if (!find) InvalidException(input.ItemType == ItemType.NonInvnetory ? L("InventoryAccount") : L("AssetAccount"));
+                if (!find) InvalidException(input.ItemType == ItemType.NonInventory ? L("InventoryAccount") : L("AssetAccount"));
             }
 
             if (!input.ItemZones.IsNullOrEmpty())

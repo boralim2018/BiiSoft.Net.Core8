@@ -4,7 +4,7 @@
     {
         Service = 1,
         Menu = 2,
-        NonInvnetory = 3,
+        NonInventory = 3,
         Inventory = 4,
         Asset = 5,
         Bundle = 6,

@@ -231,7 +231,7 @@ namespace BiiSoft.Extensions
 
         public static List<string> ToListStr<T>(this T enumType) where T : Enum
         {
-            return Enum.GetValues(typeof(T)).Cast<string>().ToList();
+            return Enum.GetValues(typeof(T)).Cast<T>().Select(e => e.ToString()).ToList();
         }
     }
 }

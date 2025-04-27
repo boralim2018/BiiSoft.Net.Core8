@@ -11,6 +11,9 @@ using BiiSoft.Enums;
 using System.Linq;
 using System.Drawing;
 using Abp.Collections.Extensions;
+using OfficeOpenXml.DataValidation;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BiiSoft.Extensions
 {
@@ -148,21 +151,21 @@ namespace BiiSoft.Extensions
             }
         }
 
-        public static void AddListValidation(
-            this ExcelWorksheet sheet,
-            int rowIndex,
-            int columnIndex,
-            List<string> list,
-            string value)
-        {
-            var address = sheet.GetAddressName(rowIndex, columnIndex);
-            var dataValidation = sheet.DataValidations.AddListValidation(address);
-            foreach (var i in list)
-            {
-                dataValidation.Formula.Values.Add(i);
-            }
-            sheet.Cells[rowIndex, columnIndex].Value = value;
-        }
+        //public static void AddListValidation(
+        //    this ExcelWorksheet sheet,
+        //    int rowIndex,
+        //    int columnIndex,
+        //    List<string> list,
+        //    string value)
+        //{
+        //    var address = sheet.GetAddressName(rowIndex, columnIndex);
+        //    var dataValidation = sheet.DataValidations.AddListValidation(address);
+        //    foreach (var i in list)
+        //    {
+        //        dataValidation.Formula.Values.Add(i);
+        //    }
+        //    sheet.Cells[rowIndex, columnIndex].Value = value;
+        //}
 
         public static void AddCheckbox(
             this ExcelWorksheet sheet,
@@ -292,22 +295,53 @@ namespace BiiSoft.Extensions
             cell.Style.Indent = indent;
         }
 
-        private static void AddListValidation(
+        public static void AddListValidation(
            this ExcelWorksheet sheet,
+           ColumnOutput col,
            int fromRowIndex,
            int toRowIndex,
-           int columnIndex,
-           List<string> list)
+           int columnIndex)
         {
-            var from = sheet.GetAddressName(fromRowIndex, columnIndex);
-            var to = sheet.GetAddressName(toRowIndex, columnIndex);
-            ExcelRange colRng = sheet.Cells[$"{from}:{to}"];
+            if(col.ColumnType != ColumnType.Lookup && col.LookupList.IsNullOrEmpty()) throw new Exception("Column type is not Lookup or LookupList is empty!");
+            if (col.ColumnName.IsNullOrEmpty()) throw new Exception("Column Name is required");
 
-            var dataValidation = sheet.DataValidations.AddListValidation(colRng.Address);
-            foreach (var i in list)
+            if (toRowIndex <= fromRowIndex) toRowIndex = fromRowIndex + 1;
+
+            ExcelWorksheet lookupSheet = sheet.Workbook.Worksheets.Add(col.ColumnName);
+
+            var rowIndex = 1;
+            foreach (var value in col.LookupList)
             {
-                dataValidation.Formula.Values.Add(i);
+                col.WriteCell(lookupSheet, rowIndex + 1, 1, value);
+                rowIndex++;
             }
+
+            var lookupColumn = new ColumnOutput
+            {
+                ColumnName = col.ColumnName,
+                ColumnTitle = col.ColumnTitle,
+                Width = col.Width
+            };
+
+            ExcelTable lookupTable = lookupSheet.InsertTable(new List<ColumnOutput> { lookupColumn }, $"{lookupSheet.Name}Table", 1, 1, rowIndex);
+            ExcelRange validationRange = sheet.Cells[
+                fromRowIndex + 1, // Start below header
+                columnIndex,
+                toRowIndex,
+                columnIndex
+            ];
+            var validation = sheet.DataValidations.AddListValidation(validationRange.Address);
+            validation.ShowErrorMessage = true;
+            validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
+            validation.ErrorTitle = "Invalid Value";
+            validation.Error = "Please select a value from the list.";
+            validation.ShowInputMessage = true;
+            validation.PromptTitle = $"{col.ColumnTitle} Selection";
+            validation.Prompt = $"Choose {col.ColumnTitle} from the dropdown.";
+
+            //validation.Formula.ExcelFormula = $"'{lookupSheet.Name}'!{lookupTable.Address}";
+            var formula = $"=INDIRECT(\"{lookupTable.Name}[{lookupTable.Columns[0].Name}]\")";
+            validation.Formula.ExcelFormula = formula;
         }
 
         public static ExcelTable InsertTable(
@@ -319,7 +353,7 @@ namespace BiiSoft.Extensions
             int toRowIndex,
             TableStyles style = TableStyles.Medium13)
         {
-            if (fromRowIndex >= toRowIndex) toRowIndex = fromRowIndex + 1;
+            if (toRowIndex <= fromRowIndex) toRowIndex = fromRowIndex + 1;
 
             var fromCell = sheet.GetAddressName(fromRowIndex, fromColumnIndex);
             var toCell = sheet.GetAddressName(toRowIndex, fromColumnIndex + columns.Count - 1);
@@ -334,19 +368,18 @@ namespace BiiSoft.Extensions
                 //ExcelTable table1 = tblcollection.Add(Rng, "tblSalesman");
 
                 //Column Header
-                var colIndex = 0;
-                var colHash = new HashSet<string>();
+                var colIndex = 0;                
                 foreach (var col in columns)
                 {
-                    table.Columns[colIndex].Name = (colHash.Contains(col.ColumnTitle) ? $"{col.ColumnTitle}{colIndex + 1}" : col.ColumnTitle) + (col.IsRequired ? $"* " : "");
+                    table.AddUniqueColumn(col, colIndex);
+                   
                     if (col.Width > 0) sheet.Column(fromColumnIndex + colIndex).Width = col.Width.PixcelToInches();
                     
                     if(col.ColumnType == ColumnType.Lookup && !col.LookupList.IsNullOrEmpty())
                     {
-                        AddListValidation(sheet, fromRowIndex, toRowIndex, colIndex, col.LookupList);
+                        sheet.AddListValidation(col, fromRowIndex, toRowIndex, colIndex + 1);
                     }
 
-                    colHash.Add(table.Columns[colIndex].Name);
                     colIndex++;
                 }
 
@@ -387,31 +420,30 @@ namespace BiiSoft.Extensions
 
                 //Column Header
                 var colIndex = 0;
-                var colHash = new HashSet<string>();
                 foreach (var col in columns)
                 {
-                    table.Columns[colIndex].Name = (colHash.Contains(col.ColumnTitle) ? $"{col.ColumnTitle}{colIndex + 1}" : col.ColumnTitle) + (col.IsRequired ? $"* " : "");
+                    var column = table.AddUniqueColumn(col, colIndex);
+
                     if (col.Width > 0) sheet.Column(fromColumnIndex + colIndex).Width = col.Width.PixcelToInches();
 
                     if (colIndex == 0 && !totalLabel.IsNullOrWhiteSpace())
                     {
-                        table.Columns[0].TotalsRowLabel = totalLabel;
+                        column.TotalsRowLabel = totalLabel;
                     }
                     else if (col.SelectedFunction == RowFunctions.Custom)
                     {
-                       if(!col.CustomFunction.IsNullOrWhiteSpace()) table.Columns[colIndex].TotalsRowFormula = col.CustomFunction;
+                       if(!col.CustomFunction.IsNullOrWhiteSpace()) column.TotalsRowFormula = col.CustomFunction;
                     }
                     else if(col.SelectedFunction != RowFunctions.None)
                     {
-                        table.Columns[colIndex].TotalsRowFunction = col.SelectedFunction;
+                        column.TotalsRowFunction = col.SelectedFunction;
                     }
 
                     if (col.ColumnType == ColumnType.Lookup && !col.LookupList.IsNullOrEmpty())
                     {
-                        AddListValidation(sheet, fromRowIndex, toRowIndex, colIndex, col.LookupList);
+                        sheet.AddListValidation(col, fromRowIndex, toRowIndex, colIndex + 1);
                     }
 
-                    colHash.Add(table.Columns[colIndex].Name);
                     colIndex++;
                 }
 
@@ -424,6 +456,14 @@ namespace BiiSoft.Extensions
 
                 return table;
             }
+        }
+
+        private static ExcelTableColumn AddUniqueColumn(this ExcelTable table, ColumnOutput col, int colIndex)
+        {
+            var column = table.Columns[colIndex];
+            var find = table.Columns.Any(s => s.Name.ToLower() == col.ColumnTitle.ToLower());
+            column.Name = (find ? $"{col.ColumnTitle} {colIndex + 1}" : col.ColumnTitle) + (col.IsRequired ? $" *" : "");
+            return column;
         }
 
     }

@@ -135,13 +135,13 @@ namespace BiiSoft.ChartOfAccounts
             var inputFile = new ExportFileInput{
                 FileName = $"ChartOfAccount.xlsx",
                 Columns = new List<ColumnOutput> {
-                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("SubAccountType"), Width = 150, IsRequired = true},
-                    new ColumnOutput{ ColumnTitle = L("ParentAccount"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
-                    new ColumnOutput{ ColumnTitle = L("CannotDelete"), Width = 150 },
+                    new ColumnOutput{ ColumnName = "Code", ColumnTitle = L("Code"), Width = 150 },
+                    new ColumnOutput{ ColumnName = "Name", ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnName = "DisplayName", ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnName = "SubAccountType", ColumnTitle = L("SubAccountType"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = SubAccountType.CashOnHand.ToListStr(), },
+                    new ColumnOutput{ ColumnName = "ParentAccount", ColumnTitle = L("ParentAccount"), Width = 150 },
+                    new ColumnOutput{ ColumnName = "CannotEdit", ColumnTitle = L("CannotEdit"), Width = 150 },
+                    new ColumnOutput{ ColumnName = "CannotDelete", ColumnTitle = L("CannotDelete"), Width = 150 },
                 }
             };
 
