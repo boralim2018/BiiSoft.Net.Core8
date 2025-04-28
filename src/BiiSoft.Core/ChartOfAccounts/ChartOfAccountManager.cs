@@ -135,13 +135,12 @@ namespace BiiSoft.ChartOfAccounts
             var inputFile = new ExportFileInput{
                 FileName = $"ChartOfAccount.xlsx",
                 Columns = new List<ColumnOutput> {
-                    new ColumnOutput{ ColumnName = "Code", ColumnTitle = L("Code"), Width = 150 },
-                    new ColumnOutput{ ColumnName = "Name", ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnName = "DisplayName", ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
+                    new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnName = "SubAccountType", ColumnTitle = L("SubAccountType"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = SubAccountType.CashOnHand.ToListStr(), },
-                    new ColumnOutput{ ColumnName = "ParentAccount", ColumnTitle = L("ParentAccount"), Width = 150 },
-                    new ColumnOutput{ ColumnName = "CannotEdit", ColumnTitle = L("CannotEdit"), Width = 150 },
-                    new ColumnOutput{ ColumnName = "CannotDelete", ColumnTitle = L("CannotDelete"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("ParentAccount"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                 }
             };
 
@@ -183,7 +182,7 @@ namespace BiiSoft.ChartOfAccounts
                 if (workBook != null)
                 {
                     // retrive first worksheets
-                    var worksheet = excelPackage.Workbook.Worksheets[0];
+                    var worksheet = workBook.Worksheets[0];
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
                         var code = worksheet.GetString(i, 1);
@@ -217,7 +216,6 @@ namespace BiiSoft.ChartOfAccounts
                         }
                        
                         var cannotEdit = worksheet.GetBool(i, 6);
-                        var cannotDelete = worksheet.GetBool(i, 7);
 
                         if (autoGenerateCode)
                         {
@@ -252,7 +250,6 @@ namespace BiiSoft.ChartOfAccounts
 
                         var entity = ChartOfAccount.Create(input.TenantId.Value, input.UserId.Value, subAccountType, code, name, displayName, parentId);
                         entity.SetCannotEdit(cannotEdit);
-                        entity.SetCannotDelete(cannotDelete);
 
                         addAccounts.Add(entity);
                         accounts.Add(entity);

@@ -780,8 +780,8 @@
 		<text name="Height">កម្ពស់</text>
 		<text name="Length">ប្រវែង</text>
 		<text name="Diameter">អង្កត់ផ្ចឹត</text>
-		<text name="Area">ផ្ទៃ</text>
-		<text name="Volume">ចំនុះ</text>
+		<text name="Area">ផ្ទៃក្រឡា</text>
+		<text name="Volume">មាឌចំនុះ</text>
 		<text name="Serial">លេខតួ</text>
 		<text name="BatchNo">លេខផលិត</text>
 		<text name="Expired">ផុតកំណត់</text>
@@ -824,5 +824,9 @@
 		<text name="ExchangeLossGain">ចំណេញខាតអត្រាប្ដូរប្រាក់</text>
 		<text name="ItemAdjustment">កែតម្រូវស្ដុក</text>
 		<text name="ItemProduction">ផលិតកម្ម</text>
+		<text name="IsModifier">ថែមថយ</text>
+		<text name="IsAddOn">ថែមពីលើ</text>
+		<text name="UseBOM">ប្រើ BOM</text>
+		<text name="DisplayBOM">បង្ហាញ BOM</text>
 	</texts>
 </localizationDictionary>

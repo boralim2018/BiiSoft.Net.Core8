@@ -101,7 +101,7 @@ namespace BiiSoft.Currencies
                 if (workBook != null)
                 {
                     // retrive first worksheets
-                    var worksheet = excelPackage.Workbook.Worksheets[0];
+                    var worksheet = workBook.Worksheets[0];
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
                         var code = worksheet.GetString(i, 1);

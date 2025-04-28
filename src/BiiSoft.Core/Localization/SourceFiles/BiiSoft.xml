@@ -824,5 +824,9 @@
 		<text name="ExchangeLossGain">Exchange Loss Gain</text>
 		<text name="ItemAdjustment">Item Adjustment</text>
 		<text name="ItemProduction">Item Production</text>
+		<text name="IsModifier">Modefier</text>
+		<text name="IsAddOn">Add-On</text>
+		<text name="UseBOM">Use BOM</text>
+		<text name="DisplayBOM">Display BOM</text>
 	</texts>
 </localizationDictionary>

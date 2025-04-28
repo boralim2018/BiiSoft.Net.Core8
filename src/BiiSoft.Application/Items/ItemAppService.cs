@@ -533,7 +533,7 @@ namespace BiiSoft.Items
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ImportExcel)]
-        [UnitOfWork(IsDisabled = true)]
+        //[UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
             return await _itemManager.ExportExcelTemplateAsync();
