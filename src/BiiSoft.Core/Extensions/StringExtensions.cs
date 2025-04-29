@@ -17,6 +17,11 @@ namespace BiiSoft.Extensions
             return str.LastIndexOf('.') > 0 ? str.Substring(0, str.LastIndexOf('.')) : str;
         }
 
+        public static string NoSpaces(this string str)
+        {
+            return str.Replace(" ", "");
+        }
+
         /// <summary>
         /// Validate if code is correct format. It must start with prefix and same length as provided. 
         /// </summary>

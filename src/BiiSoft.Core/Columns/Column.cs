@@ -17,8 +17,9 @@ namespace BiiSoft.Columns
         Date = 5,
         CheckBox = 6,
         WrapText = 7,
-        Lookup = 8,
-        List = 9,
+        List = 8,
+        Lookup = 9,
+        IndirectLookup = 10,
     }
 
     //SummaryFunction Custom
@@ -49,9 +50,15 @@ namespace BiiSoft.Columns
     //}
     
     public class ColumnOutput
-    {   
+    {
+        /// <summary>
+        /// Spaces or Unicode are not allowed in ColumnName. Must follow name rule
+        /// </summary>
         public string ColumnName { get; set; }
         public string ColumnTitle { get; set; }
+        /// <summary>
+        /// Column index in the table start from 1
+        /// </summary>
         public int Index { get; set; }
         public bool Visible { get; set; }
         public decimal Width { get; set; }
@@ -60,7 +67,14 @@ namespace BiiSoft.Columns
         public int RoundingDigits { get; set; } 
         public bool ShowCrossForFalse { get; set; }
         public bool IsRequired { get; set; }
+
+        /// <summary>
+        /// List of values for List and Lookup columns
+        /// If ColumnType is IndiredLookup, this list is used to store json objects like 
+        /// "Key;Item1,Item2,Item3,...,ItemN"
+        /// </summary>
         public List<string> LookupList { get; set; }
+        public int IndirectIndex { get; set; }
     }
 
     public class SummaryColumnOutput : ColumnOutput

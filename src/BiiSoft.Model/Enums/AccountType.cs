@@ -220,7 +220,7 @@ namespace BiiSoft.Enums
         public static bool IsExpense(this AccountType type) => type == AccountType.Expense || type == AccountType.OtherExpense;
         public static bool IsExpenseOrCostOfSale(this AccountType type) => type == AccountType.Expense || type == AccountType.OtherExpense || type == AccountType.CostOfSale;
 
-        private static readonly HashSet<SubAccountType> AccumulatedDepreciations = new HashSet<SubAccountType> 
+        private static readonly HashSet<SubAccountType> AccumulatedDepreciations = new HashSet<SubAccountType>
         {
             SubAccountType.AccumulatedDepletion,
             SubAccountType.AccumulatedDepreciation,
@@ -259,7 +259,7 @@ namespace BiiSoft.Enums
             return ((int)type).ToString();
         }
 
-        private static readonly Dictionary<AccountType, SubAccountType> DefaultSubTypeDic = new Dictionary<AccountType, SubAccountType> 
+        private static readonly Dictionary<AccountType, SubAccountType> DefaultSubTypeDic = new Dictionary<AccountType, SubAccountType>
         {
             { AccountType.Cash, SubAccountType.CashOnHand },
             { AccountType.Bank, SubAccountType.Bank },
@@ -285,7 +285,7 @@ namespace BiiSoft.Enums
             return DefaultSubTypeDic.ContainsKey(type) ? DefaultSubTypeDic[type] : default;
         }
 
-        private static readonly Dictionary<SubAccountType, string> DescriptionDic = new Dictionary<SubAccountType, string>  
+        private static readonly Dictionary<SubAccountType, string> DescriptionDic = new Dictionary<SubAccountType, string>
         {
             { SubAccountType.CashOnHand, "Use a Cash on hand account to track cash your company keeps for occasional expenses, also called petty cash.\r\nTo track cash from sales that have not been deposited yet, use a pre-created account called Undeposited funds, instead." },
             { SubAccountType.CashEquivalent, "Use Cash and Cash Equivalents to track cash or assets that can be converted into cash immediately. For example, marketable securities and Treasury bills." },

@@ -224,14 +224,5 @@ namespace BiiSoft.Extensions
             return valueInSquareMeters / areaConversionFactorsToSquareMeters[(int)toUnit];
         }
 
-        public static List<T> ToList<T>(this T enumType) where T : Enum
-        {
-            return Enum.GetValues(typeof(T)).Cast<T>().ToList();
-        }
-
-        public static List<string> ToListStr<T>(this T enumType) where T : Enum
-        {
-            return Enum.GetValues(typeof(T)).Cast<T>().Select(e => e.ToString()).ToList();
-        }
     }
 }

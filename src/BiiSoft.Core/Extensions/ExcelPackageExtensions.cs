@@ -1,19 +1,15 @@
-﻿using Abp.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Abp.Collections.Extensions;
+using Abp.Extensions;
+using Abp.UI;
 using BiiSoft.Columns;
+using BiiSoft.Enums;
 using OfficeOpenXml;
-using OfficeOpenXml.Drawing;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using OfficeOpenXml.DataValidation;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
-using System;
-using System.Collections.Generic;
-using BiiSoft.Enums;
-using System.Linq;
-using System.Drawing;
-using Abp.Collections.Extensions;
-using OfficeOpenXml.DataValidation;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BiiSoft.Extensions
 {
@@ -151,22 +147,6 @@ namespace BiiSoft.Extensions
             }
         }
 
-        //public static void AddListValidation(
-        //    this ExcelWorksheet sheet,
-        //    int rowIndex,
-        //    int columnIndex,
-        //    List<string> list,
-        //    string value)
-        //{
-        //    var address = sheet.GetAddressName(rowIndex, columnIndex);
-        //    var dataValidation = sheet.DataValidations.AddListValidation(address);
-        //    foreach (var i in list)
-        //    {
-        //        dataValidation.Formula.Values.Add(i);
-        //    }
-        //    sheet.Cells[rowIndex, columnIndex].Value = value;
-        //}
-
         public static void AddCheckbox(
             this ExcelWorksheet sheet,
             int rowIndex,
@@ -295,6 +275,11 @@ namespace BiiSoft.Extensions
             cell.Style.Indent = indent;
         }
 
+        public static string ToIndirectFormula(this string indirectCell)
+        {
+            return $"=IF(${indirectCell}=\"\",\"\",INDIRECT(SUBSTITUTE(${indirectCell},\" \",\"\")&\"Table[\"&${indirectCell}&\"]\"))";
+        }
+
         public static void AddListValidation(
            this ExcelWorksheet sheet,
            ColumnOutput col,
@@ -302,8 +287,9 @@ namespace BiiSoft.Extensions
            int toRowIndex,
            int columnIndex)
         {
-            if(col.ColumnType != ColumnType.Lookup && col.LookupList.IsNullOrEmpty()) throw new Exception("Column type is not Lookup or LookupList is empty!");
-            if (col.ColumnName.IsNullOrEmpty()) throw new Exception("Column Name is required");
+            if(col.ColumnType != ColumnType.Lookup) throw new UserFriendlyException("Column type is not Lookup!");
+            if(col.LookupList.IsNullOrEmpty()) throw new UserFriendlyException("LookupList is required!");
+            if (col.ColumnName.IsNullOrEmpty()) throw new UserFriendlyException("ColumnName is required");
 
             if (toRowIndex <= fromRowIndex) toRowIndex = fromRowIndex + 1;
 
@@ -316,12 +302,7 @@ namespace BiiSoft.Extensions
                 rowIndex++;
             }
 
-            var lookupColumn = new ColumnOutput
-            {
-                ColumnName = col.ColumnName,
-                ColumnTitle = col.ColumnTitle,
-                Width = col.Width
-            };
+            var lookupColumn = new ColumnOutput { ColumnTitle = col.ColumnTitle, Width = col.Width };
 
             ExcelTable lookupTable = lookupSheet.InsertTable(new List<ColumnOutput> { lookupColumn }, $"{lookupSheet.Name}Table", 1, 1, rowIndex);
             ExcelRange validationRange = sheet.Cells[
@@ -341,6 +322,61 @@ namespace BiiSoft.Extensions
 
             //validation.Formula.ExcelFormula = $"'{lookupSheet.Name}'!{lookupTable.Address}";
             var formula = $"=INDIRECT(\"{lookupTable.Name}[{lookupTable.Columns[0].Name}]\")";
+            validation.Formula.ExcelFormula = formula;
+        }
+
+        public static void AddIndirectListValidation(
+           this ExcelTable table,
+           ColumnOutput col,
+           int columnIndex)
+        {
+            if (col.ColumnType != ColumnType.IndirectLookup) throw new UserFriendlyException("Column type is not Indirect Lookup!");
+            if (col.LookupList.IsNullOrEmpty()) throw new UserFriendlyException("LookupList is required");
+            if (col.IndirectIndex <= 0) throw new UserFriendlyException("IndirectIndex is required");
+            if (col.ColumnName.IsNullOrEmpty()) throw new UserFriendlyException("ColumnName is required");
+
+            ExcelWorksheet lookupSheet = table.WorkSheet.Workbook.Worksheets.Add(col.ColumnName);
+
+            var colIndex = 1;
+            foreach (var value in col.LookupList)
+            {   
+                var lookupItem = value.ToIndirectKeyValues();
+
+                var rowIndex = 2;
+
+                foreach (var item in lookupItem.Value)
+                {
+                    col.WriteCell(lookupSheet, rowIndex, colIndex, item);
+                    rowIndex++;
+                }
+              
+                var lookupColumn = new ColumnOutput { ColumnTitle = lookupItem.Key, Width = col.Width };
+
+                ExcelTable lookupTable = lookupSheet.InsertTable(new List<ColumnOutput> { lookupColumn }, $"{lookupItem.Key.NoSpaces()}Table", 1, colIndex, rowIndex - 1);
+                
+                colIndex++;
+            }
+
+            ExcelRange validationRange = table.WorkSheet.Cells[
+                table.Address.Start.Row + 1, // Start below header
+                columnIndex,
+                table.Address.End.Row,
+                columnIndex
+            ];
+            var validation = table.WorkSheet.DataValidations.AddListValidation(validationRange.Address);
+            validation.ShowErrorMessage = true;
+            validation.ErrorStyle = ExcelDataValidationWarningStyle.warning;
+            validation.ErrorTitle = "Invalid Value";
+            validation.Error = "Please select a value from the list.";
+            validation.ShowInputMessage = true;
+            validation.PromptTitle = $"{col.ColumnTitle} Selection";
+            validation.Prompt = $"Choose {col.ColumnTitle} from the dropdown.";
+
+            var indirectCell = table.WorkSheet.Cells[2, col.IndirectIndex].Address;
+
+            //validation.Formula.ExcelFormula = $"'{lookupSheet.Name}'!{lookupTable.Address}";
+            //var formula = $"=INDIRECT(\"{lookupTable.Name}[{lookupTable.Columns[0].Name}]\")";
+            var formula = indirectCell.ToIndirectFormula();
             validation.Formula.ExcelFormula = formula;
         }
 
@@ -377,7 +413,11 @@ namespace BiiSoft.Extensions
                     
                     if(col.ColumnType == ColumnType.Lookup && !col.LookupList.IsNullOrEmpty())
                     {
-                        sheet.AddListValidation(col, fromRowIndex, toRowIndex, colIndex + 1);
+                        sheet.AddListValidation(col, fromRowIndex, toRowIndex, fromColumnIndex + colIndex);
+                    }
+                    else if(col.ColumnType == ColumnType.IndirectLookup && !col.LookupList.IsNullOrEmpty())
+                    {
+                        table.AddIndirectListValidation(col, fromColumnIndex + colIndex);
                     }
 
                     colIndex++;
@@ -441,7 +481,11 @@ namespace BiiSoft.Extensions
 
                     if (col.ColumnType == ColumnType.Lookup && !col.LookupList.IsNullOrEmpty())
                     {
-                        sheet.AddListValidation(col, fromRowIndex, toRowIndex, colIndex + 1);
+                        sheet.AddListValidation(col, fromRowIndex, toRowIndex, fromColumnIndex + colIndex);
+                    }
+                    else if (col.ColumnType == ColumnType.IndirectLookup && !col.LookupList.IsNullOrEmpty())
+                    {
+                        table.AddIndirectListValidation(col, fromColumnIndex + colIndex);
                     }
 
                     colIndex++;

@@ -138,7 +138,8 @@ namespace BiiSoft.ChartOfAccounts
                     new ColumnOutput{ ColumnTitle = L("Code"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnName = "SubAccountType", ColumnTitle = L("SubAccountType"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = SubAccountType.CashOnHand.ToListStr(), },
+                    new ColumnOutput{ ColumnName = "AccountType", ColumnTitle = L("AccountType"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = AccountType.Cash.NameList(), },
+                    new ColumnOutput{ ColumnName = "SubAccountType", ColumnTitle = L("SubAccountType"), Width = 150, IsRequired = true, IndirectIndex = 4, ColumnType = ColumnType.IndirectLookup, LookupList = AccountType.Cash.ToIndirectList() },
                     new ColumnOutput{ ColumnTitle = L("ParentAccount"), Width = 150 },
                     new ColumnOutput{ ColumnTitle = L("CannotEdit"), Width = 150 },
                 }
@@ -185,37 +186,45 @@ namespace BiiSoft.ChartOfAccounts
                     var worksheet = workBook.Worksheets[0];
                     for (int i = 2; i <= worksheet.Dimension.End.Row; i++)
                     {
+                        var rowMessage = $", Row: {i}";
+
                         var code = worksheet.GetString(i, 1);
-                        if (!autoGenerateCode) ValidateCodeInput(code, $", Row: {i}");
+                        if (!autoGenerateCode) ValidateCodeInput(code, rowMessage);
                        
                         var name = worksheet.GetString(i, 2);
-                        ValidateName(name, $", Row: {i}");
+                        ValidateName(name, rowMessage);
 
                         var findName = accounts.Any(a => a.Name == name);
-                        if(findName) DuplicateNameException(name, $", Row: {i}");
+                        if(findName) DuplicateNameException(name, rowMessage);
 
                         var displayName = worksheet.GetString(i, 3);
-                        ValidateDisplayName(displayName, $", Row: {i}");
+                        ValidateDisplayName(displayName, rowMessage);
 
                         var findDisplayName = accounts.Any(a => a.DisplayName == displayName);
-                        if (findDisplayName) DuplicateNameException(displayName, $", Row: {i}");
+                        if (findDisplayName) DuplicateNameException(displayName, rowMessage);
 
-                        var subtAccount = worksheet.GetString(i, 4)?.Replace(" ", "");
-                        ValidateInput(subtAccount, L("SubAccountType"), $", Row: {i}");
-                        SubAccountType subAccountType = (SubAccountType)Enum.Parse(typeof(SubAccountType), subtAccount);
+                        var accountTypeName = worksheet.GetString(i, 4)?.NoSpaces();
+                        ValidateInput(accountTypeName, L("AccountType"), rowMessage);
+                        AccountType accountType = (AccountType)Enum.Parse(typeof(AccountType), accountTypeName);
+
+                        var subAccountTypeName = worksheet.GetString(i, 5)?.NoSpaces();
+                        ValidateInput(subAccountTypeName, L("SubAccountType"), rowMessage);
+                        SubAccountType subAccountType = (SubAccountType)Enum.Parse(typeof(SubAccountType), subAccountTypeName);
+
+                        if(subAccountType.Parent() != accountType) InvalidException(L("AccountType"), rowMessage);
 
                         Guid? parentId = null;
-                        var parent = worksheet.GetString(i, 5);
+                        var parent = worksheet.GetString(i, 6);
                         if (!parent.IsNullOrWhiteSpace())
                         {
                             var find = accounts.FirstOrDefault(a => a.Name.ToLower() == parent.ToLower().Trim());
-                            if (find == null) InvalidException(L("ParentAccount"), $", Row: {i}");
-                            if (find.ParentId != null) ErrorException(L("SubAccountCannotUseAsParent") + $", Row: {i}");
+                            if (find == null) InvalidException(L("ParentAccount"), rowMessage);
+                            if (find.ParentId != null) ErrorException(L("SubAccountCannotUseAsParent") + rowMessage);
 
                             parentId = find.Id;
                         }
                        
-                        var cannotEdit = worksheet.GetBool(i, 6);
+                        var cannotEdit = worksheet.GetBool(i, 7);
 
                         if (autoGenerateCode)
                         {
@@ -246,7 +255,7 @@ namespace BiiSoft.ChartOfAccounts
                         }
 
                         var findCode = accounts.Any(a => a.Code == code);
-                        if (findCode) DuplicateCodeException(code, $", Row: {i}");
+                        if (findCode) DuplicateCodeException(code, rowMessage);
 
                         var entity = ChartOfAccount.Create(input.TenantId.Value, input.UserId.Value, subAccountType, code, name, displayName, parentId);
                         entity.SetCannotEdit(cannotEdit);
