@@ -1,5 +1,6 @@
 ﻿using Abp.Dependency;
 using Abp.Domain.Uow;
+using Abp.Extensions;
 using Abp.UI;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Columns;
@@ -24,15 +25,12 @@ namespace BiiSoft.Items
         protected readonly IUnitOfWorkManager _unitOfWorkManager;
         protected readonly IExcelManager _excelManager;
 
-        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
-        
         public ItemFieldManagerBase(
             IBiiSoftRepository<TEntity, Guid> repository) : base(repository) 
         {
             _fileStorageManager = IocManager.Instance.Resolve<IFileStorageManager>();
             _unitOfWorkManager = IocManager.Instance.Resolve<IUnitOfWorkManager>();
             _excelManager = IocManager.Instance.Resolve<IExcelManager>();
-            _itemFieldSettingRepository = IocManager.Instance.Resolve<IBiiSoftRepository<ItemFieldSetting, Guid>>();
         }
 
         #region override
@@ -42,18 +40,10 @@ namespace BiiSoft.Items
 
         protected abstract TEntity CreateInstance(int tenantId, long userId, string name, string displayName, string code);
 
-        private async Task<bool> CheckUseCodeAsync()
-        {
-            return await _itemFieldSettingRepository.GetAll().AsNoTracking().AnyAsync(s => s.UseCode);
-        }
-
         protected override async Task ValidateInputAsync(TEntity input)
         {
-            var useCode = await CheckUseCodeAsync();
-            if (useCode)
+            if (!input.Code.IsNullOrEmpty())
             {
-                ValidateCodeInput(input.Code);
-
                 var findCode = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id != input.Id && s.Code == input.Code);
                 if (findCode) DuplicateCodeException(input.Code);
             }
@@ -100,16 +90,6 @@ namespace BiiSoft.Items
             var entities = new List<TEntity>();
             var entityHash = new HashSet<string>();
             var codeHash = new HashSet<string>();
-            bool useCode = false;
-
-            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
-            {
-                using (_unitOfWorkManager.Current.SetTenantId(input.TenantId))
-                {
-                    useCode = await CheckUseCodeAsync();
-                }
-            }
-
             
             var excelPackage = await _fileStorageManager.DownloadExcel(input.Token);
             if (excelPackage != null)
@@ -132,9 +112,8 @@ namespace BiiSoft.Items
                         ValidateDisplayName(displayName, rowInfo);
 
                         var code = worksheet.GetString(i, 3);
-                        if (useCode)
+                        if (!code.IsNullOrEmpty())
                         {
-                            ValidateCodeInput(code, rowInfo);
                             if (codeHash.Contains(code)) DuplicateCodeException(code, rowInfo);
 
                             codeHash.Add(code);

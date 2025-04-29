@@ -70,7 +70,6 @@ namespace BiiSoft.EntityFrameworkCore
         public DbSet<ItemSetting> ItemSettings { get; set; }
         public DbSet<ItemCodeFormula> ItemCodeFormulas { get; set; }
         public DbSet<ItemCodeFormulaItemType> ItemCodeFormulaItemTypes { get; set; }
-        public DbSet<ItemFieldSetting> ItemFieldSettings { get; set; }
         public DbSet<ItemZone> ItemZones { get; set; }
 
 
@@ -279,7 +278,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<ItemGrade>(e =>
@@ -287,7 +286,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<ItemBrand>(e =>
@@ -295,7 +294,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<ItemModel>(e =>
@@ -303,7 +302,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<ItemSeries>(e =>
@@ -311,7 +310,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<ItemSize>(e =>
@@ -319,7 +318,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<Unit>(e =>
@@ -327,7 +326,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<ColorPattern>(e =>
@@ -335,7 +334,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<CPU>(e =>
@@ -343,7 +342,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<RAM>(e =>
@@ -351,7 +350,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<VGA>(e =>
@@ -359,7 +358,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<Screen>(e =>
@@ -367,7 +366,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<HDD>(e =>
@@ -375,7 +374,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<Camera>(e =>
@@ -383,7 +382,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<Battery>(e =>
@@ -391,7 +390,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<FieldA>(e =>
@@ -399,7 +398,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<FieldB>(e =>
@@ -407,7 +406,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<FieldC>(e =>
@@ -415,7 +414,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasIndex(i => i.Code);
+                e.HasIndex(i => i.Code).HasFilter("\"Code\" IS NOT NULL");
             });
 
             modelBuilder.Entity<Item>(e =>
@@ -475,10 +474,6 @@ namespace BiiSoft.EntityFrameworkCore
             modelBuilder.Entity<ItemCodeFormulaItemType>(e =>
             {
                 e.HasOne(i => i.ItemCodeFormula).WithMany(i => i.ItemTypes).HasForeignKey(i => i.ItemCodeFormulaId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
-            });
-
-            modelBuilder.Entity<ItemFieldSetting>(e =>
-            {  
             });
 
             modelBuilder.Entity<ItemZone>(e =>

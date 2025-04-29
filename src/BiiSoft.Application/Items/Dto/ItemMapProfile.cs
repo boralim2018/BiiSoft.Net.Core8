@@ -10,7 +10,6 @@ namespace BiiSoft.Items.Dto
             CreateMap<ItemDetailDto, Item>().ReverseMap();
             CreateMap<ItemZoneDto, ItemZone>().ReverseMap();
             CreateMap<ItemSettingDto, ItemSetting>().ReverseMap();
-            CreateMap<ItemFieldSettingDto, ItemFieldSetting>().ReverseMap();
         }
     }
 }

@@ -402,34 +402,6 @@ namespace BiiSoft.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BiiItemFieldSettings",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    TenantId = table.Column<int>(type: "integer", nullable: false),
-                    UseCode = table.Column<bool>(type: "boolean", nullable: false),
-                    CreationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    CreatorUserId = table.Column<long>(type: "bigint", nullable: true),
-                    LastModificationTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    LastModifierUserId = table.Column<long>(type: "bigint", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BiiItemFieldSettings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BiiItemFieldSettings_AbpUsers_CreatorUserId",
-                        column: x => x.CreatorUserId,
-                        principalTable: "AbpUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_BiiItemFieldSettings_AbpUsers_LastModifierUserId",
-                        column: x => x.LastModifierUserId,
-                        principalTable: "AbpUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BiiItemGrades",
                 columns: table => new
                 {
@@ -1262,7 +1234,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiBatteries_Code",
                 table: "BiiBatteries",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiBatteries_CreatorUserId",
@@ -1312,7 +1285,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCameras_Code",
                 table: "BiiCameras",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCameras_CreatorUserId",
@@ -1342,7 +1316,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiColorPatterns_Code",
                 table: "BiiColorPatterns",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiColorPatterns_CreatorUserId",
@@ -1372,7 +1347,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCPUs_Code",
                 table: "BiiCPUs",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiCPUs_CreatorUserId",
@@ -1402,7 +1378,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiHDDs_Code",
                 table: "BiiHDDs",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiHDDs_CreatorUserId",
@@ -1432,7 +1409,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemBrands_Code",
                 table: "BiiItemBrands",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemBrands_CreatorUserId",
@@ -1493,7 +1471,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldAs_Code",
                 table: "BiiItemFieldAs",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldAs_CreatorUserId",
@@ -1523,7 +1502,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldBs_Code",
                 table: "BiiItemFieldBs",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldBs_CreatorUserId",
@@ -1553,7 +1533,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldCs_Code",
                 table: "BiiItemFieldCs",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemFieldCs_CreatorUserId",
@@ -1581,19 +1562,10 @@ namespace BiiSoft.Migrations
                 column: "No");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BiiItemFieldSettings_CreatorUserId",
-                table: "BiiItemFieldSettings",
-                column: "CreatorUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BiiItemFieldSettings_LastModifierUserId",
-                table: "BiiItemFieldSettings",
-                column: "LastModifierUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_BiiItemGrades_Code",
                 table: "BiiItemGrades",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemGrades_CreatorUserId",
@@ -1623,7 +1595,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemGroups_Code",
                 table: "BiiItemGroups",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemGroups_CreatorUserId",
@@ -1653,7 +1626,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemModels_Code",
                 table: "BiiItemModels",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemModels_CreatorUserId",
@@ -1882,7 +1856,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemSeries_Code",
                 table: "BiiItemSeries",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemSeries_CreatorUserId",
@@ -1947,7 +1922,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemSizes_Code",
                 table: "BiiItemSizes",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiItemSizes_CreatorUserId",
@@ -1997,7 +1973,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiRAMs_Code",
                 table: "BiiRAMs",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiRAMs_CreatorUserId",
@@ -2027,7 +2004,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiScreens_Code",
                 table: "BiiScreens",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiScreens_CreatorUserId",
@@ -2057,7 +2035,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiUnits_Code",
                 table: "BiiUnits",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiUnits_CreatorUserId",
@@ -2087,7 +2066,8 @@ namespace BiiSoft.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_BiiVGAs_Code",
                 table: "BiiVGAs",
-                column: "Code");
+                column: "Code",
+                filter: "\"Code\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BiiVGAs_CreatorUserId",
@@ -2208,9 +2188,6 @@ namespace BiiSoft.Migrations
 
             migrationBuilder.DropTable(
                 name: "BiiItemCodeFormulaItemTypes");
-
-            migrationBuilder.DropTable(
-                name: "BiiItemFieldSettings");
 
             migrationBuilder.DropTable(
                 name: "BiiItemSettings");

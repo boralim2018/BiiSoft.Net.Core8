@@ -50,11 +50,9 @@ namespace BiiSoft.MultiTenancy
         private readonly IBiiSoftRepository<CompanyAccountSetting, long> _companyAccountSettingRepository;
         private readonly IBiiSoftRepository<TransactionNoSetting, Guid> _transactionNoSettingRepository;
         private readonly IBiiSoftRepository<ItemSetting, Guid> _itemSettingRepository;
-        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
         
         public TenantAppService(
             IBiiSoftRepository<ItemSetting, Guid> itemSettingRepository,
-            IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             IBiiSoftRepository<TransactionNoSetting, Guid> transactionNoSettingRepository,
             IBiiSoftRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository,
             IBiiSoftRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
@@ -81,7 +79,6 @@ namespace BiiSoft.MultiTenancy
             _companyGeneralSettingRepository = companyGeneralSettingRepository;
             _companyAccountSettingRepository = companyAccountSettingRepository;
             _itemSettingRepository = itemSettingRepository;
-            _itemFieldSettingRepository = itemFieldSettingRepository;
         }
 
         public override async Task<TenantDto> GetAsync(EntityDto<int> input)
@@ -239,13 +236,6 @@ namespace BiiSoft.MultiTenancy
             {
                 var fieldSetting = ItemSetting.Create(tenantId, userId, true, true);
                 await _itemSettingRepository.InsertAsync(fieldSetting);
-            }
-
-            var findItemFieldSetting = await _itemFieldSettingRepository.GetAll().AsNoTracking().AnyAsync();
-            if (!findItemFieldSetting)
-            {
-                var fieldSetting = ItemFieldSetting.Create(tenantId, userId, true);
-                await _itemFieldSettingRepository.InsertAsync(fieldSetting);
             }
         }
 

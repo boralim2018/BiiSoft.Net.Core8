@@ -11,7 +11,6 @@ namespace BiiSoft.Sessions.Dto
         public CompanyGeneralSettingDto GeneralSetting { get; set; }
         public CompanyAdvanceSettingDto AdvanceSetting { get; set; }
         public ItemSettingDto ItemSetting { get; set; }
-        public ItemFieldSettingDto ItemFieldSetting { get; set; }
     }
 
 }

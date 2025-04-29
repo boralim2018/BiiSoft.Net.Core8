@@ -32,34 +32,28 @@ namespace BiiSoft.Items
         private readonly IItemManager _itemManager;
         private readonly IBiiSoftRepository<Item, Guid> _itemRepository;
         private readonly IBiiSoftRepository<ItemSetting, Guid> _itemSettingRepository;
-        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
         private readonly IContactAddressManager _contactAddressManager;
         private readonly IBiiSoftRepository<ContactAddress, Guid> _contactAddressRepository;
         private readonly IBiiSoftRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IExcelManager _excelManager;
         private readonly IItemSettingManager _itemSettingManager;
-        private readonly IItemFieldSettingManager _itemFieldSettingManager;
 
         public ItemAppService(
             IExcelManager excelManager,
             IUnitOfWorkManager unitOfWorkManager,
             IItemManager itemManager,
             IItemSettingManager itemSettingManager,
-            IItemFieldSettingManager itemFieldSettingManager,
             IBiiSoftRepository<Item, Guid> itemRepository,
             IBiiSoftRepository<ItemSetting, Guid> itemSettingRepository,
-            IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             IContactAddressManager contactAddressManager,
             IBiiSoftRepository<ContactAddress, Guid> contactAddressRepository,
             IBiiSoftRepository<User, long> userRepository)
         {
             _itemManager=itemManager;
             _itemSettingManager = itemSettingManager;
-            _itemFieldSettingManager = itemFieldSettingManager;
             _itemRepository =itemRepository;
             _itemSettingRepository = itemSettingRepository;
-            _itemFieldSettingRepository = itemFieldSettingRepository;
             _contactAddressManager =contactAddressManager;
             _contactAddressRepository=contactAddressRepository;
             _userRepository=userRepository;
@@ -612,28 +606,5 @@ namespace BiiSoft.Items
             return entity.Id;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ChangeSetting)]
-        public async Task<ItemFieldSettingDto> GetItemFieldSetting()
-        {
-            var setting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
-            return ObjectMapper.Map<ItemFieldSettingDto>(setting);
-        }
-
-        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_ChangeSetting)]
-        public async Task<Guid> CreateOrUpdateItemFieldSetting(ItemFieldSettingDto input)
-        {
-            var entity = MapEntity<ItemFieldSetting, Guid>(input);
-
-            if (input.Id.IsNullOrEmpty())
-            {
-                CheckErrors(await _itemFieldSettingManager.InsertAsync(entity));
-            }
-            else
-            {
-                CheckErrors(await _itemFieldSettingManager.UpdateAsync(entity));
-            }
-
-            return entity.Id;
-        }
     }
 }

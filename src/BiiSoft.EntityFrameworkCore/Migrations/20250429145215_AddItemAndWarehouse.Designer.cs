@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BiiSoft.Migrations
 {
     [DbContext(typeof(BiiSoftDbContext))]
-    [Migration("20250426065625_AddItemAndWarehouse")]
+    [Migration("20250429145215_AddItemAndWarehouse")]
     partial class AddItemAndWarehouse
     {
         /// <inheritdoc />
@@ -2349,7 +2349,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -2413,7 +2414,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -2477,7 +2479,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -2541,7 +2544,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -2605,7 +2609,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -2669,7 +2674,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -2733,7 +2739,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -2797,7 +2804,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -3147,7 +3155,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -3263,42 +3272,6 @@ namespace BiiSoft.Migrations
                     b.ToTable("BiiItemCodeFormulaItemTypes");
                 });
 
-            modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("CreatorUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("LastModifierUserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("TenantId")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("UseCode")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatorUserId");
-
-                    b.HasIndex("LastModifierUserId");
-
-                    b.ToTable("BiiItemFieldSettings");
-                });
-
             modelBuilder.Entity("BiiSoft.Items.ItemGrade", b =>
                 {
                     b.Property<Guid>("Id")
@@ -3348,7 +3321,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -3412,7 +3386,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -3476,7 +3451,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -3540,7 +3516,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -3866,7 +3843,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -3970,7 +3948,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -4034,7 +4013,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -4098,7 +4078,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -4162,7 +4143,8 @@ namespace BiiSoft.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .HasFilter("\"Code\" IS NOT NULL");
 
                     b.HasIndex("CreatorUserId");
 
@@ -5827,21 +5809,6 @@ namespace BiiSoft.Migrations
                     b.Navigation("CreatorUser");
 
                     b.Navigation("ItemCodeFormula");
-
-                    b.Navigation("LastModifierUser");
-                });
-
-            modelBuilder.Entity("BiiSoft.Items.ItemFieldSetting", b =>
-                {
-                    b.HasOne("BiiSoft.Authorization.Users.User", "CreatorUser")
-                        .WithMany()
-                        .HasForeignKey("CreatorUserId");
-
-                    b.HasOne("BiiSoft.Authorization.Users.User", "LastModifierUser")
-                        .WithMany()
-                        .HasForeignKey("LastModifierUserId");
-
-                    b.Navigation("CreatorUser");
 
                     b.Navigation("LastModifierUser");
                 });

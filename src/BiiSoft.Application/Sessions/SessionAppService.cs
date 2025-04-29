@@ -19,16 +19,13 @@ namespace BiiSoft.Sessions
         private readonly IRepository<CompanyGeneralSetting, long> _companyGeneralSettingRepository;
         private readonly IRepository<CompanyAdvanceSetting, long> _companyAdvanceSettingRepository;
         private readonly IBiiSoftRepository<ItemSetting, Guid> _itemSettingRepository;
-        private readonly IBiiSoftRepository<ItemFieldSetting, Guid> _itemFieldSettingRepository;
 
         public SessionAppService(
             IBiiSoftRepository<ItemSetting, Guid> itemSettingRepository,
-            IBiiSoftRepository<ItemFieldSetting, Guid> itemFieldSettingRepository,
             IRepository<CompanyGeneralSetting, long> companyGeneralSettingRepository,
             IRepository<CompanyAdvanceSetting, long> companyAdvanceSettingRepository)
         {
             _itemSettingRepository = itemSettingRepository;
-            _itemFieldSettingRepository = itemFieldSettingRepository;
             _companyGeneralSettingRepository = companyGeneralSettingRepository;
             _companyAdvanceSettingRepository = companyAdvanceSettingRepository;
         }
@@ -99,10 +96,6 @@ namespace BiiSoft.Sessions
                 if (setting?.ExpenseAccount != null) output.ItemSetting.ExpenseAccountName = isDefaultLanguage ? setting.ExpenseAccount.Name : setting.ExpenseAccount.DisplayName;
                 if (setting?.COGSAccount != null) output.ItemSetting.COGSAccountName = isDefaultLanguage ? setting.COGSAccount.Name : setting.COGSAccount.DisplayName;
                 if (setting?.RevenueAccount != null) output.ItemSetting.RevenueAccountName = isDefaultLanguage ? setting.RevenueAccount.Name : setting.RevenueAccount.DisplayName;
-
-                var fieldSetting = await _itemFieldSettingRepository.GetAll().AsNoTracking().FirstOrDefaultAsync();
-
-                output.ItemFieldSetting = ObjectMapper.Map<ItemFieldSettingDto>(fieldSetting);
 
             }
 
