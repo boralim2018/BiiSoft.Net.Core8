@@ -33,7 +33,7 @@ namespace BiiSoft.ChartOfAccounts
         public  ChartOfAccount Parent { get; private set; }
 
 
-        public static ChartOfAccount Create(int tenantId, long userId, SubAccountType subAccountType, string code, string name, string displayName, Guid? parentId)
+        public static ChartOfAccount Create(int tenantId, long userId, AccountType accountType, SubAccountType subAccountType, string code, string name, string displayName, Guid? parentId)
         {
             return new ChartOfAccount
             {
@@ -41,7 +41,7 @@ namespace BiiSoft.ChartOfAccounts
                 TenantId = tenantId,
                 CreatorUserId = userId,
                 CreationTime = Clock.Now,
-                AccountType = subAccountType.Parent(),
+                AccountType = accountType,
                 SubAccountType = subAccountType,
                 Code = code,
                 Name = name,
@@ -51,11 +51,11 @@ namespace BiiSoft.ChartOfAccounts
             };
         }
 
-        public void Update(long userId, SubAccountType subAccountType, string code, string name, string displayName, Guid? parentId)
+        public void Update(long userId, AccountType accountType, SubAccountType subAccountType, string code, string name, string displayName, Guid? parentId)
         {
             LastModifierUserId = userId;
             LastModificationTime = Clock.Now;
-            AccountType = subAccountType.Parent();
+            AccountType = accountType;
             SubAccountType = subAccountType;
             Code = code;
             Name = name;

@@ -98,7 +98,7 @@ namespace BiiSoft.Excels
                         //    col.WriteCell(ws, rowIndex, colIndex, value);
                         //}
 
-                        col.WriteCell(ws, rowIndex, colIndex, value);
+                        col.Write(ws, rowIndex, colIndex, value);
 
                         colIndex++;
                     }

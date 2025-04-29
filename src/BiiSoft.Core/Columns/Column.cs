@@ -86,7 +86,7 @@ namespace BiiSoft.Columns
 
     public static class ColumnExtensions
     {
-        public static void WriteCell(
+        public static void Write(
             this ColumnOutput col, 
             ExcelWorksheet ws, 
             int rowIndex, 

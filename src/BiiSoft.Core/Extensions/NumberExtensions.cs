@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BiiSoft.Extensions
 {
@@ -39,5 +35,16 @@ namespace BiiSoft.Extensions
         {
             return $"{prefix}{index.ToString().PadLeft(length - prefix.Length, '0')}";
         }
+
+        public static bool IsNullOrZero(this long? id)
+        {
+            return !id.HasValue || id.Value == 0;
+        }
+
+        public static bool IsNullOrEmpty(this Guid? id)
+        {
+            return !id.HasValue || id.Value == Guid.Empty;
+        }
+
     }
 }

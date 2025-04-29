@@ -15,9 +15,9 @@ namespace BiiSoft.Extensions
 {
     public static class ExcelPackageExtensions
     {
-        public static ExcelWorksheet CreateSheet(this ExcelPackage p, string sheetName)
+        public static ExcelWorksheet CreateSheet(this ExcelWorkbook wb, string sheetName)
         {
-            var ws = p.Workbook.Worksheets.Add(sheetName);
+            var ws = wb.Worksheets.Add(sheetName);
             ws.PrinterSettings.Orientation = eOrientation.Landscape;
             ws.PrinterSettings.FitToPage = true;
             //ws.PrinterSettings.PaperSize = ePaperSize.A3; //set default format paper size 
@@ -25,6 +25,11 @@ namespace BiiSoft.Extensions
             ws.Cells.Style.Font.Name = BiiSoftConsts.DefaultFontName; //Default Font name for whole sheet
             ws.Cells.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
             return ws;
+        }
+
+        public static ExcelWorksheet CreateSheet(this ExcelPackage p, string sheetName)
+        {   
+            return p.Workbook.CreateSheet(sheetName);
         }
 
         public static string GetString(this ExcelWorksheet sheet, int rowIndex, int columnIndex)
@@ -293,12 +298,12 @@ namespace BiiSoft.Extensions
 
             if (toRowIndex <= fromRowIndex) toRowIndex = fromRowIndex + 1;
 
-            ExcelWorksheet lookupSheet = sheet.Workbook.Worksheets.Add(col.ColumnName);
+            ExcelWorksheet lookupSheet = sheet.Workbook.CreateSheet(col.ColumnName);
 
             var rowIndex = 1;
             foreach (var value in col.LookupList)
             {
-                col.WriteCell(lookupSheet, rowIndex + 1, 1, value);
+                col.Write(lookupSheet, rowIndex + 1, 1, value);
                 rowIndex++;
             }
 
@@ -335,7 +340,7 @@ namespace BiiSoft.Extensions
             if (col.IndirectIndex <= 0) throw new UserFriendlyException("IndirectIndex is required");
             if (col.ColumnName.IsNullOrEmpty()) throw new UserFriendlyException("ColumnName is required");
 
-            ExcelWorksheet lookupSheet = table.WorkSheet.Workbook.Worksheets.Add(col.ColumnName);
+            ExcelWorksheet lookupSheet = table.WorkSheet.Workbook.CreateSheet(col.ColumnName);
 
             var colIndex = 1;
             foreach (var value in col.LookupList)
@@ -346,7 +351,7 @@ namespace BiiSoft.Extensions
 
                 foreach (var item in lookupItem.Value)
                 {
-                    col.WriteCell(lookupSheet, rowIndex, colIndex, item);
+                    col.Write(lookupSheet, rowIndex, colIndex, item);
                     rowIndex++;
                 }
               

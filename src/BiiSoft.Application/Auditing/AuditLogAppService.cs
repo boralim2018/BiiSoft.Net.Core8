@@ -189,7 +189,7 @@ namespace BiiSoft.Auditing
                         }
                         else
                         {
-                            col.WriteCell(ws, rowIndex, colIndex, value);
+                            col.Write(ws, rowIndex, colIndex, value);
                         }
 
                         colIndex++;

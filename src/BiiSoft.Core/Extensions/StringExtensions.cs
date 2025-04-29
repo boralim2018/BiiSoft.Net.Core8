@@ -1,11 +1,6 @@
-﻿using Abp.Domain.Entities;
-using Abp.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Abp.Extensions;
 
 namespace BiiSoft.Extensions
 {
@@ -64,16 +59,6 @@ namespace BiiSoft.Extensions
             var oldCode = Convert.ToInt64(code.Remove(0, prefix.Length));
             if (newCode > oldCode) return compareCode;
             return code;
-        }
-
-        public static bool IsNullOrEmpty(this Guid? id)
-        {
-            return !id.HasValue || id.Value == Guid.Empty;
-        }
-
-        public static bool IsNullOrZero(this long? id)
-        {
-            return !id.HasValue || id.Value == 0;
         }
 
     }

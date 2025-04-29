@@ -69,7 +69,7 @@ namespace BiiSoft.ChartOfAccounts
 
         protected override ChartOfAccount CreateInstance(ChartOfAccount input)
         {
-            return ChartOfAccount.Create(input.TenantId, input.CreatorUserId.Value, input.SubAccountType, input.Code, input.Name, input.DisplayName, input.ParentId);
+            return ChartOfAccount.Create(input.TenantId, input.CreatorUserId.Value, input.AccountType, input.SubAccountType, input.Code, input.Name, input.DisplayName, input.ParentId);
         }
 
         private async Task<bool> CheckAutoGenerateCodeAsync()
@@ -86,7 +86,7 @@ namespace BiiSoft.ChartOfAccounts
 
         protected override void UpdateInstance(ChartOfAccount input, ChartOfAccount entity)
         {
-            entity.Update(input.LastModifierUserId.Value, input.SubAccountType, input.Code, input.Name, input.DisplayName, input.ParentId);
+            entity.Update(input.LastModifierUserId.Value, input.AccountType, input.SubAccountType, input.Code, input.Name, input.DisplayName, input.ParentId);
         }
 
         #endregion
@@ -257,7 +257,7 @@ namespace BiiSoft.ChartOfAccounts
                         var findCode = accounts.Any(a => a.Code == code);
                         if (findCode) DuplicateCodeException(code, rowMessage);
 
-                        var entity = ChartOfAccount.Create(input.TenantId.Value, input.UserId.Value, subAccountType, code, name, displayName, parentId);
+                        var entity = ChartOfAccount.Create(input.TenantId.Value, input.UserId.Value, accountType, subAccountType, code, name, displayName, parentId);
                         entity.SetCannotEdit(cannotEdit);
 
                         addAccounts.Add(entity);

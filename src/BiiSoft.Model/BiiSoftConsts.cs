@@ -13,8 +13,8 @@ namespace BiiSoft
 
         public const bool MultiTenancyEnabled = true;
 
-        public const string DefaultFontName = "Khmer OS Battambang";
-        public const int DefaultFontSize = 12;
+        public const string DefaultFontName = "Khmer OS Siemreap"; //"Khmer OS Battambang";
+        public const int DefaultFontSize = 11;
 
         public const string TokenValidityKey = "token_validity_key";
         public static string UserIdentifier = "user_identifier";
