@@ -44,7 +44,9 @@ namespace BiiSoft.Items
         {
             if (!input.Code.IsNullOrEmpty())
             {
-                var findCode = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id != input.Id && s.Code == input.Code);
+                if(input.Code.Length > BiiSoftConsts.MaxLengthItemFieldCode) MoreThanCharactersException(L("Code_", InstanceName), BiiSoftConsts.MaxLengthItemFieldCode);
+
+                var findCode = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id != input.Id && s.Code != null && s.Code == input.Code);
                 if (findCode) DuplicateCodeException(input.Code);
             }
 
@@ -114,6 +116,8 @@ namespace BiiSoft.Items
                         var code = worksheet.GetString(i, 3);
                         if (!code.IsNullOrEmpty())
                         {
+                            if (code.Length > BiiSoftConsts.MaxLengthItemFieldCode) MoreThanCharactersException(L("Code_", InstanceName), BiiSoftConsts.MaxLengthItemFieldCode, rowInfo);
+
                             if (codeHash.Contains(code)) DuplicateCodeException(code, rowInfo);
 
                             codeHash.Add(code);

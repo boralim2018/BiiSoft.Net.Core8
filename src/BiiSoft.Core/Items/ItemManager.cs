@@ -117,10 +117,10 @@ namespace BiiSoft.Items
         protected override string InstanceName => L("Item");
 
         protected override void ValidateInput(Item input)
-        {
-            ValidateCodeInput(input.Code);
+        {   
             base.ValidateInput(input);
 
+            ValidateCodeInput(input.Code);
             ValidateSelect(input.UnitId, L("Unit"));
             ValidateSelect(input.PurchaseAccountId, L("PurchaseAccount"));
             ValidateSelect(input.SaleAccountId, L("SaleAccount"));

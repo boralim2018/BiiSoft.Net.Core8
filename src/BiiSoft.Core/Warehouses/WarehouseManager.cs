@@ -49,9 +49,11 @@ namespace BiiSoft.Warehouses
         protected override bool IsUniqueName => true;
 
         protected override void ValidateInput(Warehouse input)
-        {
-            ValidateCodeInput(input.Code);
+        {   
             base.ValidateInput(input);
+
+            ValidateCodeInput(input.Code);
+            if (input.Code.Length > BiiSoftConsts.MaxLengthItemFieldCode) MoreThanCharactersException(L("Code_", InstanceName), BiiSoftConsts.MaxLengthItemFieldCode);
 
             if (input.Sharing == BranchSharing.SpecificBranch) 
             {
@@ -204,9 +206,9 @@ namespace BiiSoft.Warehouses
 
                         var code = worksheet.GetString(i, 3);
                         ValidateCodeInput(code, rowInfo);
+                        if (code.Length > BiiSoftConsts.MaxLengthItemFieldCode) MoreThanCharactersException(L("Code_", InstanceName), BiiSoftConsts.MaxLengthItemFieldCode, rowInfo);
                         if (codeHash.Contains(code)) DuplicateCodeException(code, rowInfo);
-                        codeHash.Add(code);
-                       
+                        codeHash.Add(code);                       
 
                         var isDefault = worksheet.GetBool(i, 4);
 
