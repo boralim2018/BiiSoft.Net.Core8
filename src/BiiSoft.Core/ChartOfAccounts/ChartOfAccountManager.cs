@@ -132,10 +132,12 @@ namespace BiiSoft.ChartOfAccounts
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
         {
+            var autoGenerateCode = await CheckAutoGenerateCodeAsync();
+
             var inputFile = new ExportFileInput{
                 FileName = $"ChartOfAccount.xlsx",
                 Columns = new List<ColumnOutput> {
-                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 150 },
+                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 150, IsRequired = !autoGenerateCode },
                     new ColumnOutput{ ColumnTitle = L("Name_",L("Account")), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnName = "AccountType", ColumnTitle = L("AccountType"), Width = 150, IsRequired = true, ColumnType = ColumnType.Lookup, LookupList = AccountType.Cash.NameList(), },

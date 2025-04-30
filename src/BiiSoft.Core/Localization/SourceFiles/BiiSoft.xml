@@ -828,5 +828,12 @@
 		<text name="IsAddOn">Add-On</text>
 		<text name="UseBOM">Use BOM</text>
 		<text name="DisplayBOM">Display BOM</text>
+		<text name="Type">Type</text>
+		<text name="Prefix">Prefix</text>
+		<text name="Digits">Digits</text>
+		<text name="Start">Start</text>
+		<text name="Custom">Custom</text>
+		<text name="Manual">Manual</text>
+		<text name="DefaultZonePerWarehouse">Default Zone Per Warehouse</text>
 	</texts>
 </localizationDictionary>

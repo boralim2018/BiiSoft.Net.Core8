@@ -100,5 +100,8 @@ namespace BiiSoft.Items.Dto
                     UseVGA || UseHDD || UseScreen || UseCamera || UseBattery || UseFieldA || UseFieldB || UseFieldC;    
         public bool MeasurementEnable => UseGrossWeight || UseNetWeight || UseWidth || UseHeight || UseLength || UseDiameter || UseArea || UseVolume;
         public bool StockTrackingEnable => UseReorderStock || UseMinStock || UseMaxStock || UseBatchNo || UseSerial || UseExpired || UseAssetStatus;
+        public bool FilterRequired => ItemGroupRequired || BrandRequired || ModelRequired || SeriesRequired || SizeRequired || GradeRequired || ColorPatternRequired ||
+                    CPURequired || RAMRequired || VGARequired || CameraRequired || ScreenRequired || HDDRequired || BatteryRequired ||
+                    FieldARequired || FieldBRequired || FieldCRequired;
     }
 }

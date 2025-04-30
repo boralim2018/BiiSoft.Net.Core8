@@ -7,6 +7,7 @@ using Abp.Application.Features;
 using Abp.Collections.Extensions;
 using Abp.Domain.Uow;
 using Abp.Extensions;
+using Abp.Linq.Extensions;
 using Abp.UI;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.ChartOfAccounts;
@@ -154,92 +155,163 @@ namespace BiiSoft.Items
             var findUnit = await _unitRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.UnitId);
             if (!findUnit) InvalidException(L("Unit"));
 
-            var itemSetting = await GetItemSettingAsync();
+            var setting = await GetItemSettingAsync();
 
-            if (itemSetting != null && itemSetting.UseItemGroup)
+            if (setting != null && setting.UseItemGroup)
             {
-                var find = await _itemGroupRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemGroupId);
-                if (!find) InvalidException(L("ItemGroup"));
+                if(setting.ItemGroupRequired) ValidateSelect(input.ItemGroupId, L("ItemGroup"));
+
+                if (!input.ItemGroupId.IsNullOrEmpty())
+                {
+                    var find = await _itemGroupRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemGroupId);
+                    if (!find) InvalidException(L("ItemGroup"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseBrand)
+            if (setting != null && setting.UseBrand)
             {
-                var find = await _itemBrandRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemBrandId);
-                if (!find) InvalidException(L("ItemBrand"));
+                if (setting.BrandRequired) ValidateSelect(input.ItemBrandId, L("ItemBrand"));
+
+                if (!input.ItemBrandId.IsNullOrEmpty())
+                {
+                    var find = await _itemBrandRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemBrandId);
+                    if (!find) InvalidException(L("ItemBrand"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseGrade)
+            if (setting != null && setting.UseGrade)
             {
-                var find = await _itemGradeRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemGradeId);
-                if (!find) InvalidException(L("ItemGrade"));
+                if (setting.GradeRequired) ValidateSelect(input.ItemGradeId, L("ItemGrade"));
+
+                if (!input.ItemGradeId.IsNullOrEmpty())
+                {
+                    var find = await _itemGradeRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemGradeId);
+                    if (!find) InvalidException(L("ItemGrade"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseModel)
+            if (setting != null && setting.UseModel)
             {
-                var find = await _itemModelRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemModelId);
-                if (!find) InvalidException(L("ItemModel"));
+                if (setting.ModelRequired) ValidateSelect(input.ItemModelId, L("ItemModel"));
+                if (!input.ItemModelId.IsNullOrEmpty())
+                {
+                    var find = await _itemModelRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemModelId);
+                    if (!find) InvalidException(L("ItemModel"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseSize)
+            if (setting != null && setting.UseSize)
             {
-                var find = await _itemSizeRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemSizeId);
-                if (!find) InvalidException(L("ItemSize"));
+                if (setting.SizeRequired) ValidateSelect(input.ItemSizeId, L("ItemSize"));
+                if (!input.ItemSizeId.IsNullOrEmpty())
+                {
+                    var find = await _itemSizeRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemSizeId);
+                    if (!find) InvalidException(L("ItemSize"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseSeries)
+            if (setting != null && setting.UseSeries)
             {
-                var find = await _itemSeriesRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemSeriesId);
-                if (!find) InvalidException(L("ItemSeries"));
+                if (setting.SeriesRequired) ValidateSelect(input.ItemSeriesId, L("ItemSeries"));
+                if (!input.ItemSeriesId.IsNullOrEmpty())
+                {
+                    var find = await _itemSeriesRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ItemSeriesId);
+                    if (!find) InvalidException(L("ItemSeries"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseColorPattern)
+            if (setting != null && setting.UseColorPattern)
             {
-                var find = await _colorPatternRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ColorPatternId);
-                if (!find) InvalidException(L("ColorPattern"));
+                if (setting.ColorPatternRequired) ValidateSelect(input.ColorPatternId, L("ColorPattern"));
+                if (!input.ColorPatternId.IsNullOrEmpty())
+                {
+                    var find = await _colorPatternRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ColorPatternId);
+                    if (!find) InvalidException(L("ColorPattern"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseCPU)
+            if (setting != null && setting.UseCPU)
             {
-                var find = await _cpuRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CPUId);
-                if (!find) InvalidException(L("CPU"));
+                if (setting.CPURequired) ValidateSelect(input.CPUId, L("CPU"));
+                if (!input.CPUId.IsNullOrEmpty())
+                {
+                    var find = await _cpuRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CPUId);
+                    if (!find) InvalidException(L("CPU"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseRAM)
+            if (setting != null && setting.UseRAM)
             {
-                var find = await _ramRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.RAMId);
-                if (!find) InvalidException(L("RAM"));
+                if (setting.RAMRequired) ValidateSelect(input.RAMId, L("RAM"));
+                if (!input.RAMId.IsNullOrEmpty())
+                {
+                    var find = await _ramRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.RAMId);
+                    if (!find) InvalidException(L("RAM"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseVGA)
+            if (setting != null && setting.UseVGA)
             {
-                var find = await _vgaRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.VGAId);
-                if (!find) InvalidException(L("VGA"));
+                if (setting.VGARequired) ValidateSelect(input.VGAId, L("VGA"));
+                if (!input.VGAId.IsNullOrEmpty())
+                {
+                    var find = await _vgaRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.VGAId);
+                    if (!find) InvalidException(L("VGA"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseHDD)
+            if (setting != null && setting.UseHDD)
             {
-                var find = await _hddRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.HDDId);
-                if (!find) InvalidException(L("HDD"));
+                if (setting.HDDRequired) ValidateSelect(input.HDDId, L("HDD"));
+                if (!input.HDDId.IsNullOrEmpty())
+                {
+                    var find = await _hddRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.HDDId);
+                    if (!find) InvalidException(L("HDD"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseScreen)
+            if (setting != null && setting.UseScreen)
             {
-                var find = await _screenRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ScreenId);
-                if (!find) InvalidException(L("Screen"));
+                if (setting.ScreenRequired) ValidateSelect(input.ScreenId, L("Screen"));
+                if (!input.ScreenId.IsNullOrEmpty())
+                {
+                    var find = await _screenRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.ScreenId);
+                    if (!find) InvalidException(L("Screen"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseCamera)
+            if (setting != null && setting.UseCamera)
             {
-                var find = await _cameraRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CameraId);
-                if (!find) InvalidException(L("Camera"));
+                if (setting.CameraRequired) ValidateSelect(input.CameraId, L("Camera"));
+                if (!input.CameraId.IsNullOrEmpty())
+                {
+                    var find = await _cameraRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.CameraId);
+                    if (!find) InvalidException(L("Camera"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseBattery)
+            if (setting != null && setting.UseBattery)
             {
-                var find = await _batteryRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.BatteryId);
-                if (!find) InvalidException(L("Battery"));
+                if (setting.BatteryRequired) ValidateSelect(input.BatteryId, L("Battery"));
+                if (!input.BatteryId.IsNullOrEmpty())
+                {
+                    var find = await _batteryRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.BatteryId);
+                    if (!find) InvalidException(L("Battery"));
+                }
             }
-            if (itemSetting != null && itemSetting.UseFieldA)
+            if (setting != null && setting.UseFieldA)
             {
-                var find = await _fieldARepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.FieldAId);
-                if (!find) InvalidException(L("FieldA"));
+                if (setting.FieldARequired) ValidateSelect(input.FieldAId, L("FieldA"));
+                if (!input.FieldAId.IsNullOrEmpty())
+                {
+                    var find = await _fieldARepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.FieldAId);
+                    if (!find) InvalidException(setting.FieldALabel.IsNullOrEmpty() ? L("FieldA") : L(setting.FieldALabel));
+                }
             }
-            if (itemSetting != null && itemSetting.UseFieldB)
+            if (setting != null && setting.UseFieldB)
             {
-                var find = await _fieldBRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.FieldBId);
-                if (!find) InvalidException(L("FieldB"));
+                if (setting.FieldBRequired) ValidateSelect(input.FieldBId, L("FieldB"));
+                if (!input.FieldBId.IsNullOrEmpty())
+                {
+                    var find = await _fieldBRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.FieldBId);
+                    if (!find) InvalidException(setting.FieldBLabel.IsNullOrEmpty() ? L("FieldB") : L(setting.FieldBLabel));
+                }
             }
-            if (itemSetting != null && itemSetting.UseFieldC)
+            if (setting != null && setting.UseFieldC)
             {
-                var find = await _fieldCRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.FieldCId);
-                if (!find) InvalidException(L("FieldC"));
+                if (setting.FieldCRequired) ValidateSelect(input.FieldCId, L("FieldC"));
+                if (!input.FieldCId.IsNullOrEmpty())
+                {
+                    var find = await _fieldCRepository.GetAll().AsNoTracking().AnyAsync(s => s.Id == input.FieldCId);
+                    if (!find) InvalidException(setting.FieldCLabel.IsNullOrEmpty() ? L("FieldC") : L(setting.FieldCLabel));
+                }
             }
 
             if (!input.PurchaseAccountId.IsNullOrEmpty())
@@ -261,7 +333,9 @@ namespace BiiSoft.Items
 
             if (!input.ItemZones.IsNullOrEmpty())
             {
-                var validZone = await _zoneRepository.GetAll().AsNoTracking().Where(s => input.ItemZones.Any(r => r.ZoneId == s.Id)).CountAsync() == input.ItemZones.Count;
+                var zoneIds = input.ItemZones.Select(s => s.ZoneId).ToList();
+
+                var validZone = await _zoneRepository.GetAll().AsNoTracking().Where(s => zoneIds.Contains(s.Id)).CountAsync() == input.ItemZones.Count;
 
                 if (!validZone) InvalidException(L("Zone"));
             }
@@ -418,9 +492,11 @@ namespace BiiSoft.Items
                 prefix = formula.Prefix;
             }
 
+            var itemTypes = formula.ItemTypes.Select(s => s.ItemType).ToList();
+
             var latestCode = await _repository.GetAll()
                             .AsNoTracking()
-                            .Where(s => formula.ItemTypes.Any(r => r.ItemType == s.ItemType))
+                            .WhereIf(!formula.IsAllItemType, s => itemTypes.Contains(s.ItemType))
                             .Where(s => s.Code.StartsWith(prefix))
                             .Select(s => s.Code)
                             .OrderByDescending(s => s)

@@ -828,5 +828,12 @@
 		<text name="IsAddOn">ថែមពីលើ</text>
 		<text name="UseBOM">ប្រើ BOM</text>
 		<text name="DisplayBOM">បង្ហាញ BOM</text>
+		<text name="Type">ប្រភេទ</text>
+		<text name="Prefix">បន្ថែមដើម</text>
+		<text name="Digits">ចំនួនកាត់ខ្ទង់</text>
+		<text name="Start">ចាប់ផ្ដើម</text>
+		<text name="Custom">កំណត់ទុក</text>
+		<text name="Manual">វាយបញ្ចូល</text>
+		<text name="DefaultZonePerWarehouse">តំបន់លំនាំដើមសម្រាប់ឃ្លាំងមួយ</text>
 	</texts>
 </localizationDictionary>

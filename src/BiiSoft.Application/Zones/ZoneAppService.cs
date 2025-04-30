@@ -285,7 +285,7 @@ namespace BiiSoft.Zones
         }
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Warehouses_Zones_ImportExcel)]
-        [UnitOfWork(IsDisabled = true)]
+        //[UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
             return await _zoneManager.ExportExcelTemplateAsync();

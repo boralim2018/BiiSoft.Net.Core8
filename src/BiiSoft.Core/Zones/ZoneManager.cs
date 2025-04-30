@@ -76,10 +76,21 @@ namespace BiiSoft.Zones
                 Columns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Name_",InstanceName), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Warehouse"), Width = 250 },
+                    new ColumnOutput{ ColumnName = "Warehouse", ColumnTitle = L("Warehouse"), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
                 }
             };
+
+            var wahouses = await _warehouseRepository.GetAll().AsNoTracking().Select(s => s.Code).OrderBy(s => s).ToListAsync();
+            if(wahouses.Any())
+            {
+                var warehouseCol = inputFile.Columns.FirstOrDefault(s => s.ColumnName == "Warehouse");
+                if (warehouseCol != null)
+                {
+                    warehouseCol.ColumnType = ColumnType.Lookup;
+                    warehouseCol.LookupList = wahouses;
+                }
+            }
 
             return await _excelManager.ExportExcelTemplateAsync(inputFile);
         }
@@ -130,6 +141,12 @@ namespace BiiSoft.Zones
                         if (!warehouseDic.ContainsKey(warehouse)) InvalidException(L("Warehouse"), rowInfo);
                         
                         var isDefault = worksheet.GetBool(i, 4);
+
+                        if (isDefault)
+                        {
+                            var findDefault = entities.Any(s => s.Name != name && s.WarehouseId == warehouseDic[warehouse]);
+                            if (findDefault) MoreThanException(L("DefaultZonePerWarehouse"), $"{1}", rowInfo);
+                        }
 
                         var entity = Zone.Create(input.TenantId.Value, input.UserId.Value, warehouseDic[warehouse], name, displayName);
                         entity.SetDefault(isDefault);

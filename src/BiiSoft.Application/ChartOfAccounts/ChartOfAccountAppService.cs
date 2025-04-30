@@ -282,7 +282,7 @@ namespace BiiSoft.ChartOfAccounts
         }
 
         [AbpAuthorize(PermissionNames.Pages_Accounting_ChartOfAccounts_ImportExcel)]
-        [UnitOfWork(IsDisabled = true)]
+        //[UnitOfWork(IsDisabled = true)]
         public async Task<ExportFileOutput> ExportExcelTemplate()
         {
             return await _chartOfAccountManager.ExportExcelTemplateAsync();
