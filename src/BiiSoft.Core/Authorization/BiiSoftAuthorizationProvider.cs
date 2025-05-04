@@ -395,6 +395,17 @@ namespace BiiSoft.Authorization
             fieldCPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_FieldCs_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_FieldCs));
             fieldCPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_FieldCs_SetAsDefault, L("SetAsDefault"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_FieldCs));
 
+            var bomPage = itemPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs, L("BOMs"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_Edit, L("Edit"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_Delete, L("Delete"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_ExportExcel, L("ExportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_ImportExcel, L("ImportExcel"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_Enable, L("Enable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_Disable, L("Disable"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+            bomPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_BOMs_SetAsDefault, L("SetAsDefault"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_BOMs));
+
             var priceLevelPage = itemPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_PriceList, L("PriceList"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_PriceList));
             priceLevelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_PriceList_Create, L("Create"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_PriceList));
             priceLevelPage.CreateChildPermission(PermissionNames.Pages_Setup_Items_PriceList_View, L("View"), multiTenancySides: MultiTenancySides.Tenant, featureDependency: new SimpleFeatureDependency(AppFeatures.Setup_Items_PriceList));

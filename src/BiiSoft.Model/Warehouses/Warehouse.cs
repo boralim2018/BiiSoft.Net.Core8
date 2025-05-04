@@ -24,6 +24,7 @@ namespace BiiSoft.Warehouses
         public BranchSharing Sharing { get; private set; }
         public void SetSharing(BranchSharing sharing) => Sharing = sharing;
 
+        public ICollection<Zone> Zones { get; set; }
         public ICollection<WarehouseBranch> WarehouseBranches { get; set; }
 
         public static Warehouse Create(int tenantId, long userId, string name, string displayName, string code, BranchSharing sharing)

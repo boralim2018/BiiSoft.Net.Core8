@@ -41,6 +41,7 @@
         public const string Pages_Find_FieldBs = "Pages.Find.FieldBs";
         public const string Pages_Find_FieldCs = "Pages.Find.FieldCs";
         public const string Pages_Find_Items = "Pages.Find.Items";
+        public const string Pages_Find_BOMs = "Pages.Find.BOMs";
         public const string Pages_Find_Warehouses = "Pages.Find.Warehouses";
         public const string Pages_Find_Zones = "Pages.Find.Zones";
 
@@ -386,6 +387,17 @@
         public const string Pages_Setup_Items_FieldCs_Enable = "Pages.Setup.Items.FieldCs.Enable";
         public const string Pages_Setup_Items_FieldCs_Disable = "Pages.Setup.Items.FieldCs.Disable";
         public const string Pages_Setup_Items_FieldCs_SetAsDefault = "Pages.Setup.Items.FieldCs.SetAsDefault";
+
+        public const string Pages_Setup_Items_BOMs = "Pages.Setup.Items.BOMs";
+        public const string Pages_Setup_Items_BOMs_Create = "Pages.Setup.Items.BOMs.Create";
+        public const string Pages_Setup_Items_BOMs_View = "Pages.Setup.Items.BOMs.View";
+        public const string Pages_Setup_Items_BOMs_Edit = "Pages.Setup.Items.BOMs.Edit";
+        public const string Pages_Setup_Items_BOMs_Delete = "Pages.Setup.Items.BOMs.Delete";
+        public const string Pages_Setup_Items_BOMs_ImportExcel = "Pages.Setup.Items.BOMs.ImportExcel";
+        public const string Pages_Setup_Items_BOMs_ExportExcel = "Pages.Setup.Items.BOMs.ExportExcel";
+        public const string Pages_Setup_Items_BOMs_Enable = "Pages.Setup.Items.BOMs.Enable";
+        public const string Pages_Setup_Items_BOMs_Disable = "Pages.Setup.Items.BOMs.Disable";
+        public const string Pages_Setup_Items_BOMs_SetAsDefault = "Pages.Setup.Items.BOMs.SetAsDefault";
 
         public const string Pages_Setup_Items_PriceList = "Pages.Setup.Items.PriceList";
         public const string Pages_Setup_Items_PriceList_Create = "Pages.Setup.Items.PriceList.Create";

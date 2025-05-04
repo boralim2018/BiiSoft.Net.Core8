@@ -40,6 +40,7 @@
         public const string Setup_Items_FieldAs = "App.Setup.Items.FieldAs";
         public const string Setup_Items_FieldBs = "App.Setup.Items.FieldBs";
         public const string Setup_Items_FieldCs = "App.Setup.Items.FieldCs";
+        public const string Setup_Items_BOMs = "App.Setup.Items.BOMs";
 
         public const string Setup_Items_PriceList = "App.Setup.Items.PriceList";
         public const string Setup_Items_Promotions = "App.Setup.Items.Promotions";

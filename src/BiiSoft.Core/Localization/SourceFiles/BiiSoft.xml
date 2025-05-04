@@ -31,6 +31,7 @@
 		<text name="Tenants" value="Tenants" />
 		<text name="Tenant" value="Tenant" />
 		<text name="SavedSuccessfully" value="Saved successfully" />
+		<text name="UploadSuccessfully" value="Upload successfully" />
 		<text name="CreateNewTenant" value="Create new tenant" />
 		<text name="AdminEmailAddress" value="Admin email address" />
 		<text name="AdminPassword" value="Admin password" />
@@ -443,6 +444,7 @@
 		<text name="Adjustments">Adjustments</text>
 		<text name="CustomerBorrowReturns">Customer Borrow Returns</text>
 		<text name="Others">Others</text>
+		<text name="Other">Other</text>
 		<text name="Purchases">Purchases</text>
 		<text name="PurchaseReturns">Purchase Returns</text>
 		<text name="CustomerGroups">Customer Groups</text>
@@ -800,7 +802,7 @@
 		<text name="TrackBatchNo">Track Batch No</text>
 		<text name="TrackExpired">Track Expired</text>
 		<text name="TrackAssetStatus">Track Asset Status</text>
-		<text name="StockTracking">StockTracking</text>
+		<text name="StockTracking">Stock Tracking</text>
 		<text name="UOM">UOM</text>
 		<text name="Measurement">Measurement</text>
 		<text name="WeightUnit">Weight Unit</text>
@@ -825,7 +827,11 @@
 		<text name="ItemAdjustment">Item Adjustment</text>
 		<text name="ItemProduction">Item Production</text>
 		<text name="IsModifier">Modefier</text>
+		<text name="ModifierItems">Modefier Items</text>
 		<text name="IsAddOn">Add-On</text>
+		<text name="AddOnItems">Add-On Items</text>
+		<text name="BOM">BOM</text>
+		<text name="BOMs">BOM</text>
 		<text name="UseBOM">Use BOM</text>
 		<text name="DisplayBOM">Display BOM</text>
 		<text name="Type">Type</text>
@@ -835,5 +841,6 @@
 		<text name="Custom">Custom</text>
 		<text name="Manual">Manual</text>
 		<text name="DefaultZonePerWarehouse">Default Zone Per Warehouse</text>
+		<text name="ComponentsCannotBeUseToBuildItsOwnItem">ទំនិញមួយមិនអាចប្រើសមាសធាតុដើម្បីផលិតទំនិញខ្លួនវាឡើយ</text>
 	</texts>
 </localizationDictionary>

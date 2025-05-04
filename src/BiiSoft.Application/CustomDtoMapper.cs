@@ -68,7 +68,9 @@ namespace BiiSoft
             configuration.CreateMap<EntityDto<Guid>, UserEntity<Guid>>().ReverseMap();
             configuration.CreateMap<EntityDto<long>, UserEntity<long>>().ReverseMap();
             configuration.CreateMap<FileTokenInput, ImportExcelEntity<Guid>>().ReverseMap();
-            configuration.CreateMap<FileTokenInput, ImportExcelEntity<long>>().ReverseMap();
+            configuration.CreateMap<FileTokenInput, ImportExcelEntity<long>>().ReverseMap(); 
+            configuration.CreateMap<UpdateFileInput<Guid>, UpdateFileEntity<Guid>>().ReverseMap();
+            configuration.CreateMap<UpdateFileInput<long>, UpdateFileEntity<long>>().ReverseMap();
 
             //Language
             configuration.CreateMap<ApplicationLanguage, ApplicationLanguageEditDto>();

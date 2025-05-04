@@ -1,15 +1,8 @@
-﻿using Abp.Domain.Entities;
-using Abp.EntityFrameworkCore;
-using BiiSoft.Extensions;
-using EFCore.BulkExtensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Abp.Domain.Entities;
+using Abp.EntityFrameworkCore;
+using EFCore.BulkExtensions;
 
 namespace BiiSoft.EntityFrameworkCore.Repositories
 {

@@ -1,24 +1,18 @@
-﻿using Abp.Dependency;
-using Abp.Domain.Uow;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Abp.Dependency;
+using Abp.UI;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Abp.UI;
-using Microsoft.Extensions.Configuration;
+using Amazon.S3.Util;
+using BiiSoft;
 using BiiSoft.BFiles;
+using BiiSoft.BFiles.Dto;
 using BiiSoft.Configuration;
 using BiiSoft.Enums;
-using BiiSoft.Extensions;
-using BiiSoft;
-using System.Collections.Generic;
-using Amazon.S3.Util;
-using BiiSoft.BFiles.Dto;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace CorarlERP.FileUploads
 {
@@ -59,7 +53,7 @@ namespace CorarlERP.FileUploads
             var bFile = BFile.Create(
                 tenatId,
                 curentUserId,
-                path.FileName,
+                path.StarageName,
                 displayName,
                 bucketName,
                 path.FilePath,
@@ -72,7 +66,7 @@ namespace CorarlERP.FileUploads
 
         }
 
-        public async Task<BFile> UploadImage(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName, int resizeMaxWidth)
+        public async Task<BFile> UploadImage(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName)
         {
             var imageExtension = Path.GetExtension(file.FileName).Replace(".", "").ToLowerInvariant();
             if (!BiiSoftConsts.ImageMineTypes.ContainsKey(imageExtension)) throw new UserFriendlyException("InvalidImage");
@@ -96,7 +90,7 @@ namespace CorarlERP.FileUploads
             var bFile = BFile.Create(
                 tenatId,
                 curentUserId,
-                path.FileName,
+                path.StarageName,
                 displayName,
                 bucketName,
                 path.FilePath,

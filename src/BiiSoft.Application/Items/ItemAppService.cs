@@ -249,11 +249,11 @@ namespace BiiSoft.Items
                             TrackAssetStatus = l.TrackAssetStatus,
                             TrackSerial = l.TrackSerial,
                             AreaUnit = l.AreaUnit,
-                            AreaUnitName = l.AreaUnit.GetName(),
+                            AreaUnitName = l.AreaUnit.Symbol(),
                             LengthUnit = l.LengthUnit,
-                            LengthUnitName = l.LengthUnit.GetName(),
+                            LengthUnitName = l.LengthUnit.Symbol(),
                             VolumeUnit = l.VolumeUnit,
-                            VolumeUnitName = l.VolumeUnit.GetName(),
+                            VolumeUnitName = l.VolumeUnit.Symbol(),
                             WeightUnit = l.WeightUnit,
                             WeightUnitName = l.WeightUnit.GetName(),
                             Description = l.Description,
@@ -307,6 +307,10 @@ namespace BiiSoft.Items
                             LastModifierUserId = l.LastModifierUserId,
                             LastModificationTime = l.LastModificationTime,
                             LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
+                            IsModifier = l.IsModifier,
+                            IsAddOn = l.IsAddOn,
+                            UseBOM = l.UseBOM,
+                            DisplayBOM = l.DisplayBOM,
                             ItemZones = l.ItemZones.Select(s => new ItemZoneDto
                             {
                                 Id = s.Id,
@@ -481,7 +485,11 @@ namespace BiiSoft.Items
                     CreatorUserName = l.CreatorUserId.HasValue ? l.CreatorUser.UserName : "",
                     LastModifierUserId = l.LastModifierUserId,
                     LastModificationTime = l.LastModificationTime,
-                    LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : ""   
+                    LastModifierUserName = l.LastModifierUserId.HasValue ? l.LastModifierUser.UserName : "",
+                    IsModifier = l.IsModifier,
+                    IsAddOn = l.IsAddOn,
+                    UseBOM = l.UseBOM,
+                    DisplayBOM = l.DisplayBOM,
                 });
 
                 if (input.UsePagination)
@@ -606,5 +614,12 @@ namespace BiiSoft.Items
             return entity.Id;
         }
 
+        [AbpAuthorize(PermissionNames.Pages_Setup_Items_List_Edit)]
+        public async Task UpdateImage(UpdateFileInput<Guid> input)
+        {
+            var entity = MapEntity<UpdateFileEntity<Guid>, Guid>(input);
+
+            CheckErrors(await _itemManager.UpdateImageAsync(entity));
+        }
     }
 }

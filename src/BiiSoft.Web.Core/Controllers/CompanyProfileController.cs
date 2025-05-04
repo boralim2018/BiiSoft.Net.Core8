@@ -58,7 +58,7 @@ namespace BiiSoft.Web.Controllers
 
             try
             {
-                var result = await _bFileManager.UploadImage(AbpSession.TenantId, AbpSession.UserId.Value, input.UploadSource, file, input.DisplayName, BiiSoftConsts.MaxProfilePictureWidth);
+                var result = await _bFileManager.UploadImage(AbpSession.TenantId, AbpSession.UserId.Value, input.UploadSource, file, input.DisplayName);
                 await UpdateProfilePicture(new UpdateLogoInput { LogoId = result.Id });
                 return result;
             }

@@ -1,20 +1,11 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
-using Abp.AspNetCore.Mvc.Authorization;
 using Abp.Auditing;
 using Abp.Authorization;
-using Abp.Dependency;
 using Abp.Domain.Uow;
-using Abp.Extensions;
-using Abp.IO.Extensions;
-using Abp.Runtime.Session;
 using Abp.UI;
-using Abp.Web.Models;
 using BiiSoft.Authorization;
 using BiiSoft.Authorization.Users;
 using BiiSoft.BFiles;
@@ -66,7 +57,7 @@ namespace BiiSoft.Web.Controllers
 
             try
             {
-                var result = await _bFileManager.UploadImage(AbpSession.TenantId, AbpSession.UserId.Value, input.UploadSource, file, input.DisplayName, BiiSoftConsts.MaxProfilePictureWidth);
+                var result = await _bFileManager.UploadImage(AbpSession.TenantId, AbpSession.UserId.Value, input.UploadSource, file, input.DisplayName);
                 await UpdateProfilePicture(new UpdateProfilePictureInput { ProfilePictureId = result.Id });
                 return result;
             }

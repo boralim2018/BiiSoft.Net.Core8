@@ -25,5 +25,6 @@ namespace BiiSoft.Items
         Task<ExportFileOutput> ExportExcelUpdateZonesTemplate();
         Task<ItemSettingDto> GetItemSetting();
         Task<Guid> CreateOrUpdateItemSetting(ItemSettingDto input);
+        Task UpdateImage(UpdateFileInput<Guid> input);
     }
 }

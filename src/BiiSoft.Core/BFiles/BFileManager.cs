@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Abp.Domain.Uow;
-using System.Transactions;
 using System.Threading.Tasks;
-using Abp.UI;
-using Microsoft.AspNetCore.Http;
-using Abp.Extensions;
+using System.Transactions;
 using Abp.Dependency;
-using Microsoft.Extensions.Configuration;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
+using Abp.UI;
+using BiiSoft.BFiles.Dto;
 using BiiSoft.Configuration;
 using BiiSoft.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using BiiSoft.BFiles.Dto;
+using Microsoft.Extensions.Configuration;
 
 namespace BiiSoft.BFiles
 {
@@ -95,18 +92,18 @@ namespace BiiSoft.BFiles
 
 
         [UnitOfWork(IsDisabled = true)]
-        public async Task<BFileUploadOutput> UploadImage(int? tenantId, long curentUserId, UploadSource uploadSource, IFormFile file, string diplayName, int resizeMaxWidth)
+        public async Task<BFileUploadOutput> UploadImage(int? tenantId, long curentUserId, UploadSource uploadSource, IFormFile file, string diplayName)
         {
 
             BFile bFile = null;
 
             if (AwsS3Enable)
             {
-                bFile = await _aws3BFileManager.UploadImage(tenantId, curentUserId, uploadSource, file, diplayName, resizeMaxWidth);
+                bFile = await _aws3BFileManager.UploadImage(tenantId, curentUserId, uploadSource, file, diplayName);
             }
             else
             {
-                bFile = await _localBFileManager.UploadImage(tenantId, curentUserId, uploadSource, file, diplayName, resizeMaxWidth);
+                bFile = await _localBFileManager.UploadImage(tenantId, curentUserId, uploadSource, file, diplayName);
             }
 
             try

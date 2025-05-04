@@ -84,5 +84,42 @@ namespace BiiSoft.Web.Controllers
 
         }
 
+        [DisableAuditing]
+        [UnitOfWork(IsDisabled = true)]
+        public async Task<BFileUploadOutput> UploadImage(FileUploadInput input)
+        {
+            var file = Request.Form.Files.First();
+
+            //Check input                
+            if (file == null)
+            {
+                throw new Abp.UI.UserFriendlyException(L("IsNotValid", L("File")));
+            }
+
+            if (file.Length > BiiSoftConsts.MaxProfilePictureSize)
+            {
+                throw new UserFriendlyException(L("FileSizeLimit", BiiSoftConsts.MaxProfilePictureSize));
+            }
+
+            if (!BiiSoftConsts.ImageMineTypes.Values.Any(s => s != file.ContentType))
+            {
+                throw new Abp.UI.UserFriendlyException(L("IsNotValid", L("FileType")));
+            }
+
+            try
+            {
+                return await _bFileManager.UploadImage(AbpSession.TenantId, AbpSession.UserId.Value, input.UploadSource, file, input.DisplayName);
+            }
+            catch (UserFriendlyException ex)
+            {
+                throw new Abp.UI.UserFriendlyException(L(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                throw new UserFriendlyException(L("CannotUpload"));
+            }
+
+        }
+
     }
 }

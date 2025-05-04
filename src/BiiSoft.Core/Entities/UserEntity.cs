@@ -1,9 +1,5 @@
-﻿using Abp.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Abp.Domain.Entities;
 
 namespace BiiSoft.Entities
 { 
@@ -17,5 +13,10 @@ namespace BiiSoft.Entities
     {
         public int? TenantId { get; set; }
         public string Token { get; set; }
+    }
+    public class UpdateFileEntity<TPrimaryKey> : UserEntity<TPrimaryKey>, IUpdateFileEntity<TPrimaryKey>
+    {
+        public int? TenantId { get; set; }
+        public Guid FileId { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Abp.Domain.Uow;
 using Abp.Extensions;
 using Abp.UI;
+using Amazon.S3.Model;
 using BiiSoft.BFiles.Dto;
 using BiiSoft.Columns;
 using BiiSoft.Entities;
@@ -18,130 +19,122 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace BiiSoft.Warehouses
+namespace BiiSoft.BOMs
 {
-    public class WarehouseManager : BiiSoftDefaultNameActiveValidateServiceBase<Warehouse, Guid>, IWarehouseManager
+    public class BOMManager : BiiSoftDefaultNameActiveValidateServiceBase<BOM, Guid>, IBOMManager
     {
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IExcelManager _excelManager;
-        private readonly IBiiSoftRepository<Zone, Guid> _zoneRepository;
-        private readonly IBiiSoftRepository<WarehouseBranch, Guid> _warehouseBranchRepository;
+        private readonly IBiiSoftRepository<BOMItem, Guid> _bomItemRepository;
 
-        public WarehouseManager(
+        public BOMManager(
             IExcelManager excelManager,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
-            IBiiSoftRepository<Zone, Guid> zoneRepository,
-            IBiiSoftRepository<WarehouseBranch, Guid> warehouseBranchRepository,
-            IBiiSoftRepository<Warehouse, Guid> repository) : base(repository) 
+            IBiiSoftRepository<BOMItem, Guid> bomItemRepository,
+            IBiiSoftRepository<BOM, Guid> repository) : base(repository) 
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _excelManager = excelManager;
-            _zoneRepository = zoneRepository;
-            _warehouseBranchRepository = warehouseBranchRepository;
+            _bomItemRepository = bomItemRepository;
         }
 
         #region override
-        protected string InstanceKeyName => "Warehouse"; 
+        protected string InstanceKeyName => "BOM"; 
         protected override string InstanceName => L(InstanceKeyName);
         protected override bool IsUniqueName => true;
 
-        protected override void ValidateInput(Warehouse input)
+        protected override void ValidateInput(BOM input)
         {   
             base.ValidateInput(input);
 
-            ValidateCodeInput(input.Code);
-            if (input.Code.Length > BiiSoftConsts.MaxLengthItemFieldCode) MoreThanCharactersException(L("Code_", InstanceName), BiiSoftConsts.MaxLengthItemFieldCode);
+            if (input.BOMItems.IsNullOrEmpty()) RequiredException(L("BOMItems"));
 
-            if (input.Sharing == BranchSharing.SpecificBranch) 
+            var findItem = input.BOMItems.Any(s => s.ItemId == input.ItemId);
+            if (findItem) ErrorException(L("ComponentsCannotBeUseToBuildItsOwnItem"));
+
+            if (input.Type == BOMType.StandardPackaging)
             {
-               if(input.WarehouseBranches.IsNullOrEmpty()) InputException(L("Branches"));
-
-                var duplicateBranch = input.WarehouseBranches.GroupBy(a => a.BranchId).Any(r => r.Count() > 1);
-                if (duplicateBranch) DuplicateException(L("Branch"));
+                if (input.BOMItems.Count > 1) MoreThanException(L("StandardPackageItems"), "1");
+            }
+            else
+            {
+                var checkDuplicate = input.BOMItems.GroupBy(s => s.ItemId).Any(s => s.Count() > 1);
+                if (checkDuplicate) DuplicateException(L("BOMItems"));
             }
         }
 
-        protected override async Task ValidateInputAsync(Warehouse input)
+        protected override async Task ValidateInputAsync(BOM input)
         {  
             await base.ValidateInputAsync(input);
 
-            var findCode = await _repository.GetAll().AsNoTracking().AnyAsync(s => s.Id != input.Id && s.Code == input.Code);
-            if (findCode) DuplicateCodeException(input.Code);
+            var itemIds = input.BOMItems.Select(s => s.ItemId).Distinct().ToList();
+            itemIds.Add(input.ItemId);
+
+            var validItem = await _repository.GetAll().AsNoTracking().Where(s => itemIds.Contains(s.Id)).CountAsync() == itemIds.Count;
+
+            if (!validItem) InvalidException(L("Item"));
         }
 
-        protected override Warehouse CreateInstance(Warehouse input)
+        protected override BOM CreateInstance(BOM input)
         {
-            return Warehouse.Create(input.TenantId.Value, input.CreatorUserId.Value, input.Name, input.DisplayName, input.Code, input.Sharing);
+            return BOM.Create(input.TenantId, input.CreatorUserId.Value, input.Name, input.DisplayName, input.Type, input.ItemId);
         }
-        protected override void UpdateInstance(Warehouse input, Warehouse entity)
+        protected override void UpdateInstance(BOM input, BOM entity)
         {
-            entity.Update(input.LastModifierUserId.Value, input.Name, input.DisplayName, input.Code);
-            entity.SetSharing(input.Sharing);
+            entity.Update(input.LastModifierUserId.Value, input.Name, input.DisplayName, input.Type, input.ItemId);
         }
 
         #endregion
 
 
-        public override async Task<IdentityResult> InsertAsync(Warehouse input)
+        public override async Task<IdentityResult> InsertAsync(BOM input)
         {
             var result = await base.InsertAsync(input);
 
-            if(input.Sharing == BranchSharing.SpecificBranch)
-            {
-                await CurrentUnitOfWork.SaveChangesAsync();
-                var addBranchs = input.WarehouseBranches.Select(s => WarehouseBranch.Create(input.TenantId.Value, input.CreatorUserId.Value, input.Id, s.BranchId)).ToList();
-                await _warehouseBranchRepository.BulkInsertAsync(addBranchs);
-            }
-           
+            await CurrentUnitOfWork.SaveChangesAsync();
+            var bomItems = input.BOMItems.Select(s => BOMItem.Create(input.TenantId, input.CreatorUserId.Value, input.Id, s.ItemId, s.Qty)).ToList();
+            await _bomItemRepository.BulkInsertAsync(bomItems);
+
             return result;
         }
 
-        protected override async Task BeforeInstanceDeleteAsync(Warehouse entity)
+        protected override async Task BeforeInstanceUpdateAsync(BOM input, BOM entity)
         {
-            var inUse = await _zoneRepository.GetAll().AsNoTracking().AnyAsync(s => s.WarehouseId == entity.Id);
-            if (inUse) ErrorException(L("IsInUse", L("Warehouse")));
+            var bomItems = await _bomItemRepository.GetAll().AsNoTracking().Where(s => s.BOMId == input.Id).ToListAsync();
 
-            var branches = await _warehouseBranchRepository.GetAll().AsNoTracking().Where(s => s.WarehouseId == entity.Id).ToListAsync();
-            if (branches.Any()) await _warehouseBranchRepository.BulkDeleteAsync(branches);
+            var addBomItems = new List<BOMItem>();
+            var updateBomItems = new List<BOMItem>();
+
+            foreach (var item in input.BOMItems)
+            {
+                var updateBomItem = bomItems.FirstOrDefault(s => s.ItemId == item.ItemId);
+                if (updateBomItem != null)
+                {
+                    updateBomItem.Update(input.LastModifierUserId.Value, item.ItemId, item.Qty);
+                    updateBomItems.Add(updateBomItem);
+                }
+                else
+                {
+                    var newBomItem = BOMItem.Create(input.TenantId, input.CreatorUserId.Value, input.Id, item.ItemId, item.Qty);
+                    addBomItems.Add(newBomItem);
+                }
+            }
+
+            if (addBomItems.Any()) await _bomItemRepository.BulkInsertAsync(addBomItems);
+            if (updateBomItems.Any()) await _bomItemRepository.BulkUpdateAsync(updateBomItems);
+
+            var deleteBomItems = bomItems.Where(s => !updateBomItems.Any(r => r.Id == s.Id)).ToList();
+            if (deleteBomItems.Any()) await _bomItemRepository.BulkDeleteAsync(deleteBomItems);
+
         }
 
-        protected override async Task BeforeInstanceUpdateAsync(Warehouse input, Warehouse entity)
+        protected override async Task BeforeInstanceDeleteAsync(BOM entity)
         {
-            var branches = await _warehouseBranchRepository.GetAll().AsNoTracking().Where(s => s.WarehouseId == input.Id).ToListAsync();
-            if (input.Sharing == BranchSharing.SpecificBranch)
-            {
-                var addBranches = new List<WarehouseBranch>();
-                var updateBranches = new List<WarehouseBranch>();
-
-                foreach (var branch in input.WarehouseBranches)
-                {
-                    if (branch.Id == Guid.Empty)
-                    {
-                        addBranches.Add(WarehouseBranch.Create(input.TenantId.Value, input.CreatorUserId.Value, input.Id, branch.BranchId));
-                    }
-                    else
-                    {
-                        var updateBranch = branches.FirstOrDefault(s => s.Id == branch.Id);
-                        if (updateBranch == null) NotFoundException("Branch");
-
-                        updateBranch.Update(input.LastModifierUserId.Value, input.Id, branch.BranchId);
-                        updateBranches.Add(updateBranch);
-                    }
-                }
-
-                if (addBranches.Any()) await _warehouseBranchRepository.BulkInsertAsync(addBranches);
-                if (updateBranches.Any()) await _warehouseBranchRepository.BulkUpdateAsync(updateBranches);
-
-                var deleteBranches = branches.Where(s => !updateBranches.Any(r => r.Id == s.Id)).ToList();
-                if (deleteBranches.Any()) await _warehouseBranchRepository.BulkDeleteAsync(deleteBranches);
-            }
-            else if (branches.Any())
-            {
-                await _warehouseBranchRepository.BulkDeleteAsync(branches);
-            }
+            var bomItems = await _bomItemRepository.GetAll().AsNoTracking().Where(s => s.BOMId == entity.Id).ToListAsync();
+            await _bomItemRepository.BulkDeleteAsync(bomItems);
         }
 
         public async Task<ExportFileOutput> ExportExcelTemplateAsync()
@@ -152,7 +145,8 @@ namespace BiiSoft.Warehouses
                 Columns = new List<ColumnOutput> {
                     new ColumnOutput{ ColumnTitle = L("Name_",InstanceName), Width = 250, IsRequired = true },
                     new ColumnOutput{ ColumnTitle = L("DisplayName"), Width = 250, IsRequired = true },
-                    new ColumnOutput{ ColumnTitle = L("Code"), Width = 250 },
+                    new ColumnOutput{ ColumnTitle = L("Type"), Width = 250 },
+                    new ColumnOutput{ ColumnTitle = L("Item"), Width = 250 },
                     new ColumnOutput{ ColumnTitle = L("Default"), Width = 150 },
                 }
             };
@@ -169,7 +163,7 @@ namespace BiiSoft.Warehouses
         /// <exception cref="UserFriendlyException"></exception>
         public async Task<IdentityResult> ImportExcelAsync(IImportExcelEntity<Guid> input)
         {
-            var entities = new List<Warehouse>();
+            var entities = new List<BOM>();
             var entityHash = new HashSet<string>();
             var codeHash = new HashSet<string>();
           
@@ -194,6 +188,10 @@ namespace BiiSoft.Warehouses
                         var displayName = worksheet.GetString(i, 2);
                         ValidateDisplayName(displayName, rowInfo);
 
+                        BOMType type = BOMType.StandardPackaging;
+
+                        Guid itemId = Guid.NewGuid();
+
                         var code = worksheet.GetString(i, 3);
                         ValidateCodeInput(code, rowInfo);
                         if (code.Length > BiiSoftConsts.MaxLengthItemFieldCode) MoreThanCharactersException(L("Code_", InstanceName), BiiSoftConsts.MaxLengthItemFieldCode, rowInfo);
@@ -202,7 +200,7 @@ namespace BiiSoft.Warehouses
 
                         var isDefault = worksheet.GetBool(i, 4);
 
-                        var entity = Warehouse.Create(input.TenantId.Value, input.UserId.Value, name, displayName, code, BranchSharing.All);
+                        var entity = BOM.Create(input.TenantId.Value, input.UserId.Value, name, displayName, type, itemId);
                         entity.SetDefault(isDefault);
 
                         entities.Add(entity);
@@ -213,7 +211,7 @@ namespace BiiSoft.Warehouses
 
             if (!entities.Any()) return IdentityResult.Success;
 
-            var updateColorPatternDic = new Dictionary<string, Warehouse>();
+            var updateColorPatternDic = new Dictionary<string, BOM>();
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
@@ -225,13 +223,13 @@ namespace BiiSoft.Warehouses
                 }
             }
 
-            var addColorPatterns = new List<Warehouse>();
+            var addColorPatterns = new List<BOM>();
 
             foreach (var l in entities)
             {
                 if (updateColorPatternDic.ContainsKey(l.Name))
                 {
-                    updateColorPatternDic[l.Name].Update(input.UserId.Value, l.Name, l.DisplayName, l.Code);
+                    updateColorPatternDic[l.Name].Update(input.UserId.Value, l.Name, l.DisplayName, l.Type, l.ItemId);
                     updateColorPatternDic[l.Name].SetDefault(l.IsDefault);
                 }
                 else

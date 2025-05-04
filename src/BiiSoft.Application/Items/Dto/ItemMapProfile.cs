@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BiiSoft.BOMs;
 
 namespace BiiSoft.Items.Dto
 {

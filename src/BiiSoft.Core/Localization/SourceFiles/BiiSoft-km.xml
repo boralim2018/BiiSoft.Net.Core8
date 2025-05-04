@@ -31,6 +31,7 @@
 		<text name="Tenants" value="អ្នកជាវ" />
 		<text name="Tenant" value="អ្នកជាវ" />
 		<text name="SavedSuccessfully" value="រក្សាទុកជោគជ័យ" />
+		<text name="UploadSuccessfully" value="Upload ជោគជ័យ" />
 		<text name="CreateNewTenant" value="បង្កើតអ្នកជាវថ្មី" />
 		<text name="AdminEmailAddress" value="អ៊ីម៉ែល Admin" />
 		<text name="AdminPassword" value="លេខសម្ងាត់ Admin" />
@@ -444,6 +445,7 @@
 		<text name="Adjustments">កែតម្រូវ</text>
 		<text name="CustomerBorrowReturns">អតិថិជនសងទំនិញ</text>
 		<text name="Others">ផ្សេងៗ</text>
+		<text name="Other">ផ្សេងៗ</text>
 		<text name="Purchases">ទិញ</text>
 		<text name="PurchaseReturns">ត្រលប់ទំនិញទិញ</text>
 		<text name="CustomerGroups">ក្រុមអតិថិជន</text>
@@ -825,7 +827,11 @@
 		<text name="ItemAdjustment">កែតម្រូវស្ដុក</text>
 		<text name="ItemProduction">ផលិតកម្ម</text>
 		<text name="IsModifier">ថែមថយ</text>
+		<text name="ModifierItems">ទំនិញថែមថយ</text>
 		<text name="IsAddOn">ថែមពីលើ</text>
+		<text name="AddOnItems">ទំនិញថែមពីលើ</text>
+		<text name="BOM">BOM</text>
+		<text name="BOMs">BOM</text>
 		<text name="UseBOM">ប្រើ BOM</text>
 		<text name="DisplayBOM">បង្ហាញ BOM</text>
 		<text name="Type">ប្រភេទ</text>
@@ -835,5 +841,6 @@
 		<text name="Custom">កំណត់ទុក</text>
 		<text name="Manual">វាយបញ្ចូល</text>
 		<text name="DefaultZonePerWarehouse">តំបន់លំនាំដើមសម្រាប់ឃ្លាំងមួយ</text>
+		<text name="ComponentsCannotBeUseToBuildItsOwnItem">Components cannot be use to build its own item</text>
 	</texts>
 </localizationDictionary>

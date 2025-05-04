@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Entities;
+﻿using System;
+using Abp.Domain.Entities;
 
 namespace BiiSoft.Entities
 {
@@ -12,5 +13,8 @@ namespace BiiSoft.Entities
     {
         string Token { get; set; }
     }
-
+    public interface IUpdateFileEntity<TPrimaryKey> : IUserEntity<TPrimaryKey>, IMayHaveTenant
+    {
+        Guid FileId { get; set; }
+    }
 }

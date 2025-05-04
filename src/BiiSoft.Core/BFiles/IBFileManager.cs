@@ -13,6 +13,6 @@ namespace BiiSoft.BFiles
         Task Delete(int? tenantId, Guid fileId);
         Task<BFileDownloadOutput> DownLoad(int? tenantId, Guid fileId);
         Task<BFileUploadOutput> Upload(int? tenantId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName);
-        Task<BFileUploadOutput> UploadImage(int? tenantId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName, int resizeMaxWidth);
+        Task<BFileUploadOutput> UploadImage(int? tenantId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName);
     }
 }

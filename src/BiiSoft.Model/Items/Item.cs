@@ -1,14 +1,13 @@
-﻿using Abp.Domain.Entities;
-using Abp.Timing;
-using BiiSoft.ChartOfAccounts;
-using BiiSoft.Entities;
-using BiiSoft.Enums;
-using BiiSoft.Taxes;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Abp.Domain.Entities;
+using Abp.Timing;
+using BiiSoft.BOMs;
+using BiiSoft.ChartOfAccounts;
+using BiiSoft.Entities;
+using BiiSoft.Enums;
 
 namespace BiiSoft.Items
 {
@@ -101,13 +100,14 @@ namespace BiiSoft.Items
 
         public Guid? InventoryAccountId { get; private set; }
         public ChartOfAccount InventoryAccount { get; private set; }
-
+        public void SetInventoryAccount(Guid? inventoryAccountId) => InventoryAccountId = inventoryAccountId;
 
         [MaxLength(BiiSoftConsts.MaxLengthLongDescription)]
         [StringLength(BiiSoftConsts.MaxLengthLongDescription, ErrorMessage = BiiSoftConsts.MaxLengthLongDescriptionErrorMessage)]
         public string Description { get; private set; }
 
         public ICollection<ItemZone> ItemZones { get; private set; }
+        public ICollection<BOM> BOMs { get; private set; }
 
         public bool IsModifier { get; private set; }
         public bool IsAddOn { get; private set; }

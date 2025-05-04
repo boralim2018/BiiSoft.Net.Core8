@@ -1,13 +1,11 @@
-﻿using Abp.Dependency;
-using Abp.Domain.Uow;
-using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using BiiSoft.Enums;
+using Abp.Dependency;
 using Abp.UI;
-using BiiSoft.Extensions;
 using BiiSoft.BFiles.Dto;
+using BiiSoft.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace BiiSoft.BFiles
 {
@@ -34,9 +32,9 @@ namespace BiiSoft.BFiles
             var gallery = BFile.Create(
                 tenatId, 
                 curentUserId,
-                path.FileName,
-                displayName,               
                 path.StarageName,
+                displayName,
+                BiiSoftConsts.ResourcesFolder,
                 path.FilePath,
                 file.ContentType,
                 Path.GetExtension(file.FileName),
@@ -47,7 +45,7 @@ namespace BiiSoft.BFiles
             
         }
 
-        public async Task<BFile> UploadImage(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName, int resizeMaxWidth)
+        public async Task<BFile> UploadImage(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName)
         {
             var imageExtension = Path.GetExtension(file.FileName).Replace(".","").ToLowerInvariant();
             if (!BiiSoftConsts.ImageMineTypes.ContainsKey(imageExtension)) throw new UserFriendlyException("InvalidImage");
@@ -65,7 +63,7 @@ namespace BiiSoft.BFiles
             var gallery = BFile.Create(
                 tenatId,
                 curentUserId,
-                path.FileName,
+                path.StarageName,
                 displayName,
                 BiiSoftConsts.ResourcesFolder,
                 path.FilePath,

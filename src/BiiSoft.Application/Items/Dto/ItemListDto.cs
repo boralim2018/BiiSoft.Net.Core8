@@ -59,7 +59,7 @@ namespace BiiSoft.Items.Dto
         public string FieldBName { get; set; }
         public string FieldCName { get; set; }
         public string Description { get; set; }
-        public bool IsModified { get; set; }
+        public bool IsModifier { get; set; }
         public bool IsAddOn { get; set; }
         public bool UseBOM { get; set; }
         public bool DisplayBOM { get; set; }

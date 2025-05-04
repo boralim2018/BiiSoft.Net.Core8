@@ -3,6 +3,7 @@ using Abp.Zero.EntityFrameworkCore;
 using BiiSoft.Authorization.Roles;
 using BiiSoft.Authorization.Users;
 using BiiSoft.BFiles;
+using BiiSoft.BOMs;
 using BiiSoft.Branches;
 using BiiSoft.ChartOfAccounts;
 using BiiSoft.ContactInfo;
@@ -71,7 +72,8 @@ namespace BiiSoft.EntityFrameworkCore
         public DbSet<ItemCodeFormula> ItemCodeFormulas { get; set; }
         public DbSet<ItemCodeFormulaItemType> ItemCodeFormulaItemTypes { get; set; }
         public DbSet<ItemZone> ItemZones { get; set; }
-
+        public DbSet<BOM> BOMs { get; set; }
+        public DbSet<BOMItem> BOMItems { get; set; }
 
         public BiiSoftDbContext(DbContextOptions<BiiSoftDbContext> options)
             : base(options)
@@ -270,7 +272,7 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasIndex(i => i.No);
                 e.HasIndex(i => i.Name);
                 e.HasIndex(i => i.DisplayName);
-                e.HasOne(i => i.Warehouse).WithMany().HasForeignKey(i => i.WarehouseId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Warehouse).WithMany(i => i.Zones).HasForeignKey(i => i.WarehouseId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<ItemGroup>(e =>
@@ -482,6 +484,21 @@ namespace BiiSoft.EntityFrameworkCore
                 e.HasOne(i => i.Zone).WithMany().HasForeignKey(i => i.ZoneId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<BOM>(e =>
+            {
+                e.HasIndex(i => i.No);
+                e.HasIndex(i => new { i.TenantId, i.Name, i.ItemId }).IsUnique(true);
+                e.HasIndex(i => i.DisplayName);
+                e.HasIndex(i => i.Type);
+                e.HasIndex(i => i.IsDefault).HasFilter("\"IsDefault\"=true");
+                e.HasOne(i => i.Item).WithMany(i => i.BOMs).HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<BOMItem>(e =>
+            {
+                e.HasOne(i => i.BOM).WithMany(i => i.BOMItems).HasForeignKey(i => i.BOMId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(i => i.Item).WithMany().HasForeignKey(i => i.ItemId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

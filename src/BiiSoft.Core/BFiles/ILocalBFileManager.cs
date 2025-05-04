@@ -13,7 +13,7 @@ namespace BiiSoft.BFiles
     public interface ILocalBFileManager 
     {
         Task<BFile> Upload(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName);
-        Task<BFile> UploadImage(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName, int resizeMaxWidth);
+        Task<BFile> UploadImage(int? tenatId, long curentUserId, UploadSource uploadSource, IFormFile file, string displayName);
         Task<BFileDownloadOutput> Download(string mainFolderName, string storageFilePath, string contentType);
         Task<bool> Delete(string mainFolderName, string storageFilePath);
     }

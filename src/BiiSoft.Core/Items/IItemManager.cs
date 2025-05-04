@@ -10,6 +10,7 @@ namespace BiiSoft.Items
     {
         Task<ExportFileOutput> ExportExcelUpdateItemZonesAsync();
         Task<IdentityResult> ImportExcelUpdateItemZonesAsync(IImportExcelEntity<Guid> input);
+        Task<IdentityResult> UpdateImageAsync(IUpdateFileEntity<Guid> input);
     }
    
 }

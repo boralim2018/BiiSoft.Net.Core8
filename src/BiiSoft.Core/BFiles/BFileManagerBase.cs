@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Text;
-using System.Net.Http.Headers;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
 using System.IO;
-using System.Collections.Generic;
-using Amazon.Runtime.Internal.Util;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
-using System.Drawing;
-using System.Net.NetworkInformation;
-using System.Net;
+using System.Linq;
+using System.Net.Http.Headers;
 using BiiSoft.BFiles.Dto;
+using Microsoft.AspNetCore.Http;
 
 namespace BiiSoft.BFiles
 {
