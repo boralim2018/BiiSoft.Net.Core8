@@ -841,6 +841,7 @@
 		<text name="Custom">កំណត់ទុក</text>
 		<text name="Manual">វាយបញ្ចូល</text>
 		<text name="DefaultZonePerWarehouse">តំបន់លំនាំដើមសម្រាប់ឃ្លាំងមួយ</text>
-		<text name="ComponentsCannotBeUseToBuildItsOwnItem">Components cannot be use to build its own item</text>
+		<text name="ComponentsCannotBeUseToBuildItsOwnItem">ទំនិញមួយមិនអាចប្រើសមាសធាតុដើម្បីផលិតទំនិញខ្លួនវាឡើយ</text>
+		<text name="ItemName">ឈ្មោះទំនិញ</text>
 	</texts>
 </localizationDictionary>

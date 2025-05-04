@@ -841,6 +841,7 @@
 		<text name="Custom">Custom</text>
 		<text name="Manual">Manual</text>
 		<text name="DefaultZonePerWarehouse">Default Zone Per Warehouse</text>
-		<text name="ComponentsCannotBeUseToBuildItsOwnItem">ទំនិញមួយមិនអាចប្រើសមាសធាតុដើម្បីផលិតទំនិញខ្លួនវាឡើយ</text>
+		<text name="ComponentsCannotBeUseToBuildItsOwnItem">Components cannot be use to build its own item</text>
+		<text name="ItemName">Item Name</text>
 	</texts>
 </localizationDictionary>
