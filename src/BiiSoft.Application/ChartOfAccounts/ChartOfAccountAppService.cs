@@ -94,12 +94,12 @@ namespace BiiSoft.ChartOfAccounts
                         .WhereIf(input.ParentFilter != null && input.ParentFilter.Ids != null && input.ParentFilter.Ids.Any(), s =>
                             (input.ParentFilter.Exclude && (!s.ParentId.HasValue || !input.ParentFilter.Ids.Contains(s.ParentId))) ||
                             (!input.ParentFilter.Exclude && input.ParentFilter.Ids.Contains(s.ParentId)))
-                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(input.CreatorFilter != null && input.CreatorFilter.Ids != null && input.CreatorFilter.Ids.Any(), s =>
+                            (input.CreatorFilter.Exclude && (!s.CreatorUserId.HasValue || !input.CreatorFilter.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.CreatorFilter.Exclude && input.CreatorFilter.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.ModifierFilter != null && input.ModifierFilter.Ids != null && input.ModifierFilter.Ids.Any(), s =>
+                            (input.ModifierFilter.Exclude && (!s.LastModifierUserId.HasValue || !input.ModifierFilter.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.ModifierFilter.Exclude && input.ModifierFilter.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(input.ExcludeSubAccount, s => !s.ParentId.HasValue)
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
@@ -201,12 +201,12 @@ namespace BiiSoft.ChartOfAccounts
                         .WhereIf(input.ParentFilter != null && input.ParentFilter.Ids != null && input.ParentFilter.Ids.Any(), s =>
                             (input.ParentFilter.Exclude && (!s.ParentId.HasValue || !input.ParentFilter.Ids.Contains(s.ParentId))) ||
                             (!input.ParentFilter.Exclude && input.ParentFilter.Ids.Contains(s.ParentId)))
-                        .WhereIf(input.Creators != null && input.Creators.Ids != null && input.Creators.Ids.Any(), s =>
-                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                        .WhereIf(input.Modifiers != null && input.Modifiers.Ids != null && input.Modifiers.Ids.Any(), s =>
-                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(input.CreatorFilter != null && input.CreatorFilter.Ids != null && input.CreatorFilter.Ids.Any(), s =>
+                            (input.CreatorFilter.Exclude && (!s.CreatorUserId.HasValue || !input.CreatorFilter.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.CreatorFilter.Exclude && input.CreatorFilter.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.ModifierFilter != null && input.ModifierFilter.Ids != null && input.ModifierFilter.Ids.Any(), s =>
+                            (input.ModifierFilter.Exclude && (!s.LastModifierUserId.HasValue || !input.ModifierFilter.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.ModifierFilter.Exclude && input.ModifierFilter.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
                             s.Name.ToLower().Contains(input.Keyword.ToLower()) ||
                             s.DisplayName.ToLower().Contains(input.Keyword.ToLower()));

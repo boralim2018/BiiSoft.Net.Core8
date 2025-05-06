@@ -16,6 +16,7 @@ using BiiSoft.Enums;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.Items.Dto;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -162,12 +163,12 @@ namespace BiiSoft.Items
                         .WhereIf(input.FieldCFilter != null && !input.FieldCFilter.Ids.IsNullOrEmpty(), s =>
                             (input.FieldCFilter.Exclude && (!s.FieldCId.HasValue || !input.FieldCFilter.Ids.Contains(s.FieldCId.Value))) ||
                             (!input.FieldCFilter.Exclude && input.FieldCFilter.Ids.Contains(s.FieldCId.Value)))
-                        .WhereIf(input.Creators != null && !input.Creators.Ids.IsNullOrEmpty(), s =>
-                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                        .WhereIf(input.Modifiers != null && !input.Modifiers.Ids.IsNullOrEmpty(), s =>
-                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(input.CreatorFilter != null && !input.CreatorFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.CreatorFilter.Exclude && (!s.CreatorUserId.HasValue || !input.CreatorFilter.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.CreatorFilter.Exclude && input.CreatorFilter.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.ModifierFilter != null && !input.ModifierFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.ModifierFilter.Exclude && (!s.LastModifierUserId.HasValue || !input.ModifierFilter.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.ModifierFilter.Exclude && input.ModifierFilter.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s => 
                             (input.SearchOption == SearchOption.Contians && (
                                 s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
@@ -332,6 +333,7 @@ namespace BiiSoft.Items
 
 
         [AbpAuthorize(PermissionNames.Pages_Setup_Items_List)]
+        [HttpPost]
         public async Task<PagedResultDto<ItemListDto>> GetList(PageItemInputDto input)
         {
             return await GetListHelper(input);
@@ -405,12 +407,12 @@ namespace BiiSoft.Items
                         .WhereIf(input.FieldCFilter != null && !input.FieldCFilter.Ids.IsNullOrEmpty(), s =>
                             (input.FieldCFilter.Exclude && (!s.FieldCId.HasValue || !input.FieldCFilter.Ids.Contains(s.FieldCId.Value))) ||
                             (!input.FieldCFilter.Exclude && input.FieldCFilter.Ids.Contains(s.FieldCId.Value)))
-                        .WhereIf(input.Creators != null && !input.Creators.Ids.IsNullOrEmpty(), s =>
-                            (input.Creators.Exclude && (!s.CreatorUserId.HasValue || !input.Creators.Ids.Contains(s.CreatorUserId))) ||
-                            (!input.Creators.Exclude && input.Creators.Ids.Contains(s.CreatorUserId)))
-                        .WhereIf(input.Modifiers != null && !input.Modifiers.Ids.IsNullOrEmpty(), s =>
-                            (input.Modifiers.Exclude && (!s.LastModifierUserId.HasValue || !input.Modifiers.Ids.Contains(s.LastModifierUserId))) ||
-                            (!input.Modifiers.Exclude && input.Modifiers.Ids.Contains(s.LastModifierUserId)))
+                        .WhereIf(input.CreatorFilter != null && !input.CreatorFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.CreatorFilter.Exclude && (!s.CreatorUserId.HasValue || !input.CreatorFilter.Ids.Contains(s.CreatorUserId))) ||
+                            (!input.CreatorFilter.Exclude && input.CreatorFilter.Ids.Contains(s.CreatorUserId)))
+                        .WhereIf(input.ModifierFilter != null && !input.ModifierFilter.Ids.IsNullOrEmpty(), s =>
+                            (input.ModifierFilter.Exclude && (!s.LastModifierUserId.HasValue || !input.ModifierFilter.Ids.Contains(s.LastModifierUserId))) ||
+                            (!input.ModifierFilter.Exclude && input.ModifierFilter.Ids.Contains(s.LastModifierUserId)))
                         .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), s =>
                             s.Code.ToLower().Contains(input.Keyword.ToLower()) ||
                             (!s.Barcode.IsNullOrEmpty() && s.Barcode.ToLower().Contains(input.Keyword.ToLower())) ||

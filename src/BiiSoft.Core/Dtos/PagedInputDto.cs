@@ -52,8 +52,8 @@ namespace BiiSoft.Dtos
 
     public abstract class PageAuditedSortFilterInputDto: PagedSortFilterInputDto
     {
-        public FilterInputDto<long?> Creators { get; set; }
-        public FilterInputDto<long?> Modifiers { get; set; }
+        public FilterInputDto<long?> CreatorFilter { get; set; }
+        public FilterInputDto<long?> ModifierFilter { get; set; }
     }
 
     public abstract class PageAuditedAcitveSortFilterInputDto : PageAuditedSortFilterInputDto
