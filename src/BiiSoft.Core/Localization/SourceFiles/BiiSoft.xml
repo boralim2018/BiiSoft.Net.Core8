@@ -843,5 +843,35 @@
 		<text name="DefaultZonePerWarehouse">Default Zone Per Warehouse</text>
 		<text name="ComponentsCannotBeUseToBuildItsOwnItem">Components cannot be use to build its own item</text>
 		<text name="ItemName">Item Name</text>
+		<text name="Service">Service</text>
+		<text name="Menu">Menu</text>
+		<text name="NonInventory">Non-Inventory</text>
+		<text name="Asset">Asset</text>
+		<text name="Bundle">Bundle</text>
+		<text name="FoodsDrinks">Foods Drinks</text>
+		<text name="KitchenGrocery">Kitchen Grocery</text>
+		<text name="Ingredient">Ingredient</text>
+		<text name="Medicine">Medicine</text>
+		<text name="Poition">Poition</text>
+		<text name="Clothes">Clothes</text>
+		<text name="BeautyFashion">Beauty Fashion</text>
+		<text name="BookLearningMaterial">Book Learning Material</text>
+		<text name="KidsEntertainment">Kids Entertainment</text>
+		<text name="SportHealthcare">Sport Healthcare</text>
+		<text name="MedicalInstrument">Medical Instrument</text>
+		<text name="AgricultureProduct">Agriculture Product</text>
+		<text name="ConstructionMaterial">Construction Material</text>
+		<text name="Electronics">Electronics</text>
+		<text name="PhoneTablet">Phone Tablet</text>
+		<text name="ComputerLabtop">Computer Labtop</text>
+		<text name="PrinterScaner">Printer Scaner</text>
+		<text name="Accessory">Accessory</text>
+		<text name="SoftwareEbook">Software Ebook</text>
+		<text name="LandHouse">Land House</text>
+		<text name="CarVehicle">Car Vehicle</text>
+		<text name="Machinery">Machinery</text>
+		<text name="SparePart">SparePart</text>
+		<text name="Furniture">Furniture</text>
+		<text name="DecorationOrnament">Decoration Ornament</text>
 	</texts>
 </localizationDictionary>

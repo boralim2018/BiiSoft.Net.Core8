@@ -843,5 +843,35 @@
 		<text name="DefaultZonePerWarehouse">តំបន់លំនាំដើមសម្រាប់ឃ្លាំងមួយ</text>
 		<text name="ComponentsCannotBeUseToBuildItsOwnItem">ទំនិញមួយមិនអាចប្រើសមាសធាតុដើម្បីផលិតទំនិញខ្លួនវាឡើយ</text>
 		<text name="ItemName">ឈ្មោះទំនិញ</text>
+		<text name="Service">សេវាកម្ម</text>
+		<text name="Menu">ម៉ឺនុយ</text>
+		<text name="NonInventory">មិនសារពើភ័ណ្ឌ</text>
+		<text name="Asset">ទ្រព្យ</text>
+		<text name="Bundle">កញ្ចប់</text>
+		<text name="FoodsDrinks">អាហារ ភេសជ្ជៈ</text>
+		<text name="KitchenGrocery">ផ្ទះបាយ គ្រឿងទេស</text>
+		<text name="Ingredient">គ្រឿងផ្សំ</text>
+		<text name="Medicine">ឱសថ</text>
+		<text name="Poition">ថ្នាំពុល</text>
+		<text name="Clothes">សំលៀកបំពាក់</text>
+		<text name="BeautyFashion">សម្រស់ ម៉ូត</text>
+		<text name="BookLearningMaterial">សៀវភៅ សំភារៈសិក្សា</text>
+		<text name="KidsEntertainment">ក្មេង កំសាន</text>
+		<text name="SportHealthcare">កីឡា សុខភាព</text>
+		<text name="MedicalInstrument">បរិក្ខាពេទ្យ</text>
+		<text name="AgricultureProduct">ផលិតផលកសិកម្ម</text>
+		<text name="ConstructionMaterial">សំភារៈសំណង់</text>
+		<text name="Electronics">អេឡិចត្រូនិច</text>
+		<text name="PhoneTablet">ទូរសព្ទ ក្ដាចុច</text>
+		<text name="ComputerLabtop">កុំព្យូទ័រ </text>
+		<text name="PrinterScaner">ម៉ាស៊ីនព្រីន ម៉ាស៊ីនស្កេន</text>
+		<text name="Accessory">គ្រឿងបន្ថែម</text>
+		<text name="SoftwareEbook">កម្មវិធី អ៊ីប៊ុក</text>
+		<text name="LandHouse">ដី ផ្ទះ</text>
+		<text name="CarVehicle">រថយន្ដ យានជំនិះ</text>
+		<text name="Machinery">ម៉ាស៊ីន</text>
+		<text name="SparePart">គ្រឿងបន្លាល់</text>
+		<text name="Furniture">សង្ហារិម</text>
+		<text name="DecorationOrnament">គ្រឿងតុបតែងលម្អ</text>
 	</texts>
 </localizationDictionary>

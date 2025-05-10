@@ -72,7 +72,7 @@ namespace BiiSoft.CommonLookups
             await Task.Run(() => {
                 items = Enum.GetValues(typeof(ItemType))
                              .Cast<ItemType>()
-                             .Select(s => new NameValueDto<ItemType>(s.GetName(), s))
+                             .Select(s => new NameValueDto<ItemType>(L(s.ToString()), s))
                              .ToList();
             });
 
@@ -85,7 +85,7 @@ namespace BiiSoft.CommonLookups
             await Task.Run(() => {
                 items = Enum.GetValues(typeof(ItemCategory))
                              .Cast<ItemCategory>()
-                             .Select(s => new NameValueDto<ItemCategory>(s.GetName(), s))
+                             .Select(s => new NameValueDto<ItemCategory>(L(s.ToString()), s))
                              .ToList();
             });
 
