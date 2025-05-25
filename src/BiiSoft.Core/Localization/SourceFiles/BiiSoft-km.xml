@@ -873,5 +873,12 @@
 		<text name="SparePart">គ្រឿងបន្លាល់</text>
 		<text name="Furniture">សង្ហារិម</text>
 		<text name="DecorationOrnament">គ្រឿងតុបតែងលម្អ</text>
+		<text name="StandardPackaging">វេចខ្ចប់ស្ដងដារ</text>
+		<text name="MultiPackaging">វេចខ្ចប់ចំរុះ</text>
+		<text name="Manufacturing">ផលិកម្ម</text>
+		<text name="Recipe">រូបមន្ដធ្វើម្ហូប</text>
+		<text name="OutputItem">ទំនិញផលិត</text>
+		<text name="Components">សមាសធាតុ</text>
+		<text name="Find_">ស្វែងរក {0}</text>
 	</texts>
 </localizationDictionary>

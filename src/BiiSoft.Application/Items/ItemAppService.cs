@@ -197,6 +197,7 @@ namespace BiiSoft.Items
                     Code = l.Code,
                     Barcode = l.Barcode,
                     ALTCode = l.ALTCode,
+                    ImageId = l.ImageId,
                     IsActive = l.IsActive
                  });
 
@@ -492,6 +493,7 @@ namespace BiiSoft.Items
                     IsAddOn = l.IsAddOn,
                     UseBOM = l.UseBOM,
                     DisplayBOM = l.DisplayBOM,
+                    ImageId = l.ImageId
                 });
 
                 if (input.UsePagination)

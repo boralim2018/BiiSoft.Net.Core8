@@ -20,6 +20,7 @@ namespace BiiSoft.Columns
         List = 8,
         Lookup = 9,
         IndirectLookup = 10,
+        Image = 11,
     }
 
     //SummaryFunction Custom

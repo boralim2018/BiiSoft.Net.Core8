@@ -10,6 +10,7 @@ using BiiSoft.Enums;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
 using BiiSoft.FileStorages;
+using BiiSoft.Items;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,18 +28,21 @@ namespace BiiSoft.BOMs
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IExcelManager _excelManager;
         private readonly IBiiSoftRepository<BOMItem, Guid> _bomItemRepository;
+        private readonly IBiiSoftRepository<Item, Guid> _itemRepository;
 
         public BOMManager(
             IExcelManager excelManager,
             IFileStorageManager fileStorageManager,
             IUnitOfWorkManager unitOfWorkManager,
             IBiiSoftRepository<BOMItem, Guid> bomItemRepository,
+            IBiiSoftRepository<Item, Guid> itemRepository,
             IBiiSoftRepository<BOM, Guid> repository) : base(repository) 
         {
             _fileStorageManager = fileStorageManager;
             _unitOfWorkManager = unitOfWorkManager;
             _excelManager = excelManager;
             _bomItemRepository = bomItemRepository;
+            _itemRepository = itemRepository;
         }
 
         #region override
@@ -73,7 +77,7 @@ namespace BiiSoft.BOMs
             var itemIds = input.BOMItems.Select(s => s.ItemId).Distinct().ToList();
             itemIds.Add(input.ItemId);
 
-            var validItem = await _repository.GetAll().AsNoTracking().Where(s => itemIds.Contains(s.Id)).CountAsync() == itemIds.Count;
+            var validItem = await _itemRepository.GetAll().AsNoTracking().Where(s => itemIds.Contains(s.Id)).CountAsync() == itemIds.Count;
 
             if (!validItem) InvalidException(L("Item"));
         }

@@ -63,6 +63,7 @@ namespace BiiSoft.Items.Dto
         public bool IsAddOn { get; set; }
         public bool UseBOM { get; set; }
         public bool DisplayBOM { get; set; }
+        public Guid? ImageId { get; set; }
 
     }
 }

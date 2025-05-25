@@ -17,5 +17,6 @@ namespace BiiSoft.CommonLookups
         Task<ListResultDto<NameValueDto<WeightUnit>>> GetWeightUnits();
         Task<ListResultDto<NameValueDto<AreaUnit>>> GetAreaUnits();
         Task<ListResultDto<NameValueDto<VolumeUnit>>> GetVolumeUnits();
+        Task<ListResultDto<NameValueDto<BOMType>>> GetBOMTypes();
     }
 }

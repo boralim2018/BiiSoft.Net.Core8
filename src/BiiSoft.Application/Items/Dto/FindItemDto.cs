@@ -8,5 +8,6 @@ namespace BiiSoft.Items.Dto
         public string Code { get; set; }
         public string Barcode { get; set; }
         public string ALTCode { get; set; }
+        public Guid? ImageId { get; set; }
     }
 }

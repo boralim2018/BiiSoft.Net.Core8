@@ -144,5 +144,18 @@ namespace BiiSoft.CommonLookups
             return new ListResultDto<NameValueDto<VolumeUnit>> { Items = items };
         }
 
+        public async Task<ListResultDto<NameValueDto<BOMType>>> GetBOMTypes()
+        {
+            var items = new List<NameValueDto<BOMType>>();
+            await Task.Run(() => {
+                items = Enum.GetValues(typeof(BOMType))
+                             .Cast<BOMType>()
+                             .Select(s => new NameValueDto<BOMType>(L(s.ToString()), s))
+                             .ToList();
+            });
+
+            return new ListResultDto<NameValueDto<BOMType>> { Items = items };
+        }
+
     }
 }

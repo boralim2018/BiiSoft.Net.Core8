@@ -11,7 +11,7 @@ namespace BiiSoft.BOMs.Dto
         public string DisplayName { get; set; }
         public BOMType Type { get; set; }
         public Guid ItemId { get; set; }
-        public List<BOMItemDto> BOMBranches { get; set; }
+        public List<BOMItemDto> BOMItems { get; set; }
     }
 
 }

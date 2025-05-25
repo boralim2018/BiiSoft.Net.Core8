@@ -873,5 +873,12 @@
 		<text name="SparePart">SparePart</text>
 		<text name="Furniture">Furniture</text>
 		<text name="DecorationOrnament">Decoration Ornament</text>
+		<text name="StandardPackaging">Standard Packaging</text>
+		<text name="MultiPackaging">Multi Packaging</text>
+		<text name="Manufacturing">Manufacturing</text>
+		<text name="Recipe">Recipe</text>
+		<text name="OutputItem">Output Item</text>
+		<text name="Components">Components</text>
+		<text name="Find_">Find {0}</text>
 	</texts>
 </localizationDictionary>
