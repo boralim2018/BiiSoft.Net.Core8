@@ -136,6 +136,7 @@
 		<text name="EditPrice">កែប្រែតម្លៃ</text>
 		<text name="SeePrice">ឃើញតម្លៃ</text>
 		<text name="EditQty">កែប្រែចំនួន</text>
+		<text name="Qty">ចំនួន</text>
 		<text name="Over24Modify">កែប្រែសុពលភាពលើសពី 24 ម៉ោង</text>
 		<text name="ColumnsIsRequired">ចាំបាច់ត្រូវមានតារាងជួរឈរដើម្បី {0}</text>
 		<text name="SignIn">ចូល</text>

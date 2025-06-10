@@ -136,6 +136,7 @@
 		<text name="EditPrice">Edit Price</text>
 		<text name="SeePrice">See Price</text>
 		<text name="EditQty">Edit Qty</text>
+		<text name="Qty">Qty</text>
 		<text name="Over24Modify">Over 24 hours modify</text>
 		<text name="ColumnsIsRequired">Columns is required for {0}</text>
 		<text name="SignIn">Sign In</text>

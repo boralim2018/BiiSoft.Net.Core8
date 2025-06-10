@@ -45,7 +45,7 @@ namespace BiiSoft.Extensions
         public static bool IsCode(this string code, int length, string prefix = "")
         {
             //https://regex101.com/r/cG4kD9/1
-            var expression = @"^@p[0-9]{@mx,@mx}$".Replace("@p", prefix).Replace("@mx", $"{length-prefix.Length}");
+            var expression = @"^@p[0-9]{@mx,@mx}$".Replace("@mx", $"{length-prefix.Length}").Replace("@p", prefix);
             return !code.IsNullOrWhiteSpace() && new Regex(expression).IsMatch(code);
         }
 

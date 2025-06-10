@@ -22,6 +22,7 @@ using Abp.Collections.Extensions;
 using BiiSoft.Enums;
 using BiiSoft.Excels;
 using BiiSoft.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BiiSoft.ChartOfAccounts
 {
@@ -119,8 +120,10 @@ namespace BiiSoft.ChartOfAccounts
                     Code = l.Code,
                     Name = l.Name,
                     DisplayName = l.DisplayName,
-                    AccountType = l.AccountType.GetName(),
-                    SubAccountType = l.SubAccountType.GetName(),
+                    AccountType = l.AccountType,
+                    SubAccountType = l.SubAccountType,
+                    AccountTypeName = l.AccountType.GetName(),
+                    SubAccountTypeName = l.SubAccountType.GetName(),
                     ParentAccount = !l.ParentId.HasValue ? "" : isDefaultLanguage ? l.Parent.Name : l.Parent.DisplayName,
                     IsActive = l.IsActive,
                 });
@@ -180,6 +183,7 @@ namespace BiiSoft.ChartOfAccounts
 
 
         [AbpAuthorize(PermissionNames.Pages_Accounting_ChartOfAccounts)]
+        [HttpPost]
         public async Task<PagedResultDto<ChartOfAccountListDto>> GetList(PageChartOfAccountInputDto input)
         {
             return await GetListHelper(input);
@@ -227,8 +231,10 @@ namespace BiiSoft.ChartOfAccounts
                     CannotDelete = l.CannotDelete,
                     CannotEdit = l.CannotEdit,
                     IsActive = l.IsActive,
-                    AccountType = l.AccountType.GetName(),
-                    SubAccountType = l.SubAccountType.GetName(),
+                    AccountType = l.AccountType,
+                    SubAccountType = l.SubAccountType,
+                    AccountTypeName = l.AccountType.GetName(),
+                    SubAccountTypeName = l.SubAccountType.GetName(),
                     ParentId = l.ParentId,
                     ParentAccountName = !l.ParentId.HasValue ? "" : isDefaultLanguage ? l.Parent.Name : l.Parent.DisplayName,
                     CreationTime = l.CreationTime,

@@ -32,9 +32,9 @@ namespace BiiSoft.Emailing
 
         public string GetActivationTemplate()
         {
-           
-            //var resources = typeof(EmailTemplateProvider).GetTypeInfo().Assembly.GetManifestResourceNames();
-            //var resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+
+            var resources = typeof(EmailTemplateProvider).GetTypeInfo().Assembly.GetManifestResourceNames();
+            var resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
 
             using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("BiiSoft.Emailing.EmailTemplates.default-reactive-email.html"))
             {

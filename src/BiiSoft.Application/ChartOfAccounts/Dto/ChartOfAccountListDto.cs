@@ -8,8 +8,10 @@ namespace BiiSoft.ChartOfAccounts.Dto
     {      
         public long No { get; set; }
         public string Code { get; set; }
-        public string AccountType { get; set; }
-        public string SubAccountType { get; set; }
+        public AccountType AccountType { get; set; }
+        public SubAccountType SubAccountType { get; set; }
+        public string AccountTypeName { get; set; }
+        public string SubAccountTypeName { get; set; }
         public Guid? ParentId { get; set; }
         public string ParentAccountName { get; set; }
     }
